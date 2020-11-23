@@ -6,5 +6,5 @@ Config::set('version', array(
     /**
      * Vmast release version
      */
-    'release' => 'v.6.6.4'
+    'release' => 'v.6.6.5'
 ));

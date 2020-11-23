@@ -616,6 +616,7 @@ class EventsController extends Controller
 
                     case EventSteps::BLIND_DRAFT:
                         $sourceText = $this->getSourceText($data, true);
+                        $translationData = [];
 
                         if($sourceText !== false)
                         {
@@ -623,8 +624,11 @@ class EventsController extends Controller
                             {
                                 $data = $sourceText;
 
-                                $translationData = $this->_translationModel
-                                    ->getEventTranslation($data["event"][0]->trID, $data["event"][0]->currentChapter, $data["event"][0]->currentChunk);
+                                $translationData = $this->_translationModel->getEventTranslation(
+                                    $data["event"][0]->trID,
+                                    $data["event"][0]->currentChapter,
+                                    $data["event"][0]->currentChunk
+                                );
 
                                 if(!empty($translationData))
                                 {
@@ -648,12 +652,49 @@ class EventsController extends Controller
                         {
                             $_POST = Gump::xss_clean($_POST);
 							$draft = isset($_POST["draft"]) ? $_POST["draft"] : "";
-							$confirm_step = isset($_POST["confirm_step"]) ? $_POST["confirm_step"] : "";
 
                             if (isset($_POST["confirm_step"]))
                             {
                                 if(trim($draft) != "")
                                 {
+                                    if (empty($translationData))
+                                    {
+                                        $translationVerses = [
+                                            EventMembers::TRANSLATOR => [
+                                                "blind" => trim($draft),
+                                                "verses" => []
+                                            ],
+                                            EventMembers::L2_CHECKER => [
+                                                "verses" => array()
+                                            ],
+                                            EventMembers::L3_CHECKER => [
+                                                "verses" => array()
+                                            ],
+                                        ];
+
+                                        $encoded = json_encode($translationVerses);
+                                        $json_error = json_last_error();
+
+                                        if($json_error == JSON_ERROR_NONE) {
+                                            $trData = [
+                                                "projectID"         => $data["event"][0]->projectID,
+                                                "eventID"           => $data["event"][0]->eventID,
+                                                "trID"              => $data["event"][0]->trID,
+                                                "targetLang"        => $data["event"][0]->targetLang,
+                                                "bookProject"       => $data["event"][0]->bookProject,
+                                                "abbrID"            => $data["event"][0]->abbrID,
+                                                "bookCode"          => $data["event"][0]->bookCode,
+                                                "chapter"           => $data["event"][0]->currentChapter,
+                                                "chunk"             => $data["event"][0]->currentChunk,
+                                                "firstvs"           => $sourceText["chunk"][0],
+                                                "translatedVerses"  => $encoded,
+                                                "dateCreate"        => date('Y-m-d H:i:s')
+                                            ];
+
+                                            $this->_translationModel->createTranslation($trData);
+                                        }
+                                    }
+
                                     $postdata["step"] = EventSteps::SELF_CHECK;
 
                                     // If chapter is finished go to SELF_EDIT, otherwise go to the next chunk
@@ -665,7 +706,7 @@ class EventsController extends Controller
                                     }
 
 
-                                    $upd = $this->_model->updateTranslator($postdata, ["trID" => $data["event"][0]->trID]);
+                                    $this->_model->updateTranslator($postdata, ["trID" => $data["event"][0]->trID]);
                                     Url::redirect('events/translator/' . $data["event"][0]->eventID);
                                 }
                                 else
