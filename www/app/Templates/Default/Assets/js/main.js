@@ -1662,7 +1662,7 @@ $(document).ready(function() {
         });
     },2100);
 
-    // Show/Hide chat window
+    // Show/Hide help window
     $("#help_hide").click(function() {
         var $this = $(this).parents(".content_help");
 
@@ -1672,8 +1672,8 @@ $(document).ready(function() {
             $this.removeClass("open")
                 .addClass("closed");
             $this.animate({right: -275}, 500, function() {
-                $("#help_hide").removeClass("glyphicon-chevron-up")
-                    .addClass("glyphicon-chevron-down");
+                $("#help_hide").removeClass("glyphicon-chevron-right")
+                    .addClass("glyphicon-chevron-left");
             });
         }
         else
@@ -1682,8 +1682,8 @@ $(document).ready(function() {
             $this.removeClass("closed")
                 .addClass("open");
             $this.animate({right: 0}, 500, function() {
-                $("#help_hide").removeClass("glyphicon-chevron-down")
-                    .addClass("glyphicon-chevron-up");
+                $("#help_hide").removeClass("glyphicon-chevron-left")
+                    .addClass("glyphicon-chevron-right");
             });
         }
     });
