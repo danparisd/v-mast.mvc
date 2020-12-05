@@ -1114,18 +1114,18 @@ class EventsModel extends Model
 
     /**
      * Get SUN checker event/s
-     * @param $memberID SUN Checker member ID
+     * @param $checkerID SUN Checker member ID
      * @param null $eventID event ID
-     * @param null $chkMemberID SUN translator member ID
+     * @param null $memberID SUN translator member ID
      * @return array
      */
-    public function getMemberEventsForSun($memberID, $eventID = null, $chkMemberID = null, $chapter = null)
+    public function getMemberEventsForSun($checkerID, $eventID = null, $memberID = null, $chapter = null)
     {
         $prepare = [];
         if($eventID)
             $prepare[":eventID"] = $eventID;
-        if($chkMemberID)
-            $prepare[":chkMemberID"] = $chkMemberID;
+        if($memberID)
+            $prepare[":memberID"] = $memberID;
 
         $sql = "SELECT trs.*, ".PREFIX."members.userName, ".PREFIX."members.firstName, "
             .PREFIX."members.lastName, evnt.bookCode, evnt.admins, evnt.state, "
@@ -1147,7 +1147,7 @@ class EventsModel extends Model
             "LEFT JOIN ".PREFIX."abbr ON evnt.bookCode = ".PREFIX."abbr.code ".
             "WHERE ".PREFIX."projects.bookProject = 'sun' ".
             ($eventID ? "AND trs.eventID = :eventID " : " ").
-            ($chkMemberID ? "AND trs.memberID = :chkMemberID " : " ").
+            ($memberID ? "AND trs.memberID = :memberID " : " ").
             "ORDER BY tLang, ".PREFIX."abbr.abbrID";
 
         $events = $this->db->select($sql, $prepare);
@@ -1156,7 +1156,7 @@ class EventsModel extends Model
         foreach($events as $event)
         {
             // translation events
-            if($event->memberID == $memberID
+            if($event->memberID == $checkerID
                 && $event->step != EventCheckSteps::NONE
                 && ($chapter == null || $chapter == $event->currentChapter))
             {
@@ -1168,14 +1168,14 @@ class EventsModel extends Model
             foreach ($kwCheck as $chap => $data) {
                 if(!isset($chapter) || $chapter == $chap)
                 {
-                    if($data["memberID"] == $memberID && $data["done"] == 0)
+                    if($data["memberID"] == $checkerID && $data["done"] == 0)
                     {
                         $ev = clone $event;
 
                         $ev->step = EventSteps::THEO_CHECK;
                         $ev->currentChapter = $chap;
                         $ev->myMemberID = 0;
-                        $ev->myChkMemberID = $memberID;
+                        $ev->myChkMemberID = $checkerID;
                         $ev->isContinue = true; // Means not owner of chapter
                         $filtered[] = $ev;
                     }
@@ -1187,7 +1187,7 @@ class EventsModel extends Model
             foreach ($crCheck as $chap => $data) {
                 if(!isset($chapter) || $chapter == $chap)
                 {
-                    if($data["memberID"] == $memberID && $data["done"] != 2)
+                    if($data["memberID"] == $checkerID && $data["done"] != 2)
                     {
                         $ev = clone $event;
 
@@ -1195,9 +1195,8 @@ class EventsModel extends Model
                             EventSteps::CONTENT_REVIEW :
                             EventSteps::FINAL_REVIEW;
                         $ev->currentChapter = $chap;
-                        $ev->memberID = $ev->memberID;
                         $ev->myMemberID = 0;
-                        $ev->myChkMemberID = $memberID;
+                        $ev->myChkMemberID = $checkerID;
                         $ev->isContinue = true; // Means not owner of chapter
                         $filtered[] = $ev;
                     }
