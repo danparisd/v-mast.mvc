@@ -1999,7 +1999,22 @@ mark {
     margin: 10px 0 0 0;
 }
 
-.side_by_side_content {
+.side_by_side_toggle label {
+    cursor: pointer;
+    user-select: none;
+}
+
+.side_by_side_translator .chunk_verses.flex_left {
+    display: none;
+}
+.side_by_side_translator .flex_middle.editor_area {
+    display: block;
+}
+
+.side_by_side_checker .chunk_verses.flex_left {
+    display: block;
+}
+.side_by_side_checker .flex_middle.editor_area {
     display: none;
 }
 

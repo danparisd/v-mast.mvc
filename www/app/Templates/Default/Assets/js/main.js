@@ -914,17 +914,18 @@ $(document).ready(function() {
         return false;
     });
 
-    // Toggle Side by Side view on content review page (checker)
+    // Toggle Side by Side view on content review page
     $("#side_by_side_toggle").click(function() {
         if($(this).is(":checked"))
         {
-            $(".side_by_side_content").show();
-            $(".one_side_content").hide();
+            $(".side_by_side_translator .chunk_verses.flex_left").show();
+            $(".side_by_side_checker .flex_middle.editor_area").show();
+            autosize.update($('textarea'));
         }
         else
         {
-            $(".side_by_side_content").hide();
-            $(".one_side_content").show();
+            $(".side_by_side_translator .chunk_verses.flex_left").hide()
+            $(".side_by_side_checker .flex_middle.editor_area").hide();
         }
     });
 
