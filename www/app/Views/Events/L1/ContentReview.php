@@ -57,50 +57,75 @@ if(isset($data["error"])) return;
                             .($data["event"][0]->abbrID <= 39 ? __("old_test") : __("new_test"))." - "
                             ."<span class='book_name'>".$data["event"][0]->name." ".$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
 
-                    <div class="col-sm-12">
-                        <?php foreach($data["translation"] as $key => $chunk) : ?>
-                            <div style="color: #0089ff; font-weight: bold;"><?php echo isset($data["chunks"][$key])
-                                    ? ($data["chunks"][$key][0] != $data["chunks"][$key][sizeof($data["chunks"][$key])-1]
-                                        ? $data["chunks"][$key][0] . "-" . $data["chunks"][$key][sizeof($data["chunks"][$key])-1]
-                                        : $data["chunks"][$key][0])
-                                    : ""?></div>
+                    <div class="row">
+                        <div class="col-sm-12 side_by_side_toggle">
+                            <label><input type="checkbox" id="side_by_side_toggle" value="0" /> <?php echo __("side_by_side_toggle") ?></label>
+                        </div>
+                    </div>
+                    <br/>
 
-                            <div class="flex_container">
-                                <div class="chunk_verse editor_area flex_middle" dir="<?php echo $data["event"][0]->tLangDir ?>">
-                                    <div class="vnote">
-                                        <?php $text = $chunk[EventMembers::TRANSLATOR]["blind"]; ?>
-                                        <textarea name="chunks[]" class="peer_verse_ta textarea"><?php echo $text ?></textarea>
+                    <div class="col-sm-12 side_by_side_translator">
+                        <?php foreach($data["chunks"] as $key => $chunk) : ?>
+                            <div class="row chunk_block">
+                                <div class="flex_container">
+                                    <div class="chunk_verses flex_left" style="padding: 0 15px 0 0;" dir="<?php echo $data["event"][0]->sLangDir ?>">
+                                        <?php $firstVerse = 0; ?>
+                                        <?php foreach ($chunk as $verse): ?>
+                                            <?php
+                                            // process combined verses
+                                            if (!isset($data["text"][$verse]))
+                                            {
+                                                if($firstVerse == 0)
+                                                {
+                                                    $firstVerse = $verse;
+                                                    continue;
+                                                }
+                                                $combinedVerse = $firstVerse . "-" . $verse;
+
+                                                if(!isset($data["text"][$combinedVerse]))
+                                                    continue;
+                                                $verse = $combinedVerse;
+                                            }
+                                            ?>
+                                        <strong class="<?php echo $data["event"][0]->sLangDir ?>"><sup><?php echo $verse; ?></sup></strong><?php echo $data["text"][$verse]; ?>
+                                        <?php endforeach; ?>
                                     </div>
-                                </div>
-                                <div class="flex_right">
-                                    <div class="notes_tools">
-                                        <?php $hasComments = array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]]); ?>
-                                        <div class="comments_number flex_commn_number <?php echo $hasComments ? "hasComment" : "" ?>">
-                                            <?php echo $hasComments ? sizeof($data["comments"][$data["currentChapter"]][$key]) : ""?>
+                                    <div class="flex_middle editor_area" style="padding: 0;" dir="<?php echo $data["event"][0]->tLangDir ?>">
+                                        <?php $text = $data["translation"][$key][EventMembers::TRANSLATOR]["blind"]; ?>
+                                        <div class="vnote">
+                                            <textarea name="chunks[]" class="peer_verse_ta textarea"><?php echo $text ?></textarea>
                                         </div>
+                                    </div>
+                                    <div class="flex_right">
+                                        <div class="notes_tools">
+                                            <?php $hasComments = array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]]); ?>
+                                            <div class="comments_number <?php echo $hasComments ? "hasComment" : "" ?>">
+                                                <?php echo $hasComments ? sizeof($data["comments"][$data["currentChapter"]][$key]) : ""?>
+                                            </div>
 
-                                        <span class="editComment mdi mdi-lead-pencil"
-                                              data="<?php echo $data["currentChapter"].":".$key ?>"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
+                                            <span class="editComment mdi mdi-lead-pencil"
+                                                  data="<?php echo $data["currentChapter"].":".$key ?>"
+                                                  title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                        <div class="comments">
-                                            <?php if($hasComments): ?>
-                                                <?php foreach($data["comments"][$data["currentChapter"]][$key] as $comment): ?>
-                                                    <?php if($comment->memberID == $data["event"][0]->myMemberID): ?>
-                                                        <div class="my_comment"><?php echo $comment->text; ?></div>
-                                                    <?php else: ?>
-                                                        <div class="other_comments">
-                                                            <?php echo
-                                                                "<span>".$comment->firstName." ".mb_substr($comment->lastName, 0, 1).". 
+                                            <div class="comments">
+                                                <?php if(array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]])): ?>
+                                                    <?php foreach($data["comments"][$data["currentChapter"]][$key] as $comment): ?>
+                                                        <?php if($comment->memberID == $data["event"][0]->myMemberID): ?>
+                                                            <div class="my_comment"><?php echo $comment->text; ?></div>
+                                                        <?php else: ?>
+                                                            <div class="other_comments">
+                                                                <?php echo
+                                                                    "<span>".$comment->firstName." ".mb_substr($comment->lastName, 0, 1).". 
                                                                         - L".$comment->level.":</span> 
                                                                     ".$comment->text; ?>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </div>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </div>
 
-                                        <span class="editFootNote mdi mdi-bookmark" title="<?php echo __("write_footnote_title") ?>"></span>
+                                            <span class="editFootNote mdi mdi-bookmark" title="<?php echo __("write_footnote_title") ?>"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
