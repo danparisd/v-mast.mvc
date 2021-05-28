@@ -887,10 +887,7 @@
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-
-            
             if(!hasChangesOnPage) window.location.href = '/events/demo-tn-l3/pray';
-
             return false;
         });
 
@@ -905,6 +902,11 @@
                 $(".scripture_compare", parent).hide();
                 $(".scripture_l3", parent).show();
             }
+        });
+
+        $(".ttools_panel .word_def").each(function() {
+            let html = convertRcLinks($(this).html());
+            $(this).html(html);
         });
     });
 </script>

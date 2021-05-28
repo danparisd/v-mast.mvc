@@ -29,7 +29,7 @@ if(!empty($data["notes"])): ?>
                                 </div>
                                 <div class="word_def">
                                     <?php foreach ($notes as $note): ?>
-                                        <?php echo  preg_replace('#<a.*?>(.*?)</a>#i', '<b>\1</b>', $note) ?>
+                                        <?php echo preg_replace('#<a.*?>(.*?)</a>#i', '<b>\1</b>', $note) ?>
                                     <?php endforeach; ?>
                                 </div>
                             </li>
@@ -46,4 +46,13 @@ if(!empty($data["notes"])): ?>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $(".ttools_panel .word_def").each(function() {
+            let html = convertRcLinks($(this).html());
+            $(this).html(html);
+        });
+    });
+</script>
 <?php endif; ?>

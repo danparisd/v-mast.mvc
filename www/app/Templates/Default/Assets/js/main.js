@@ -3218,6 +3218,29 @@ function highlightKeyword(verseID, text, index, remove) {
     }
 }
 
+function convertRcLinks(html) {
+    return html.replace(/\[\[rc:\/\/(.*?)\]\]/g, function(match, p1) {
+        return convertLink(p1);
+    })
+}
+
+function convertLink(rc) {
+    let server = "https://git.door43.org/unfoldingWord/";
+    let parts = rc.split("/");
+    let lang = parts[0];
+    let resource = parts[1];
+    let git = "/src/branch/master/";
+    let components = parts.slice(3, parts.length).join("/");
+    let title = lang + "_" + resource + ": " + parts[parts.length-1];
+
+    let ending = ".md";
+    if (resource == "ta") ending = "/01.md";
+
+    let link = server + lang + "_" + resource + git + components + ending;
+
+    return "<a href='"+link+"' target='_blank'>"+title+"</a>";
+}
+
 function downloadCSV(csv, filename) {
     var csvFile;
     var downloadLink;

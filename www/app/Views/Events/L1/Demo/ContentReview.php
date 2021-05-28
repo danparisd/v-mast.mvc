@@ -343,7 +343,7 @@
                             <p>Some translations set words farther to the right on the page than the rest of the text. The ULB does this with verses 11-13. Paul may be quoting a poem or hymn in these verses.</p>
                             <h4>Special concepts in this chapter</h4>
                             <h5>We will reign with him</h5>
-                            <p>Faithful Christians will reign with Christ in the future. (See: rc://en/tw/dict/bible/kt/faithful)</p>
+                            <p>Faithful Christians will reign with Christ in the future. (See: [[rc://en/tw/dict/bible/kt/faithful]])</p>
                             <h4>Important figures of speech in this chapter</h4>
                             <h5>Analogies</h5>
                             <p>In this chapter, Paul makes several analogies to teach about living as a Christian. He uses analogies of soldiers, athletes, and farmers. Later in the chapter, he uses the analogy of different kinds of containers in a house.</p>
@@ -3907,15 +3907,17 @@
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-
-            
             if(!hasChangesOnPage) window.location.href = '/events/demo/final_review';
-
             return false;
         });
 
         $(".peer_verse_ta").highlightWithinTextarea({
             highlight: /\\f\s[+-]\s(.*?)\\f\*/gi
+        });
+
+        $(".ttools_panel .word_def").each(function() {
+            let html = convertRcLinks($(this).html());
+            $(this).html(html);
         });
     });
 </script>
