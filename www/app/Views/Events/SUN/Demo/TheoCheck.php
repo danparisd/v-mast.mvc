@@ -3245,11 +3245,13 @@
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-
-            
             if(!hasChangesOnPage) window.location.href = '/events/demo-sun/content_review_checker';
-
             return false;
+        });
+
+        $(".ttools_panel .word_def").each(function() {
+            let html = convertRcLinks($(this).html());
+            $(this).html(html);
         });
     });
 </script>
