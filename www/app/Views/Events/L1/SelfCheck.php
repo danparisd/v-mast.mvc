@@ -41,7 +41,7 @@ if(isset($data["error"])) return;
         <div class="main_content_title"><?php echo __("step_num", ["step_number" => 5]). ": " . __("self-check")?></div>
     </div>
 
-    <div class="">
+    <div>
         <div class="main_content">
             <form action="" method="post" id="main_form">
                 <div class="main_content_text row" style="padding-left: 15px">
@@ -119,8 +119,14 @@ if(isset($data["error"])) return;
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
-                    <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
+                    <div class="form-group"><?php echo __("next_chapter_step_note"); ?></div>
+
+                    <div class="form-group">
+                        <button id="next_step" type="submit" name="submitStep" value="1" class="btn btn-primary" disabled><?php echo __(\Helpers\Constants\EventSteps::PEER_REVIEW)?></button>
+                        &nbsp;&nbsp;
+                        <button id="next_chapter" type="submit" name="submitChapter" value="1" class="btn btn-success" disabled><?php echo __("next_chapter")?></button>
+                        <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
+                    </div>
                 </div>
             </form>
             <div class="step_right alt"><?php echo __("step_num", ["step_number" => 5])?></div>

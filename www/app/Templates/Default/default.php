@@ -90,7 +90,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css'),
-    template_url('css/style.css?112'),
+    template_url('css/style.css?113'),
     template_url('css/jquery-ui.min.css'),
     template_url('css/jquery-ui.structure.min.css'),
     template_url('css/jquery-ui.theme.min.css'),
@@ -105,8 +105,8 @@ echo isset($css) ? $css : ''; // Place to pass data / plugable hook zone
 Assets::js([
     template_url('js/jquery.js'),
     template_url('js/jquery.actual.min.js'),
-    template_url('js/main.js?108', 'Default'),
-    (Session::get("isAdmin") || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?32') : ''),
+    template_url('js/main.js?109', 'Default'),
+    (Session::get("isAdmin") || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?33') : ''),
     (Session::get("isSuperAdmin") ? template_url('js/admin.js?50') : ''),
     template_url('js/bootstrap.min.js'),
     template_url('js/autosize.min.js?2'),
@@ -233,6 +233,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                         && in_array($notification->manageMode, ["sun","tn","tq","tw","rad"]) ? "-".$notification->manageMode : "")
                                         ."/".$notification->eventID."/"
                                         .$notification->memberID."/"
+                                        .(!isset($notification->manageMode) && in_array($notification->bookProject, ["ulb", "udb"]) ? $notification->currentChapter."/" : "")
                                         .$notification->step."/"
                                         .(isset($notification->manageMode) ? $notification->currentChapter."/" : "")
                                         ."apply";

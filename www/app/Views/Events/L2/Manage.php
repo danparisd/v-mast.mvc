@@ -73,61 +73,30 @@ if(!isset($error)):
                             $p2 = !empty($chapData["peer2Check"])
                                 && array_key_exists($chapter, $chapData["peer2Check"])
                                 && $chapData["peer2Check"][$chapter]["memberID"] > 0;
-
-                            $sndName = $snd ? "Unknown: " . $chapData["sndCheck"][$chapter]["memberID"] : "";
-                            $p1Name = $p1 ? "Unknown: " . $chapData["peer1Check"][$chapter]["memberID"] : "";
-                            $p2Name = $p2 ? "Unknown: " . $chapData["peer2Check"][$chapter]["memberID"] : "";
-                            if($snd)
-                            {
-                                $sndKey = array_search($chapData["sndCheck"][$chapter]["memberID"], array_column($data["members"], 'memberID'));
-                                if($sndKey !== false)
-                                    $sndName = $data["members"][$sndKey]["firstName"] . " " . mb_substr($data["members"][$sndKey]["lastName"], 0, 1).".";
-                                else {
-                                    $sndKey = array_search($chapData["sndCheck"][$chapter]["memberID"], array_column($data["out_members"], 'memberID'));
-                                    if($sndKey !== false)
-                                        $sndName = $data["out_members"][$sndKey]["firstName"] . " " . mb_substr($data["out_members"][$sndKey]["lastName"], 0, 1).".";
-                                }
-                            }
-                            if($p1)
-                            {
-                                $p1Key = array_search($chapData["peer1Check"][$chapter]["memberID"], array_column($data["members"], 'memberID'));
-                                if($p1Key !== false)
-                                    $p1Name = $data["members"][$p1Key]["firstName"] . " " . mb_substr($data["members"][$p1Key]["lastName"], 0, 1).".";
-                                else {
-                                    $p1Key = array_search($chapData["peer1Check"][$chapter]["memberID"], array_column($data["out_members"], 'memberID'));
-                                    if($p1Key !== false)
-                                        $p1Name = $data["out_members"][$p1Key]["firstName"] . " " . mb_substr($data["out_members"][$p1Key]["lastName"], 0, 1).".";
-                                }
-                            }
-                            if($p2)
-                            {
-                                $p2Key = array_search($chapData["peer2Check"][$chapter]["memberID"], array_column($data["members"], 'memberID'));
-                                if($p2Key !== false)
-                                    $p2Name = $data["members"][$p2Key]["firstName"] . " " . mb_substr($data["members"][$p2Key]["lastName"], 0, 1).".";
-                                else {
-                                    $p2Key = array_search($chapData["peer2Check"][$chapter]["memberID"], array_column($data["out_members"], 'memberID'));
-                                    if($p2Key !== false)
-                                        $p2Name = $data["out_members"][$p2Key]["firstName"] . " " . mb_substr($data["out_members"][$p2Key]["lastName"], 0, 1).".";
-                                }
-                            }
                             ?>
                             <?php if($snd): ?>
-                            <button class="btn btn-danger remove_checker_alt" id="snd_checker"
-                                    data-level="<?php echo $chapData["sndCheck"][$chapter]["done"] ?>"
-                                    data-name="<?php echo $sndName ?>"
-                                <?php echo $p1 ? "disabled" : "" ?>
-                                    title="<?php echo __("l2_snd_checker") ?>">2nd</button>
-                                <?php if($p1): ?>
-                                <button class="btn btn-danger remove_checker_alt" id="p1_checker"
-                                        data-name="<?php echo $p1Name ?>"
-                                    <?php echo $p2 ? "disabled" : "" ?>
-                                        title="<?php echo __("l2_p1_checker") ?>">P1</button>
-                                    <?php if($p2): ?>
-                                    <button class="btn btn-danger remove_checker_alt" id="p2_checker"
-                                            data-name="<?php echo $p2Name ?>"
-                                            title="<?php echo __("l2_p2_checker") ?>">P2</button>
+                                <div class="glyphicon glyphicon-menu-hamburger checker_remove_button"
+                                     data-chapter="<?php echo $chapter?>"
+                                     data-shown="0"></div>
+                                <div class="checker_remove_menu" data-chapter="<?php echo $chapter?>">
+                                    <div class="remove_menu_title"><?php echo __("remove_checker") ?></div>
+                                    <button class="btn btn-danger remove_checker_alt" id="snd_checker"
+                                            data-level="<?php echo $chapData["sndCheck"][$chapter]["done"] ?>"
+                                            <?php echo $p1 ? "disabled" : "" ?>>
+                                        <?php echo __("l2_snd_checker") ?>
+                                    </button>
+                                    <?php if($p1): ?>
+                                        <button class="btn btn-danger remove_checker_alt" id="p1_checker"
+                                                <?php echo $p2 ? "disabled" : "" ?>>
+                                            <?php echo __("l2_p1_checker") ?>
+                                        </button>
+                                        <?php if($p2): ?>
+                                            <button class="btn btn-danger remove_checker_alt" id="p2_checker">
+                                                <?php echo __("l2_p2_checker") ?>
+                                            </button>
+                                        <?php endif; ?>
                                     <?php endif; ?>
-                                <?php endif; ?>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </li>

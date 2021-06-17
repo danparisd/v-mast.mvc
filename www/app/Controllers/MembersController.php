@@ -424,11 +424,10 @@ class MembersController extends Controller
         }
 
         $data["facilitation_activities"] = $this->_eventModel->getMemberEventsForAdmin($memberID);
-        $data["translation_activities"] = $this->_eventModel->getMemberEvents($memberID, EventMembers::TRANSLATOR, null, true);
+        $data["translation_activities"] = $this->_eventModel->getMemberEvents($memberID, null, true, true);
 
-
-        $l2_check_activities = $this->_eventModel->getMemberEvents($memberID, EventMembers::L2_CHECKER, null, true);
-        $l3_check_activities = $this->_eventModel->getMemberEvents($memberID, EventMembers::L3_CHECKER, null, true);
+        $l2_check_activities = $this->_eventModel->getMemberEventsForCheckerL2($memberID);
+        $l3_check_activities = $this->_eventModel->getMemberEventsForCheckerL3($memberID);
 
         $data["checking_activities"] = [];
 
@@ -446,7 +445,7 @@ class MembersController extends Controller
 
             $translation_activity->chapters = join(", ", array_values($chaps));
 
-            $checking = $this->_eventModel->getMemberEvents(null, EventMembers::TRANSLATOR, $translation_activity->eventID, true);
+            $checking = $this->_eventModel->getMemberEvents(null, $translation_activity->eventID, true, true);
             $chaps = [];
 
             foreach ($checking as $check) {
@@ -519,7 +518,7 @@ class MembersController extends Controller
             }
 
             // Second checker
-            $checking = $this->_eventModel->getMemberEvents(null, EventMembers::L2_CHECKER, $checking_activity->eventID, true);
+            $checking = $this->_eventModel->getMemberEventsForCheckerL2(null, $checking_activity->eventID);
             foreach ($checking as $check) {
                 $sndCheck = (array)json_decode($check->sndCheck, true);
                 $peer1Check = (array)json_decode($check->peer1Check, true);
@@ -556,7 +555,7 @@ class MembersController extends Controller
             }
 
             // Second checker
-            $checking = $this->_eventModel->getMemberEvents(null, EventMembers::L3_CHECKER, $checking_activity->eventID, true);
+            $checking = $this->_eventModel->getMemberEventsForCheckerL3(null, $checking_activity->eventID);
             foreach ($checking as $check) {
                 $peerCheck = (array)json_decode($check->peerCheck, true);
 
@@ -1353,8 +1352,9 @@ class MembersController extends Controller
                     (array)json_decode($event[0]->admins_l2, true),
                     (array)json_decode($event[0]->admins_l3, true));
 
-                if($event[0]->translator == null && $event[0]->checker == null
-                    && $event[0]->checker_l2 == null && $event[0]->checker_l3 == null)
+                if($event[0]->translator == null
+                    && $event[0]->checker_l2 == null
+                    && $event[0]->checker_l3 == null)
                 {
                     if($member[0]->isAdmin)
                         $isAdmin = in_array($member[0]->memberID, $admins);

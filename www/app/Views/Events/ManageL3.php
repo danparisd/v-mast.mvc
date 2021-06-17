@@ -47,10 +47,10 @@ if(!isset($error)):
                     <div class="assignChapterLoader inline_f" data="<?php echo $chapter ?>">
                         <img src="<?php echo template_url("img/loader.gif") ?>" width="22">
                     </div>
-                    <div class="col-sm-4 manage_chapter">
+                    <div class="manage_chapter">
                         <?php echo $chapter > 0 ? __("chapter_number", ["chapter" => $chapter]) : __("chapter_number", ["chapter" => __("intro")]); ?>
                     </div>
-                    <div class="col-sm-4 manage_chapters_user chapter_<?php echo $chapter ?>">
+                    <div class="manage_chapters_user chapter_<?php echo $chapter ?>">
                         <button class="btn btn-success add_person_chapter" data="<?php echo $chapter ?>" <?php echo !empty($chapData) ? 'style="display: none"' : '' ?>>
                             <?php echo __("add_person") ?>
                         </button>
@@ -60,30 +60,23 @@ if(!isset($error)):
                             <div class="clear"></div>
                         </div>
                     </div>
-                    <div class="col-sm-4" data-chapter="<?php echo $chapter ?>"
+                    <div class="manage_chapters_buttons" data-chapter="<?php echo $chapter ?>"
                             data-member="<?php echo !empty($chapData) ? $chapData["l3memberID"] : "" ?>">
                         <?php
                         $p = !empty($chapData["peerCheck"])
                             && array_key_exists($chapter, $chapData["peerCheck"])
                             && $chapData["peerCheck"][$chapter]["memberID"] > 0;
-
-                        $pName = $p ? "Unknown: " . $chapData["peerCheck"][$chapter]["memberID"] : "";
-                        if($p)
-                        {
-                            $pKey = array_search($chapData["peerCheck"][$chapter]["memberID"], array_column($data["members"], 'memberID'));
-                            if($pKey !== false)
-                                $pName = $data["members"][$pKey]["firstName"] . " " . mb_substr($data["members"][$pKey]["lastName"], 0, 1).".";
-                            else {
-                                $pKey = array_search($chapData["peerCheck"][$chapter]["memberID"], array_column($data["out_members"], 'memberID'));
-                                if($pKey !== false)
-                                    $pName = $data["out_members"][$pKey]["firstName"] . " " . mb_substr($data["out_members"][$pKey]["lastName"], 0, 1).".";
-                            }
-                        }
                         ?>
                         <?php if($p): ?>
-                        <button class="btn btn-danger remove_checker_alt" id="p_checker"
-                                data-name="<?php echo $pName ?>"
-                                title="<?php echo __("l3_p_checker") ?>"><?php echo __("checker") ?></button>
+                            <div class="glyphicon glyphicon-menu-hamburger checker_remove_button"
+                                 data-chapter="<?php echo $chapter?>"
+                                 data-shown="0"></div>
+                            <div class="checker_remove_menu" data-chapter="<?php echo $chapter?>">
+                                <div class="remove_menu_title"><?php echo __("remove_checker") ?></div>
+                                <button class="btn btn-danger remove_checker_alt" id="p_checker">
+                                    <?php echo __("l3_p_checker") ?>
+                                </button>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </li>

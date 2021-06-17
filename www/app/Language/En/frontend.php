@@ -83,7 +83,7 @@ return array(
     "notesPlaceholder" => "Start writing text here...",
     "cacheUpdated" => "Cache has been successfully updated",
     "books" => "books",
-    "remove_l2_checker" => "Do you want to remove the checker ",
+    "remove_l2_checker" => "Do you want to remove ",
     "delSailword" => "Do you want to delete the word ",
     "delQuestion" => "Do you want to delete the question?",
     "remove_other_checker_opt" => "Choose an option for checker ",
