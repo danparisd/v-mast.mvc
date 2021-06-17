@@ -92,7 +92,7 @@ if(!isset($error)):
                                         <?php if(isset($chapter["chunks"])): ?>
                                             <?php foreach ($chapter["chunks"] as $index => $chunk):?>
                                                 <div class="section_translator_chunk">
-                                                <?php echo $chunk[0]; ?>
+                                                <?php echo __("verse_number", $chunk[0]); ?>
                                                 <?php if(array_key_exists($index, (array)$chapter["chunksData"])) {
                                                     echo __("chunk_finished");
                                                 } ?>
@@ -228,8 +228,8 @@ if(!isset($error)):
         <source src="<?php echo template_url("sounds/notif.ogg")?>" type="audio/ogg" />
     </audio>
 
-    <script src="<?php echo template_url("js/socket.io-1.4.5.js")?>"></script>
+    <script src="<?php echo template_url("js/socket.io.min.js")?>"></script>
     <script src="<?php echo template_url("js/chat-plugin.js?6")?>"></script>
-    <script src="<?php echo template_url("js/socket.js?12")?>"></script>
+    <script src="<?php echo template_url("js/socket.js?13")?>"></script>
 
 <?php endif; ?>

@@ -263,8 +263,8 @@ if(!isset($error)):
         <source src="<?php echo template_url("sounds/notif.ogg")?>" type="audio/ogg" />
     </audio>
 
-    <script src="<?php echo template_url("js/socket.io-1.4.5.js")?>"></script>
+    <script src="<?php echo template_url("js/socket.io.min.js")?>"></script>
     <script src="<?php echo template_url("js/chat-plugin.js?6")?>"></script>
-    <script src="<?php echo template_url("js/socket.js?12")?>"></script>
+    <script src="<?php echo template_url("js/socket.js?13")?>"></script>
 
 <?php endif; ?>

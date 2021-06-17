@@ -21,17 +21,17 @@ var clientRedis = redis.createClient();
 
 clientRedis.on("connect", function() {
     this.auth("P@ssw0rd-22", function(err, val) {
-        util.log("Redis connection status: " + val);
+        inspect("Redis connection status: " + val);
     });
 });
 
 io.on('connection', function(socket)
 {
-    console.log('a user connected: %s', socket.id);
+    inspect('a user connected: %s', socket.id);
 
     socket.on('disconnect', function()
     {
-        console.log('user disconnected: %s', this.id);
+        inspect('user disconnected: %s', this.id);
 
         var member = getMemberBySocketId(this.id);
 
@@ -479,12 +479,12 @@ function registerNewMemberEvent(data, sct, member)
                         newMember.events.push(newEvent);
 
                         members["user" + newMember.memberID] = newMember;
-						console.log("------------- @"+newMember.userName);
+						inspect("------------- @"+newMember.userName);
                     }
                     else
                     {
                         member.events.push(newEvent);
-						console.log("------------- @"+member.userName);
+                        inspect("------------- @"+member.userName);
                     }
 
                     sct.join("eventroom" + data.eventID);
@@ -505,12 +505,12 @@ function registerNewMemberEvent(data, sct, member)
             }
             catch(err)
             {
-                util.log(err);
+                inspect(err);
             }
         }
     };
 
-    xhr.open("GET", "https://v-mast.mvc/members/rpc/auth/" + data.memberID + "/" + data.eventID + "/" + data.aT);
+    xhr.open("GET", "http://v-mast.mvc/members/rpc/auth/" + data.memberID + "/" + data.eventID + "/" + data.aT);
     xhr.send();
 }
 
@@ -586,9 +586,6 @@ function getMembersByRoomID(roomID, room)
                 tmpm.isAdmin = members[m].isAdmin;
                 tmpm.isSuperAdmin = members[m].isSuperAdmin;
                 tmpm.name = members[m].firstName + " " + members[m].lastName.charAt(0) + ".";
-                //tmpm.firstName = members[m].firstName;
-                //tmpm.lastName = members[m].lastName;
-                //tmpm.userType = members[m].userType;
 
                 roomMates.push(tmpm);
             }
@@ -631,7 +628,7 @@ function sendSavedMessages(socket, event, checkPair)
             }
             catch (err)
             {
-                util.log(err);
+                inspect(err);
             }
         });
     }
@@ -647,7 +644,7 @@ function sendSavedMessages(socket, event, checkPair)
         }
         catch (err)
         {
-            util.log(err);
+            inspect(err);
         }
     });
 
@@ -662,13 +659,14 @@ function sendSavedMessages(socket, event, checkPair)
         }
         catch (err)
         {
-            util.log(err);
+            inspect(err);
         }
     });
 
     socket.emit('system message', {type: "memberConnected"});
 }
 
-function inspect(obj) {
-    console.log(util.inspect(obj, { showHidden: true, depth: null }));
+function inspect(obj, arg) {
+    const _arg = arg || "";
+    console.log(util.inspect(obj, { showHidden: true, depth: null }), _arg);
 }

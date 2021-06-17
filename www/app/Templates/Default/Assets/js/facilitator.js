@@ -414,20 +414,6 @@ $(function () {
             });
     }
 
-    /*$("#startTranslation").click(function (e) {
-        var $this = $(this);
-
-        renderConfirmPopup(Language.startTranslation, Language.startTranslationConfirm, function () {
-            $(this).dialog( "close" );
-            $this.data("yes", true).click();
-        }, function () {
-            $(this).dialog("close");
-        });
-
-        if(typeof $this.data("yes") == "undefined")
-            e.preventDefault();
-    });*/
-
     // Show info tip
     $(".create_info_tip a").click(function () {
         renderPopup($(".create_info_tip span").text());
@@ -601,42 +587,13 @@ $(function () {
         to_step = to_step.replace(/_prev$/, "");
 
         var $this = $(this);
+        var confirm;
 
-        if(to_step == EventSteps.PEER_REVIEW
-            || to_step == EventSteps.KEYWORD_CHECK || to_step == EventSteps.CONTENT_REVIEW)
-        {
-            renderConfirmPopup(Language.attention, Language.removeCheckerConfirm,
-                function () {
-                    moveStepBack($this, eventID, memberID, to_step, true, false, chk);
-                    $( this ).dialog( "close" );
-                },
-                function () {
-                    moveStepBack($this, eventID, memberID, to_step, false, false, chk);
-                    $( this ).dialog( "close" );
-                },
-                function () {
-                    $('option', $this).each(function () {
-                        if (this.defaultSelected) {
-                            this.selected = true;
-                            return false;
-                        }
-                    });
-                }
-            );
-        }
+        if($.inArray(mode, ["tn"]) > -1)
+            confirm = to_step != EventSteps.CONSUME;
         else
-        {
-            var confirm = true;
-            if($.inArray(mode, ["tn"]) > -1)
-            {
-                confirm = to_step != EventSteps.CONSUME;
-            }
-            else
-            {
-                confirm = to_step != EventSteps.CHUNKING;
-            }
-            moveStepBack($this, eventID, memberID, to_step, confirm, prev_chunk, chk);
-        }
+            confirm = to_step != EventSteps.CHUNKING;
+        moveStepBack($this, eventID, memberID, to_step, confirm, prev_chunk, chk);
     });
 
     $(".remove_checker").click(function() {
@@ -652,10 +609,10 @@ $(function () {
     $(".remove_checker_alt").click(function() {
         var id = $(this).attr("id");
         var eventID = $("#eventID").val();
-        var memberID = $(this).parent().data("member");
+        var memberID = $(this).closest(".manage_chapters_buttons").data("member");
         var chapter = $(this).parent().data("chapter");
-        var name = "<span class='l2_checker_name'>"+$(this).data("name")+"</span>";
-        var message = Language.remove_l2_checker + name;
+        var checker = $(this).text();
+        var message = Language["remove_l2_checker"] + checker + "?";
         var mode = $("#mode").val();
 
         if(id == "other_checker")
@@ -870,6 +827,26 @@ $(function () {
             .always(function() {
                 $this.prop("disabled", false);
             });
+    });
+
+    $(".checker_remove_button").on("click", function(e) {
+        e.stopPropagation();
+        let chapter = $(this).data("chapter");
+        let isShown = $(this).data("shown") == 1;
+        let menu = $(".checker_remove_menu[data-chapter="+chapter+"]");
+
+        // Hide previously opened menus
+        $(".checker_remove_menu").hide();
+        $(".checker_remove_button").data("shown", 0);
+
+        if (!isShown) {
+            menu.css("display", "flex");
+            $(this).data("shown", 1);
+        }
+    });
+    $(document).click(function() {
+        $(".checker_remove_menu").hide();
+        $(".checker_remove_button").data("shown", 0);
     });
 });
 

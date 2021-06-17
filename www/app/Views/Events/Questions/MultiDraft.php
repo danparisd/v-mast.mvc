@@ -124,6 +124,7 @@ $parsedown = new Parsedown();
     (function () {
         $("#main_form").submit(function (e) {
             var drafts = $(".draft_q:not(:checked)");
+            debug(drafts.length);
 
             if(drafts.length > 0)
             {

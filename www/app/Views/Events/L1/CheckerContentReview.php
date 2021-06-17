@@ -127,7 +127,7 @@ if(empty($error) && empty($data["success"])):
     <div id="help_hide" class="glyphicon glyphicon-chevron-left"> <?php echo __("help") ?></div>
 
     <div class="help_float">
-        <div class="help_info_steps <?php echo $data["isCheckerPage"] ? " is_checker_page_help" : "" ?>">
+        <div class="help_info_steps is_checker_page_help>
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 8])?>: </span> <?php echo __("content-review")?></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("content-review_checker_desc")?></ul>
@@ -135,7 +135,7 @@ if(empty($error) && empty($data["success"])):
             </div>
         </div>
 
-        <div class="event_info <?php echo $data["isCheckerPage"] ? " is_checker_page_help" : "" ?>">
+        <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="participant_name">
                     <span><?php echo __("your_translator") ?>:</span>
@@ -165,7 +165,7 @@ if(empty($error) && empty($data["success"])):
             
         </div>
 
-        <div class="tutorial_content <?php echo $data["isCheckerPage"] ? " is_checker_page_help" : "" ?>">
+        <div class="tutorial_content is_checker_page_help">
             <h3><?php echo __("content-review")?></h3>
             <ul><?php echo __("content-review_checker_desc")?></ul>
         </div>
