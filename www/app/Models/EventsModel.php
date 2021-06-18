@@ -3202,7 +3202,6 @@ class EventsModel extends Model
                 $data["chapters"][$key]["selfEdit"]["state"] = StepsStates::FINISHED;
                 $data["chapters"][$key]["peer"]["state"] = StepsStates::WAITING;
                 $data["chapters"][$key]["peer"]["checkerID"] = 0;
-                //$data["chapters"][$key]["step"] = EventSteps::FINISHED;
 
                 if ($peerCheck[$key]["memberID"] > 0) {
                     $data["chapters"][$key]["peer"]["state"] = StepsStates::IN_PROGRESS;
@@ -3210,7 +3209,7 @@ class EventsModel extends Model
 
                     if ($peerCheck[$key]["done"] == 2) {
                         $data["chapters"][$key]["peer"]["state"] = StepsStates::FINISHED;
-                    } else {
+                    } elseif ($peerCheck[$key]["done"] == 1) {
                         $data["chapters"][$key]["peer"]["state"] = StepsStates::CHECKED;
                     }
                 }
@@ -3227,7 +3226,7 @@ class EventsModel extends Model
 
                     if ($kwCheck[$key]["done"] == 2) {
                         $data["chapters"][$key]["kwc"]["state"] = StepsStates::FINISHED;
-                    } else {
+                    } elseif ($kwCheck[$key]["done"] == 1) {
                         $data["chapters"][$key]["kwc"]["state"] = StepsStates::CHECKED;
                     }
                 }
@@ -3244,7 +3243,7 @@ class EventsModel extends Model
 
                     if ($crCheck[$key]["done"] == 2) {
                         $data["chapters"][$key]["crc"]["state"] = StepsStates::FINISHED;
-                    } else {
+                    } elseif ($crCheck[$key]["done"] == 1) {
                         $data["chapters"][$key]["crc"]["state"] = StepsStates::CHECKED;
                     }
                 }
