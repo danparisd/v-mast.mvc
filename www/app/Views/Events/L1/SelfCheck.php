@@ -126,7 +126,7 @@ if(isset($data["error"])) return;
 
                     <div class="form-group">
                         <button id="next_step" type="submit" name="submitStep" value="1" class="btn btn-primary" disabled>
-                            <?php echo __(EventSteps::PEER_REVIEW)?>
+                            <?php echo __("next_step")?>
                         </button>
                         <?php if ($data["nextChapter"] > 0): ?>
                         &nbsp;
