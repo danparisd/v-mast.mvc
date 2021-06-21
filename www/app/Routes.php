@@ -269,7 +269,6 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("rpc/get_tn/{bookCode}/{chapter}/{lang}/{totalVerses}", "EventsController@getTn");
     Router::any("rpc/get_rubric/{lang}", "EventsController@getRubric");
     Router::any("rpc/get_saildict/", "EventsController@getSailDict");
-    Router::any("migrate-translators", "EventsController@migrateTranslators");
 });
 
 
@@ -324,8 +323,6 @@ Route::group(["prefix" => "admin", "namespace" => "App\Controllers\Admin"], func
     Router::any("tools/faq", "AdminController@toolsFaq");
     Router::any("tools/news", "AdminController@toolsNews");
     Router::any("tools/source", "AdminController@toolsSource");
-    Router::any("migrate/chapters", "AdminController@migrateChapters");
-    Router::any("migrate/questions_words", "AdminController@migrateQuestionsWords");
     Router::any("rpc/create_gw_project", "AdminController@createGwProject");
     Router::any("rpc/get_super_admins", "AdminController@getSuperAdmins");
     Router::any("rpc/edit_super_admins", "AdminController@editSuperAdmins");
@@ -364,6 +361,9 @@ Route::group(["prefix" => "admin", "namespace" => "App\Controllers\Admin"], func
         ->where([
             "eventID" => "[0-9]+"
         ]);
+    Router::any("migrate/chapters", "AdminController@migrateChapters");
+    Router::any("migrate/questions_words", "AdminController@migrateQuestionsWords");
+    Router::any("migrate/8steps", "AdminController@migrate8steps");
 });
 
 /** End default Routes */
