@@ -1,5 +1,6 @@
 <?php
 use Helpers\Constants\EventMembers;
+use Helpers\Constants\EventSteps;
 
 if(isset($data["error"])) return;
 ?>
@@ -119,12 +120,21 @@ if(isset($data["error"])) return;
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
+                    <?php if ($data["nextChapter"] > 0): ?>
                     <div class="form-group"><?php echo __("next_chapter_step_note"); ?></div>
+                    <?php endif; ?>
 
                     <div class="form-group">
-                        <button id="next_step" type="submit" name="submitStep" value="1" class="btn btn-primary" disabled><?php echo __(\Helpers\Constants\EventSteps::PEER_REVIEW)?></button>
-                        &nbsp;&nbsp;
-                        <button id="next_chapter" type="submit" name="submitChapter" value="1" class="btn btn-success" disabled><?php echo __("next_chapter")?></button>
+                        <button id="next_step" type="submit" name="submitStep" value="1" class="btn btn-primary" disabled>
+                            <?php echo __(EventSteps::PEER_REVIEW)?>
+                        </button>
+                        <?php if ($data["nextChapter"] > 0): ?>
+                        &nbsp;
+                        &nbsp;
+                        <button id="next_chapter" type="submit" name="submitChapter" value="1" class="btn btn-success" disabled>
+                            <?php echo __("next_chapter")?>
+                        </button>
+                        <?php endif; ?>
                         <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                     </div>
                 </div>
