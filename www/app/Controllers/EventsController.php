@@ -732,6 +732,7 @@ class EventsController extends Controller
                             }
                         }
 
+                        $data["nextChapter"] = $nextChapter;
                         $page = $data["event"][0]->langInput ? "SelfCheckLangInput" : "SelfCheck";
 
                         return View::make('Events/L1/' . $menuPage)
