@@ -519,14 +519,14 @@ return array (
     "pray" => "Préparation: Prière",
     "pray_desc" => "<li><b>BUT:</b> Inviter le saint Esprit à participer dans la procédure de la traduction.</li>
                     <li>Priez seul ou ensemble  en temps que groupe.</li>
-                    <li>Cliquez “Oui, je l’ai fait” et “Prochaine étape” pour aller à la prochaine étape.</li>",
+                    <li>Cliquez “Oui, je l’ai fait” et “{step}” pour aller à la prochaine étape.</li>",
     "pray_text" => "Dieu  a créé tous les langages du monde et nous a donné la faculté de les apprendre et de les 
                     utiliser. Il nous a aussi donné son Saint esprit pour nous aider en toutes choses. 
                     Commençons à passer du temps dans la prière , à remercier Dieu et à lui demander de nous donner 
                     la sagesse et la direction nécessaires pour traduire fidèlement et  correctement Sa Parole Sainte.",
     "prep_pray_text" => "<strong>Félicitations!</strong> YVous avez complété votre chapître! Faites une pause, 
                         reposez-vous, et buvez du café ou du thé et commencez un autre chapître!",
-    
+
     "pray_tn" => "Preparation: Prayer",
 
     "multi-draft_lang_input" => "Input",
@@ -534,7 +534,7 @@ return array (
                                         <li>Type or copy/paste translated text into the blanks verse by verse.</li>
                                         <li>To add a verse, click the green \"+\" at the bottom of the page.</li>
                                         <li>To delete a verse, click the red \"x\" at the bottom of the page.</li>
-                                        <li>When every verse in the chapter has been filled, click \"Yes, I did\" and \"Next step\" to move to the self-edit step.</li>",
+                                        <li>When every verse in the chapter has been filled, click \"Yes, I did\" and \"{step}\" to move to the self-edit step.</li>",
 
     "self-check_lang_input_desc" => "<li><b>PURPOSE:</b> to edit your draft and check the meaning of the source text's 
                                         accuracy while maintaining the blind draft's naturalness.</li>
@@ -559,7 +559,7 @@ return array (
                                     <li>If you have additional thoughts or questions about your translation, click the note 
                                         icon <br>(<span class='mdi mdi-lead-pencil'></span>) next to the chunk, add the note, and click Save. 
                                         The peer, keyword, verse-by-verse checkers will see this note and will help to resolve the question or problem.</li>
-                                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "consume" => "Consumer (absorber)",
     "consume_desc" => "<li><b>BUT:</b> Saisir le texte d’origine pour se préparer à traduire.</li>
@@ -570,7 +570,7 @@ return array (
                             C’est une note du traducteur pour ce verset.</li>
                         <li>Si le texte est plus long, et demande plus de temps c’est okay, mais arrêtez-vous et 
                             réfléchissez sur les passages et continuez de lire le passage suivant du chapître. </li>
-                        <li>Cliquez “Oui” je l’ai fait” et “Prochaine étape” pour la prochaine étape.</li>",
+                        <li>Cliquez “Oui” je l’ai fait” et “{step}” pour la prochaine étape.</li>",
 
     "consume_odb" => "Lis",
     "consume_sun_desc" => "<li><b>BUT:</b> to get the big picture of the chapter</li>
@@ -586,12 +586,12 @@ return array (
                             <li>Try to understand the meaning and details of the text to get a general overview.</li>
                             <li>If you see the paper icon (<span class='mdi mdi-bookmark'></span>), hover over 
                                 it with your mouse. It is a translator’s note for that verse.</li>
-                            <li>Click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                            <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "consume_rad_desc" => "<li><b>PURPOSE:</b> to read the text to prepare for translation.</li>
                             <li>Read the assigned broadcast carefully.</li>
                             <li>Try to understand the meaning and details of the text for a general overview.</li>
-                            <li>Click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                            <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "verbalize" => "Verbalizez",
     "verbalize_desc" => "<li><b>BUT:</b> Exprimer verbalement ce que vous avez consommé pour engager la mémoire à court terme.</li>
@@ -608,7 +608,7 @@ return array (
                             <li>Verbalisez avec votre partenaire : “Voici ce que je lis”, suivi par “les points suivants sont:...” dans le langage target.</li>
                             <li>Il ne s’agit pas de discuter le texte, mais de dire à haute voix ce que vous lisez.</li>
                             <li>Faites-le sans regarder le texte, si c’est possible.</li>
-                            <li>Cliquez “Oui, je l’ai fait” et “Prochaine étape” pour arriver à la prochaine étape.</li>",
+                            <li>Cliquez “Oui, je l’ai fait” et “{step}” pour arriver à la prochaine étape.</li>",
 
     "chunking" => "Tronçon",
     "chunking_sun" => "Thought Chunk",
@@ -622,7 +622,7 @@ return array (
                         </li>
                         <li>Sectionner le chapître tout entier, en prêtant attention sur les sujets similaires et les coupures logiques dans la pensée.</li>
                         <li>Esayez de vous souvenir au maximum du texte, Mais souvenez-vous qu’il faudra que vous reconstituiez le texte sans le regarder.</li>
-                        <li>Cliquez “Oui, je l’ai fait” et “Prochaine étape” pour arriver à la prochaine étape.</li>",
+                        <li>Cliquez “Oui, je l’ai fait” et “{step}” pour arriver à la prochaine étape.</li>",
 
     "chunking_sun_desc" => "<li><b>BUT:</b> to divide the text into manageable portions for translation</li>
                             <li>Click on 2-5 verses and then \"make chunk\" for grouping into chunks to prepare for the next step.</li>
@@ -635,16 +635,16 @@ return array (
                             <li>Lisez et absorbez cette section, en gardant en mémoire le context du chapître tout entier.</li>
                             <li>Songez à ce passage dans le langage target.</li>
                             <li>Ne prenez pas de notes ou n’ouvrez pas de sources supplémentaires durant cette étape.</li>
-                            <li>Cliquez “Oui, je l’ai fait” et “Prochaine étape” pour arriver à la prochaine étape.</li>",
-    
+                            <li>Cliquez “Oui, je l’ai fait” et “{step}” pour arriver à la prochaine étape.</li>",
+
     "read-chunk_tn" => "Read Chunk",
     "read-chunk_tn_desc" => "<li><b>BUT:</b> to read through the chunk of Notes you will translate.</li>
                                 <li>Read the assigned chunk of Notes carefully.</li>
                                 <li>Try to understand the meaning and details of the text to get a general overview.</li>
                                 <li>If you see the paper icon (<span class='mdi mdi-bookmark'></span>), 
                                     hover over it with your mouse. It is a translator’s note for that verse.</li>
-                                <li>Click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
-    
+                                <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
+
     "blind-draft" => "Brouillon Aveugle",
     "blind-draft_previous" => "Brouillon Aveugle – Tronçon d’Avant",
     "blind-draft_desc" => "<li><b>BUT:</b> Traduire le texte d’origine de la façon la plus naturelle dans le langage target.</li>
@@ -661,7 +661,7 @@ return array (
                             <li>Ne vous souciez pas de marquer les versets. On le fera à l’étape finale.</li>
                             <li>Ne passez pas un temps prolongé à vous rappeler le texte d’origine. La Prochaine étape 
                                 sera de récupérer ce dont vous ne vous souvenez pas et de faire les corrections.</li>
-                            <li>Cliquez “Oui, je l’ai fait” et “Prochaine étape” pour arriver à la prochaine étape.</li>
+                            <li>Cliquez “Oui, je l’ai fait” et “{step}” pour arriver à la prochaine étape.</li>
                             <li>Continuez à écrire le draft aveugle jusqu’à la fin du chapître.</li>
                             <li>Notes supplémentaires aux traducteurs: 
                                 <ol>
@@ -699,7 +699,7 @@ return array (
                                     </ol>
                                 </li>
                                 <li>No need to translate links.</li>
-                                <li>Click \"Yes, I did\" and \"Next step\" to move to the next chunk, until the chapter is completed.</li>",
+                                <li>Click \"Yes, I did\" and \"{step}\" to move to the next chunk, until the chapter is completed.</li>",
 
     "multi-draft_rad_desc" => "<li><b>PURPOSE:</b> to translate the text as naturally as possible while keeping the meaning.</li>
                                 <li>As much as possible, translate phrase by phrase and not word-for-word, to preserve naturalness of the target language.
@@ -712,8 +712,8 @@ return array (
                                         <li>Translate the text the speaker is saying as naturally as you can.</li>
                                     </ol>
                                 </li>
-                                <li>Click \"Yes, I did\" and \"Next step\" to move to the next step.</li>
-                                <li>Make sure the save icon is not flashing when you click \"Next step\".</li>",
+                                <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>
+                                <li>Make sure the save icon is not flashing when you click \"{step}\".</li>",
 
     "self-check" => "Auto-Edition",
     "self-check_desc" => "<li><b>BUT:</b> Éditer votre draft aveugle et vérifier que le sens du texte d’origine est 
@@ -749,7 +749,7 @@ return array (
                             <li>Si vous pensez à d’autres choses ou si vous avez des questions au sujet de la traduction, 
                                 cliquez sur l’icône <br>(<span class='mdi mdi-lead-pencil'></span>) près de la section, ajoutez la note et cliquez Sauvegarder.
                                 Les vérificateurs, verset par verset du terme important verront  cette note et aidera à résoudre la question ou le problème.</li>
-                            <li>Quand on a fait tous les changements et les notes cliquez “Oui, je l’ai fait” et “Prochaine étape” pour arriver à la prochaine étape.</li>",
+                            <li>Quand on a fait tous les changements et les notes cliquez “Oui, je l’ai fait” et “{step}” pour arriver à la prochaine étape.</li>",
 
     "self-check_tn" => "Self-Edit",
     "self-check_tn_desc" => "<li><b>BUT:</b> to edit your Notes translation and check accuracy while maintaining naturalness.</li>
@@ -770,7 +770,7 @@ return array (
                                 <li>If you have additional thoughts or questions about your translation, click the note 
                                     icon <br>(<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add the 
                                     note and click save. The checkers will see this note and help to resolve the question or problem.</li>
-                                <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>
+                                <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>
                                 <li>WARNING: THIS IS THE LAST CHANCE TO MAKE CHANGES TO THE TRANSLATION. DO NOT MOVE TO NEXT STEP UNTIL THE SELF-EDIT IS COMPLETED!</li>",
     "self-check_tn_chk" => "Edit Notes",
     "self-check_tn_chk_desc" => "<li><b>BUT:</b> to edit the Notes translation and check accuracy while maintaining naturalness.</li>
@@ -793,7 +793,7 @@ return array (
                                             <li>For Book and Chapter Intro use the following format: Introduction – Header 1, Part – Header 2, Titles - Header 4, Notes – Normal.</li>
                                         </ol>
                                     </li>
-                                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>",
+                                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "self-check_rad_desc" => "<li><b>PURPOSE:</b> to edit your draft and check meaning and accuracy while maintaining 
                                 naturalness.</li>
@@ -804,7 +804,7 @@ return array (
                                     icon <br>(<span class='mdi mdi-lead-pencil'></span>) next to the chunk, add the note, 
                                     and click Save. The peer-editor will see this note and will help to resolve the 
                                     question or problem.</li>
-                                <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step.\"</li>
+                                <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}.\"</li>
                                 <li>WARNING: THIS IS THE LAST CHANCE TO MAKE CHANGES TO THE TRANSLATION. DO NOT MOVE TO NEXT STEP UNTIL THE SELF-EDIT IS COMPLETED!</li>",
 
     "highlight_tn" => "Highlight",
@@ -818,7 +818,7 @@ return array (
                                 </ol>
                             </li>
                             <li>Read through entire chapter and highlight as needed.</li>
-                            <li>Click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                            <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "peer-review" => "Edition par les Pairs",
     "peer-review_desc" => "<li><b>BUT:</b> Parler avec une autre personne qui parle le langage cible pour vérifier que 
@@ -859,8 +859,8 @@ return array (
                             <li>S’il y a d’autres pensées ou questions au sujet de la traduction, cliquez l’icône 
                                 note (<span class='mdi mdi-lead-pencil'></span>) près de la section, ajoutez la note et cliquez Sauvegarder.</li>
                             <li>Une fois que les changements et notes sont effectués le vérificateur devrait cliquer 
-                                “Oui, je l’ai fait” et “Continuer”. Puis vous devriez cliquer Cliquez “Oui, je l’ai 
-                                fait” et “Prochaine étape” pour arriver à la prochaine étape.</li>",
+                                “Oui, je l’ai fait” et “{step}”. Puis vous devriez cliquer Cliquez “Oui, je l’ai 
+                                fait” et “{step}” pour arriver à la prochaine étape.</li>",
 
     "peer-review_checker_desc" => "<li><b>BUT:</b> Vérifier le langage cible pour s’assurer que le sens du texte est 
                                     précis quant au texte d’origine tout en maintenant le flot naturel du draft aveugle.</li>
@@ -900,7 +900,7 @@ return array (
                                         temps à en parler. Laissez le texte tel qu’il est et faites une note stipulant 
                                         le désagrément. Cela peut être discuté dans les prochaines étapes de vérification. </li>
                                     <li>Une fois que les changements et notes sont effectués, cliquez “Oui, je l’ai 
-                                        fait” et “Continuer”. Ne fermez pas simplement la page en cliquant le “x”, car 
+                                        fait” et “{step}”. Ne fermez pas simplement la page en cliquant le “x”, car 
                                         le traducteur ne pourrait pas aller à la prochaine étape.</li>",
 
     "peer-review_tn" => "2<sup>nd</sup> Check",
@@ -926,7 +926,7 @@ return array (
                                     If you agree to the changes, you should make the changes right away. If you do not agree, 
                                     contact your facilitator to discuss the disagreement. 
                                     DO NOT continue to the next step until disagreements are resolved.</li>
-                                <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>
+                                <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>
                                 <li>WARNING: THIS IS THE LAST CHANCE TO MAKE CHANGES TO THE TRANSLATION. DO NOT MOVE TO NEXT STEP UNTIL ALL EDITS ARE COMPLETED!</li>",
 
     "peer-review_tn_chk_desc" => "<li><b>BUT:</b> to check the Notes translation and check accuracy while maintaining naturalness.</li>
@@ -955,8 +955,9 @@ return array (
                                         If you agree to the changes, the other checker should make the changes right away. 
                                         If you do not agree, contact your facilitator to discuss the disagreement. 
                                         DO NOT continue to the next step until disagreements are resolved.</li>
-                                    <li>When all changes and notes have been made by the 1st checker, click \"Yes, I did\" and \"Next step\".</li>
-                                    <li>WARNING: THIS IS THE LAST CHANCE TO MAKE CHANGES TO THE TRANSLATION. DO NOT MOVE TO NEXT STEP UNTIL ALL EDITS ARE COMPLETED!</li>",
+                                    <li>When all changes and notes have been made by the 1st checker, click \"Yes, I did\" and \"{step}\".</li>
+                                    <li>WARNING: This is the last chance you will have to check the Notes. Do not 
+                                        click \"Yes, I did\" and \"{step}\" until you have made all changes you feel are necessary.</li>",
 
     "peer-review_rad_desc" => "<li><b>PURPOSE:</b> to check the text accuracy while maintaining naturalness.</li>
                                 <li>You will look for spelling, punctuation, and flow/naturalness errors.</li>
@@ -964,7 +965,7 @@ return array (
                                 <li>You will check the accuracy of the translation in detail.</li>
                                 <li>Make sure to look at translators notes by clicking on the note icon with a number 
                                     above it next to the text box (<span class='mdi mdi-lead-pencil'></span>)</li>
-                                <li>When all changes have been made click \"Yes, I did\" and \"Next step\" to complete the check.</li>",
+                                <li>When all changes have been made click \"Yes, I did\" and \"{step}\" to complete the check.</li>",
 
     "keyword-check" => "Vérification des Mots Clés",
     "keyword-check_desc" => "<li><b>BUT:</b> S’assurer que les mots-clés sont présents dans le texte traduit et traduits avec précision.</li>
@@ -1007,8 +1008,8 @@ return array (
                             <li>S’il y a d’autres opinions ou d’autres questions concernant la traduction, clique le 
                                 symbole pour noter (<span class='mdi mdi-lead-pencil'></span>) à côté de la section, mets-y la note et clique Sauvegarder.</li>
                             <li>Après avoir fait tous les changements et avoir mis les notes dans le document, 
-                                le vérificateur devrait cliquer “Oui, je l’ai faite” et \"Continuer\", et ensuite tu 
-                                devrais cliquer “Oui, je l’ai faite” et \"Prochaine étape\" pour continuer à la prochaine étape.</li>",
+                                le vérificateur devrait cliquer “Oui, je l’ai faite” et \"{step}\", et ensuite tu 
+                                devrais cliquer “Oui, je l’ai faite” et \"{step}\" pour continuer à la prochaine étape.</li>",
 
     "keyword-check_checker_desc" => "<li><b>BUT:</b> pour assurer que certains mots importants sont présents et précis dans le texte traduit.</li>
                                     <li><b>DURÉE:</b> Prend autour de 5 à 10 minutes pour souligner des mot-clés dans le chapitre.</li>
@@ -1055,10 +1056,10 @@ return array (
                                         clique le symbole pour noter (<span class='mdi mdi-lead-pencil'></span>) 
                                         à côté de la section, mets-y la note et clique Sauvegarder.</li>
                                     <li>Après avoir fait tous les changements et avoir mis les notes dans le document, 
-                                        le vérificateur devrait cliquer “Oui, je l’ai faite” et \"Continuer\". Ne 
+                                        le vérificateur devrait cliquer “Oui, je l’ai faite” et \"{step}\". Ne 
                                         fermez pas simplement la page en cliquant le “x”, car le traducteur ne pourrait 
                                         pas aller à la prochaine étape.</li>",
-    
+
     "keyword-check_tn" => "Check Highlights",
     "keyword-check_tn_full" => "Check Highlighted Notes",
     "keyword-check_tn_desc" => "<li><b>BUT:</b> to check the highlighted portions of scripture and compare it with the Note the highlight correlates to.</li>
@@ -1067,7 +1068,7 @@ return array (
                                 <li>If you have additional thoughts or questions about the translation, click the note 
                                     icon <br>(<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add the note and click save. 
                                     The 2nd checker will see this note and help to resolve the question or problem.</li>
-                                <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>",
+                                <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "content-review" => "Vérification Verset par Verset",
     "content-review_odb" => "SUN Check",
@@ -1131,8 +1132,8 @@ return array (
                                 <li>Chaque désaccord (de la huitième étape et les étapes précédentes) doivent être résolues 
                                     avant que le traducteur et le vérificateur continuent à la Prochaine étape.</li>
                                 <li>Après avoir fait tous les changements et avoir mis les notes dans le document, le 
-                                    vérificateur devrait cliquer “Oui, je l’ai faite” et “Continuer”, et ensuite tu devrais 
-                                    cliquer “Oui, je l’ai faite” et \"Prochaine étape\" pour continuer à la prochaine étape.</li>",
+                                    vérificateur devrait cliquer “Oui, je l’ai faite” et “{step}”, et ensuite tu devrais 
+                                    cliquer “Oui, je l’ai faite” et \"{step}\" pour continuer à la prochaine étape.</li>",
 
     "content-review_checker_desc" => "<li><b>BUT:</b> assurer que chaque section et chapitre donnent correctement le même message en la langue cible</li>
                                         <li><b>DURÉE:</b> Le vérificateur doit prendre autours de 30 minutes pour réviser 
@@ -1192,14 +1193,14 @@ return array (
                                         <li>Chaque désaccord (de la huitième étape et les étapes précédentes) doivent être 
                                             résolues avant que le traducteur et le vérificateur continuent à la Prochaine étape.</li>
                                         <li>Après avoir fait tous les changements et avoir mis les notes dans le document, 
-                                            le vérificateur devrait cliquer “Oui, je l’ai faite” et “Continuer”. Ne fermes pas 
+                                            le vérificateur devrait cliquer “Oui, je l’ai faite” et “{step}”. Ne fermes pas 
                                             la page en cliquant le \"x\". Si tu le fais, le traducteur ne pourra pas continuer à la prochaine étape.</li>",
-    
+
     "final-review" => "Marqueurs des Versets",
     "final-review_desc" => "<li><b>BUT:</b> C’est l’étape où tu mettras les indicateurs de versets dans le texte.</li>
                             <li>Lire le texte traduit et le compare avec le texte d’origine, puis glissez et mettre les 
                                 indicateurs de versets au bon endroit dans le texte traduit.</li>
-                            <li>Quand tous les versets sont en place, cliquez “Oui, je l’ai faite” et “Prochaine étape”.</li>",
+                            <li>Quand tous les versets sont en place, cliquez “Oui, je l’ai faite” et “{step}”.</li>",
     "finished" => "Fini",
 
     "rearrange" => "Rearrange",
@@ -1298,7 +1299,7 @@ return array (
                 <li>Try to understand the meaning and details of the text to get a general overview.</li>
                 <li>If you see the paper icon (<span class='mdi mdi-bookmark'></span>), hover over it with your mouse. 
                     It is a translator’s note for that verse.</li>
-                <li>Click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "fst-check" => "Check Text",
     "fst-check_full" => "Check Target Text (Checker 1)",
@@ -1339,7 +1340,7 @@ return array (
                                 <li>To delete a footnote, click the \"x\" next to it. Click \"Save\" to save your changes.</li>
                             </ol>
                         </li>
-                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>",
+                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "snd-check" => "Peer Check",
     "snd-check_full" => "Peer-Check Target Text (Checker 2)",
@@ -1386,7 +1387,7 @@ return array (
                             <li>To delete a footnote, click the \"x\" next to it. Click \"Save\" to save your changes.</li>
                         </ol>
                     </li>
-                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>",
+                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "keyword-check-l2" => "Keyword Check",
     "keyword-check-l2_full" => "Keyword Check (Checker 2)",
@@ -1414,7 +1415,7 @@ return array (
                             <li>Any resources can be used.	</li>
                             <li>If there are additional thoughts or questions about the translation, click the note 
                                 icon (<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add the note and click save.</li>
-                            <li>When all highlighted words have been checked, click \"Yes, I did\" and \"Next step\".</li>",
+                            <li>When all highlighted words have been checked, click \"Yes, I did\" and \"{step}\".</li>",
 
     "peer-review-l2" => "Discrepancies",
     "peer-review-l2_full" => "Discussion of Discrepancies",
@@ -1457,7 +1458,7 @@ return array (
                             <ol>
                                 <li>To add a footnote, click in the translated text where you want to add the footnote.</li>
                                 <li>Click the footnote icon ( <i class='mdi mdi-bookmark'></i> ) on the right side of the translated text.</li>
-                                <li>Click on \"ft\" to add footnote text.</li>
+                                <li>Click on “ft\" to add footnote text.</li>
                                 <li>To add an alternate text, click \"ft\" to add the text that explains the footnote, 
                                     then click \"fqa\" to add the alternate text.</li>
                                 <li>Click \"Save\" when text is added.</li>
@@ -1467,7 +1468,7 @@ return array (
                                 <li>To delete a footnote, click the \"x\" next to it. Click \"Save\" to save your changes.</li>
                             </ol>
                         </li>
-                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>",
+                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "peer-review-l2_chk_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with 
                                 a peer checker while <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
@@ -1514,7 +1515,7 @@ return array (
                                     <li>Check to see if the footnote is relevant and correct.</li>
                                 </ol>
                             </li>
-                            <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>",
+                            <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "multi-draft" => "Draft",
     "multi-draft_full" => "Consume, Verbalize, and Draft",
@@ -1539,7 +1540,7 @@ return array (
                                     the \"Draft\" box to indicate this step is completed. You can go back and edit at any time, if needed.</li>
                                 <li>Go to the next verse and start the process again with \"Consume\", then \"Verbalize\", 
                                     and \"Draft\" until all questions are translated for the chapter.</li>
-                                <li>Click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                                <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "self-check_tq_desc" => "<li><b>PURPOSE:</b> to edit your translated Questions/Answers and check accuracy while maintaining naturalness.</li>
                         <li>Look for spelling, punctuation, and flow/naturalness errors.</li>
@@ -1548,9 +1549,9 @@ return array (
                         <li>If you have additional thoughts or questions about your translation, click the note 
                             icon <br>(<span class='mdi mdi-lead-pencil'></span>) next to the chunk, add the note and 
                             click Save. The checkers will see this note and help resolve the question or problem.</li>
-                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>
+                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>
                         <li>WARNING: This is the last chance you will have to change your translation. 
-                            Do not click \"Yes, I did\" and \"Next step\", until you have made all changes.</li>",
+                            Do not click \"Yes, I did\" and \"{step}\", until you have made all changes.</li>",
 
     "keyword-check_tq_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated Questions/Answers and accurately expressed.</li>
                         <li>The checker will look for Keywords in the Questions and Answers and compare them to the 
@@ -1566,8 +1567,8 @@ return array (
                             If you agree to the changes, the translator should make the changes right away. 
                             If you disagree, do not waste a lot of time discussing.  Leave the text as it is and 
                             make a note on the chunk. It will be resolved in the next step.</li>
-                        <li>When all changes and notes have been made, the checker will click \"Yes, I did\" and \"Continue\", 
-                            then you should click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                        <li>When all changes and notes have been made, the checker will click \"Yes, I did\" and \"{step}\", 
+                            then you should click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "keyword-check_tq_chk_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated Questions/Answers and accurately expressed.</li>
                         <li>You will look for Keywords in the Questions and Answers and compare them to the 
@@ -1583,7 +1584,7 @@ return array (
                             If you agree to the changes, the translator should make the changes right away. 
                             If you disagree, do not waste a lot of time discussing.  Leave the text as it is and make 
                             a note on the chunk noting the disagreement. It will be resolved in the next step.</li>
-                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"Continue\".</li>",
+                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
@@ -1600,8 +1601,8 @@ return array (
                         <li>You should discuss any changes they think should be made.  If you agree to the changes, you should 
                             make the changes right away.  If you disagree, discuss the issue with your facilitator 
                             and resolve before you complete this step.</li>
-                        <li>When all changes have been made, the checker will click \"Yes, I did\" and \"Continue\", 
-                            then you should click \"Yes, I did\" and \"Next step\" to complete the step.</li>
+                        <li>When all changes have been made, the checker will click \"Yes, I did\" and \"{step}\", 
+                            then you should click \"Yes, I did\" and \"{step}\" to complete the step.</li>
                         <li><b>Make sure all changes are made, as this is the last step and additional changes cannot be made.</b></li>",
 
     "peer-review_tq_chk_desc" => "<li><b>PURPOSE:</b> to review the Questions/Answers and check accuracy while maintaining naturalness.</li>
@@ -1616,7 +1617,7 @@ return array (
                         <li>You should discuss any changes you think should be made.  If you agree to the changes, the 
                             translator should make the changes right away.  If you disagree, discuss the issue with your 
                             facilitator and resolve before you complete this step.</li>
-                        <li>When all changes have been made, click \"Yes, I did\" and \"Continue\".</li>
+                        <li>When all changes have been made, click \"Yes, I did\" and \"{step}\".</li>
                         <li><b>Make sure all changes are made as this is the last step.</b></li>",
 
     "multi-draft_tw_desc" => "<li><b>PURPOSE:</b> to read the source text, to say it aloud to engage your memory, and 
@@ -1640,7 +1641,7 @@ return array (
                                 <li>When you finish translating, click on the \"Draft\" box to indicate this step is completed. 
                                     You can go back and edit at any time, if needed.</li>
                                 <li>Go to the next Word and start the process again with \"Consume\", then \"Verbalize\", and \"Draft\" until all Words are translated.</li>
-                                <li>Click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                                <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "self-check_tw_desc" => "<li><b>PURPOSE:</b> to edit your translated Words and check accuracy while maintaining naturalness.</li>
                         <li>Look for spelling, punctuation, flow/naturalness errors.</li>
@@ -1652,7 +1653,7 @@ return array (
                         <li>If you have additional thoughts or questions about your translation, click the note 
                             icon <br>(<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add the note and 
                             click save. The checkers will see this note and help resolve the question or problem.</li>
-                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"Next step\".</li>",
+                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "keyword-check_tw_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated Words and accurately expressed.</li>
                         <li>The checker will look for keywords and compare them to the 
@@ -1666,8 +1667,8 @@ return array (
                             If you agree to the changes, the translator should make the changes right away. 
                             If you disagree, do not waste a lot of time discussing.  Leave the text as it is and 
                             make a note on the chunk. It will be resolved in the next step.</li>
-                        <li>When all changes and notes have been made, the checker will click \"Yes I Did\" and \"Continue\", 
-                            then you should click \"Yes, I did\" and \"Next step\" to move to the next step.</li>",
+                        <li>When all changes and notes have been made, the checker will click \"Yes I Did\" and \"{step}\", 
+                            then you should click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "keyword-check_tw_chk_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated Words and accurately expressed.</li>
                         <li>As the checker your screen will say \"checking mode\" and instructions will be in orange.</li>
@@ -1682,7 +1683,7 @@ return array (
                             If you agree to the changes, the translator should make the changes right away. 
                             If you disagree, do not waste a lot of time discussing.  Leave the text as it is and make 
                             a note on the chunk noting the disagreement. It will be resolved in the next step.</li>
-                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"Continue\" .
+                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\" .
                             Do not simply close the page by clicking the \"x\", or the translator will not be able to continue to the next step.</li>",
 
     "peer-review_tw_desc" => "<li><b>PURPOSE:</b> to review the Words and check accuracy while maintaining naturalness.</li>
@@ -1695,8 +1696,8 @@ return array (
                         <li>You should discuss any changes they think should be made.  If you agree to the changes, you should 
                             make the changes right away.  If you disagree, discuss the issue with your facilitator 
                             and resolve before you complete this step.</li>
-                        <li>When all changes have been made, the checker will click \"Yes, I did\" and \"Continue\", 
-                            then you should click \"Yes, I did\" and \"Next step\" to complete the step.</li>
+                        <li>When all changes have been made, the checker will click \"Yes, I did\" and \"{step}\", 
+                            then you should click \"Yes, I did\" and \"{step}\" to complete the step.</li>
                         <li><b>Make sure all changes are made as this is the last step and no more changes can be made!</b></li>",
 
     "peer-review_tw_chk_desc" => "<li><b>PURPOSE:</b> to review the Words and check accuracy while maintaining naturalness.</li>
@@ -1709,7 +1710,7 @@ return array (
                         <li>You should discuss any changes you think should be made.  If you agree to the changes, the 
                             translator should make the changes right away.  If you disagree, discuss the issue with your 
                             facilitator and resolve before you complete this step.</li>
-                        <li>When all changes have been made, click \"Yes, I did\" and \"Continue\". Do not simply close the 
+                        <li>When all changes have been made, click \"Yes, I did\" and \"{step}\". Do not simply close the 
                             page by clicking the \"x\", or the translator will not be able to complete the step.</li>
                         <li><b>Make sure all changes are made as this is the last step and no more changes can be made!</b></li>",
 
@@ -1742,7 +1743,7 @@ return array (
                                     <li>Your peer-checker will also be able to see your notes by clicking \"refresh.\"</li>
                                 </ol>
                             </li>
-                            <li>When all changes have been noted, click \"Yes, I did\" and \"Next Step\" and contact your peer-checker to start the 2nd step.</li>",
+                            <li>When all changes have been noted, click \"Yes, I did\" and \"{step}\" and contact your peer-checker to start the 2nd step.</li>",
 
     "peer-review-l3_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are used when referring to God the Father and Jesus Christ.</b></li>
                             <li>This step is done with a peer-checker.</li>
@@ -1775,7 +1776,7 @@ return array (
                                     <li>Check to see if the footnote is relevant and correct.</li>
                                 </ol>
                             </li>
-                            <li>When all changes have been noted, click \"Yes, I did\" and \"Next Step\" and contact your peer-checker to start the 2nd step.</li>",
+                            <li>When all changes have been noted, click \"Yes, I did\" and \"{step}\" and contact your peer-checker to start the 2nd step.</li>",
 
 
     "peer-edit-l3" => "Peer Review",
@@ -1800,7 +1801,7 @@ return array (
                                 </ol>
                             </li>
                             <li><b>Do not complete this step until all changes are made and disagreements are resolved!</b></li>
-                            <li>When all changes have been noted, click \"Yes, I did\" and \"Next Step\" and contact your peer-checker to start the 2nd step.</li>",
+                            <li>When all changes have been noted, click \"Yes, I did\" and \"{step}\" and contact your peer-checker to start the 2nd step.</li>",
 
     "peer-edit-l3_tn_chk_desc" => "<li><b>PURPOSE:</b> to update the scripture (to match Level 3) in the translated Notes and check for accuracy in the Notes while maintaining naturalness. </li>
                             <li>To begin this step, contact your peer-checker from step 1 via Skype, Messenger, WhatsApp, phone, etc.</li>
@@ -1813,7 +1814,7 @@ return array (
                             <li>Your peer will make changes to the Notes as you discuss the changes that should be made.  If you disagree on a change consult your facilitator or language leader. </li>
                             <li>Your peer will make changes to the formatting, as needed.</li>
                             <li><b>Do not complete this step until all changes are made and disagreements are resolved!</b></li>
-                            <li>When all changes have been noted, click \"Yes, I did\" and \"Next Step\" and contact your peer-checker to start the 2nd step.</li>",
+                            <li>When all changes have been noted, click \"Yes, I did\" and \"{step}\" and contact your peer-checker to start the 2nd step.</li>",
 
     "peer-edit-l3_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are used when referring to God the Father and Jesus Christ.</b></li>
                             <li>To begin this step, contact your peer-checker from step 1 via Skype, Messenger, WhatsApp, phone, etc.</li>
@@ -1845,7 +1846,7 @@ return array (
                                 </ol>
                             </li>
                             <li><b>Do not complete this step until all changes are made and disagreements are resolved!</b></li>
-                            <li>When all changes have been noted, click \"Yes, I did\" and \"Next Step\" and contact your peer-checker to start the 2nd step.</li>",
+                            <li>When all changes have been noted, click \"Yes, I did\" and \"{step}\" and contact your peer-checker to start the 2nd step.</li>",
 
     "peer-edit-l3_chk_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are used when referring to God the Father and Jesus Christ.</b></li>
                             <li>To begin this step, contact your peer-checker from step 1 via Skype, Messenger, WhatsApp, phone, etc.</li>
@@ -1872,7 +1873,7 @@ return array (
                                 </ol>
                             </li>
                             <li><b>Do not complete this step until all changes are made and disagreements are resolved!</b></li>
-                            <li>When all changes have been noted, click \"Yes, I did\" and \"Next Step\" and contact your peer-checker to start the 2nd step.</li>",
+                            <li>When all changes have been noted, click \"Yes, I did\" and \"{step}\" and contact your peer-checker to start the 2nd step.</li>",
 
     // ------- Errors messages ------- //
     "checker_translator_not_ready_error" => "Translator is not ready for this step, please wait. Page will be reloded when translator is ready.<span class=\"checker_waits\"></span>",
