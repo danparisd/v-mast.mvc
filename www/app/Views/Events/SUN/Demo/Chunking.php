@@ -179,7 +179,9 @@
                         <input name="chunks_array" id="chunks_array" value="[]" type="hidden">
                     </div>
 
-                    <button id="next_step" class="btn btn-primary" disabled="disabled"><?php echo __("next_step")?></button>
+                    <button id="next_step" class="btn btn-primary" disabled="disabled">
+                        <?php echo __($data["next_step"])?>
+                    </button>
                 </form>
                 <div class="step_right"><?php echo __("step_num", ["step_number" => 2])?></div>
             </div>
@@ -197,7 +199,7 @@
         <div class="help_info_steps">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 2])?>:</span> <?php echo __("chunking_sun")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("chunking_sun_desc")?></ul>
+                <ul><?php echo __("chunking_sun_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -223,7 +225,7 @@
 
         <div class="tutorial_content">
             <h3><?php echo __("chunking_sun")?></h3>
-            <ul><?php echo __("chunking_sun_desc")?></ul>
+            <ul><?php echo __("chunking_sun_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

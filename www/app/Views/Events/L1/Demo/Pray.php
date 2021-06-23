@@ -31,7 +31,7 @@
                     <label><input name="confirm_step" id="confirm_step" value="1" type="checkbox"> <?php echo __("confirm_yes")?></label>
                 </div>
 
-                <button id="next_step" class="btn btn-primary" disabled="disabled"><?php echo __("next_step")?></button>
+                <button id="next_step" class="btn btn-primary" disabled="disabled"><?php echo __($data["next_step"])?></button>
             </form>
         </div>
     </div>
@@ -44,7 +44,7 @@
         <div class="help_info_steps">
             <div class="help_name_steps"><span><?php echo __("pray")?></span></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("pray_desc")?></ul>
+                <ul><?php echo __("pray_desc", ["step" => __($data["next_step"])])?></ul>
             </div>
         </div>
 

@@ -1444,7 +1444,9 @@
                         <label><input name="confirm_step" id="confirm_step" value="1" type="checkbox"> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <button id="next_step" class="btn btn-primary" disabled="disabled"><?php echo __("next_step")?></button>
+                    <button id="next_step" class="btn btn-primary" disabled="disabled">
+                        <?php echo __($data["next_step"])?>
+                    </button>
                 </form>
                 <div class="step_right"><?php echo __("step_num", ["step_number" => 5])?></div>
             </div>
@@ -1459,7 +1461,7 @@
         <div class="help_info_steps is_checker_page_help isPeer">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 5])?>:</span> <?php echo __("peer-review_tn")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("peer-review_tn_chk_desc")?></ul>
+                <ul><?php echo __("peer-review_tn_chk_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -1495,7 +1497,7 @@
 
         <div class="tutorial_content is_checker_page_help isPeer">
             <h3><?php echo __("peer-review_tn")?></h3>
-            <ul><?php echo __("peer-review_tn_chk_desc")?></ul>
+            <ul><?php echo __("peer-review_tn_chk_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
