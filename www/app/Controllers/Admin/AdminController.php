@@ -2194,7 +2194,7 @@ class AdminController extends Controller {
                     $chkData = [];
                     for($i=1; $i<=$event[0]->chaptersNum; $i++)
                     {
-                        $chkData[$i] = $mid;
+                        $chkData[$i] = ["memberID" => $mid, "done" => 1];
                     }
 
                     $trData = array(

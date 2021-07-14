@@ -135,7 +135,9 @@ if(isset($data["error"])) return;
 
                     <input type="hidden" name="checkingChapter" value="<?php echo $data["event"][0]->currentChapter ?>" />
                     <input type="hidden" name="isChecking" value="1" />
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
@@ -151,7 +153,7 @@ if(isset($data["error"])) return;
         <div class="help_info_steps">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 7])?>:</span> <?php echo __("keyword-check")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("keyword-check_desc")?></ul>
+                <ul><?php echo __("keyword-check_checker_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -196,7 +198,7 @@ if(isset($data["error"])) return;
 
         <div class="tutorial_content">
             <h3><?php echo __("keyword-check")?></h3>
-            <ul><?php echo __("keyword-check_desc")?></ul>
+            <ul><?php echo __("keyword-check_checker_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

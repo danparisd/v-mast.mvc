@@ -141,7 +141,9 @@ $parsedown = new Parsedown();
                     <input type="hidden" name="step" value="<?php echo $data["event"][0]->step ?>">
                     <input type="hidden" name="level" value="l3">
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
@@ -160,7 +162,7 @@ $parsedown = new Parsedown();
                 <?php echo __("peer-edit-l3")?>
             </div>
             <div class="help_descr_steps">
-                <ul><?php echo __("peer-edit-l3_tn_desc")?></ul>
+                <ul><?php echo __("peer-edit-l3_tn_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -199,7 +201,7 @@ $parsedown = new Parsedown();
 
         <div class="tutorial_content <?php echo "is_checker_page_help" ?>">
             <h3><?php echo __("peer-edit-l3_full")?></h3>
-            <ul><?php echo __("peer-edit-l3_tn_desc")?></ul>
+            <ul><?php echo __("peer-edit-l3_tn_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

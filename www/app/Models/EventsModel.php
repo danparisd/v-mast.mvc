@@ -1350,6 +1350,7 @@ class EventsModel extends Model
                         $ev->myMemberID = 0;
                         $ev->myChkMemberID = $checkerID;
                         $ev->isContinue = true; // Means not owner of chapter
+                        $ev->checkDone = false;
                         $filtered[] = $ev;
                     }
                 }
@@ -2549,7 +2550,7 @@ class EventsModel extends Model
      */
     public function getTranslationCheckers($tID, $memberID)
     {
-        $sql = "SELECT ts.translatedVerses, trs1.checkerID, trs2.memberID AS pairMemberID, l2.memberID AS l2memberID, l3.memberID AS l3memberID " .
+        $sql = "SELECT ts.translatedVerses, trs2.memberID AS pairMemberID, l2.memberID AS l2memberID, l3.memberID AS l3memberID " .
             "FROM " . PREFIX . "translations AS ts " .
             "LEFT JOIN " . PREFIX . "translators AS trs1 ON ts.trID = trs1.trID " .
             "LEFT JOIN " . PREFIX . "translators AS trs2 ON trs1.pairID = trs2.trID " .

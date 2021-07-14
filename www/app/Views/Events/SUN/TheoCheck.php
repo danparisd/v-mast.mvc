@@ -114,7 +114,9 @@ use Helpers\Constants\EventMembers;
                     </div>
 
                     <input type="hidden" name="level" value="l2">
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("continue")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
@@ -133,7 +135,7 @@ use Helpers\Constants\EventMembers;
                 <?php echo __("theo-check")?>
             </div>
             <div class="help_descr_steps">
-                <ul><?php echo __("theo-check_desc")?></ul>
+                <ul><?php echo __("theo-check_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -160,12 +162,11 @@ use Helpers\Constants\EventMembers;
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/keyword-check.png") ?>" width="100px" height="100px">
             <img src="<?php echo template_url("img/steps/big/keyword-check.png") ?>" width="280px" height="280px">
-            
         </div>
 
         <div class="tutorial_content is_checker_page_help">
             <h3><?php echo __("theo-check")?></h3>
-            <ul><?php echo __("theo-check_desc")?></ul>
+            <ul><?php echo __("theo-check_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
