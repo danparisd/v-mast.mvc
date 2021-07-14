@@ -570,7 +570,7 @@ return array (
 
     "consume" => "Consume",
     "consume_desc" => "<li><b>PURPOSE:</b> to intake source text to prepare for translation.</li>
-                        <li><b>LENGTH:</b> Take 7-8 minutes for this step.</li>
+                        <li><b>LENGTH:</b> Take 5-7 minutes for this step.</li>
                         <li>Read the assigned chapter carefully.</li>
                         <li>Try to understand the meaning and details of the text for a general overview.</li>
                         <li>If you see the paper icon (<span class='mdi mdi-bookmark'></span>), hover over it with your mouse. 
@@ -664,9 +664,9 @@ return array (
                             <li>Without looking at the source text, type your translation of the chunk as best you 
                                 can remember it, in a natural way, using words that are clear and understandable.</li>
                             <li>Do not refer to the source text. Just translate what you remember.</li>
-                            <li>Do not be concerned about marking verses. This will be done in the final step.</li>
                             <li>Do not spend an extended amount of time trying to remember the source text. The next 
                                 step will catch what you do not remember and allow corrections.</li>
+                            <li>Do not be concerned about marking verses. Do not add numbers or any kind of marking or move to a new line between verses. This will be done in the final step.</li>
                             <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>
                             <li>Continue to blind draft each chunk until you finish the chapter.</li>
                             <li>Additional Notes to Translator: 
@@ -967,7 +967,8 @@ return array (
                             <li><b>LENGTH:</b> The checker will take about 5-10 minutes to highlight keywords throughout the chapter.</li>
                             <li><b>Ensure accurate and literal common language terms for \"Father\" and \"Son\" are used when referring to God the Father and Jesus Christ.</b></li>
                             <li>The checker will highlight keywords from the source text. Highlighted words will show on your source text, as well.</li>
-                            <li>Keywords are: proper names (people/cities), numbers, pronouns, and any important terms (if these terms were not present or 
+                            <li>Keywords are: proper names (people/cities), numbers, abstract and Biblical terms, 
+                                and any important terms (if these terms were not present or 
                                 inaccurate, the scripture's meaning would be changed).</li>
                             <li>The following resources can be used.
                                 <ol>
@@ -993,7 +994,7 @@ return array (
                             <li><b>The point is not word for word translation; rather, it is to see if the word/meaning is represented in the text in a way 
                                 that is grammatically and culturally appropriate in the target language.</b></li>
                             <li>When the checker has finished highlighting, they will contact you to discuss keyword and recommended changes via: Skype, Messenger, WhatsApp, phone, etc.</li>
-                            <li>The checker will say aloud each highlighted word. You simply say how you translated it. The conversation should go very quickly.</li>
+                            <li>The checker will say aloud each highlighted word. You simply say how it is represented in the text. The conversation should go very quickly.</li>
                             <li>You and the checker should discuss any changes they think should be made. If you agree to the changes, you should make the changes right away. 
                                 If you disagree, do not waste a lot of time discussing. 
                                 Leave the text as it is and make a note on the chunk noting the disagreement. 
@@ -1011,8 +1012,9 @@ return array (
                                     <li>Highlight all keywords in the source text by double-clicking the word or by selecting a word/phrase with your mouse. 
                                         The translator will also see the highlighted source text on their screen. 
                                         (Highlighting words is most common; highlighted phrases should be few.)</li>
-                                    <li>Keywords are: proper names (people/cities), numbers, pronouns, and any important terms 
-                                        (if these terms were not present or inaccurate the scripture meaning would be changed).</li>
+                                    <li>Keywords are: proper names (people/cities), numbers, abstract and Biblical terms, 
+                                        and any important terms (if these terms were not present or inaccurate the 
+                                        scripture meaning would be changed).</li>
                                     <li>The following resources can be used.
                                         <ol>
                                             <li>Translation Words (tW) in sidebar.</li>
@@ -1033,7 +1035,7 @@ return array (
                                         in a way that is grammatically and culturally appropriate in the target language.</b></li>
                                     <li>When you finish highlighting, contact the translator to discuss keyword and recommended changes via: 
                                         Skype, Messenger, WhatsApp, phone, etc.</li>
-                                    <li>You will say aloud each highlighted word. The translator will simply say how they translated it. 
+                                    <li>You will say aloud each highlighted word. The translator will simply say how it is represented in the text. 
                                         The conversation should go very quickly.</li>
                                     <li>You and the translator should discuss any changes you think should be made. 
                                         If you agree to the changes, the translator should make the changes right away. 
