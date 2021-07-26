@@ -15,10 +15,6 @@
             <div class="demo_title"><?php echo __("demo") . " (".__("8steps_vmast").")" ?></div>
             <div><?php echo __("final-review")?></div>
         </div>
-        <div class="demo_video">
-            <span class="glyphicon glyphicon-play"></span>
-            <a href="#"><?php echo __("demo_video"); ?></a>
-        </div>
     </div>
 
     <div class="main_content">
@@ -747,10 +743,7 @@
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-
-            
             if(!hasChangesOnPage) window.location.href = '/events/demo/information';
-
             return false;
         });
     });

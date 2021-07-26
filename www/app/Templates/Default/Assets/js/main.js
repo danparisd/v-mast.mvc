@@ -1302,11 +1302,6 @@ $(document).ready(function() {
         }
     });
 
-    $(".demo_video a").click(function () {
-        $(".video_container").show();
-        return false;
-    });
-
     $("#finalReview").submit(function () {
 
         $(".vnote").each(function () {

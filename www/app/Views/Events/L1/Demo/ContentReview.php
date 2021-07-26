@@ -18,13 +18,8 @@
     <div class="footnote_window">
         <div class="fn_preview"></div>
         <div class="fn_buttons" dir="ltr">
-            <!--<button class="btn btn-default" data-fn="fr" title="footnote text">fr</button>-->
             <button class="btn btn-default" data-fn="ft" title="footnote text">ft</button>
-            <!--<button class="btn btn-default" data-fn="fq" title="footnote translation quotation">fq</button>-->
             <button class="btn btn-default" data-fn="fqa" title="footnote alternate translation">fqa</button>
-            <!--<button class="btn btn-default" data-fn="fk" title="footnote keyword">fk</button>-->
-            <!--<button class="btn btn-default" data-fn="fl" title="footnote label text">fl</button>-->
-            <!--<button class="btn btn-link" data-fn="link">Footnotes Specification</button>-->
         </div>
         <div class="fn_builder"></div>
     </div>
@@ -36,10 +31,6 @@
             <div class="demo_title"><?php echo __("demo") . " (".__("8steps_vmast").")" ?></div>
             <div><?php echo __("step_num", ["step_number" => 8]), ": " . __("content-review")?></div>
             <div class="action_type type_translation"><?php echo __("type_translation"); ?></div>
-        </div>
-        <div class="demo_video">
-            <span class="glyphicon glyphicon-play"></span>
-            <a href="#"><?php echo __("demo_video"); ?></a>
         </div>
     </div>
 

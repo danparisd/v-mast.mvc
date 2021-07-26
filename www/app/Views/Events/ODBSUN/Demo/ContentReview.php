@@ -17,10 +17,6 @@
             </div>
             <div><?php echo __("step_num", ["step_number" => 6]) . ": " . __("content-review_odb")?></div>
         </div>
-        <div class="demo_video">
-            <span class="glyphicon glyphicon-play"></span>
-            <a href="#"><?php echo __("demo_video"); ?></a>
-        </div>
     </div>
 
     <div class="">
