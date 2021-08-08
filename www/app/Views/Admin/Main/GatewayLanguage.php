@@ -138,7 +138,7 @@
                                     <?php endforeach; ?>
                                 </select>
                                 <div class="add_custom_src">
-                                    <a href="/admin/tools/source"><?php echo __("add_custom_src") ?></a>
+                                    <a href="/admin/tools"><?php echo __("add_custom_src") ?></a>
                                 </div>
                             </div>
                         </div>
