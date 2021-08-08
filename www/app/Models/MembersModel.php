@@ -186,10 +186,10 @@ class MembersModel extends Model {
                     ->orWhere("members.lastName", "LIKE", "%$name%"); // search in last names
             });
 
-        if($role == "translators")
+        /*if($role == "translators")
             $builder->where("members.isAdmin", false); // exclude facilitators (admins) when searching just translators
         elseif ($role == "facilitators")
-            $builder->where("members.isAdmin", true); // facilitators (admins)
+            $builder->where("members.isAdmin", true); // facilitators (admins)*/
 
         // search facilitators in events they are assigned to
         if(($role == "facilitators" || $role == "all") && $languages)
@@ -200,9 +200,9 @@ class MembersModel extends Model {
                     $query->where(function($query) use ($languages) {
                         $query->whereIn("projects.gwLang", $languages)
                             ->orWhereIn("projects.targetLang", $languages);
-                    })
-                    ->orWhereRaw("`".PREFIX."events`.`admins` LIKE CONCAT('%\"', `".PREFIX."members`.`memberID`, '\"%')")
-                    ->orWhereRaw("`".PREFIX."events`.`admins_l2` LIKE CONCAT('%\"', `".PREFIX."members`.`memberID`, '\"%')");
+                    });
+                    /*->orWhereRaw("`".PREFIX."events`.`admins` LIKE CONCAT('%\"', `".PREFIX."members`.`memberID`, '\"%')")
+                    ->orWhereRaw("`".PREFIX."events`.`admins_l2` LIKE CONCAT('%\"', `".PREFIX."members`.`memberID`, '\"%')");*/
                 });
         }
 

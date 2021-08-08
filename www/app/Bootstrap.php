@@ -15,7 +15,7 @@ Sentry\init([
     'environment' => ENVIRONMENT,
 ]);
 
-if(Session::get("loggedin"))
+if(Session::get("memberID"))
 {
     Sentry\configureScope(function (Sentry\State\Scope $scope) {
         $scope->setExtras([

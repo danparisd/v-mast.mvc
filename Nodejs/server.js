@@ -474,7 +474,6 @@ function registerNewMemberEvent(data, sct, member)
                         newMember.firstName = response.firstName;
                         newMember.lastName = response.lastName;
                         newMember.isAdmin = response.isAdmin;
-                        newMember.isSuperAdmin = response.isSuperAdmin;
                         newMember.authToken = data.aT;
                         newMember.events.push(newEvent);
 
@@ -584,7 +583,6 @@ function getMembersByRoomID(roomID, room)
                 tmpm.memberID = members[m].memberID;
                 tmpm.userName = members[m].userName;
                 tmpm.isAdmin = members[m].isAdmin;
-                tmpm.isSuperAdmin = members[m].isSuperAdmin;
                 tmpm.name = members[m].firstName + " " + members[m].lastName.charAt(0) + ".";
 
                 roomMates.push(tmpm);

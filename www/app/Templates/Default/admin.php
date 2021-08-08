@@ -94,7 +94,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css', 'Default'),
-    template_url('css/style.css?114', 'Default'),
+    template_url('css/style.css?115', 'Default'),
     template_url('css/jquery-ui.min.css', 'Default'),
     template_url('css/jquery-ui.structure.min.css', 'Default'),
     template_url('css/jquery-ui.theme.min.css', 'Default'),
@@ -106,10 +106,10 @@ echo isset($css) ? $css : ''; // Place to pass data / plugable hook zone
 Assets::js([
     template_url('js/jquery.js', 'Default'),
     template_url('js/jquery.actual.min.js', 'Default'),
-    template_url('js/main.js?110', 'Default'),
-    template_url('js/facilitator.js?33', 'Default'),
+    template_url('js/main.js?111', 'Default'),
+    template_url('js/facilitator.js?34', 'Default'),
     template_url('js/autosize.min.js?2', 'Default'),
-    template_url('js/admin.js?50', 'Default'),
+    template_url('js/admin.js?51', 'Default'),
     template_url('js/bootstrap.min.js', 'Default'),
     template_url('js/jquery-ui.min.js', 'Default'),
     template_url('js/offline.min.js'),
@@ -126,7 +126,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
 
 <div class="container">
 
-    <div class="header page-header <?php echo Session::get("loggedin") ? "loggedin" : ""?>">
+    <div class="header page-header <?php echo Session::get("memberID") ? "loggedin" : ""?>">
         <div class="header_menu_left">
             <a href="/" class="logo"><img src="<?php echo Url::templatePath() ?>img/logo.png" height="40" /></a>
 
@@ -135,12 +135,6 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                 <li <?php if($data['menu'] == 1):?>class="active"<?php endif?> role="presentation"><a href="/admin"><?php echo __("admin")?></a></li>
                 <li <?php if($data['menu'] == 2):?>class="active"<?php endif?> role="presentation"><a href="/admin/members"><?php echo __("members")?></a></li>
                 <li <?php if($data['menu'] == 3):?>class="active"<?php endif?> role="presentation"><a href="/admin/tools"><?php echo __("tools")?></a></li>
-                <li role="presentation">
-                    <a id="news" href="/events/news">
-                        <span class="topnews_title"><?php echo __("news") ?></span>
-                        <?php echo isset($data["newNewsCount"]) && $data["newNewsCount"] > 0 ? '<span class="news_count">'.$data["newNewsCount"].'</span>' : ""; ?>
-                    </a>
-                </li>
             </ul>
         </div>
 
@@ -198,7 +192,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                     </p>
                 </div>
                 <div class="col-sm-2 footer_langs">
-                    <?php if(Session::get("loggedin")): ?>
+                    <?php if(Session::get("memberID")): ?>
                         <div class="dropup flangs">
                             <div class="dropdown-toggle" id="footer_langs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="<?php echo template_url("img/".$language.".png", "Default") ?>">

@@ -1,7 +1,8 @@
 <?php
 namespace App\Controllers;
 
-use App\Models\EventsModel;
+use App\Repositories\Language\ILanguageRepository;
+use App\Repositories\Member\IMemberRepository;
 use Helpers\Csrf;
 use Helpers\Gump;
 use Helpers\ReCaptcha;
@@ -17,16 +18,21 @@ use Mailer;
  */
 class MainController extends Controller
 {
-    private $_eventModel;
+    protected $memberRepo = null;
+    protected $languageRepo = null;
 
     /**
      * Call the parent construct
      */
-    public function __construct()
+    public function __construct(
+        IMemberRepository $memberRepo,
+        ILanguageRepository $languageRepo
+    )
     {
         parent::__construct();
 
-        $this->_eventModel = new EventsModel();
+        $this->memberRepo = $memberRepo;
+        $this->languageRepo = $languageRepo;
     }
 
     public function before()
@@ -45,12 +51,13 @@ class MainController extends Controller
             Url::redirect("maintenance");
         }
 
-        if(Session::get('loggedin'))
+        if(Session::get('memberID'))
         {
-            if(empty(Session::get("profile")))
-            {
-                Url::redirect("members/profile");
-            }
+            $member = $this->memberRepo->get(Session::get('memberID'));
+
+            if (!$member) Url::redirect("members/login");
+
+            if(!$member->profile->complete) Url::redirect("members/profile");
 
             Url::redirect("events");
         }
@@ -94,10 +101,12 @@ class MainController extends Controller
     {
         $data['menu'] = 5;
         $data['title'] = __('contact_us_title');
-        $data["languages"] = $this->_eventModel->getAllLanguages();
         $data['csrfToken'] = Csrf::makeToken();
 
         $error = [];
+
+        $languages = $this->languageRepo->all();
+        $member = $this->memberRepo->get(Session::get('memberID'));
 
         if (isset($_POST['submit']))
         {
@@ -158,6 +167,8 @@ class MainController extends Controller
 
         return View::make('Main/ContactUs')
             ->shares("title", __("contact_us_title"))
+            ->shares("member", $member)
+            ->shares("languages", $languages)
             ->shares("error", $error)
             ->shares("data", $data);
     }

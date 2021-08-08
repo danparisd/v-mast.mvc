@@ -189,7 +189,7 @@ class ApiModel extends Model
             $bookData["sourceBible"],
             $bookData["bookCode"],
             $bookData["sourceLangID"],
-            $bookData["abbrID"]);
+            $bookData["sort"]);
 
         if($usfm && !empty($usfm["chapters"]))
         {
@@ -510,18 +510,6 @@ class ApiModel extends Model
             }
         }
     }
-
-
-    public function insertSource($lang, $slug, $name) {
-        $insert = [
-            "langID" => $lang,
-            "slug" => $slug,
-            "name" => $name,
-        ];
-        return $this->db->table("sources")
-            ->insert($insert);
-    }
-
 
     public function getFullCatalog()
     {
@@ -1442,7 +1430,7 @@ class ApiModel extends Model
                         $bookInfo = $translationModel->getBookInfo($dir->getBasename());
                         File::put($target . "/" . sprintf(
                             "%02d-%s",
-                            $bookInfo[0]->abbrID,
+                            $bookInfo[0]->sort,
                             strtoupper($bookInfo[0]->code)
                             ) . ".usfm", $usfm);
                         $cache_keyword = sprintf(

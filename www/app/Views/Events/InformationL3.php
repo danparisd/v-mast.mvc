@@ -17,8 +17,8 @@ if(!isset($error)):
     </div>
 
     <div>
-        <div class="book_title"><?php echo $data["event"][0]->name ?></div>
-        <div class="project_title"><?php echo __($data["event"][0]->bookProject)." - ".$data["event"][0]->tLang ?></div>
+        <div class="book_title"><?php echo $event->bookInfo->name ?></div>
+        <div class="project_title"><?php echo __($event->project->bookProject)." - ".$event->project->targetLanguage->langName ?></div>
         <div class="overall_progress_bar">
             <h3><?php echo __("progress_all") ?></h3>
             <div class="progress progress_all <?php echo $data["overall_progress"] <= 0 ? "zero" : ""?>">
@@ -145,16 +145,16 @@ if(!isset($error)):
 
     <script>
         var memberID = <?php echo Session::get('memberID') ;?>;
-        var eventID = <?php echo $data["event"][0]->eventID; ?>;
-        var projectID = <?php echo $data["event"][0]->projectID; ?>;
+        var eventID = <?php echo $event->eventID; ?>;
+        var projectID = <?php echo $event->projectID; ?>;
         var chkMemberID = 0;
         var aT = '<?php echo Session::get('authToken'); ?>';
-        var step = '<?php //echo $data["event"][0]->step; ?>';
+        var step = '';
         var isAdmin = <?php echo (integer)$data["isAdmin"]; ?>;
         var disableChat = true;
         var isChecker = false;
         var isInfoPage = true;
-        var tMode = '<?php echo $data["event"][0]->bookProject ?>';
+        var tMode = '<?php echo $event->project->bookProject ?>';
         var manageMode = "l3";
     </script>
 

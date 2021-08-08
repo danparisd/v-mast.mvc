@@ -841,7 +841,7 @@ html, body, .container {
     display: none;
 }
 
-.gwProjectLoader {
+.gatewayLanguageLoader {
     display: none;
 }
 
@@ -879,9 +879,9 @@ html, body, .container {
     position: relative;
     background-color: white;
     border-radius: 5px;
-    width: 500px;
-    left: calc(50% - 250px);
-    top: calc(50% - 400px);
+    width: 900px;
+    left: calc(50% - 450px);
+    top: calc(50% - 300px);
 }
 
 .subGwLoader {
@@ -5528,5 +5528,22 @@ button.add_verse_ta {
 
 .cloud_otp_code_group {
     display: none;
+}
+
+.sub-parent {
+    padding-right: 30px;
+}
+
+.sub-form {
+    display: flex;
+}
+
+.sub-form-left {
+    margin-right: 50px;
+    width: 430px;
+}
+
+.sub-form-right {
+    width: 430px;
 }
 
