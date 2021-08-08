@@ -83,7 +83,7 @@ return array(
     "notesPlaceholder" => "Начните вводить текст здесь...",
     "cacheUpdated" => "Кэш был успешно обновлён",
     "books" => "книги",
-    "remove_l2_checker" => "Вы хотите удалить проверяющего ",
+    "remove_l2_checker" => "Вы хотите удалить ",
     "delSailword" => "Вы хотите удалить слово ",
     "delQuestion" => "Вы хотите удалить вопрос?",
     "remove_other_checker_opt" => "Выберите опцию для проверяющего ",

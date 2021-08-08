@@ -1,7 +1,7 @@
-var socket, sctUrl = 'https://v-mast.mvc:8001';
+let socket, sctUrl = 'https://v-mast.mvc:8001';
 
 $(document).ready(function () {
-    socket = io.connect(sctUrl);
+    socket = io.connect(sctUrl, { transports: ["websocket"] });
 
     socket.on('connect', OnConnected);
     socket.on('reconnect', OnConnected);
@@ -10,6 +10,10 @@ $(document).ready(function () {
     socket.on('project room update', OnProjectRoomUpdate);
     socket.on('system message', OnSystemMessage);
     socket.on('checking request', OnCheckingRequest);
+
+    socket.on("connect_error", (err) => {
+        console.log(`connect_error due to ${err.message}`);
+    });
 
     $("#chat_container").chat({
         step: step,
@@ -71,26 +75,6 @@ function OnEventRoomUpdate(roomMates)
 
 function OnProjectRoomUpdate(roomMates)
 {
-    var membersObj = $(".member_item");
-    if(membersObj.length > 0)
-    {
-        // $(".online_indicator", membersObj).removeClass("online");
-        // $(".online_status", membersObj).hide();
-        // $(".offline_status", membersObj).show();
-    }
-
-    for(var rm in roomMates)
-    {
-        var memberObj = $(".member_item[data="+roomMates[rm].memberID+"]");
-        if(memberObj.length > 0)
-        {
-            // $(".online_indicator", memberObj).addClass("online");
-            // $(".online_status", memberObj).show();
-            // $(".offline_status", memberObj).hide();
-        }
-    }
-
-    // $("#chat_container").chat("updateChatMembers", roomMates);
 }
 
 function OnSystemMessage(data)
@@ -274,7 +258,6 @@ function OnCheckingRequest(data)
     .done(function(data) {
         if(data.success)
         {
-            //$(".notif_block").html("");
             if(data.notifs.length > 0)
             {
                 $(".notif_block .no_notif").remove();

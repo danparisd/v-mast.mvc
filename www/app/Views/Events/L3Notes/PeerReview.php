@@ -134,7 +134,9 @@ $parsedown = new Parsedown();
 
                     <input type="hidden" name="step" value="<?php echo $data["event"][0]->step ?>">
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                 </form>
             </div>
             <div class="step_right alt">
@@ -154,7 +156,13 @@ $parsedown = new Parsedown();
                 <?php echo __($data["event"][0]->step)?>
             </div>
             <div class="help_descr_steps">
-                <ul><?php echo __($data["event"][0]->step . "_tn".($data["event"][0]->step == EventCheckSteps::PEER_EDIT_L3 && $data["isChecker"] ? "_chk" : "")."_desc")?></ul>
+                <ul>
+                    <?php if ($data["isChecker"]): ?>
+                        <?php echo __( "peer-edit-l3_tn_chk_desc", ["step" => __($data["next_step"])]) ?>
+                    <?php else: ?>
+                        <?php echo __("peer-review-l3_tn_desc", ["step" => __($data["next_step"])]) ?>
+                    <?php endif; ?>
+                </ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -188,12 +196,17 @@ $parsedown = new Parsedown();
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" width="100px" height="100px">
             <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" width="280px" height="280px">
-            
         </div>
 
         <div class="tutorial_content <?php echo "is_checker_page_help" ?>">
             <h3><?php echo __($data["event"][0]->step . "_full")?></h3>
-            <ul><?php echo __($data["event"][0]->step . "_tn".($data["event"][0]->step == EventCheckSteps::PEER_EDIT_L3 && $data["isChecker"] ? "_chk" : "")."_desc")?></ul>
+            <ul>
+                <?php if ($data["isChecker"]): ?>
+                    <?php echo __("peer-edit-l3_tn_chk_desc", ["step" => __($data["next_step"])]) ?>
+                <?php else: ?>
+                    <?php echo __("peer-review-l3_tn_desc", ["step" => __($data["next_step"])]) ?>
+                <?php endif; ?>
+            </ul>
         </div>
     </div>
 </div>

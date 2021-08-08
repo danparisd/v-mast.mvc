@@ -32,7 +32,9 @@ if(isset($data["error"])) return;
                         <input type="hidden" name="chunks_array" id="chunks_array" value="[]">
                     </div>
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("continue")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                 </form>
                 <div class="step_right"><?php echo __("step_num", ["step_number" => 3])?></div>
             </div>
@@ -47,7 +49,7 @@ if(isset($data["error"])) return;
         <div class="help_info_steps">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>: </span> <?php echo __("chunking")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("chunking_desc")?></ul>
+                <ul><?php echo __("chunking_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -83,7 +85,7 @@ if(isset($data["error"])) return;
 
         <div class="tutorial_content">
             <h3><?php echo __("chunking")?></h3>
-            <ul><?php echo __("chunking_desc")?></ul>
+            <ul><?php echo __("chunking_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

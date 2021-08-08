@@ -75,9 +75,9 @@ html, body, .container {
     border-radius: 10px;
 }
 
-.form-group {
+/*.form-group {
     position: relative;
-}
+}*/
 
 .container {
     position: relative;
@@ -1400,11 +1400,9 @@ div.ui-datepicker {
     position: relative;
     margin: 0;
     padding-top: 0px;
-    min-height: 700px;
 }
 
 .main_content_footer {
-    height: 100px;
     margin-top: 20px;
     margin-left: 0px;
 }
@@ -3114,6 +3112,49 @@ html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:activ
 
 .manage_chapters_buttons {
     flex: 1;
+    text-align: right;
+    position: relative;
+}
+
+.remove_checker_alt {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.checker_remove_button {
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px;
+}
+
+.checker_remove_menu {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    padding: 10px 10px 0 10px;
+    z-index: 1;
+    position: absolute;
+}
+
+.checker_remove_menu > button {
+    margin-bottom: 15px;
+}
+
+.checker_remove_menu > button:disabled {
+    color: #ccc;
+}
+
+.remove_menu_title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
 }
 
 .manage_chapter {
@@ -4400,10 +4441,6 @@ button.startEvnt, button.editEvnt {
 
 .step_right.chk {
     color: #ffa500;
-}
-
-.main_content_footer form {
-    float: left;
 }
 
 #sourceTools_chosen {

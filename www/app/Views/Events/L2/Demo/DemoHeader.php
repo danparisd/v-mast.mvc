@@ -50,28 +50,6 @@ $isCheckPage = $data["step"] == EventCheckSteps::PEER_REVIEW_L2;
 
 </div>
 
-<div class="video_container">
-    <div class="video_popup">
-        <div class="video-close glyphicon glyphicon-remove"></div>
-
-        <iframe id="demo-player" width="900" height="450"
-                src="https://www.youtube.com/embed/t9cKHe5li_E?rel=0&enablejsapi=1&origin=https://v-mast.mvc" frameborder="0" allowfullscreen></iframe>
-
-        <script>
-            var tag = document.createElement('script');
-            tag.id = 'iframe-demo';
-            tag.src = 'https://www.youtube.com/iframe_api';
-            var firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-            var player;
-            function onYouTubeIframeAPIReady() {
-                player = new YT.Player('demo-player');
-            }
-        </script>
-    </div>
-</div>
-
 <div id="chat_container" class="closed">
     <div id="chat_new_msgs" class="chat_new_msgs"></div>
     <div id="chat_hide" class="glyphicon glyphicon-chevron-left"> <?php echo __("chat") ?></div>

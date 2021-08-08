@@ -18,13 +18,8 @@
     <div class="footnote_window">
         <div class="fn_preview"></div>
         <div class="fn_buttons" dir="ltr">
-            <!--<button class="btn btn-default" data-fn="fr" title="footnote text">fr</button>-->
             <button class="btn btn-default" data-fn="ft" title="footnote text">ft</button>
-            <!--<button class="btn btn-default" data-fn="fq" title="footnote translation quotation">fq</button>-->
             <button class="btn btn-default" data-fn="fqa" title="footnote alternate translation">fqa</button>
-            <!--<button class="btn btn-default" data-fn="fk" title="footnote keyword">fk</button>-->
-            <!--<button class="btn btn-default" data-fn="fl" title="footnote label text">fl</button>-->
-            <!--<button class="btn btn-link" data-fn="link">Footnotes Specification</button>-->
         </div>
         <div class="fn_builder"></div>
     </div>
@@ -35,10 +30,6 @@
         <div class="main_content_title">
             <div class="demo_title"><?php echo __("demo") . " (".__("8steps_vmast").")" ?></div>
             <div><?php echo __("step_num", ["step_number" => 5]) . ": " . __("self-check")?></div>
-        </div>
-        <div class="demo_video">
-            <span class="glyphicon glyphicon-play"></span>
-            <a href="#"><?php echo __("demo_video"); ?></a>
         </div>
     </div>
 
@@ -252,7 +243,14 @@
                     <label><input name="confirm_step" id="confirm_step" value="1" type="checkbox"> <?php echo __("confirm_yes")?></label>
                 </div>
 
-                <button id="next_step" class="btn btn-primary" disabled="disabled"><?php echo __("next_step")?></button>
+                <button id="next_step" class="btn btn-primary" disabled="disabled">
+                    <?php echo __($data["next_step"])?>
+                </button>
+                &nbsp;
+                &nbsp;
+                <button id="next_chapter" class="btn btn-success" disabled>
+                    <?php echo __("next_chapter")?>
+                </button>
                 <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
             </div>
         </form>
@@ -267,7 +265,7 @@
         <div class="help_info_steps">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 5])?>:</span> <?php echo __("self-check")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("self-check_desc")?></ul>
+                <ul><?php echo __("self-check_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -1118,7 +1116,7 @@
 
         <div class="tutorial_content">
             <h3><?php echo __("self-check")?></h3>
-            <ul><?php echo __("self-check_desc")?></ul>
+            <ul><?php echo __("self-check_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -1128,6 +1126,12 @@
         $("#next_step").click(function (e) {
             e.preventDefault();
             if(!hasChangesOnPage) window.location.href = '/events/demo/peer_review';
+            return false;
+        });
+
+        $("#next_chapter").click(function (e) {
+            e.preventDefault();
+            if(!hasChangesOnPage) window.location.href = '/events/demo/pray';
             return false;
         });
 

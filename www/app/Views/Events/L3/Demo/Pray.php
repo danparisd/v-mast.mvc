@@ -4,10 +4,6 @@
             <div class="demo_title"><?php echo __("demo") . " (".__("l2_3_events", ["level" => 3]).")" ?></div>
             <div><?php echo __("pray")?></div>
         </div>
-        <div class="demo_video">
-            <span class="glyphicon glyphicon-play"></span>
-            <a href="#"><?php echo __("demo_video"); ?></a>
-        </div>
     </div>
 
     <div class="row">
@@ -31,7 +27,9 @@
                         <label><input name="confirm_step" id="confirm_step" value="1" type="checkbox"> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <button id="next_step" class="btn btn-primary" disabled="disabled"><?php echo __("next_step")?></button>
+                    <button id="next_step" class="btn btn-primary" disabled="disabled">
+                        <?php echo __($data["next_step"])?>
+                    </button>
                 </form>
             </div>
         </div>
@@ -45,7 +43,7 @@
         <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("pray")?></span></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("pray_desc")?></ul>
+                <ul><?php echo __("pray_desc", ["step" => __($data["next_step"])])?></ul>
             </div>
         </div>
 

@@ -2194,7 +2194,7 @@ class AdminController extends Controller {
                     $chkData = [];
                     for($i=1; $i<=$event[0]->chaptersNum; $i++)
                     {
-                        $chkData[$i] = $mid;
+                        $chkData[$i] = ["memberID" => $mid, "done" => 1];
                     }
 
                     $trData = array(
@@ -3607,7 +3607,7 @@ class AdminController extends Controller {
      * Move chapters from "events" table to "chapters" chapters
      * @return mixed
      */
-    private function migrateChapters()
+    function migrateChapters()
     {
         if (!Session::get('loggedin'))
         {
@@ -3622,28 +3622,33 @@ class AdminController extends Controller {
 
         $events = $this->_eventsModel->getEvents();
 
-        foreach ($events as $event) {
-            $chapters = (array)json_decode($event->chapters, true);
+        try {
+            foreach ($events as $event) {
+                $chapters = (array)json_decode($event->chapters, true);
 
-            foreach ($chapters as $key => $chapter) {
-                if(!empty($chapter))
-                {
-                    $postdata = [
-                        "eventID" => $event->eventID,
-                        "trID" => $chapter["trID"],
-                        "memberID" => $chapter["memberID"],
-                        "chunks" => json_encode($chapter["chunks"]),
-                        "chapter" => $key,
-                        "done" => isset($chapter["done"]) ? $chapter["done"] : false
-                    ];
+                foreach ($chapters as $key => $chapter) {
+                    if(!empty($chapter))
+                    {
+                        $postdata = [
+                            "eventID" => $event->eventID,
+                            "trID" => $chapter["trID"],
+                            "memberID" => $chapter["memberID"],
+                            "chunks" => json_encode($chapter["chunks"]),
+                            "chapter" => $key,
+                            "done" => isset($chapter["done"]) ? $chapter["done"] : false
+                        ];
 
-                    $this->_eventsModel->assignChapter($postdata);
+                        $this->_eventsModel->assignChapter($postdata);
+                    }
                 }
             }
-        }
 
-        echo "<h2>Done</h2>";
-        echo "<a href='/admin'>Go Back</a>";
+            echo "<h2>Done</h2>";
+            echo "<a href='/admin'>Go Back</a>";
+        } catch (\ErrorException $e) {
+            echo "<h3>There was an error or already migrated</h3>";
+            echo "<b>Reason:</b> " . $e->getMessage();
+        }
     }
 
 
@@ -3801,5 +3806,126 @@ class AdminController extends Controller {
 
         echo "<h2>Done (Updated rows: ".$updated.")</h2>";
         echo "<a href='/admin'>Go Back</a>";
+    }
+
+
+    /**
+     * Migrate to version v.6.9.0
+     */
+    function migrate8steps()
+    {
+        $data["menu"] = 1;
+
+        if (Session::get('loggedin') !== true) {
+            Url::redirect("members/login");
+        }
+
+        if (Session::get("isDemo")) {
+            Url::redirect('events/demo');
+        }
+
+        if (empty(Session::get("profile"))) {
+            Url::redirect("members/profile");
+        }
+
+        if (Session::get("isSuperAdmin")) {
+            $translators = $this->_eventsModel->getMembersForProject(["ulb", "udb"]);
+
+            try {
+                foreach ($translators as $translator) {
+                    $trID = $translator->trID;
+                    $step = $translator->step;
+                    $currentChapter = $translator->currentChapter;
+                    $checkerID = $translator->checkerID;
+                    $checkDone = $translator->checkDone;
+                    $verbCheck = (array)json_decode($translator->verbCheck, true);
+                    $peerCheck = (array)json_decode($translator->peerCheck, true);
+                    $kwCheck = (array)json_decode($translator->kwCheck, true);
+                    $crCheck = (array)json_decode($translator->crCheck, true);
+                    $otherCheck = (array)json_decode($translator->otherCheck, true);
+
+                    // Migrate completed chapters
+                    $tmpVerb = [];
+                    $tmpPeer = [];
+                    $tmpKw = [];
+                    $tmpCr = [];
+                    foreach ($verbCheck as $chapter => $member) {
+                        $tmpVerb[$chapter] = is_array($member) ? $member : ["memberID" => $member, "done" => 1];
+                    }
+                    $verbCheck = $tmpVerb;
+                    foreach ($peerCheck as $chapter => $member) {
+                        $tmpPeer[$chapter] = is_array($member) ? $member : ["memberID" => $member, "done" => 2];
+                    }
+                    $peerCheck = $tmpPeer;
+                    unset($tmpPeer);
+                    foreach ($kwCheck as $chapter => $member) {
+                        $tmpKw[$chapter] = is_array($member) ? $member : ["memberID" => $member, "done" => 2];
+                    }
+                    $kwCheck = $tmpKw;
+                    unset($tmpKw);
+                    foreach ($crCheck as $chapter => $member) {
+                        $tmpCr[$chapter] = is_array($member) ? $member : ["memberID" => $member, "done" => 2];
+                    }
+                    $crCheck = $tmpCr;
+                    unset($tmpCr);
+
+                    // Migrate in-progress chapters
+                    if ($step == EventSteps::PEER_REVIEW && $currentChapter > 0) {
+                        if ($checkerID > 0 && $checkDone) {
+                            $peerCheck[$currentChapter] = ["memberID" => $checkerID, "done" => 1];
+                        } else if ($checkerID > 0 && !$checkDone) {
+                            $peerCheck[$currentChapter] = ["memberID" => $checkerID, "done" => 0];
+                        } else {
+                            $peerCheck[$currentChapter] = ["memberID" => 0, "done" => 0];
+                        }
+                    }
+                    if ($step == EventSteps::KEYWORD_CHECK && $currentChapter > 0) {
+                        if ($checkerID > 0 && $checkDone) {
+                            $kwCheck[$currentChapter] = ["memberID" => $checkerID, "done" => 1];
+                        } else if ($checkerID > 0 && !$checkDone) {
+                            $kwCheck[$currentChapter] = ["memberID" => $checkerID, "done" => 0];
+                        } else {
+                            $kwCheck[$currentChapter] = ["memberID" => 0, "done" => 0];
+                        }
+                    }
+                    if ($step == EventSteps::CONTENT_REVIEW && $currentChapter > 0) {
+                        if ($checkerID > 0 && $checkDone) {
+                            $crCheck[$currentChapter] = ["memberID" => $checkerID, "done" => 1];
+                        } else if ($checkerID > 0 && !$checkDone) {
+                            $crCheck[$currentChapter] = ["memberID" => $checkerID, "done" => 0];
+                        } else {
+                            $crCheck[$currentChapter] = ["memberID" => 0, "done" => 0];
+                        }
+                    }
+
+                    // Migrate Final Review step
+                    foreach ($crCheck as $chapter => $data) {
+                        if ($step != EventSteps::FINAL_REVIEW) {
+                            if ($data["done"] == 2)
+                                $otherCheck[$chapter] = ["memberID" => 0, "done" => 1];
+                        } else {
+                            $otherCheck[$chapter] = ["memberID" => 0, "done" => 0];
+                        }
+                    }
+
+                    $updated = $this->_eventsModel->updateTranslator(
+                        [
+                            "verbCheck" => json_encode($verbCheck),
+                            "peerCheck" => json_encode($peerCheck),
+                            "kwCheck" => json_encode($kwCheck),
+                            "crCheck" => json_encode($crCheck),
+                            "otherCheck" => json_encode($otherCheck)
+                        ],
+                        ["trID" => $trID]
+                    );
+
+                    pr("------------");
+                    pr("trID: " . $trID . ", updated: " . ($updated ? "TRUE" : "FALSE"));
+                }
+            } catch (\ErrorException $e) {
+                pr("There was an error or already migrated");
+                pr("Reason: " . $e->getMessage());
+            }
+        }
     }
 }

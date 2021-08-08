@@ -80,7 +80,9 @@ if(isset($data["error"])) return;
                         <div class="main_content_confirm_desc"><?php echo __("confirm_finished")?></div>
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert" style="float:none">
                 </div>
             </form>
@@ -96,7 +98,7 @@ if(isset($data["error"])) return;
         <div class="help_info_steps<?php echo $data["isCheckerPage"] ? " is_checker_page_help" : "" ?>">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>: </span><?php echo __("blind-draft_tn")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("blind-draft_tn_desc")?></ul>
+                <ul><?php echo __("blind-draft_tn_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -122,7 +124,7 @@ if(isset($data["error"])) return;
 
         <div class="tutorial_content">
             <h3><?php echo __("blind-draft_tn")?></h3>
-            <ul><?php echo __("blind-draft_tn_desc")?></ul>
+            <ul><?php echo __("blind-draft_tn_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

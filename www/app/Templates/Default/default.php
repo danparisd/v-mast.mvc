@@ -55,33 +55,39 @@ if(!isset($data)) $data = ["menu" => 1];
     <script src="https://browser.sentry-cdn.com/5.15.5/bundle.min.js" integrity="<?php echo Config::get("sentry.integrity") ?>" crossorigin="anonymous"></script>
 
     <script>
-        Sentry.init({
-            dsn: '<?php echo Config::get("sentry.dsn_js") ?>',
-            release: '<?php echo Config::get("version.release") ?>',
-            environment: '<?php echo ENVIRONMENT ?>'
-        });
+        if (typeof Sentry === 'object') {
+            Sentry.init({
+                dsn: '<?php echo Config::get("sentry.dsn_js") ?>',
+                release: '<?php echo Config::get("version.release") ?>',
+                environment: '<?php echo ENVIRONMENT ?>'
+            });
+        }
     </script>
 
     <!-- LogRocket initialization -->
     <?php if(Config::get("app.type") == "remote"): ?>
         <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
         <script>
-            window.LogRocket && window.LogRocket.init('<?php echo Config::get("logrocket.project") ?>', {
-                release: '<?php echo Config::get("version.release") ?>',
-                dom: {
-                    baseHref: 'https://v-mast.com/',
-                },
-            });
+            if (typeof LogRocket === 'object') {
+                LogRocket && LogRocket.init('<?php echo Config::get("logrocket.project") ?>', {
+                    release: '<?php echo Config::get("version.release") ?>',
+                    dom: {
+                        baseHref: '<?php echo Config::get("app.url") ?>',
+                    },
+                });
+            }
         </script>
 
         <?php if(Session::get("userName")): ?>
             <script>
-                LogRocket.identify('<?php echo Session::get("userName") ?>');
-                LogRocket.getSessionURL(sessionURL => {
-                    Sentry.configureScope(scope => {
-                        scope.setExtra("sessionURL", sessionURL);
+                if (typeof LogRocket === 'object') {
+                    LogRocket.identify('<?php echo Session::get("userName") ?>');
+                    LogRocket.getSessionURL(sessionURL => {
+                        Sentry.configureScope(scope => {
+                            scope.setExtra("sessionURL", sessionURL);
+                        });
                     });
-                });
+                }
             </script>
         <?php endif; ?>
     <?php endif; ?>
@@ -90,7 +96,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css'),
-    template_url('css/style.css?112'),
+    template_url('css/style.css?114'),
     template_url('css/jquery-ui.min.css'),
     template_url('css/jquery-ui.structure.min.css'),
     template_url('css/jquery-ui.theme.min.css'),
@@ -105,8 +111,8 @@ echo isset($css) ? $css : ''; // Place to pass data / plugable hook zone
 Assets::js([
     template_url('js/jquery.js'),
     template_url('js/jquery.actual.min.js'),
-    template_url('js/main.js?108', 'Default'),
-    (Session::get("isAdmin") || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?32') : ''),
+    template_url('js/main.js?110', 'Default'),
+    (Session::get("isAdmin") || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?33') : ''),
     (Session::get("isSuperAdmin") ? template_url('js/admin.js?50') : ''),
     template_url('js/bootstrap.min.js'),
     template_url('js/autosize.min.js?2'),
@@ -233,6 +239,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                         && in_array($notification->manageMode, ["sun","tn","tq","tw","rad"]) ? "-".$notification->manageMode : "")
                                         ."/".$notification->eventID."/"
                                         .$notification->memberID."/"
+                                        .(!isset($notification->manageMode) && in_array($notification->bookProject, ["ulb", "udb"]) ? $notification->currentChapter."/" : "")
                                         .$notification->step."/"
                                         .(isset($notification->manageMode) ? $notification->currentChapter."/" : "")
                                         ."apply";

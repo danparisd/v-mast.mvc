@@ -1,5 +1,6 @@
 <?php
 use Helpers\Constants\EventMembers;
+use Helpers\Constants\EventSteps;
 
 if(isset($data["error"])) return;
 ?>
@@ -41,7 +42,7 @@ if(isset($data["error"])) return;
         <div class="main_content_title"><?php echo __("step_num", ["step_number" => 5]). ": " . __("self-check")?></div>
     </div>
 
-    <div class="">
+    <div>
         <div class="main_content">
             <form action="" method="post" id="main_form">
                 <div class="main_content_text row" style="padding-left: 15px">
@@ -119,8 +120,23 @@ if(isset($data["error"])) return;
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
-                    <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
+                    <?php if ($data["nextChapter"] > 0): ?>
+                    <div class="form-group"><?php echo __("next_chapter_step_note"); ?></div>
+                    <?php endif; ?>
+
+                    <div class="form-group">
+                        <button id="next_step" type="submit" name="submitStep" value="1" class="btn btn-primary" disabled>
+                            <?php echo __($data["next_step"])?>
+                        </button>
+                        <?php if ($data["nextChapter"] > 0): ?>
+                        &nbsp;
+                        &nbsp;
+                        <button id="next_chapter" type="submit" name="submitChapter" value="1" class="btn btn-success" disabled>
+                            <?php echo __("next_chapter")?>
+                        </button>
+                        <?php endif; ?>
+                        <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
+                    </div>
                 </div>
             </form>
             <div class="step_right alt"><?php echo __("step_num", ["step_number" => 5])?></div>
@@ -135,7 +151,7 @@ if(isset($data["error"])) return;
         <div class="help_info_steps">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 5])?>:</span> <?php echo __("self-check")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("self-check_desc")?></ul>
+                <ul><?php echo __("self-check_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -176,7 +192,7 @@ if(isset($data["error"])) return;
 
         <div class="tutorial_content">
             <h3><?php echo __("self-check")?></h3>
-            <ul><?php echo __("self-check_desc")?></ul>
+            <ul><?php echo __("self-check_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

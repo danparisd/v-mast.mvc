@@ -400,9 +400,20 @@ $profile = Session::get("profile");
             </div>
             <div class="event_action">
                 <div class="event_link">
+                    <?php
+                    $chapterLink = in_array($event->step, [
+                            EventSteps::PEER_REVIEW,
+                            EventSteps::KEYWORD_CHECK,
+                            EventSteps::CONTENT_REVIEW,
+                            EventSteps::FINAL_REVIEW,
+                    ])
+                        && in_array($event->bookProject, ["ulb","udb"])
+                        && $event->currentChapter > 0
+                            ? "/" . $event->currentChapter : "";
+                    ?>
                     <a href="/events/translator<?php echo ($event->sourceBible == "odb" ? "-odb" : "")
                             .(in_array($event->bookProject, ["tn","sun","tq","tw","rad"]) ? "-".
-                            $event->bookProject : "") ?>/<?php echo $event->eventID ?>">
+                            $event->bookProject : "") ?>/<?php echo $event->eventID . $chapterLink?>">
                         <?php echo __("continue_alt") ?>
                     </a>
                 </div>
@@ -426,33 +437,23 @@ $profile = Session::get("profile");
         <?php
         $mode = $event->bookProject;
 
-        if(in_array($mode, ["ulb","udb"]))
-        {
+        if(in_array($mode, ["ulb","udb"])) {
             $eventType = $event->langInput ? __("lang_input") : __("8steps_vmast");
-        }
-        elseif ($mode == "sun")
-        {
+        } elseif ($mode == "sun") {
             $eventType = $event->sourceBible == "odb" ? __("odb") : __("vsail");
-        }
-        else
-        {
+        } else {
             $eventType = "";
         }
 
-        if ($mode == "sun")
-        {
+        if ($mode == "sun") {
             $eventImg = template_url("img/steps/big/vsail.png");
-        }
-        elseif ($mode == "rad")
-        {
+        } elseif ($mode == "rad") {
             $eventImg = template_url("img/steps/big/radio.png");
-        }
-        else
-        {
+        } else {
             $eventImg = template_url("img/steps/big/peer-review.png");
         }
 
-            $tw_group = $event->bookProject == "tw" ? json_decode($event->words, true) : [];
+        $tw_group = $event->bookProject == "tw" ? json_decode($event->words, true) : [];
         ?>
         <div class="event_block <?php echo $key%2 == 0 ? "gray-marked" : "" ?>">
             <div class="event_logo checking">
@@ -517,7 +518,7 @@ $profile = Session::get("profile");
                     <a href="/events/checker<?php echo ($event->sourceBible == "odb" ? "-odb" : "")
                         .(in_array($event->bookProject, ["tn","sun","tq","tw","rad"]) ? "-".$event->bookProject : "")
                             ."/".$event->eventID."/".$event->memberID
-                            .(isset($event->isContinue) || in_array($event->bookProject, ["tq","tw"]) ? "/".$event->currentChapter : "")?>"
+                            .(isset($event->isContinue) || in_array($event->bookProject, ["tq","tw", "ulb", "udb"]) ? "/".$event->currentChapter : "")?>"
                        data="<?php echo $event->eventID."_".$event->memberID?>">
                         <?php echo __("continue_alt") ?>
                     </a>

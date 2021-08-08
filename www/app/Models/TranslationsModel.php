@@ -118,10 +118,9 @@ class TranslationsModel extends Model
                 "translations.translatedVerses",
                 "translations.firstvs", "translations.dateUpdate", "translators.memberID", "translators.step",
                 "translators.verbCheck", "translators.peerCheck", "translators.kwCheck", "translators.crCheck",
-                "translators.otherCheck", "translators.currentChapter", "translators.checkerID")
+                "translators.otherCheck", "translators.currentChapter")
             ->leftJoin("translations", "translators.trID", "=", "translations.trID")
             ->where("translators.eventID", $eventID)
-            //->where("translators.step", "!=", EventSteps::NONE)
             ->orderBy("translations.chapter")
             ->orderBy("translations.chunk");
 

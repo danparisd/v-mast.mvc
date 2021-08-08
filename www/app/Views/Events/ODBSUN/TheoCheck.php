@@ -123,7 +123,9 @@ if(isset($data["error"])) return;
                     <input type="hidden" name="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
                     <input type="hidden" name="memberID" value="<?php echo $data["event"][0]->memberID ?>">
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert" style="float:none">
                 </div>
             </form>
@@ -139,7 +141,7 @@ if(isset($data["error"])) return;
         <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 5])?>:</span> <?php echo __("theo-check_odb")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("theo-check_desc")?></ul>
+                <ul><?php echo __("theo-check_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -165,12 +167,11 @@ if(isset($data["error"])) return;
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/content-review.png") ?>" width="100" height="100">
             <img src="<?php echo template_url("img/steps/big/content-review.png") ?>" width="280" height="280">
-            
         </div>
 
         <div class="tutorial_content is_checker_page_help">
             <h3><?php echo __("theo-check_odb")?></h3>
-            <ul><?php echo __("theo-check_desc")?></ul>
+            <ul><?php echo __("theo-check_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

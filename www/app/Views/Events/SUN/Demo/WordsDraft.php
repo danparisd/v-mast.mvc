@@ -1,15 +1,8 @@
-<?php
-use Helpers\Constants\EventMembers;
-?>
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
             <div class="demo_title"><?php echo __("demo") . " (".__("vsail").")" ?></div>
             <div><?php echo __("step_num", ["step_number" => 3]). ": " . __("rearrange")?></div>
-        </div>
-        <div class="demo_video">
-            <span class="glyphicon glyphicon-play"></span>
-            <a href="#"><?php echo __("demo_video"); ?></a>
         </div>
     </div>
 
@@ -42,7 +35,9 @@ use Helpers\Constants\EventMembers;
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert" style="float:none">
                 </div>
             </form>
@@ -58,7 +53,7 @@ use Helpers\Constants\EventMembers;
         <div class="help_info_steps">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>:</span> <?php echo __("rearrange")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("rearrange_desc")?></ul>
+                <ul><?php echo __("rearrange_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -90,7 +85,7 @@ use Helpers\Constants\EventMembers;
 
         <div class="tutorial_content">
             <h3><?php echo __("rearrange")?></h3>
-            <ul><?php echo __("rearrange_desc")?></ul>
+            <ul><?php echo __("rearrange_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

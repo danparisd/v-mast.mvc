@@ -32,6 +32,7 @@ use \Helpers\Constants\EventSteps;
                                 && in_array($notification->manageMode, ["sun","tn","tq","tw"]) ? "-".$notification->manageMode : "")
                                 ."/".$notification->eventID."/"
                                 .$notification->memberID."/"
+                                .(!isset($notification->manageMode) && in_array($notification->bookProject, ["ulb", "udb"]) ? $notification->currentChapter."/" : "")
                                 .$notification->step."/"
                                 .(isset($notification->manageMode) ? $notification->currentChapter."/" : "")
                                 ."apply";

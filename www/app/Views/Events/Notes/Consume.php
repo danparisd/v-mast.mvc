@@ -32,7 +32,9 @@ if(isset($data["error"])) return;
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                 </form>
                 <div class="step_right"><?php echo __("step_num", ["step_number" => 1])?></div>
             </div>
@@ -48,7 +50,7 @@ if(isset($data["error"])) return;
         <div class="help_info_steps <?php echo $data["isCheckerPage"] ? "is_checker_page_help" : "" ?>">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 1])?>: </span><?php echo __("consume_tn")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("consume_tn_desc")?></ul>
+                <ul><?php echo __("consume_tn_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -74,7 +76,7 @@ if(isset($data["error"])) return;
 
         <div class="tutorial_content<?php echo $data["isCheckerPage"] ? " is_checker_page_help" : "" ?>">
             <h3><?php echo __("consume_tn")?></h3>
-            <ul><?php echo __("consume_tn_desc")?></ul>
+            <ul><?php echo __("consume_tn_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

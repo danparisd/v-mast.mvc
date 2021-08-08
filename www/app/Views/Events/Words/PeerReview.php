@@ -121,7 +121,9 @@ $parsedown = new Parsedown();
                 <input type="hidden" name="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
                 <input type="hidden" name="memberID" value="<?php echo $data["event"][0]->memberID ?>">
 
-                <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                    <?php echo __($data["next_step"])?>
+                </button>
                 <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert" style="float:none">
             </div>
             </form>
@@ -140,7 +142,7 @@ $parsedown = new Parsedown();
                 <?php echo __("peer-review_tw")?>
             </div>
             <div class="help_descr_steps">
-                <ul><?php echo __("peer-review_tw_desc")?></ul>
+                <ul><?php echo __("peer-review_tw_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -165,12 +167,11 @@ $parsedown = new Parsedown();
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" width="100px" height="100px">
             <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" width="280px" height="280px">
-
         </div>
 
         <div class="tutorial_content">
             <h3><?php echo __("peer-review_tw")?></h3>
-            <ul><?php echo __("peer-review_tw_desc")?></ul>
+            <ul><?php echo __("peer-review_tw_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

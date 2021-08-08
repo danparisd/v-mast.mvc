@@ -189,7 +189,9 @@ use Helpers\Constants\EventMembers;
                     <input type="hidden" name="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
                     <input type="hidden" name="memberID" value="<?php echo $data["event"][0]->l2memberID ?>">
                     <input type="hidden" name="skip_kw" value="0">
-                    <button id="next_step" type="submit" name="submit_chk" class="btn btn-primary" disabled><?php echo __("continue")?></button>
+                    <button id="next_step" type="submit" name="submit_chk" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
@@ -207,7 +209,13 @@ use Helpers\Constants\EventMembers;
                 <span><?php echo __("peer-review-l2")?></span>
             </div>
             <div class="help_descr_steps">
-                <ul><?php echo $data["event"][0]->peer == 1 ? __("peer-review-l2_desc") : __("peer-review-l2_chk_desc")?></ul>
+                <ul>
+                    <?php if ($data["event"][0]->peer == 1): ?>
+                        <?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?>
+                    <?php else: ?>
+                        <?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?>
+                    <?php endif; ?>
+                </ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -253,12 +261,17 @@ use Helpers\Constants\EventMembers;
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" width="100px" height="100px">
             <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" width="280px" height="280px">
-
         </div>
 
         <div class="tutorial_content <?php echo $data["event"][0]->peer == 2 ? "is_checker_page_help" : "" ?>">
             <h3><?php echo __("peer-review-l2_full")?></h3>
-            <ul><?php echo $data["event"][0]->peer == 1 ? __("peer-review-l2_desc") : __("peer-review-l2_chk_desc")?></ul>
+            <ul>
+                <?php if ($data["event"][0]->peer == 1): ?>
+                    <?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?>
+                <?php else: ?>
+                    <?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?>
+                <?php endif; ?>
+            </ul>
         </div>
     </div>
 </div>

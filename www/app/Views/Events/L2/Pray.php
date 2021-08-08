@@ -27,7 +27,9 @@ if(isset($data["error"])) return;
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled><?php echo __("next_step")?></button>
+                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                        <?php echo __($data["next_step"])?>
+                    </button>
                 </form>
             </div>
         </div>
@@ -41,7 +43,7 @@ if(isset($data["error"])) return;
         <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("pray")?></span></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("pray_desc")?></ul>
+                <ul><?php echo __("pray_desc", ["step" => __($data["next_step"])])?></ul>
             </div>
         </div>
 

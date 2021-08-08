@@ -620,10 +620,13 @@ $(document).ready(function() {
 
     // Confirm to go to the next step
     $("#confirm_step").change(function() {
-        if($(this).is(":checked"))
+        if($(this).is(":checked")) {
             $("#next_step").prop("disabled", false);
-        else
+            $("#next_chapter").prop("disabled", false);
+        } else {
             $("#next_step").prop("disabled", true);
+            $("#next_chapter").prop("disabled", true);
+        }
     });
 
     $("#next_step").click(function(e) {
@@ -931,7 +934,6 @@ $(document).ready(function() {
 
     // Show/Hide notifications
     $(".notifications").click(function() {
-
         if(!$(".notif_block").is(":visible"))
         {
             $(".notif_block").show();
@@ -1298,11 +1300,6 @@ $(document).ready(function() {
             player.seekTo(0);
             player.pauseVideo();
         }
-    });
-
-    $(".demo_video a").click(function () {
-        $(".video_container").show();
-        return false;
     });
 
     $("#finalReview").submit(function () {
@@ -3241,12 +3238,13 @@ function convertLink(rc) {
     return "<a href='"+link+"' target='_blank'>"+title+"</a>";
 }
 
-function downloadCSV(csv, filename) {
-    var csvFile;
+// Download link for cv (csv, tsv, etc) file
+function downloadSV(sv, filename, format) {
+    var svFile;
     var downloadLink;
 
-    // CSV file
-    csvFile = new Blob([csv], {type: "application/csv"});
+    // SV file
+    svFile = new Blob([sv], {type: "application/" + format});
 
     // Download link
     downloadLink = document.createElement("a");
@@ -3255,7 +3253,7 @@ function downloadCSV(csv, filename) {
     downloadLink.download = filename;
 
     // Create a link to the file
-    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.href = window.URL.createObjectURL(svFile);
 
     // Hide download link
     downloadLink.style.display = "none";
@@ -3267,8 +3265,9 @@ function downloadCSV(csv, filename) {
     downloadLink.click();
 }
 
-function exportTableToCSV(parent, separator) {
-    var csv = [];
+// Export table as cv (csv, tsv, etc) content
+function exportTableToSV(parent, separator) {
+    var sv = [];
     var rows = parent.querySelectorAll("table tr");
 
     for (var i = 0; i < rows.length; i++) {
@@ -3277,11 +3276,11 @@ function exportTableToCSV(parent, separator) {
         for (var j = 0; j < cols.length; j++)
             row.push(cols[j].innerText);
 
-        csv.push(row.join(separator));
+        sv.push(row.join(separator));
     }
 
-    // return CSV content
-    return csv.join("\n");
+    // return SV content
+    return sv.join("\n");
 }
 
 /**
