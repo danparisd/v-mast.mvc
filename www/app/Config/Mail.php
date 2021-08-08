@@ -19,7 +19,7 @@ Config::set('mail', array(
     'encryption' => 'tls',
     'username'   => '',
     'password'   => '',
-    'sendmail'   => '',
+    'sendmail'   => '/usr/sbin/sendmail -bs',
 
     // Whether or not the Mailer will pretend to send the messages.
     'pretend' => false,

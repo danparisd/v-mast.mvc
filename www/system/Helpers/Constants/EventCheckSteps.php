@@ -41,17 +41,11 @@ class EventCheckSteps
     {
         switch($mode)
         {
-            case "l2":
-                return self::$enum[$step];
-                break;
-
             case "l3":
                 return self::$enumL3[$step];
-                break;
 
             default:
                 return self::$enum[$step];
-                break;
         }
     }
 
@@ -59,17 +53,11 @@ class EventCheckSteps
     {
         switch($mode)
         {
-            case "l2":
-                return self::$enum;
-                break;
-
             case "l3":
                 return self::$enumL3;
-                break;
 
             default:
                 return self::$enum;
-                break;
         }
     }
 }

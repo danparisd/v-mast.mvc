@@ -43,7 +43,7 @@ class AlmaController extends Controller
 
     public function index($bookCode = null)
     {
-        if (!Session::get('loggedin'))
+        if (!Session::get('memberID'))
         {
             Session::set('redirect', 'alma');
             Url::redirect('members/login');
@@ -65,7 +65,7 @@ class AlmaController extends Controller
 		setlocale(LC_ALL, 'bg_BG.UTF-8');  
         $bookInfo = $this->translationModel->getBookInfo($bookCode);
 
-        $text = $this->getBook("rsb", $bookInfo[0]->code, "ru", $bookInfo[0]->abbrID);
+        $text = $this->getBook("rsb", $bookInfo[0]->code, "ru", $bookInfo[0]->sort);
 
         $words = Word::with('translations')
                 ->orderBy('title')
@@ -262,7 +262,7 @@ class AlmaController extends Controller
 
     private function getMember()
     {
-        if (Session::get('loggedin')) {
+        if (Session::get('memberID')) {
             $member = DB::table('members')->where('memberID', Session::get('memberID'))->first();
         }
 

@@ -45,7 +45,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                 </div>
                 <div class="section_steps">
                     <!-- Input Step -->
-                    <?php if($data["event"][0]->langInput): ?>
+                    <?php if($event->langInput): ?>
                         <div class="section_step <?php echo $chapter["multiDraft"]["state"] ?>">
                             <div class="step_status"><?php echo __("step_status_" . $chapter["multiDraft"]["state"]) ?></div>
                             <div class="step_light"></div>
@@ -54,7 +54,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         </div>
                     <?php endif; ?>
                     <!-- Consume Step -->
-                    <?php if(!$data["event"][0]->langInput): ?>
+                    <?php if(!$event->langInput): ?>
                         <div class="section_step <?php echo $chapter["consume"]["state"] ?>">
                             <div class="step_status"><?php echo __("step_status_" . $chapter["consume"]["state"]) ?></div>
                             <div class="step_light"></div>
@@ -63,7 +63,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         </div>
                     <?php endif; ?>
                     <!-- Verbalize Step -->
-                    <?php if(!$data["event"][0]->langInput): ?>
+                    <?php if(!$event->langInput): ?>
                         <div class="section_step <?php echo $chapter["verb"]["state"] ?>">
                             <div class="step_status">
                                 <?php echo __("step_status_" . $chapter["verb"]["state"]) ?>
@@ -86,7 +86,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         </div>
                     <?php endif; ?>
                     <!-- Chunking Step -->
-                    <?php if(!$data["event"][0]->langInput): ?>
+                    <?php if(!$event->langInput): ?>
                         <div class="section_step <?php echo $chapter["chunking"]["state"] ?>">
                             <div class="step_status"><?php echo __("step_status_" . $chapter["chunking"]["state"]) ?></div>
                             <div class="step_light"></div>
@@ -110,7 +110,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         </div>
                     <?php endif; ?>
                     <!-- Blind Draft Step -->
-                    <?php if(!$data["event"][0]->langInput): ?>
+                    <?php if(!$event->langInput): ?>
                         <div class="section_step <?php echo $chapter["blindDraft"]["state"] ?>">
                             <div class="step_status"><?php echo __("step_status_" . $chapter["blindDraft"]["state"]) ?></div>
                             <div class="step_light"></div>
@@ -123,10 +123,10 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         <div class="step_status"><?php echo __("step_status_" . $chapter["selfEdit"]["state"]) ?></div>
                         <div class="step_light"></div>
                         <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventSteps::SELF_CHECK.".png") ?>"></div>
-                        <div class="step_name"><?php echo $data["event"][0]->langInput ? "2" : "5" ?>. <?php echo __(EventSteps::SELF_CHECK); ?></div>
+                        <div class="step_name"><?php echo $event->langInput ? "2" : "5" ?>. <?php echo __(EventSteps::SELF_CHECK); ?></div>
                     </div>
                     <!-- Peer Check Step -->
-                    <?php if(!$data["event"][0]->langInput): ?>
+                    <?php if(!$event->langInput): ?>
                         <div class="section_step <?php echo $chapter["peer"]["state"] ?>">
                             <div class="step_status">
                                 <?php echo __("step_status_" . $chapter["peer"]["state"]) ?>
@@ -149,7 +149,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         </div>
                     <?php endif; ?>
                     <!-- Keyword Check Step -->
-                    <?php if(!$data["event"][0]->langInput): ?>
+                    <?php if(!$event->langInput): ?>
                         <div class="section_step <?php echo $chapter["kwc"]["state"] ?>">
                             <div class="step_status">
                                 <?php echo __("step_status_" . $chapter["kwc"]["state"]) ?>
@@ -172,7 +172,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         </div>
                     <?php endif; ?>
                     <!-- Verse-by-Verse Step -->
-                    <?php if(!$data["event"][0]->langInput): ?>
+                    <?php if(!$event->langInput): ?>
                         <div class="section_step <?php echo $chapter["crc"]["state"] ?>">
                             <div class="step_status">
                                 <?php echo __("step_status_" . $chapter["crc"]["state"]) ?>
@@ -195,7 +195,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         </div>
                     <?php endif; ?>
                     <!-- Final Review Step -->
-                    <?php if(!$data["event"][0]->langInput): ?>
+                    <?php if(!$event->langInput): ?>
                         <div class="section_step finalReview <?php echo $chapter["finalReview"]["state"] ?>">
                             <div class="step_status"><?php echo __("step_status_" . $chapter["finalReview"]["state"]) ?></div>
                             <div class="step_light"></div>

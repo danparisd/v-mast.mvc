@@ -3,16 +3,16 @@ use Helpers\Constants\EventStates;
 
 $language = Language::code();
 
-if(!empty($data["project"])):
+if($project):
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h1 class="panel-title">
-            <?php echo "[".$data["project"][0]->targetLang."] " 
-                . $data["project"][0]->tLang 
-                . ($data["project"][0]->tLang != $data["project"][0]->tAng 
-                    && $data["project"][0]->tAng != "" ? " (" . $data["project"][0]->tAng . ")" : "")
-                . " - ".__($data["project"][0]->bookProject) ?>
+            <?php echo "[".$project->targetLang."] "
+                . $project->targetLanguage->langName
+                . ($project->targetLanguage->langName != $project->targetLanguage->angName
+                    && $project->targetLanguage->angName != "" ? " (" . $project->targetLanguage->angName . ")" : "")
+                . " - ".__($project->bookProject) ?>
         </h1>
     </div>
 
@@ -26,20 +26,20 @@ if(!empty($data["project"])):
                 <div class="add-event-btn">
                     <img class="contibLoader" width="24px" src="<?php echo template_url("img/loader.gif") ?>">
                     <button style="margin-top: 12px" class="btn btn-warning showAllContibutors"
-                            data-projectid="<?php echo $data["project"][0]->projectID ?>"><?php echo __("contributors") ?></button>
+                            data-projectid="<?php echo $project->projectID ?>"><?php echo __("contributors") ?></button>
                 </div>
                 <div class="add-event-btn">
                     <img class="cacheLoader" width="24px" src="<?php echo template_url("img/loader.gif") ?>">
                     <button style="margin-top: 12px" class="btn btn-danger"
                             name="updateAllCache"
-                            data-sourcelangid="<?php echo $data["project"][0]->sourceLangID ?>"
-                            data-sourcebible="<?php echo $data["project"][0]->sourceBible ?>"><?php echo __("update_cache_all") ?></button>
+                            data-sourcelangid="<?php echo $project->sourceLangID ?>"
+                            data-sourcebible="<?php echo $project->sourceBible ?>"><?php echo __("update_cache_all") ?></button>
                 </div>
             </div>
         </div>
 
-        <?php foreach($data["events"] as $event): ?>
-            <?php if($event->abbrID == 1): ?>
+        <?php foreach($bookInfos as $bookInfo): ?>
+            <?php if($bookInfo->sort == 1): ?>
             <div class="row" id="old_test">
                 <div class="project_progress progress <?php echo $data["OTprogress"] <= 0 ? "zero" : ""?>">
                     <div class="progress-bar progress-bar-success" role="progressbar"
@@ -49,7 +49,7 @@ if(!empty($data["project"])):
                     </div>
                 </div>
                 <div class="col-sm-12">
-            <?php elseif($event->abbrID == 41): ?>
+            <?php elseif($bookInfo->sort == 41): ?>
             <div class="row" id="new_test">
                 <div class="project_progress progress <?php echo $data["NTprogress"] <= 0 ? "zero" : ""?>">
                     <div class="progress-bar progress-bar-success" role="progressbar"
@@ -60,7 +60,7 @@ if(!empty($data["project"])):
                 </div>
                 <div class="col-sm-12">
             <?php endif; ?>
-                <?php if($event->abbrID == 1 || $event->abbrID == 41): ?>
+                <?php if($bookInfo->sort == 1 || $bookInfo->sort == 41): ?>
 
                 <table class="table table-bordered table-hover" role="grid">
                     <thead>
@@ -77,16 +77,16 @@ if(!empty($data["project"])):
                     <tbody>
                 <?php endif; ?>
                         <tr>
-                            <td><?php echo $event->name ?></td>
-                            <td class="datetime" data="<?php echo $event->dateFrom != "" && $event->dateFrom != "0000-00-00 00:00:00" ?
-                                date(DATE_RFC2822, strtotime($event->dateFrom)) : "" ?>">
-                                <?php echo $event->dateFrom != "" && $event->dateFrom != "0000-00-00 00:00:00" ? $event->dateFrom . " UTC" : "" ?></td>
-                            <td class="datetime" data="<?php echo $event->dateTo != "" && $event->dateTo != "0000-00-00 00:00:00" ?
-                                date(DATE_RFC2822, strtotime($event->dateTo)) : "" ?>">
-                                <?php echo $event->dateTo != "" && $event->dateTo != "0000-00-00 00:00:00" ? $event->dateTo . " UTC" : "" ?></td>
-                            <td><?php echo $event->state ? __("state_".$event->state) : "" ?></td>
+                            <td><?php echo $bookInfo->name ?></td>
+                            <td class="datetime" data="<?php echo $bookInfo->event && $bookInfo->event->dateFrom != "" && $bookInfo->event->dateFrom != "0000-00-00 00:00:00" ?
+                                date(DATE_RFC2822, strtotime($bookInfo->event->dateFrom)) : "" ?>">
+                                <?php echo $bookInfo->event && $bookInfo->event->dateFrom != "" && $bookInfo->event->dateFrom != "0000-00-00 00:00:00" ? $bookInfo->event->dateFrom . " UTC" : "" ?></td>
+                            <td class="datetime" data="<?php echo $bookInfo->event && $bookInfo->event->dateTo != "" && $bookInfo->event->dateTo != "0000-00-00 00:00:00" ?
+                                date(DATE_RFC2822, strtotime($bookInfo->event->dateTo)) : "" ?>">
+                                <?php echo $bookInfo->event && $bookInfo->event->dateTo != "" && $bookInfo->event->dateTo != "0000-00-00 00:00:00" ? $bookInfo->event->dateTo . " UTC" : "" ?></td>
+                            <td><?php echo $bookInfo->event && $bookInfo->event->state ? __("state_".$bookInfo->event->state) : "" ?></td>
                             <td style="position:relative;">
-                                <div class="event_column progress zero" data-eventid="<?php echo $event->eventID?>">
+                                <div class="event_column progress zero" data-eventid="<?php echo $bookInfo->event ? $bookInfo->event->eventID : ""?>">
                                     <div class="progress-bar progress-bar-success" role="progressbar"
                                          aria-valuenow="0"
                                          aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 0%">
@@ -96,63 +96,63 @@ if(!empty($data["project"])):
                                 </div>
                             </td>
                             <td style="white-space: nowrap">
-                                <?php if($event->state != ""
-                                    && EventStates::enum($event->state) >= EventStates::enum(EventStates::TRANSLATED)
-                                    && in_array($data["project"][0]->bookProject, ["ulb","udb"])): ?>
-                                    <button class="btn btn-warning showContributors" data-eventid="<?php echo $event->eventID?>" data-level="1">
+                                <?php if($bookInfo->event && $bookInfo->event->state != ""
+                                    && EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED)
+                                    && in_array($project->bookProject, ["ulb","udb"])): ?>
+                                    <button class="btn btn-warning showContributors" data-eventid="<?php echo $bookInfo->event->eventID?>" data-level="1">
                                         <?php echo __("L1") ?>
                                     </button>
                                 <?php endif; ?>
-                                <?php if($event->state != ""
-                                    && (EventStates::enum($event->state) >= EventStates::enum(EventStates::L2_CHECKED)
-                                        || (EventStates::enum($event->state) >= EventStates::enum(EventStates::TRANSLATED)
-                                        && in_array($data["project"][0]->bookProject, ["tn","tq","tw"])))
-                                    && $data["project"][0]->bookProject != "sun"): ?>
+                                <?php if($bookInfo->event && $bookInfo->event->state != ""
+                                    && (EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::L2_CHECKED)
+                                        || (EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED)
+                                        && in_array($project->bookProject, ["tn","tq","tw"])))
+                                    && $project->bookProject != "sun"): ?>
                                     <button class="btn btn-warning showContributors"
-                                            data-eventid="<?php echo $event->eventID?>"
+                                            data-eventid="<?php echo $bookInfo->event->eventID?>"
                                             data-level="2"
-                                            data-mode="<?php echo $data["project"][0]->bookProject ?>">
+                                            data-mode="<?php echo $project->bookProject ?>">
                                         <?php echo __("L2") ?>
                                     </button>
                                 <?php endif; ?>
-                                <?php if($event->state != "" && EventStates::enum($event->state) >= EventStates::enum(EventStates::COMPLETE)): ?>
+                                <?php if($bookInfo->event && $bookInfo->event->state != "" && EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::COMPLETE)): ?>
                                     <button class="btn btn-warning showContributors"
-                                            data-eventid="<?php echo $event->eventID?>"
+                                            data-eventid="<?php echo $bookInfo->event->eventID?>"
                                             data-level="3"
-                                            data-mode="<?php echo $data["project"][0]->bookProject ?>">
+                                            data-mode="<?php echo $project->bookProject ?>">
                                         <?php echo __("L3") ?>
                                     </button>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php
-                                switch($event->state)
+                                switch($bookInfo->event)
                                 {
                                     case null:
                                         echo '<button 
-                                            data-bookcode="'.$event->code.'" 
-                                            data-bookname="'.$event->name.'" 
-                                            data-chapternum="'.$event->chaptersNum.'" 
+                                            data-bookcode="'.$bookInfo->code.'" 
+                                            data-bookname="'.$bookInfo->name.'" 
+                                            data-chapternum="'.$bookInfo->chaptersNum.'" 
                                                 class="btn btn-primary startEvnt">'.__("create").'</button>';
                                         break;
 
                                     default:
                                         echo '<button 
-                                            data-bookcode="'.$event->code.'" 
-                                            data-eventid="'.$event->eventID.'" 
-                                            data-abbrid="'.$event->abbrID.'"
+                                            data-bookcode="'.$bookInfo->code.'" 
+                                            data-eventid="'.$bookInfo->event->eventID.'" 
+                                            data-sort="'.$bookInfo->sort.'"
                                                 class="btn btn-success editEvnt">'.__("edit").'</button>';
                                 }
                                 ?>
                             </td>
                         </tr>
 
-            <?php if($event->abbrID == 39): ?>
+            <?php if($bookInfo->sort == 39): ?>
                     </tbody>
                 </table>
                 </div>
             </div>
-            <?php elseif($event->abbrID == 67): ?>
+            <?php elseif($bookInfo->sort == 67): ?>
                     </tbody>
                 </table>
                 </div>
@@ -183,7 +183,7 @@ if(!empty($data["project"])):
                     </li>
                     <li class="deleteEvent"><?php echo __("delete"); ?></li>
 
-                    <?php if(in_array($data["project"][0]->bookProject, ["ulb","udb"])):?>
+                    <?php if(in_array($project->bookProject, ["ulb","udb"])):?>
                     <hr>
                     <div class="event_links_l1">
                         <li class="option_group"><?php echo __("translation_event") ?></li>
@@ -192,7 +192,7 @@ if(!empty($data["project"])):
                     </div>
                     <?php endif; ?>
 
-                    <?php if($data["project"][0]->bookProject != "sun"): ?>
+                    <?php if($project->bookProject != "sun"): ?>
                     <hr>
                     <div class="event_links_l2">
                         <li class="option_group"><?php echo __("l2_3_events", ["level" => 2]) ?></li>
@@ -230,10 +230,10 @@ if(!empty($data["project"])):
                             </div>
                         </div>
 
-                        <?php if($data["project"][0]->bookProject != "sun"): ?>
+                        <?php if($project->bookProject != "sun"): ?>
                         <div class="event_level_radio">
                             <label style="width: 100%; display: block"><?php echo __('choose_event_level'); ?></label>
-                            <?php if(in_array($data["project"][0]->bookProject, ["ulb","udb"])):?>
+                            <?php if(in_array($project->bookProject, ["ulb","udb"])):?>
                             <label>
                                 <input type="radio" name="eventLevel" value="1" class="event_l_1" checked>
                                 <?php echo __("level2_3_check", ["level" => 1]) ?>
@@ -241,7 +241,7 @@ if(!empty($data["project"])):
                             <?php endif; ?>
                             <label>
                                 <input type="radio" name="eventLevel" value="2" class="event_l_2"
-                                    <?php echo !in_array($data["project"][0]->bookProject, ["ulb","udb"]) ? "checked" : "" ?>>
+                                    <?php echo !in_array($project->bookProject, ["ulb","udb"]) ? "checked" : "" ?>>
                                 <?php echo __("level2_3_check", ["level" => 2]) ?>
                             </label>&nbsp;&nbsp;
                             <label>
@@ -251,7 +251,7 @@ if(!empty($data["project"])):
                         </div>
 
                         <div class="event_imports">
-                            <?php if($data["project"][0]->bookProject == "tn"): ?>
+                            <?php if($project->bookProject == "tn"): ?>
                             <div class="import tn_l1_import">
                                 <div class="import_title"><?php echo __("tn") ?> L1</div>
                                 <div class="import_link" data-source="tn_l1" title="<?php echo __("import_translation_tip") ?>">
@@ -270,7 +270,7 @@ if(!empty($data["project"])):
                             </div>
                             <?php endif; ?>
 
-                            <?php if($data["project"][0]->bookProject == "tq"): ?>
+                            <?php if($project->bookProject == "tq"): ?>
                             <div class="import tq_l1_import">
                                 <div class="import_title"><?php echo __("tq") ?> L1</div>
                                 <div class="import_link" data-source="tq_l1" title="<?php echo __("import_translation_tip") ?>">
@@ -289,7 +289,7 @@ if(!empty($data["project"])):
                             </div>
                             <?php endif; ?>
 
-                            <?php if(!in_array($data["project"][0]->bookProject, ["tn","tq"])): ?>
+                            <?php if(!in_array($project->bookProject, ["tn","tq"])): ?>
                             <div class="import l1_import">
                                 <div class="import_title"><?php echo __("book") ?> L1</div>
                                 <div class="import_link" data-source="l1" title="<?php echo __("import_translation_tip") ?>">
@@ -309,7 +309,7 @@ if(!empty($data["project"])):
                                 <div class="import_progress glyphicon glyphicon-info-sign" title="<?php echo __("step_status_in_progress"); ?>"></div>
                             </div>
 
-                            <?php if(!in_array($data["project"][0]->bookProject, ["ulb","udb"])): ?>
+                            <?php if(!in_array($project->bookProject, ["ulb","udb"])): ?>
                             <div class="import l3_import">
                                 <div class="import_title"><?php echo __("book") ?> L3</div>
                                 <div class="import_link" data-source="l3" title="<?php echo __("import_translation_tip") ?>">
@@ -322,7 +322,7 @@ if(!empty($data["project"])):
                         </div>
                         <?php endif; ?>
 
-                        <?php if($data["project"][0]->bookProject == "ulb"): ?>
+                        <?php if($project->bookProject == "ulb"): ?>
                         <div class="form-control language_input_checkbox">
                             <label>
                                 <input type="checkbox" name="langInput">
@@ -333,16 +333,16 @@ if(!empty($data["project"])):
 
                         <input type="hidden" name="eID" id="eID" value="">
                         <input type="hidden" name="act" id="eventAction" value="create">
-                        <input type="hidden" name="abbrID" id="abbrID" value="" />
+                        <input type="hidden" name="sort" id="sort" value="" />
                         <input type="hidden" name="book_code" id="bookCode" value="" />
-                        <input type="hidden" name="projectID" id="projectID" value="<?php echo $data["project"][0]->projectID?>" />
-                        <input type="hidden" name="sourceBible" id="sourceBible" value="<?php echo $data["project"][0]->sourceBible?>" />
-                        <input type="hidden" name="bookProject" id="bookProject" value="<?php echo $data["project"][0]->bookProject?>" />
-                        <input type="hidden" name="sourceLangID" id="sourceLangID" value="<?php echo $data["project"][0]->sourceLangID?>" />
-                        <input type="hidden" name="targetLangID" id="targetLangID" value="<?php echo $data["project"][0]->targetLang?>" />
+                        <input type="hidden" name="projectID" id="projectID" value="<?php echo $project->projectID?>" />
+                        <input type="hidden" name="sourceBible" id="sourceBible" value="<?php echo $project->sourceBible?>" />
+                        <input type="hidden" name="bookProject" id="bookProject" value="<?php echo $project->bookProject?>" />
+                        <input type="hidden" name="sourceLangID" id="sourceLangID" value="<?php echo $project->sourceLangID?>" />
+                        <input type="hidden" name="targetLangID" id="targetLangID" value="<?php echo $project->targetLang?>" />
                         <input type="hidden" name="initialLevel" id="initialLevel" value="1" />
                         <input type="hidden" name="importLevel" id="importLevel" value="1" />
-                        <input type="hidden" name="importProject" id="importProject" value="<?php echo $data["project"][0]->bookProject?>" />
+                        <input type="hidden" name="importProject" id="importProject" value="<?php echo $project->bookProject?>" />
 
                         <br>
                         <button type="submit" name="startEvent" class="btn btn-primary"><?php echo __("create"); ?></button>

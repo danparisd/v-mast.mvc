@@ -110,34 +110,6 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
             "memberID" => "[0-9]+",
             "chapter" => "[0-9]+"
         ]);
-    Router::any("information/{eventID}", "EventsController@information")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-tn/{eventID}", "EventsController@informationNotes")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-tq/{eventID}", "EventsController@informationQuestions")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-tw/{eventID}", "EventsController@informationWords")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-l2/{eventID}", "EventsController@informationL2")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-tn-l3/{eventID}", "EventsController@informationL3")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-l3/{eventID}", "EventsController@informationL3")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-sun/{eventID}", "EventsController@informationSun")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-odb-sun/{eventID}", "EventsController@informationOdbSun")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-rad/{eventID}", "EventsController@informationRadio")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("manage/{eventID}", "EventsController@manage")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("manage-tw/{eventID}", "EventsController@manageTw")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("manage-l2/{eventID}", "EventsController@manageL2")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("manage-l3/{eventID}", "EventsController@manageL3")
-        ->where(["eventID" => "[0-9]+"]);
     Router::any("checker/{eventID}/{memberID}/{chapter}", "EventsController@checker")
         ->where([
             "eventID" => "[0-9]+",
@@ -228,21 +200,8 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
             "step" => "[2a-z\-]+"
         ]);
 
-    Router::any("notifications", "EventsController@allNotifications");
-    Router::any("demo/{page?}", "EventsController@demo");
-    Router::any("demo-scripture-input/{page?}", "EventsController@demoLangInput");
-    Router::any("demo-l2/{page?}", "EventsController@demoL2");
-    Router::any("demo-l3/{page?}", "EventsController@demoL3");
-    Router::any("demo-tn-l3/{page?}", "EventsController@demoL3Notes");
-    Router::any("demo-tn/{page?}", "EventsController@demoTn");
-    Router::any("demo-tq/{page?}", "EventsController@demoTq");
-    Router::any("demo-tw/{page?}", "EventsController@demoTw");
-    Router::any("demo-sun/{page?}", "EventsController@demoSun");
-    Router::any("demo-sun-odb/{page?}", "EventsController@demoSunOdb");
-    Router::any("demo-rad/{page?}", "EventsController@demoRadio");
     Router::any("news", "EventsController@news");
     Router::any("faq", "EventsController@faqs");
-    Router::any("rpc/apply_event", "EventsController@applyEvent");
     Router::any("rpc/get_notifications", "EventsController@getNotifications");
     Router::any("rpc/autosave_chunk", "EventsController@autosaveChunk");
     Router::any("rpc/autosave_li_verse", "EventsController@autosaveVerseLangInput");
@@ -251,24 +210,73 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("rpc/save_keyword", "EventsController@saveKeyword");
     Router::any("rpc/get_keywords", "EventsController@getKeywords");
     Router::any("rpc/check_event", "EventsController@checkEvent");
-    Router::any("rpc/assign_chapter", "EventsController@assignChapter");
-    Router::any("rpc/assign_pair", "EventsController@assignPair");
-    Router::any("rpc/get_event_members", "EventsController@getEventMembers");
-    Router::any("rpc/delete_event_member", "EventsController@deleteEventMember");
-    Router::any("rpc/get_info_update/{eventID}", "EventsController@getInfoUpdate")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("rpc/move_step_back", "EventsController@moveStepBack");
-    Router::any("rpc/move_step_back_alt", "EventsController@moveStepBackAlt");
-    Router::any("rpc/set_tn_checker", "EventsController@setOtherChecker");
     Router::any("rpc/check_internet", "EventsController@checkInternet");
     Router::any("rpc/apply_verb_checker", "EventsController@applyVerbChecker");
-    Router::any("rpc/create_words_group", "EventsController@createWordsGroup");
-    Router::any("rpc/delete_words_group", "EventsController@deleteWordsGroup");
     Router::any("rpc/get_tq/{bookCode}/{chapter}/{lang}", "EventsController@getTq");
     Router::any("rpc/get_tw/{bookCode}/{chapter}/{lang}", "EventsController@getTw");
     Router::any("rpc/get_tn/{bookCode}/{chapter}/{lang}/{totalVerses}", "EventsController@getTn");
     Router::any("rpc/get_rubric/{lang}", "EventsController@getRubric");
     Router::any("rpc/get_saildict/", "EventsController@getSailDict");
+});
+
+// INFORMATION
+Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function() {
+    Router::any("information/{eventID}", "InformationController@information")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-tn/{eventID}", "InformationController@informationNotes")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-tq/{eventID}", "InformationController@informationQuestions")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-tw/{eventID}", "InformationController@informationWords")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-l2/{eventID}", "InformationController@informationL2")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-tn-l3/{eventID}", "InformationController@informationL3")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-l3/{eventID}", "InformationController@informationL3")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-sun/{eventID}", "InformationController@informationSun")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-odb-sun/{eventID}", "InformationController@informationOdbSun")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-rad/{eventID}", "InformationController@informationRadio")
+        ->where(["eventID" => "[0-9]+"]);
+});
+
+//MANAGE
+Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function() {
+    Router::any("manage/{eventID}", "ManageController@manage")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("manage-tw/{eventID}", "ManageController@manageTw")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("manage-l2/{eventID}", "ManageController@manageL2")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("manage-l3/{eventID}", "ManageController@manageL3")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("rpc/move_step_back", "ManageController@moveStepBack");
+    Router::any("rpc/move_step_back_alt", "ManageController@moveStepBackAlt");
+    Router::any("rpc/set_tn_checker", "ManageController@setOtherChecker");
+    Router::any("rpc/assign_chapter", "ManageController@assignChapter");
+    Router::any("rpc/add_event_member", "ManageController@addEventMember");
+    Router::any("rpc/delete_event_member", "ManageController@deleteEventMember");
+    Router::any("rpc/create_words_group", "ManageController@createWordsGroup");
+    Router::any("rpc/delete_words_group", "ManageController@deleteWordsGroup");
+    Router::any("rpc/get_event_members", "ManageController@getEventMembers");
+});
+
+//DEMO
+Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function() {
+    Router::any("demo/{page?}", "DemoController@demo");
+    Router::any("demo-scripture-input/{page?}", "DemoController@demoLangInput");
+    Router::any("demo-l2/{page?}", "DemoController@demoL2");
+    Router::any("demo-l3/{page?}", "DemoController@demoL3");
+    Router::any("demo-tn-l3/{page?}", "DemoController@demoL3Notes");
+    Router::any("demo-tn/{page?}", "DemoController@demoTn");
+    Router::any("demo-tq/{page?}", "DemoController@demoTq");
+    Router::any("demo-tw/{page?}", "DemoController@demoTw");
+    Router::any("demo-sun/{page?}", "DemoController@demoSun");
+    Router::any("demo-sun-odb/{page?}", "DemoController@demoSunOdb");
+    Router::any("demo-rad/{page?}", "DemoController@demoRadio");
 });
 
 
@@ -313,19 +321,23 @@ Route::group(["prefix" => "members", "namespace" => "App\Controllers"], function
 // ADMIN
 Route::group(["prefix" => "admin", "namespace" => "App\Controllers\Admin"], function() {
     Router::any("", "AdminController@index");
+    Router::any("gateway_language/{glID}", "AdminController@gatewayLanguage")
+        ->where([
+            "glID" => "[0-9]+"
+        ]);
     Router::any("project/{projectID}", "AdminController@project")
         ->where([
             "projectID" => "[0-9]+"
     ]);
     Router::any("members", "AdminController@members");
-    Router::any("tools", "AdminController@toolsCommon");
+    Router::any("tools", "AdminController@toolsSource");
     Router::any("tools/vsun", "AdminController@toolsVsun");
     Router::any("tools/faq", "AdminController@toolsFaq");
     Router::any("tools/news", "AdminController@toolsNews");
-    Router::any("tools/source", "AdminController@toolsSource");
-    Router::any("rpc/create_gw_project", "AdminController@createGwProject");
-    Router::any("rpc/get_super_admins", "AdminController@getSuperAdmins");
-    Router::any("rpc/edit_super_admins", "AdminController@editSuperAdmins");
+    Router::any("tools/common", "AdminController@toolsCommon");
+    Router::any("rpc/create_gateway_language", "AdminController@createGatewayLanguage");
+    Router::any("rpc/get_gl_admins", "AdminController@getGlAdmins");
+    Router::any("rpc/edit_gl_admins", "AdminController@editGlAdmins");
     Router::any("rpc/import", "AdminController@import");
     Router::any("rpc/repos_search/{q}", "AdminController@repos_search");
     Router::any("rpc/get_project", "AdminController@getProject");
@@ -364,6 +376,7 @@ Route::group(["prefix" => "admin", "namespace" => "App\Controllers\Admin"], func
     Router::any("migrate/chapters", "AdminController@migrateChapters");
     Router::any("migrate/questions_words", "AdminController@migrateQuestionsWords");
     Router::any("migrate/8steps", "AdminController@migrate8steps");
+    Router::any("migrate/admins", "AdminController@migrateAdmins");
 });
 
 /** End default Routes */

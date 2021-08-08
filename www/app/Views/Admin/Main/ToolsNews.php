@@ -1,10 +1,7 @@
 <div id="tools">
     <ul class="nav nav-tabs">
         <li role="presentation" class="url_tab">
-            <a href="/admin/tools"><?php echo __("common_tools") ?></a>
-        </li>
-        <li role="presentation" class="url_tab">
-            <a href="/admin/tools/source"><?php echo __("source") ?></a>
+            <a href="/admin/tools"><?php echo __("source") ?></a>
         </li>
         <li role="presentation" class="url_tab">
             <a href="/admin/tools/vsun"><?php echo __("sun_tools") ?></a>
@@ -14,6 +11,9 @@
         </li>
         <li role="presentation" class="url_tab active">
             <a href="/admin/tools/news"><?php echo __("news") ?></a>
+        </li>
+        <li role="presentation" class="url_tab">
+            <a href="/admin/tools/common"><?php echo __("common_tools") ?></a>
         </li>
     </ul>
 

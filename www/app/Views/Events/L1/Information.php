@@ -16,8 +16,8 @@ if(!isset($error)):
     </div>
 
     <div>
-        <div class="book_title"><?php echo $data["event"][0]->name ?></div>
-        <div class="project_title"><?php echo __($data["event"][0]->bookProject)." - ".$data["event"][0]->tLang ?></div>
+        <div class="book_title"><?php echo $event->bookInfo->name ?></div>
+        <div class="project_title"><?php echo __($event->project->bookProject)." - ".$event->project->targetLanguage->langName ?></div>
         <div class="overall_progress_bar">
             <h3><?php echo __("progress_all") ?></h3>
             <div class="progress progress_all <?php echo $data["overall_progress"] <= 0 ? "zero" : ""?>">
@@ -76,7 +76,7 @@ if(!isset($error)):
                             </div>
                             <div class="section_steps">
                                 <!-- Input Step -->
-                                <?php if($data["event"][0]->langInput): ?>
+                                <?php if($event->langInput): ?>
                                 <div class="section_step <?php echo $chapter["multiDraft"]["state"] ?>">
                                     <div class="step_status"><?php echo __("step_status_" . $chapter["multiDraft"]["state"]) ?></div>
                                     <div class="step_light"></div>
@@ -85,7 +85,7 @@ if(!isset($error)):
                                 </div>
                                 <?php endif; ?>
                                 <!-- Consume Step -->
-                                <?php if(!$data["event"][0]->langInput): ?>
+                                <?php if(!$event->langInput): ?>
                                 <div class="section_step <?php echo $chapter["consume"]["state"] ?>">
                                     <div class="step_status"><?php echo __("step_status_" . $chapter["consume"]["state"]) ?></div>
                                     <div class="step_light"></div>
@@ -148,10 +148,10 @@ if(!isset($error)):
                                     <div class="step_status"><?php echo __("step_status_" . $chapter["selfEdit"]["state"]) ?></div>
                                     <div class="step_light"></div>
                                     <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventSteps::SELF_CHECK.".png") ?>"></div>
-                                    <div class="step_name"><?php echo $data["event"][0]->langInput ? "2" : "5" ?>. <?php echo __(EventSteps::SELF_CHECK); ?></div>
+                                    <div class="step_name"><?php echo $event->langInput ? "2" : "5" ?>. <?php echo __(EventSteps::SELF_CHECK); ?></div>
                                 </div>
                                 <!-- Peer Check Step -->
-                                <?php if(!$data["event"][0]->langInput): ?>
+                                <?php if(!$event->langInput): ?>
                                 <div class="section_step <?php echo $chapter["peer"]["state"] ?>">
                                     <div class="step_status">
                                         <?php echo __("step_status_" . $chapter["peer"]["state"]) ?>
@@ -247,11 +247,11 @@ if(!isset($error)):
 
     <script>
         var memberID = <?php echo Session::get('memberID') ;?>;
-        var eventID = <?php echo $data["event"][0]->eventID; ?>;
-        var projectID = <?php echo $data["event"][0]->projectID; ?>;
+        var eventID = <?php echo $event->eventID; ?>;
+        var projectID = <?php echo $event->projectID; ?>;
         var chkMemberID = 0;
         var aT = '<?php echo Session::get('authToken'); ?>';
-        var step = '<?php //echo $data["event"][0]->step; ?>';
+        var step = '';
         var isAdmin = <?php echo (integer)$data["isAdmin"]; ?>;
         var disableChat = true;
         var isChecker = false;

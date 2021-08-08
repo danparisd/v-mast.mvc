@@ -12,7 +12,7 @@ if(isset($data["error"])) return;
                 <div class="row">
                     <h4 dir="<?php echo $data["event"][0]->sLangDir ?>"><?php echo $data["event"][0]->tLang." - "
                             .__($data["event"][0]->bookProject)." - "
-                            .($data["event"][0]->abbrID <= 39 ? __("old_test") : __("new_test"))." - "
+                            .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
                             ."<span class='book_name'>".$data["event"][0]->name." ".$data["currentChapter"].":".$data["chunk"][0]."-".$data["chunk"][sizeof($data["chunk"])-1]."</span>"?></h4>
                 </div>
 
