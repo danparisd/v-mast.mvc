@@ -999,8 +999,7 @@ class MembersController extends Controller
                             "projects" => $projects
                         ],
                         function($message) {
-                            $message->to("vmastteam@gmail.com")
-                                ->subject($this->_model->translate("new_account_title", "En"));
+                            $message->to("vmastteam@gmail.com")->subject(__("new_account_title"));
                         });
 
                     Session::set("success", __('registration_success_message'));
@@ -1234,67 +1233,52 @@ class MembersController extends Controller
     {
         $response = ["success" => false];
 
-        if (!Session::get('memberID'))
-        {
-            $response["errorType"] = "logout";
-        }
-
-        if(empty(Session::get("profile")))
-        {
-            $response["errorType"] = "profile";
-        }
-
-        if(Config::get("app.type") != "remote")
-        {
+        if(Config::get("app.type") != "remote") {
             $response["errorType"] = "local";
             $response["error"] = __("local_use_restriction");
             echo json_encode($response);
             exit;
         }
 
-        if(!empty($_POST))
-        {
+        if(!empty($_POST)) {
             $_POST =  Gump::xss_clean($_POST);
 
             $adminID = isset($_POST["adminID"]) && $_POST["adminID"] != "" ? (integer)$_POST["adminID"] : null;
             $subject = isset($_POST["subject"]) && $_POST["subject"] != "" ? $_POST["subject"] : null;
             $message = isset($_POST["message"]) && $_POST["message"] != "" ? $_POST["message"] : null;
 
-            if($adminID != null && $subject != null && $message != null)
-            {
-                $admin = $this->_model->getMember(
-                    ["memberID", "userName", "firstName", "lastName", "email", "isAdmin"],
-                    ["memberID", $adminID],
-                    true);
+            if($adminID != null && $subject != null && $message != null) {
+                $admin = $this->memberRepo->get($adminID);
 
-                if(!empty($admin) && $admin[0]->isAdmin)
-                {
-                    if($admin[0]->memberID != Session::get("memberID"))
-                    {
-                        $data["fName"] = $admin[0]->firstName . " " . $admin[0]->lastName;
-                        $data["fEmail"] = $admin[0]->email;
-                        $data["tMemberID"] = Session::get("memberID");
-                        $data["tUserName"] = Session::get("userName");
-                        $data["tName"] = Session::get("firstName") . " " . Session::get("lastName");
-                        $data["tEmail"] = Session::get("email");
+                if($admin && $admin->isBookAdmin()) {
+                    if($admin->memberID != $this->_member->memberID) {
+                        $data["fName"] = $admin->firstName . " " . $admin->lastName;
+                        $data["fEmail"] = $admin->email;
+                        $data["tMemberID"] = $this->_member->memberID;
+                        $data["tUserName"] = $this->_member->userName;
+                        $data["tName"] = $this->_member->firstName . " " . $this->_member->lastName;
+                        $data["tEmail"] = $this->_member->email;
                         $data["subject"] = $subject;
                         $data["message"] = $message;
 
                         $firstLang = "en";
-                        $languages = json_decode($admin[0]->languages, true);
+                        $languages = json_decode($admin->profile->languages, true);
                         if(is_array($languages) && !empty($languages))
                         {
                             $keys = array_keys($languages);
                             $firstLang = $keys[0];
                         }
 
-                        $data["lang"] = ucfirst($firstLang);
+                        $lang = ucfirst($firstLang);
+                        $data["member_profile_message"] = $this->_model->translate("member_profile_message", $lang);
+                        $data["facilitator_message_tip"] = $this->_model->translate("facilitator_message_tip", $lang);
+                        $data["subject"] = "VMAST ".$this->_model->translate("message_content", $lang).": " . $data["subject"];
 
                         Mailer::send('Emails/Common/Message', ["data" => $data], function($message) use($data)
                         {
                             $message->setReplyTo([$data["tEmail"] => $data["tName"]])
                                 ->setTo($data["fEmail"], $data["fName"])
-                                ->setSubject("[vMast ".$this->_model->translate("message_content", $data["lang"])."]: " . $data["subject"]);
+                                ->setSubject($data["subject"]);
                         });
 
                         $response["success"] = true;
