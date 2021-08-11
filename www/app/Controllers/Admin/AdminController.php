@@ -1049,8 +1049,7 @@ class AdminController extends Controller {
                     return;
                 }
 
-                $projType = in_array($projectMode, ['tn','tq','tw']) ?
-                    $projectMode : $projectType;
+                $projType = in_array($projectMode, ['tn','tq','tw']) ? $projectMode : $projectType;
 
                 $search = [
                     "gwLang" => $gwLangsPair[0],

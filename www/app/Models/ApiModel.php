@@ -497,15 +497,19 @@ class ApiModel extends Model
                     continue;
 
                 try {
-                    $insert = [
+                    $data = [
                         "langID" => $lang["langID"],
-                        "slug" => $source["slug"],
-                        "name" => $source["name"],
+                        "slug" => $source["slug"]
                     ];
-                    $this->db->table("sources")
-                        ->insert($insert);
+
+                    $exist = $this->db->table("sources")->where($data)->first();
+
+                    if (!$exist) {
+                        $data["name"] = $source["name"];
+                        $this->db->table("sources")->insert($data);
+                    }
                 } catch(QueryException $e) {
-                    //pr($e->getMessage(),0);
+                    //pr($e->getMessage(),1);
                 }
             }
         }
@@ -514,7 +518,7 @@ class ApiModel extends Model
     public function getFullCatalog()
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.door43.org/v3/catalog.json");
+        curl_setopt($ch, CURLOPT_URL, "https://api.bibletranslationtools.org/v3/catalog.json");
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -605,40 +609,31 @@ class ApiModel extends Model
 
         if(!File::exists($folderpath) || $update)
         {
-            if($lang == "en")
-            {
-                // Do not get notes from catalog, instead get it from git.door43.org
-                // Should be temporarily
-                $url = "https://git.door43.org/WycliffeAssociates/en_tn/archive/master.zip";
-            }
-            else
-            {
-                // Get catalog
-                $catalog = $this->getCachedFullCatalog();
-                if(empty($catalog)) return false;
+            // Get catalog
+            $catalog = $this->getCachedFullCatalog();
+            if(empty($catalog)) return false;
 
-                $url = "";
+            $url = "";
 
-                foreach($catalog->languages as $language)
+            foreach($catalog->languages as $language)
+            {
+                if($language->identifier == $lang)
                 {
-                    if($language->identifier == $lang)
+                    foreach($language->resources as $resource)
                     {
-                        foreach($language->resources as $resource)
+                        if($resource->identifier == "tn")
                         {
-                            if($resource->identifier == "tn")
+                            foreach($resource->formats as $format)
                             {
-                                foreach($resource->formats as $format)
-                                {
-                                    $url = $format->url;
-                                    break;
-                                }
+                                $url = $format->url;
+                                break;
                             }
                         }
                     }
                 }
-
-                if($url == "") return false;
             }
+
+            if($url == "") return false;
 
             $ch = curl_init();
 
@@ -780,36 +775,27 @@ class ApiModel extends Model
 
         if(!File::exists($folderpath) || $update)
         {
-            if($lang == "en")
-            {
-                // Do not get notes from catalog, instead get it from git.door43.org
-                // Should be temporarily
-                $url = "https://git.door43.org/WycliffeAssociates/en_tw/archive/master.zip";
-            }
-            else
-            {
-                // Get catalog
-                $catalog = $this->getCachedFullCatalog();
-                if(empty($catalog)) return false;
+            // Get catalog
+            $catalog = $this->getCachedFullCatalog();
+            if(empty($catalog)) return false;
 
-                $url = "";
+            $url = "";
 
-                foreach($catalog->languages as $language)
+            foreach($catalog->languages as $language)
+            {
+                if($language->identifier == $lang)
                 {
-                    if($language->identifier == $lang)
+                    foreach($language->resources as $resource)
                     {
-                        foreach($language->resources as $resource)
+                        if($resource->identifier == "tw")
                         {
-                            if($resource->identifier == "tw")
+                            foreach ($resource->projects as $project)
                             {
-                                foreach ($resource->projects as $project)
+                                foreach($project->formats as $format)
                                 {
-                                    foreach($project->formats as $format)
-                                    {
-                                        $url = $format->url;
-                                        if(!preg_match("/\.zip$/", $url)) continue;
-                                        break;
-                                    }
+                                    $url = $format->url;
+                                    if(!preg_match("/\.zip$/", $url)) continue;
+                                    break;
                                 }
                             }
                         }

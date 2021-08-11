@@ -129,7 +129,7 @@
                                         data-placeholder="<?php echo __('choose_source_trans'); ?>">
                                     <option value=""></option>
                                     <?php foreach ($sources as $source): ?>
-                                        <?php if(in_array($source->slug, ["tn","tq","tw"])) continue; ?>
+                                        <?php if(in_array($source->slug, ["tn","tq","tw","udb"])) continue; ?>
                                         <option value="<?php echo $source->slug . "|" . $source->langID; ?>">
                                             <?php echo "[".$source->langID."] "
                                                 . $source->langName . " - "
