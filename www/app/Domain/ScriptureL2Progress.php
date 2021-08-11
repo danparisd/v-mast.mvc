@@ -9,10 +9,7 @@ use Helpers\Constants\StepsStates;
 
 class ScriptureL2Progress
 {
-    public static function calculateEventProgress(
-        $event,
-        $progressOnly = false
-    ) {
+    public static function calculateEventProgress($event, $progressOnly = false) {
         $data = [];
         $data["overall_progress"] = 0;
         $data["chapters"] = [];
@@ -33,13 +30,14 @@ class ScriptureL2Progress
                 $tmp["peer2Check"] = (array)json_decode($chapter->checkerL2->peer2Check, true);
             }
 
-            $data["chapters"][$chapter["chapter"]] = $tmp;
+            $data["chapters"][$chapter->chapter] = $tmp;
         }
 
         $overallProgress = 0;
         $members = [];
 
         foreach ($data["chapters"] as $key => $chapter) {
+            if (empty($chapter)) continue;
             if ($chapter["l2memberID"] == 0) continue;
 
             $snd = !empty($chapter["sndCheck"])

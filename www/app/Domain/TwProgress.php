@@ -13,6 +13,10 @@ class TwProgress
         $data = [];
         $data["overall_progress"] = 0;
 
+        $overallProgress = 0;
+        $members = [];
+        $memberSteps = [];
+
         $data["chapters"] = [];
         foreach ($event->chapters as $chapter) {
             $tmp["trID"] = $chapter->trID;
@@ -21,16 +25,9 @@ class TwProgress
             $tmp["done"] = $chapter->done;
             $tmp["words"] = $chapter->twGroup->words;
 
-            $data["chapters"][$chapter["chapter"]] = $tmp;
-        }
+            $data["chapters"][$chapter->chapter] = $tmp;
 
-        $overallProgress = 0;
-        $members = [];
-        $memberSteps = [];
-
-        foreach ($event->chunks as $chunk) {
-            $translator = $chunk->translator;
-
+            $translator = $chapter->translator;
             if (!array_key_exists($translator->memberID, $memberSteps)) {
                 $memberSteps[$translator->memberID]["step"] = $translator->step;
                 $memberSteps[$translator->memberID]["otherCheck"] = $translator->otherCheck;
@@ -38,10 +35,9 @@ class TwProgress
                 $memberSteps[$translator->memberID]["currentChapter"] = $translator->currentChapter;
                 $members[$translator->memberID] = "";
             }
+        }
 
-            if ($chunk->chapter == null)
-                continue;
-
+        foreach ($event->chunks as $chunk) {
             $data["chapters"][$chunk->chapter]["chunksData"][] = $chunk;
 
             if (!isset($data["chapters"][$chunk->chapter]["lastEdit"])) {
@@ -54,6 +50,8 @@ class TwProgress
         }
 
         foreach ($data["chapters"] as $key => $chapter) {
+            if (empty($chapter)) continue;
+
             $words = (array)json_decode($chapter["words"], true);
             $data["chapters"][$key]["words"] = $words;
 

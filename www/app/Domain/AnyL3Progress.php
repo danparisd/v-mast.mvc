@@ -29,13 +29,14 @@ class AnyL3Progress
                 $tmp["peerCheck"] = (array)json_decode($chapter->checkerL3->peerCheck, true);
             }
 
-            $data["chapters"][$chapter["chapter"]] = $tmp;
+            $data["chapters"][$chapter->chapter] = $tmp;
         }
 
         $overallProgress = 0;
         $members = [];
 
         foreach ($data["chapters"] as $key => $chapter) {
+            if (empty($chapter)) continue;
             if ($chapter["l3memberID"] == 0) continue;
 
             $p = !empty($chapter["peerCheck"])
