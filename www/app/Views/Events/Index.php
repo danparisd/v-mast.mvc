@@ -85,7 +85,7 @@ use Helpers\Session;
                     $currentMembers = $event->checkersL3->count();
                     $members = __("checkers");
                     $manageLink = "/events/manage-l3/".$event->eventID;
-                    $progressLink = "/events/information".(!in_array($event->bookProject, ["ulb","udb"]) ? "-".$event->bookProject : "")."-l3/".$event->eventID;
+                    $progressLink = "/events/information".(!in_array($event->project->bookProject, ["ulb","udb"]) ? "-".$event->project->bookProject : "")."-l3/".$event->eventID;
                     break;
 
                 default:
@@ -96,7 +96,7 @@ use Helpers\Session;
                     }
                     elseif ($mode == "sun")
                     {
-                        $eventType = $event->sourceBible == "odb" ? __("odb") : __("vsail");
+                        $eventType = $event->project->sourceBible == "odb" ? __("odb") : __("vsail");
                     }
                     else
                     {

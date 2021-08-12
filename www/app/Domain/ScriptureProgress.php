@@ -17,23 +17,20 @@ class ScriptureProgress
             $data["chapters"][$i] = [];
         }
 
+        $overallProgress = 0;
+        $memberSteps = [];
+        $members = [];
+
         foreach ($event->chapters as $chapter) {
             $tmp["trID"] = $chapter->trID;
             $tmp["memberID"] = $chapter->memberID;
             $tmp["chunks"] = json_decode($chapter->chunks, true);
             $tmp["done"] = $chapter->done;
 
-            $data["chapters"][$chapter["chapter"]] = $tmp;
-        }
+            $data["chapters"][$chapter->chapter] = $tmp;
 
-        $overallProgress = 0;
-        $memberSteps = [];
-        $members = [];
-
-        foreach ($event->chunks as $chunk) {
-            $translator = $chunk->translator;
-
-            if (!array_key_exists($chunk->translator->memberID, $memberSteps)) {
+            $translator = $chapter->translator;
+            if (!array_key_exists($translator->memberID, $memberSteps)) {
                 $memberSteps[$translator->memberID]["step"] = $translator->step;
                 $memberSteps[$translator->memberID]["verbCheck"] = $translator->verbCheck;
                 $memberSteps[$translator->memberID]["peerCheck"] = $translator->peerCheck;
@@ -43,10 +40,9 @@ class ScriptureProgress
                 $memberSteps[$translator->memberID]["currentChapter"] = $translator->currentChapter;
                 $members[$translator->memberID] = "";
             }
+        }
 
-            if ($chunk->chapter == null)
-                continue;
-
+        foreach ($event->chunks as $chunk) {
             $data["chapters"][$chunk->chapter]["chunksData"][] = $chunk;
 
             if (!isset($data["chapters"][$chunk->chapter]["lastEdit"])) {
@@ -59,6 +55,8 @@ class ScriptureProgress
         }
 
         foreach ($data["chapters"] as $key => $chapter) {
+            if (empty($chapter)) continue;
+
             $currentStep = EventSteps::PRAY;
             $multiDraftState = StepsStates::NOT_STARTED;
             $consumeState = StepsStates::NOT_STARTED;
