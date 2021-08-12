@@ -311,7 +311,7 @@ return array (
     "your_partner" => "Your partner",
     "your_checker" => "Your checker",
     "your_translator" => "Your translator",
-    "event_info" => "Event Progress",
+    "event_info" => "Book Progress",
     "progress" => "Progress",
     "manage" => "Manage",
     "event_participants" => "Book participants",
@@ -1921,7 +1921,7 @@ return array (
     // Other messages
     "alert_message" => "Message",
     "no_events_message" => "No books in this category",
-    "goto_event_info" => "Go to event progress page",
+    "goto_event_info" => "Go to book progress page",
     "manage_event" => "Manage Book",
     "chapter_has_translation" => "Attention! This chapter has some draft text. If you move to \"Chunks\" the text will be lost. Do you really want to continue?",
     "next_chapter_step_note" => "Note! If you start translation of the next chapter, you will still be able to continue checking of the current chapter, that can be found on your dashboard.",
