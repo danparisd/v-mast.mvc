@@ -599,7 +599,7 @@ class AdminController extends Controller {
 
     public function toolsSource()
     {
-        if(!$this->_member->isGlAdmin()) Url::redirect('/admin');
+        if(!$this->_member->isGlAdmin()) Url::redirect('/admin/common');
 
         $data["menu"] = 3;
 
@@ -628,7 +628,7 @@ class AdminController extends Controller {
 
     public function toolsCommon()
     {
-        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin/tools');
+        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin');
 
         $data["menu"] = 3;
 
