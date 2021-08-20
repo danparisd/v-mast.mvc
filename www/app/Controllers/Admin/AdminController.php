@@ -683,7 +683,7 @@ class AdminController extends Controller {
     {
         $response = ["success" => false];
 
-        if(!$this->_member->isGlAdmin() || !$this->_member->isProjectAdmin()) {
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
             $response["error"] = "admin";
             echo json_encode($response);
             return;
@@ -1432,7 +1432,7 @@ class AdminController extends Controller {
 
     public function createEvent()
     {
-        if(!$this->_member->isGlAdmin() || !$this->_member->isProjectAdmin()) {
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
             $error[] = __("not_enough_rights_error");
             echo json_encode(array("error" => Error::display($error)));
             return;
@@ -1656,7 +1656,7 @@ class AdminController extends Controller {
 
     public function createEventTw()
     {
-        if(!$this->_member->isGlAdmin() || !$this->_member->isProjectAdmin()) {
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
             $error[] = __("not_enough_rights_error");
             echo json_encode(array("error" => Error::display($error)));
             return;
