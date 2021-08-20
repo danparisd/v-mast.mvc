@@ -599,7 +599,7 @@ class AdminController extends Controller {
 
     public function toolsSource()
     {
-        if(!$this->_member->isGlAdmin()) Url::redirect('/admin/common');
+        if(!$this->_member->isGlAdmin()) Url::redirect('/admin/tools/common');
 
         $data["menu"] = 3;
 
@@ -641,7 +641,7 @@ class AdminController extends Controller {
 
     public function toolsVsun()
     {
-        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin/tools');
+        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin');
 
         $data["menu"] = 3;
 
@@ -654,7 +654,7 @@ class AdminController extends Controller {
 
     public function toolsFaq()
     {
-        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin/tools');
+        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin');
 
         $data["menu"] = 3;
 
@@ -667,7 +667,7 @@ class AdminController extends Controller {
 
     public function toolsNews()
     {
-        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin/tools');
+        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin');
 
         $data["menu"] = 3;
 
