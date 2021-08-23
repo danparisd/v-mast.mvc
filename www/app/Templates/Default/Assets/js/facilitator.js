@@ -605,20 +605,23 @@ $(function () {
     });
 
     $(".remove_checker_alt").click(function() {
-        var id = $(this).attr("id");
-        var eventID = $("#eventID").val();
-        var memberID = $(this).closest(".manage_chapters_buttons").data("member");
-        var chapter = $(this).parent().data("chapter");
-        var checker = $(this).text();
-        var message = Language["remove_l2_checker"] + checker + "?";
-        var mode = $("#mode").val();
+        const id = $(this).attr("id");
+        const eventID = $("#eventID").val();
+        const memberID = $(this).closest(".manage_chapters_buttons").data("member");
+        const chapter = $(this).parent().data("chapter");
+        const checker = $(this).text();
+        const checkerName = $(this).data("name");
+        let message = Language.remove_l2_checker.formatUnicorn({
+            "checker": checker,
+            "name": checkerName
+        });
+        const mode = $("#mode").val();
 
-        if(id == "other_checker")
-        {
-            var level = $(this).data("level");
-            var prev_level = level - 1;
-            var disabled = prev_level < 0 || (mode == "tn" ? prev_level > 4 : prev_level > 1) ? "disabled" : "";
-            var prev_step = "n/a";
+        if(id == "other_checker") {
+            const level = $(this).data("level");
+            const prev_level = level - 1;
+            const disabled = prev_level < 0 || (mode == "tn" ? prev_level > 4 : prev_level > 1) ? "disabled" : "";
+            let prev_step = "n/a";
 
             switch (prev_level) {
                 case 0:
@@ -656,21 +659,24 @@ $(function () {
                     break;
             }
 
-            var html = "" +
+            const html = "" +
                 "<div class='other_check_remove'>" +
-                    "<h5>" + Language.remove_other_checker_opt + name + "</h5>" +
-                    "<label>" +
-                        "<input type='radio' name='other_option' value='remove' checked /> " +
-                            Language.remove_checker + "</label>" +
-                    "<label class='" + disabled + "'>" +
-                        "<input type='radio' name='other_option' value='move_back' " + disabled + " /> " +
-                            Language.move_to_step + prev_step + "</label>" +
+                "<h5>" + Language.remove_other_checker_opt.formatUnicorn({"name": checkerName}) + "</h5>" +
+                "<label>" +
+                "<input type='radio' name='other_option' value='remove' checked /> " +
+                Language.remove_checker + "</label>" +
+                "<label class='" + disabled + "'>" +
+                "<input type='radio' name='other_option' value='move_back' " + disabled + " /> " +
+                Language.move_to_step.formatUnicorn({"step": prev_step}) + "</label>" +
                 "</div>";
             message = html;
+        } else if (id == "final_checker") {
+            const step = $(this).data("step");
+            message = Language.move_translator_to_step.formatUnicorn({"step":step});
         }
 
         renderConfirmPopup(Language.attention, message, function() {
-            var other_check = $(".other_check_remove input:checked").val();
+            const other_check = $(".other_check_remove input:checked").val();
 
             $.ajax({
                 url: "/events/rpc/move_step_back_alt",

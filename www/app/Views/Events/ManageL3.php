@@ -38,9 +38,9 @@ if(!isset($error)):
                 if(!empty($chapData))
                 {
                     $member = $members->find($chapData["l3memberID"]);
-                    $userName = "unknown";
-                    $userName = $member->userName;
-                    $name = $member->firstName . " " . mb_substr($member->lastName, 0, 1).".";
+                    $name = $member
+                        ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                        : $chapData["l3memberID"];
                 }
                 ?>
                 <li class="row" style="position:relative;">
@@ -63,17 +63,26 @@ if(!isset($error)):
                     <div class="manage_chapters_buttons" data-chapter="<?php echo $chapter ?>"
                             data-member="<?php echo !empty($chapData) ? $chapData["l3memberID"] : "" ?>">
                         <?php
-                        $p = !empty($chapData["peerCheck"])
+                        $peer = !empty($chapData["peerCheck"])
                             && array_key_exists($chapter, $chapData["peerCheck"])
                             && $chapData["peerCheck"][$chapter]["memberID"] > 0;
+
+                        $peerName = "unknown";
+
+                        if ($peer) {
+                            $member = $members->find($chapData["peerCheck"][$chapter]["memberID"]);
+                            $peerName = $member
+                                ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                : $chapData["peerCheck"][$chapter]["memberID"];
+                        }
                         ?>
-                        <?php if($p): ?>
+                        <?php if($peer): ?>
                             <div class="glyphicon glyphicon-menu-hamburger checker_remove_button"
                                  data-chapter="<?php echo $chapter?>"
                                  data-shown="0"></div>
                             <div class="checker_remove_menu" data-chapter="<?php echo $chapter?>">
                                 <div class="remove_menu_title"><?php echo __("remove_checker") ?></div>
-                                <button class="btn btn-danger remove_checker_alt" id="p_checker">
+                                <button class="btn btn-danger remove_checker_alt" id="p_checker" data-name="<?php echo $peerName ?>">
                                     <?php echo __("l3_p_checker") ?>
                                 </button>
                             </div>

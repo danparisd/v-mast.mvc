@@ -54,16 +54,14 @@ if(!isset($error)):
                         if(!empty($chapData))
                         {
                             $member = $members->find($chapData["memberID"]);
-                            $userName = "unknown";
-                            $userName = $member->userName;
-                            $name = $member->firstName . " " . mb_substr($member->lastName, 0, 1).".";
+                            $name = $members
+                                ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                : $chapData["memberID"];
 
                             if (!array_key_exists($member->memberID, $groups)) {
                                 $groups[$member->memberID] = [];
                             }
                             $groups[$member->memberID][] = $group_order;
-
-                            //$data["members"][$key]["assignedGroups"][] = $group_order;
                         }
                         ?>
                         <li style="position:relative;">
@@ -74,7 +72,7 @@ if(!isset($error)):
                                 <?php echo __("group_id", $group_order); ?>
                                 <span class='glyphicon glyphicon-info-sign'
                                       data-toggle='tooltip'
-                                      title="<?php echo $group_name ? $group_name : "" ?>"
+                                      title="<?php echo $group_name ?: "" ?>"
                                       style="font-size: 16px;"></span>
                                 <div class="group_delete glyphicon glyphicon-remove" data-groupid="<?php echo $chapter ?>"></div>
                             </div>
@@ -99,6 +97,22 @@ if(!isset($error)):
                                 $peer = !empty($chapData["peerCheck"])
                                     && array_key_exists($chapter, $chapData["peerCheck"])
                                     && $chapData["peerCheck"][$chapter]["memberID"] > 0;
+
+                                $otherName = "unknown";
+                                $peerName = "unknown";
+
+                                if ($other) {
+                                    $member = $members->find($chapData["otherCheck"][$chapter]["memberID"]);
+                                    $otherName = $member
+                                        ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                        : $chapData["otherCheck"][$chapter]["memberID"];
+                                }
+                                if ($peer) {
+                                    $member = $members->find($chapData["peerCheck"][$chapter]["memberID"]);
+                                    $peerName = $member
+                                        ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                        : $chapData["peerCheck"][$chapter]["memberID"];
+                                }
                                 ?>
                                 <?php if($other): ?>
                                     <div class="glyphicon glyphicon-menu-hamburger checker_remove_button"
@@ -107,12 +121,14 @@ if(!isset($error)):
                                     <div class="checker_remove_menu" data-chapter="<?php echo $chapter?>">
                                         <div class="remove_menu_title"><?php echo __("remove_checker") ?></div>
                                         <button class="btn btn-danger remove_checker_alt" id="other_checker"
+                                                data-name="<?php echo $otherName ?>"
                                                 data-level="<?php echo $chapData["otherCheck"][$chapter]["done"] ?>"
                                                 <?php echo $peer ? "disabled" : "" ?>>
                                             <?php echo __("other_checker") ?>
                                         </button>
                                         <?php if($peer): ?>
                                             <button class="btn btn-danger remove_checker_alt" id="peer_checker"
+                                                    data-name="<?php echo $peerName ?>"
                                                     data-level="<?php echo $chapData["peerCheck"][$chapter]["done"] ?>">
                                                 <?php echo __("other_peer_checker") ?>
                                             </button>

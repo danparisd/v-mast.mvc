@@ -457,74 +457,78 @@ class MembersController extends Controller
         }
 
         // Level 2 checking (ulb, udb)
-        foreach ($l2_check_activities as $checking_activity) {
-            $chapters = $checking_activity->chapters;
+        if ($l2_check_activities) {
+            foreach ($l2_check_activities as $checking_activity) {
+                $chapters = $checking_activity->chapters;
 
-            // First checker
-            $chaps = [];
-            if ($chapters) {
-                foreach ($chapters as $chapter) {
-                    $chaps[] = $chapter->chapter;
+                // First checker
+                $chaps = [];
+                if ($chapters) {
+                    foreach ($chapters as $chapter) {
+                        $chaps[] = $chapter->chapter;
+                    }
                 }
+
+                // Second checker
+                $checking = $this->_eventModel->getMemberEventsForCheckerL2(null, $checking_activity->eventID);
+                foreach ($checking as $check) {
+                    $sndCheck = (array)json_decode($check->sndCheck, true);
+                    $peer1Check = (array)json_decode($check->peer1Check, true);
+                    $peer2Check = (array)json_decode($check->peer2Check, true);
+
+                    foreach ($sndCheck as $chapter => $member_data)
+                        if ($memberID == $member_data["memberID"])
+                            $chaps[] = $chapter;
+
+                    foreach ($peer1Check as $chapter => $member_data)
+                        if ($memberID == $member_data["memberID"])
+                            $chaps[] = $chapter;
+
+                    foreach ($peer2Check as $chapter => $member_data)
+                        if ($memberID == $member_data["memberID"])
+                            $chaps[] = $chapter;
+                }
+
+                $chaps = array_unique($chaps);
+                sort($chaps);
+
+                $checking_activity->chapters = join(", ", array_values($chaps));
+                $data["checking_activities"][] = $checking_activity;
             }
-
-            // Second checker
-            $checking = $this->_eventModel->getMemberEventsForCheckerL2(null, $checking_activity->eventID);
-            foreach ($checking as $check) {
-                $sndCheck = (array)json_decode($check->sndCheck, true);
-                $peer1Check = (array)json_decode($check->peer1Check, true);
-                $peer2Check = (array)json_decode($check->peer2Check, true);
-
-                foreach ($sndCheck as $chapter => $member_data)
-                    if ($memberID == $member_data["memberID"])
-                        $chaps[] = $chapter;
-
-                foreach ($peer1Check as $chapter => $member_data)
-                    if ($memberID == $member_data["memberID"])
-                        $chaps[] = $chapter;
-
-                foreach ($peer2Check as $chapter => $member_data)
-                    if ($memberID == $member_data["memberID"])
-                        $chaps[] = $chapter;
-            }
-
-            $chaps = array_unique($chaps);
-            sort($chaps);
-
-            $checking_activity->chapters = join(", ", array_values($chaps));
-            $data["checking_activities"][] = $checking_activity;
         }
 
         // Checking level 3 check (ulb, udb, notes, tq, tw)
-        foreach ($l3_check_activities as $checking_activity) {
-            $chapters = $checking_activity->chapters;
+        if ($l3_check_activities) {
+            foreach ($l3_check_activities as $checking_activity) {
+                $chapters = $checking_activity->chapters;
 
-            // First checker
-            $chaps = [];
-            if ($chapters) {
-                foreach ($chapters as $chapter) {
-                    $chaps[] = $chapter->chapter;
+                // First checker
+                $chaps = [];
+                if ($chapters) {
+                    foreach ($chapters as $chapter) {
+                        $chaps[] = $chapter->chapter;
+                    }
                 }
+
+                // Second checker
+                $checking = $this->_eventModel->getMemberEventsForCheckerL3(null, $checking_activity->eventID);
+                foreach ($checking as $check) {
+                    $peerCheck = (array)json_decode($check->peerCheck, true);
+
+                    foreach ($peerCheck as $chapter => $member_data)
+                        if($memberID == $member_data["memberID"])
+                            $chaps[] = $chapter;
+                }
+
+                $chaps = array_unique($chaps);
+                sort($chaps);
+                $chaps = array_map(function ($elm) {
+                    return $elm > 0 ? $elm : __("intro");
+                }, $chaps);
+
+                $checking_activity->chapters = join(", ", array_values($chaps));
+                $data["checking_activities"][] = $checking_activity;
             }
-
-            // Second checker
-            $checking = $this->_eventModel->getMemberEventsForCheckerL3(null, $checking_activity->eventID);
-            foreach ($checking as $check) {
-                $peerCheck = (array)json_decode($check->peerCheck, true);
-
-                foreach ($peerCheck as $chapter => $member_data)
-                    if($memberID == $member_data["memberID"])
-                        $chaps[] = $chapter;
-            }
-
-            $chaps = array_unique($chaps);
-            sort($chaps);
-            $chaps = array_map(function ($elm) {
-                return $elm > 0 ? $elm : __("intro");
-            }, $chaps);
-
-            $checking_activity->chapters = join(", ", array_values($chaps));
-            $data["checking_activities"][] = $checking_activity;
         }
 
         $data["notifications"] = $this->_notifications;

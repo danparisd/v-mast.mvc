@@ -111,11 +111,12 @@ echo isset($css) ? $css : ''; // Place to pass data / plugable hook zone
 Assets::js([
     template_url('js/jquery.js'),
     template_url('js/jquery.actual.min.js'),
+    template_url('js/unicornFormatter.js'),
     template_url('js/main.js?111', 'Default'),
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
-        || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?34') : ''),
+        || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?35') : ''),
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")

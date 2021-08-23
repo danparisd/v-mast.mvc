@@ -39,9 +39,9 @@ if(!isset($error)):
                     if(!empty($chapData))
                     {
                         $member = $members->find($chapData["l2memberID"]);
-                        $userName = "unknown";
-                        $userName = $member->userName;
-                        $name = $member->firstName . " " . mb_substr($member->lastName, 0, 1).".";
+                        $name = $member
+                            ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                            : $chapData["l2memberID"];
                     }
                     ?>
                     <li class="row" style="position:relative;">
@@ -73,6 +73,29 @@ if(!isset($error)):
                             $p2 = !empty($chapData["peer2Check"])
                                 && array_key_exists($chapter, $chapData["peer2Check"])
                                 && $chapData["peer2Check"][$chapter]["memberID"] > 0;
+
+                            $sndName = "unknown";
+                            $p1Name = "unknown";
+                            $p2Name = "unknown";
+
+                            if ($snd) {
+                                $member = $members->find($chapData["sndCheck"][$chapter]["memberID"]);
+                                $sndName = $member
+                                    ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                    : $chapData["sndCheck"][$chapter]["memberID"];
+                            }
+                            if ($p1) {
+                                $member = $members->find($chapData["peer1Check"][$chapter]["memberID"]);
+                                $p1Name = $member
+                                    ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                    : $chapData["peer1Check"][$chapter]["memberID"];
+                            }
+                            if ($p2) {
+                                $member = $members->find($chapData["peer2Check"][$chapter]["memberID"]);
+                                $p2Name = $member ?
+                                    $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                    : $chapData["peer2Check"][$chapter]["memberID"];
+                            }
                             ?>
                             <?php if($snd): ?>
                                 <div class="glyphicon glyphicon-menu-hamburger checker_remove_button"
@@ -81,17 +104,20 @@ if(!isset($error)):
                                 <div class="checker_remove_menu" data-chapter="<?php echo $chapter?>">
                                     <div class="remove_menu_title"><?php echo __("remove_checker") ?></div>
                                     <button class="btn btn-danger remove_checker_alt" id="snd_checker"
+                                            data-name="<?php echo $sndName ?>"
                                             data-level="<?php echo $chapData["sndCheck"][$chapter]["done"] ?>"
                                             <?php echo $p1 ? "disabled" : "" ?>>
                                         <?php echo __("l2_snd_checker") ?>
                                     </button>
                                     <?php if($p1): ?>
                                         <button class="btn btn-danger remove_checker_alt" id="p1_checker"
+                                                data-name="<?php echo $p1Name ?>"
                                                 <?php echo $p2 ? "disabled" : "" ?>>
                                             <?php echo __("l2_p1_checker") ?>
                                         </button>
                                         <?php if($p2): ?>
-                                            <button class="btn btn-danger remove_checker_alt" id="p2_checker">
+                                            <button class="btn btn-danger remove_checker_alt" id="p2_checker"
+                                                    data-name="<?php echo $p2Name ?>">
                                                 <?php echo __("l2_p2_checker") ?>
                                             </button>
                                         <?php endif; ?>

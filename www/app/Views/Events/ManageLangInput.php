@@ -39,9 +39,9 @@ if(!isset($error)):
                     if(!empty($chapData))
                     {
                         $member = $members->find($chapData["memberID"]);
-                        $userName = "unknown";
-                        $userName = $member->userName;
-                        $name = $member->firstName . " " . mb_substr($member->lastName, 0, 1).".";
+                        $name = $member
+                            ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                            : $chapData["memberID"];
                     }
                     ?>
                     <li style="position:relative;">
