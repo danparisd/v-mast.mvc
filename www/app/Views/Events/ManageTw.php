@@ -5,6 +5,8 @@ use Shared\Legacy\Error;
 
 echo Error::display($error);
 
+$groups = [];
+
 if(!isset($error)):
     ?>
 
@@ -16,16 +18,16 @@ if(!isset($error)):
     <div class="manage_container">
         <div class="row">
             <div class="col-sm-6">
-                <div class="book_title" style="padding-left: 15px"><?php echo $data["event"][0]->name ?></div>
-                <div class="project_title" style="padding-left: 15px"><?php echo __($data["event"][0]->bookProject)." - ".$data["event"][0]->langName ?></div>
+                <div class="book_title" style="padding-left: 15px"><?php echo $event->bookInfo->name ?></div>
+                <div class="project_title" style="padding-left: 15px"><?php echo __($event->project->bookProject)." - ".$event->project->targetLanguage->langName ?></div>
             </div>
             <div class="col-sm-6 start_translation">
-                <?php if($data["event"][0]->state == EventStates::STARTED): ?>
+                <?php if($event->state == EventStates::STARTED): ?>
                     <form action="" method="post">
                         <button type="submit" name="submit" class="btn btn-warning" id="startTranslation" style="width: 150px; height: 50px;"><?php echo __("start_translation")?></button>
                     </form>
                 <?php else: ?>
-                    <div class="event_state"><?php echo __("event_status").": ".__("state_".$data["event"][0]->state) ?></div>
+                    <div class="event_state"><?php echo __("event_status").": ".__("state_".$event->state) ?></div>
                 <?php endif; ?>
             </div>
         </div>
@@ -37,7 +39,7 @@ if(!isset($error)):
                     <button class="btn btn-primary" id="word_group_create"><?php echo __("create_words_group") ?></button>
                 </div>
                 <ul>
-                    <?php $group_order = 1; foreach ($data["chapters"] as $chapter => $chapData): ?>
+                    <?php $group_order = 1; foreach ($chapters as $chapter => $chapData): ?>
                         <?php
                         $group_name = null;
                         foreach ($data["tw_groups"] as $tw_group) {
@@ -51,12 +53,15 @@ if(!isset($error)):
 
                         if(!empty($chapData))
                         {
-                            $userName = "unknown";
-                            $key = array_search($chapData["memberID"], array_column($data["members"], 'memberID'));
-                            $userName = $data["members"][$key]["userName"];
-                            $name = $data["members"][$key]["firstName"] . " " . mb_substr($data["members"][$key]["lastName"], 0, 1).".";
-                            $data["members"][$key]["assignedChapters"][] = $chapter;
-                            $data["members"][$key]["assignedGroups"][] = $group_order;
+                            $member = $members->find($chapData["memberID"]);
+                            $name = $members
+                                ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                : $chapData["memberID"];
+
+                            if (!array_key_exists($member->memberID, $groups)) {
+                                $groups[$member->memberID] = [];
+                            }
+                            $groups[$member->memberID][] = $group_order;
                         }
                         ?>
                         <li style="position:relative;">
@@ -67,7 +72,7 @@ if(!isset($error)):
                                 <?php echo __("group_id", $group_order); ?>
                                 <span class='glyphicon glyphicon-info-sign'
                                       data-toggle='tooltip'
-                                      title="<?php echo $group_name ? $group_name : "" ?>"
+                                      title="<?php echo $group_name ?: "" ?>"
                                       style="font-size: 16px;"></span>
                                 <div class="group_delete glyphicon glyphicon-remove" data-groupid="<?php echo $chapter ?>"></div>
                             </div>
@@ -92,6 +97,22 @@ if(!isset($error)):
                                 $peer = !empty($chapData["peerCheck"])
                                     && array_key_exists($chapter, $chapData["peerCheck"])
                                     && $chapData["peerCheck"][$chapter]["memberID"] > 0;
+
+                                $otherName = "unknown";
+                                $peerName = "unknown";
+
+                                if ($other) {
+                                    $member = $members->find($chapData["otherCheck"][$chapter]["memberID"]);
+                                    $otherName = $member
+                                        ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                        : $chapData["otherCheck"][$chapter]["memberID"];
+                                }
+                                if ($peer) {
+                                    $member = $members->find($chapData["peerCheck"][$chapter]["memberID"]);
+                                    $peerName = $member
+                                        ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                        : $chapData["peerCheck"][$chapter]["memberID"];
+                                }
                                 ?>
                                 <?php if($other): ?>
                                     <div class="glyphicon glyphicon-menu-hamburger checker_remove_button"
@@ -100,12 +121,14 @@ if(!isset($error)):
                                     <div class="checker_remove_menu" data-chapter="<?php echo $chapter?>">
                                         <div class="remove_menu_title"><?php echo __("remove_checker") ?></div>
                                         <button class="btn btn-danger remove_checker_alt" id="other_checker"
+                                                data-name="<?php echo $otherName ?>"
                                                 data-level="<?php echo $chapData["otherCheck"][$chapter]["done"] ?>"
                                                 <?php echo $peer ? "disabled" : "" ?>>
                                             <?php echo __("other_checker") ?>
                                         </button>
                                         <?php if($peer): ?>
                                             <button class="btn btn-danger remove_checker_alt" id="peer_checker"
+                                                    data-name="<?php echo $peerName ?>"
                                                     data-level="<?php echo $chapData["peerCheck"][$chapter]["done"] ?>">
                                                 <?php echo __("other_peer_checker") ?>
                                             </button>
@@ -120,7 +143,7 @@ if(!isset($error)):
 
             <div class="manage_members">
                 <h3>
-                    <?php echo __("people_number", ["people_number" => sizeof($data["members"])]) ?>
+                    <?php echo __("people_number", ["people_number" => sizeof($members)]) ?>
                     <div class="manage_buttons">
                         <button
                                 class="btn btn-primary"
@@ -135,43 +158,46 @@ if(!isset($error)):
                     </div>
                 </h3>
                 <ul>
-                    <?php foreach ($data["members"] as $member):?>
+                    <?php foreach ($members as $member):?>
+                        <?php
+                        $assignedGroups = array_key_exists($member->memberID, $groups) ? $groups[$member->memberID] : [];
+                        ?>
                         <li>
-                            <div class="member_usname" data="<?php echo $member["memberID"] ?>">
-                                <a href="/members/profile/<?php echo $member["memberID"] ?>" target="_blank"><?php echo $member["firstName"] . " " . mb_substr($member["lastName"], 0, 1)."."; ?></a>
-                                (<span><?php echo isset($member["assignedGroups"]) ? sizeof($member["assignedGroups"]) : 0 ?></span>)
+                            <div class="member_usname" data="<?php echo $member->memberID ?>">
+                                <a href="/members/profile/<?php echo $member->memberID ?>" target="_blank"><?php echo $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."; ?></a>
+                                (<span><?php echo sizeof($assignedGroups) ?></span>)
                                 <div class="glyphicon glyphicon-remove delete_user" title="<?php echo __("remove_from_event") ?>"></div>
 
                                 <label class="is_checker_label">
                                     <input
                                             class="is_checker_input"
                                             type="checkbox"
-                                        <?php echo $member["isChecker"] ? "checked" : "" ?>> <?php echo __("checking_tab_title") ?>
+                                        <?php echo $member->pivot->isChecker ? "checked" : "" ?>> <?php echo __("checking_tab_title") ?>
                                 </label>
                             </div>
-                            <div class="member_chapters" <?php echo isset($member["assignedGroups"]) ? "style='display:block'" : "" ?>>
-                                <?php echo __("chapters").": <span>". (isset($member["assignedGroups"]) ? join(", ", $member["assignedGroups"]) : "")."</span>" ?>
+                            <div class="member_chapters" <?php echo !empty($assignedGroups) ? "style='display:block'" : "" ?>>
+                                <?php echo __("chapters").": <span>". join(", ", $assignedGroups)."</span>" ?>
                             </div>
                             <div class="step_selector_block row">
                                 <div class="col-sm-6">
                                     <?php
-                                    $mode = $data["event"][0]->bookProject;
-                                    $s_disabled = EventSteps::enum($member["step"], $mode) < 2;
+                                    $mode = $event->project->bookProject;
+                                    $s_disabled = EventSteps::enum($member->pivot->step, $mode) < 2;
                                     ?>
                                     <label><?php echo __("current_step") ?>:</label>
                                     <select class="step_selector form-control"
                                         <?php echo $s_disabled ? "disabled" : "" ?>
-                                            data-event="<?php echo $data["event"][0]->eventID ?>"
-                                            data-member="<?php echo $member["memberID"] ?>"
+                                            data-event="<?php echo $event->eventID ?>"
+                                            data-member="<?php echo $member->memberID ?>"
                                             data-mode="<?php echo $mode ?>">
                                         <?php foreach (EventSteps::enumArray($mode) as $step => $i): ?>
                                             <?php
                                             // Skip None step
                                             if($step == EventSteps::NONE) continue;
 
-                                            $selected = $step == $member["step"];
-                                            $o_disabled = EventSteps::enum($member["step"], $mode) < $i ||
-                                                (EventSteps::enum($member["step"], $mode) - $i) > 1;
+                                            $selected = $step == $member->pivot->step;
+                                            $o_disabled = EventSteps::enum($member->pivot->step, $mode) < $i ||
+                                                (EventSteps::enum($member->pivot->step, $mode) - $i) > 1;
                                             ?>
 
                                             <option <?php echo ($selected ? " selected" : "").($o_disabled ? " disabled" : "") ?> value="<?php echo $step ?>">
@@ -188,8 +214,8 @@ if(!isset($error)):
         </div>
     </div>
 
-    <input type="hidden" id="eventID" value="<?php echo $data["event"][0]->eventID ?>">
-    <input type="hidden" id="mode" value="<?php echo $data["event"][0]->bookProject ?>">
+    <input type="hidden" id="eventID" value="<?php echo $event->eventID ?>">
+    <input type="hidden" id="mode" value="<?php echo $event->project->bookProject ?>">
 
     <div class="chapter_members">
         <div class="chapter_members_div panel panel-default">
@@ -201,13 +227,16 @@ if(!isset($error)):
                 <img src="<?php echo template_url("img/loader.gif") ?>">
             </div>
             <ul>
-                <?php foreach ($data["members"] as $member): ?>
+                <?php foreach ($members as $member): ?>
+                    <?php
+                    $assignedGroups = [];
+                    ?>
                     <li>
                         <div class="member_usname userlist chapter_ver">
-                            <div class="divname"><?php echo $member["firstName"] . " " . mb_substr($member["lastName"], 0, 1)."."; ?></div>
-                            <div class="divvalue">(<span><?php echo isset($member["assignedGroups"]) ? sizeof($member["assignedGroups"]) : 0 ?></span>)</div>
+                            <div class="divname"><?php echo $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."; ?></div>
+                            <div class="divvalue">(<span><?php echo sizeof($assignedGroups) ?></span>)</div>
                         </div>
-                        <button class="btn btn-success assign_chapter" data="<?php echo $member["memberID"] ?>"><?php echo __("assign") ?></button>
+                        <button class="btn btn-success assign_chapter" data="<?php echo $member->memberID ?>"><?php echo __("assign") ?></button>
                         <div class="clear"></div>
                     </li>
                 <?php endforeach; ?>

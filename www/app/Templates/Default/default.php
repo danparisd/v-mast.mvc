@@ -96,7 +96,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css'),
-    template_url('css/style.css?114'),
+    template_url('css/style.css?115'),
     template_url('css/jquery-ui.min.css'),
     template_url('css/jquery-ui.structure.min.css'),
     template_url('css/jquery-ui.theme.min.css'),
@@ -111,9 +111,16 @@ echo isset($css) ? $css : ''; // Place to pass data / plugable hook zone
 Assets::js([
     template_url('js/jquery.js'),
     template_url('js/jquery.actual.min.js'),
-    template_url('js/main.js?110', 'Default'),
-    (Session::get("isAdmin") || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?33') : ''),
-    (Session::get("isSuperAdmin") ? template_url('js/admin.js?50') : ''),
+    template_url('js/unicornFormatter.js'),
+    template_url('js/main.js?111', 'Default'),
+    (Session::get("isBookAdmin")
+        || Session::get("isProjectAdmin")
+        || Session::get("isGlAdmin")
+        || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?35') : ''),
+    (Session::get("isBookAdmin")
+        || Session::get("isProjectAdmin")
+        || Session::get("isGlAdmin")
+        || Session::get("isSuperAdmin") ?  template_url('js/admin.js?51') : ''),
     template_url('js/bootstrap.min.js'),
     template_url('js/autosize.min.js?2'),
     template_url('js/jquery-ui.min.js'),
@@ -137,13 +144,13 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
 
 <div class="container">
 
-    <div class="header page-header <?php echo Session::get("loggedin") ? "loggedin" : ""?>">
+    <div class="header page-header <?php echo Session::get("memberID") ? "loggedin" : ""?>">
 
         <div class="header_menu_left">
             <a href="/" class="logo"><img src="<?php echo template_url("img/logo.png") ?>" height="40" /></a>
 
             <ul class="nav nav-pills" role="tablist">
-                <?php if(Session::get('loggedin')): ?>
+                <?php if(Session::get('memberID')): ?>
                     <li <?php if($data['menu'] == 1):?>class="active"<?php endif?> role="presentation">
                         <a href="/"><?php echo __('home')?></a>
                     </li>
@@ -165,7 +172,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                     </li>
                 <?php endif; ?>
 
-                <?php if(!Session::get('loggedin') || Session::get("isDemo")): ?>
+                <?php if(!Session::get('memberID')): ?>
                     <li id="demo_link" class="<?php echo isset($data["menu"]) && $data["menu"] == 5 ? "active" : "" ?>" role="presentation">
                         <a href="#"><?php echo __('demo')?></a>
                         <div class="demo_options menu_link">
@@ -192,7 +199,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
         </div>
 
         <ul class="list-inline header_menu_right">
-            <?php if((isset($data["isDemo"]) && $data["isDemo"]) || Session::get('loggedin')): ?>
+            <?php if(isset($data["isDemo"]) || Session::get('memberID')): ?>
                 <li class="notifications">
                     <a class="btn btn-link" id="notifications">
                         <span class="notif_title" title="<?php echo __("notifications") ?>"><img src="<?php echo Url::templatePath() ?>img/notif.png"></span>
@@ -279,11 +286,10 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                         <?php else: ?>
                             <div class='no_notif'><?php echo __("no_notifs_msg") ?></div>
                         <?php endif; ?>
-                        <div class="all_notifs"><a href="/events/notifications"><?php echo __("see_all") ?></a></div>
                     </ul>
                 </li>
             <?php endif; ?>
-            <?php if(Session::get('loggedin')): ?>
+            <?php if(Session::get('memberID')): ?>
                 <li>
                     <div class="profile-select">
                         <div class="dropdown-toggle" id="profile-select" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -292,7 +298,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                         </div>
                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="profile-select">
                             <li><a href="/members/profile"><?php echo __("profile_message") ?></a></li>
-                            <?php if(Session::get("isSuperAdmin")): ?>
+                            <?php if(Session::get("isSuperAdmin") || Session::get("isGlAdmin") || Session::get("isProjectAdmin")): ?>
                                 <li><a href="/admin"><?php echo __('admin')?></a></li>
                             <?php endif; ?>
                             <li><a href="/events/faq"><?php echo __('FAQ')?></a></li>
@@ -361,7 +367,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                     </p>
                 </div>
                 <div class="footer_langs">
-                    <?php if(Session::get("loggedin")): ?>
+                    <?php if(Session::get("memberID")): ?>
                         <div class="dropup flangs">
                             <div class="dropdown-toggle" id="footer_langs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="<?php echo template_url("img/".$language.".png") ?>">

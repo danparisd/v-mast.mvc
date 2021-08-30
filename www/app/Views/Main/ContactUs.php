@@ -2,9 +2,12 @@
 use \Shared\Legacy\Error;
 use Helpers\Session;
 
-if (Session::get("profile") && isset(Session::get("profile")["languages"]) && sizeof(Session::get("profile")["languages"]) > 0)
+if ($member)
 {
-    $prefLang = key(Session::get("profile")["languages"]);
+    $langs = json_decode($member->profile->languages, true);
+    if (!empty($langs)) {
+        $prefLang = key($langs);
+    }
 }
 ?>
 
@@ -26,11 +29,9 @@ if (Session::get("profile") && isset(Session::get("profile")["languages"]) && si
                    id="name"
                    name="name"
                    placeholder="<?php echo __('name'); ?>"
-                   value="<?php echo isset($_POST["name"])
-                       ? $_POST["name"]
-                       : (Session::get("firstName")
-                           ? Session::get("firstName") . " " . Session::get("lastName") . " (".Session::get("userName").")"
-                           : "")?>">
+                   value="<?php echo $_POST["name"] ?? ($member
+                           ? $member->firstName . " " . $member->lastName . " (" . $member->userName . ")"
+                           : "") ?>">
         </div>
 
         <div class="form-group">
@@ -40,11 +41,9 @@ if (Session::get("profile") && isset(Session::get("profile")["languages"]) && si
                    id="email"
                    name="email"
                    placeholder="<?php echo __('email'); ?>"
-                   value="<?php echo isset($_POST["email"])
-                       ? $_POST["email"]
-                       : (Session::get("email")
+                   value="<?php echo $_POST["email"] ?? (Session::get("email")
                            ? Session::get("email")
-                           : "")?>">
+                           : "") ?>">
         </div>
 
         <div class="form-group">
@@ -54,7 +53,7 @@ if (Session::get("profile") && isset(Session::get("profile")["languages"]) && si
                     name="lang"
                     data-placeholder="<?php echo __('lang_select'); ?>">
                 <option></option>
-                <?php foreach ($data["languages"] as $lang):?>
+                <?php foreach ($languages as $lang):?>
                     <option <?php echo (isset($_POST["lang"]) && $lang->langID == $_POST["lang"]) || (isset($prefLang) && $prefLang == $lang->langID) ? "selected" : "" ?>>
                         <?php echo "[".$lang->langID."] " . $lang->langName .
                             ($lang->angName != "" && $lang->langName != $lang->angName ? " ( ".$lang->angName." )" : ""); ?>
@@ -69,7 +68,7 @@ if (Session::get("profile") && isset(Session::get("profile")["languages"]) && si
                       id="message"
                       name="message"
                       placeholder="<?php echo __('message_content'); ?>"
-                      rows="10"><?php echo isset($_POST["message"]) ? $_POST["message"] : ""?></textarea>
+                      rows="10"><?php echo $_POST["message"] ?? "" ?></textarea>
         </div>
 
         <input type="hidden" name="csrfToken" value="<?php echo $data['csrfToken']; ?>" />

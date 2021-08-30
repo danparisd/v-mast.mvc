@@ -2,13 +2,23 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+use App\Domain\EventContributors;
+use App\Domain\ProjectContributors;
 use App\Models\ApiModel;
 use App\Models\EventsModel;
 use App\Models\MembersModel;
 use App\Models\NewsModel;
 use App\Models\SailDictionaryModel;
 use App\Models\TranslationsModel;
+use App\Repositories\BookInfo\IBookInfoRepository;
+use App\Repositories\Event\IEventRepository;
+use App\Repositories\GatewayLanguage\IGatewayLanguageRepository;
+use App\Repositories\Language\ILanguageRepository;
+use App\Repositories\Member\IMemberRepository;
+use App\Repositories\Project\IProjectRepository;
+use App\Repositories\Source\ISourceRepository;
 use Config\Config;
+use Database\ORM\Collection;
 use Database\QueryException;
 use File;
 use Helpers\Constants\EventMembers;
@@ -23,7 +33,6 @@ use Shared\Legacy\Error;
 use Support\Facades\Cache;
 use Support\Facades\Input;
 use Support\Facades\View;
-use ZipArchive;
 use \stdClass;
 
 class AdminController extends Controller {
@@ -36,9 +45,34 @@ class AdminController extends Controller {
     private $_newsModel;
     protected $layout = "admin";
 
-    public function __construct()
-    {
+    protected $memberRepo = null;
+    protected $glRepo = null;
+    protected $projectRepo = null;
+    protected $eventRepo = null;
+    protected $languageRepo = null;
+    protected $sourceRepo = null;
+    protected $bookInfoRepo = null;
+
+    private $_member;
+
+    public function __construct(
+        IMemberRepository $memberRepo,
+        IGatewayLanguageRepository $glProjectRepo,
+        IProjectRepository $projectRepo,
+        IEventRepository $eventRepo,
+        ILanguageRepository $languageRepo,
+        ISourceRepository $sourceRepo,
+        IBookInfoRepository $bookInfoRepo
+    ) {
         parent::__construct();
+
+        $this->memberRepo = $memberRepo;
+        $this->glRepo = $glProjectRepo;
+        $this->projectRepo = $projectRepo;
+        $this->eventRepo = $eventRepo;
+        $this->languageRepo = $languageRepo;
+        $this->sourceRepo = $sourceRepo;
+        $this->bookInfoRepo = $bookInfoRepo;
 
         if(Config::get("app.isMaintenance")
             && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips")))
@@ -46,72 +80,118 @@ class AdminController extends Controller {
             Url::redirect("maintenance");
         }
 
+        if (!Session::get('memberID')) {
+            Session::set('redirect', 'admin');
+            Url::redirect('members/login');
+        }
+
+        $this->_member = $this->memberRepo->get(Session::get('memberID'));
+
+        if (!$this->_member) Url::redirect("members/login");
+
         $this->_membersModel = new MembersModel();
-        $this->_eventsModel = new EventsModel();
+        $this->_eventsModel = new EventsModel($this->eventRepo);
         $this->_apiModel = new ApiModel();
         $this->_translationModel = new TranslationsModel();
         $this->_saildictModel = new SailDictionaryModel();
         $this->_newsModel = new NewsModel();
     }
 
-    public  function index() {
+    public function index() {
 
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
+        if(!$this->_member->isSuperAdmin()
+            && !$this->_member->isGlAdmin()
+            && !$this->_member->isProjectAdmin()) {
             Url::redirect('');
         }
 
         $data['menu'] = 1;
 
-        $data["gwProjects"] = $this->_eventsModel->getGatewayProject();
-        $data["gwLangs"] = $this->_eventsModel->getAllLanguages(true);
-        $data["projects"] = $this->_eventsModel->getProjects(Session::get("memberID"));
-        $data["sources"] = $this->_translationModel->getSources();
+        if ($this->_member->isSuperAdmin()) {
+            $gatewayLanguages = $this->glRepo->all();
+        } else {
+            $gatewayLanguages = $this->_member->adminGatewayLanguages;
+            foreach ($this->_member->adminProjects as $project) {
+                if (!$gatewayLanguages->contains($project->gatewayLanguage))
+                    $gatewayLanguages->add($project->gatewayLanguage);
+            }
+        }
+        $gwLangs = $this->languageRepo->where("isGW", 1)->get();
 
         return View::make('Admin/Main/Index')
-            ->shares("title", __("admin_project_title"))
+            ->shares("title", __("gateway_languages"))
+            ->shares("gatewayLanguages", $gatewayLanguages)
+            ->shares("gwLangs", $gwLangs)
+            ->shares("data", $data);
+    }
+
+
+    public function gatewayLanguage($glID)
+    {
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
+            Url::redirect('');
+        }
+
+        $data['menu'] = 1;
+        $gatewayLanguage = $this->glRepo->get($glID);
+
+        $isGlAdmin = $gatewayLanguage->admins->contains($this->_member);
+        $hasGlProjects = !$gatewayLanguage->projects->intersect($this->_member->adminProjects)->isEmpty();
+
+        if (!$gatewayLanguage || (!$hasGlProjects && !$isGlAdmin)) {
+            Url::redirect("/admin");
+        }
+
+        $gwLangs = $this->languageRepo->where("isGW", 1)->get();
+
+        if ($isGlAdmin) {
+            $projects = $gatewayLanguage->projects;
+        } else {
+            $projects = $this->_member->adminProjects->where("glID", $glID)->sort(function($a, $b) {
+                return $a->targetLang >= $b->targetLang;
+            });
+        }
+
+        $sources = $this->sourceRepo->all();
+
+        return View::make('Admin/Main/GatewayLanguage')
+            ->shares("title", __("admin_events_title"))
+            ->shares("gatewayLanguage", $gatewayLanguage)
+            ->shares("projects", $projects)
+            ->shares("sources", $sources)
+            ->shares("gwLangs", $gwLangs)
+            ->shares("isGlAdmin", $isGlAdmin)
             ->shares("data", $data);
     }
 
     public function project($projectID)
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
             Url::redirect('');
         }
 
         $data['menu'] = 1;
-        $data["project"] = $this->_eventsModel->getProjects(Session::get("memberID"), $projectID);
-        $data["events"] = [];
-        if(!empty($data["project"]))
+        $project = $this->projectRepo->get($projectID);
+
+        $page = 'Admin/Main/Project';
+        $category = 'bible';
+
+        if($project)
         {
-            if($data["project"][0]->bookProject == "tw")
+            if($project->bookProject == "tw")
             {
-                $category = "tw";
+                $page = 'Admin/Main/ProjectTW';
+                $category = 'tw';
             }
-            elseif($data["project"][0]->bookProject == "rad")
+            elseif($project->bookProject == "rad")
             {
-                $category = "rad";
+                $page = 'Admin/Main/ProjectRadio';
+                $category = 'rad';
             }
-            elseif ($data["project"][0]->sourceBible == "odb")
+            elseif ($project->sourceBible == "odb")
             {
-                $category = "odb";
-            }
-            else
-            {
-                $category = "bible";
+                $page = 'Admin/Main/ProjectODB';
+                $category = 'odb';
             }
 
             $otDone = 0;
@@ -128,48 +208,52 @@ class AdminController extends Controller {
             $twDone = 0;
             $data["TWprogress"] = 0;
 
-            $data["events"] = $this->_eventsModel->getEventsByProject($projectID, $category);
+            $events = $project->events;
 
-            foreach ($data["events"] as $event)
-            {
-                if($event->category == "bible" && $event->abbrID < 41) // Old testament
-                {
-                    if(!empty($event->state) &&
-                        EventStates::enum($event->state) >= EventStates::enum(EventStates::TRANSLATED))
-                    {
-                        $otDone++;
+            $bookInfos = $this->bookInfoRepo->where("category", $category)->get();
+
+            foreach ($bookInfos as $bookInfo) {
+                foreach ($events as $event) {
+                    if ($bookInfo->sort == $event->bookInfo->sort) {
+                        $bookInfo->event = $event;
                     }
                 }
-                else if($event->category == "bible" && $event->abbrID >= 41) // New testament
-                {
-                    if(!empty($event->state) &&
-                        EventStates::enum($event->state) >= EventStates::enum(EventStates::TRANSLATED))
+
+                if ($bookInfo->event) {
+                    if($bookInfo->category == "bible" && $bookInfo->sort < 41) // Old testament
                     {
-                        $ntDone++;
+                        if(EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                        {
+                            $otDone++;
+                        }
                     }
-                }
-                else if($event->category == "tw") // tWords categories (kt, names, other)
-                {
-                    if(!empty($event->state) &&
-                        EventStates::enum($event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                    else if($bookInfo->category == "bible" && $bookInfo->sort >= 41) // New testament
                     {
-                        $twDone++;
+                        if(EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                        {
+                            $ntDone++;
+                        }
                     }
-                }
-                else if($event->category == "odb") // ODB books
-                {
-                    if(!empty($event->state) &&
-                        EventStates::enum($event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                    else if($bookInfo->category == "tw") // tWords categories (kt, names, other)
                     {
-                        $odbDone++;
+                        if(EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                        {
+                            $twDone++;
+                        }
                     }
-                }
-                else if($event->category == "rad") // RADIO books
-                {
-                    if(!empty($event->state) &&
-                        EventStates::enum($event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                    else if($bookInfo->category == "odb") // ODB books
                     {
-                        $radDone++;
+                        if(EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                        {
+                            $odbDone++;
+                        }
+                    }
+                    else if($bookInfo->category == "rad") // RADIO books
+                    {
+                        if(EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                        {
+                            $radDone++;
+                        }
                     }
                 }
             }
@@ -178,39 +262,24 @@ class AdminController extends Controller {
             $data["NTprogress"] = 100*$ntDone/27;
             $data["TWprogress"] = 100*$twDone/3;
 
-            if($data["project"][0]->sourceBible == "odb")
+            if($project->sourceBible == "odb")
             {
-                $count = $this->_eventsModel->getAbbrByCategory("odb", true);
+                $count = $this->bookInfoRepo->all()->where("category", "odb", false)->count();
                 if($count > 0)
                     $data["ODBprogress"] = 100*$odbDone/$count;
             }
-            elseif ($data["project"][0]->bookProject == "rad")
+            elseif ($project->bookProject == "rad")
             {
-                $count = $this->_eventsModel->getAbbrByCategory("rad", true);
+                $count = $this->bookInfoRepo->all()->where("category", "rad", false)->count();
                 if($count > 0)
                     $data["RADprogress"] = 100*$radDone/$count;
             }
         }
 
-        $page = 'Admin/Main/Project';
-        if(!empty($data["project"]))
-        {
-            if($data["project"][0]->bookProject == "tw")
-            {
-                $page = 'Admin/Main/ProjectTW';
-            }
-            elseif ($data["project"][0]->sourceBible == "odb")
-            {
-                $page = 'Admin/Main/ProjectODB';
-            }
-            elseif ($data["project"][0]->bookProject == "rad")
-            {
-                $page = 'Admin/Main/ProjectRadio';
-            }
-        }
-
         return View::make($page)
             ->shares("title", __("admin_events_title"))
+            ->shares("project", $project)
+            ->shares("bookInfos", $bookInfos)
             ->shares("data", $data);
     }
 
@@ -221,13 +290,9 @@ class AdminController extends Controller {
             "error" => __("unknown_import_type_error")
         ];
 
-        if (!Session::get('loggedin'))
-        {
-            return;
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
+        if(!$this->_member->isGlAdmin() && $this->_member->isProjectAdmin()) {
+            $response["error"] = __("not_enough_rights_error");
+            echo json_encode($response);
             return;
         }
 
@@ -244,15 +309,12 @@ class AdminController extends Controller {
         $importLevel = isset($_POST['importLevel']) && $_POST['importLevel'] != "" ? (integer)$_POST['importLevel'] : 1;
         $importProject = isset($_POST['importProject']) && $_POST['importProject'] != "" ? $_POST['importProject'] : null;
 
-        if($import !== null && $bookCode != null && $bookProject != null && $importProject != null)
-        {
-            switch ($type)
-            {
+        if($import !== null && $bookCode != null && $bookProject != null && $importProject != null) {
+            switch ($type) {
                 case "dcs":
                     $path = $this->_apiModel->processDCSUrl($import);
 
-                    switch ($importProject)
-                    {
+                    switch ($importProject) {
                         case "ulb":
                         case "udb":
                             $usfm = $this->_apiModel->compileUSFMProject($path);
@@ -304,9 +366,7 @@ class AdminController extends Controller {
                     break;
 
                 case "usfm":
-                    if(File::extension($import["name"]) == "usfm"
-                        || File::extension($import["name"]) == "txt")
-                    {
+                    if(File::extension($import["name"]) == "usfm" || File::extension($import["name"]) == "txt") {
                         $usfm = File::get($import["tmp_name"]);
                         $response = $this->importScriptureToEvent($usfm, $projectID, $eventID, $bookCode, $importLevel);
                     }
@@ -475,16 +535,7 @@ class AdminController extends Controller {
 
     public function members()
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            Url::redirect('');
-        }
+        if(!$this->_member->isSuperAdmin()) Url::redirect('');
 
         $data['menu'] = 2;
         $data["languages"] = $this->_eventsModel->getAllLanguages();
@@ -546,18 +597,38 @@ class AdminController extends Controller {
             ->shares("data", $data);
     }
 
-    public function toolsCommon()
+    public function toolsSource()
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
+        if(!$this->_member->isGlAdmin()) Url::redirect('/admin/tools/common');
+
+        $data["menu"] = 3;
+
+        $gwLangs = $this->_member->adminGatewayLanguages;
+
+        $allowedLanguages = new Collection();
+        foreach ($gwLangs as $gl) {
+            $allowedLanguages = $allowedLanguages->merge($gl->language->targetLanguages);
         }
 
-        if(!Session::get('isSuperAdmin'))
-        {
-            Url::redirect('');
-        }
+        $sources = $this->sourceRepo->all()->filter(function($item) use ($allowedLanguages) {
+            return $allowedLanguages->contains($item->language);
+        });
+        $sourceTypes = $this->sourceRepo->all()->groupBy("slug")
+            ->map(function($group) {
+                return $group[0];
+            });
+
+        return View::make('Admin/Main/ToolsSource')
+            ->shares("title", __("admin_tools_title"))
+            ->shares("gwLangs", $gwLangs)
+            ->shares("sources", $sources)
+            ->shares("sourceTypes", $sourceTypes)
+            ->shares("data", $data);
+    }
+
+    public function toolsCommon()
+    {
+        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin');
 
         $data["menu"] = 3;
 
@@ -570,16 +641,7 @@ class AdminController extends Controller {
 
     public function toolsVsun()
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            Url::redirect('');
-        }
+        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin');
 
         $data["menu"] = 3;
 
@@ -592,16 +654,7 @@ class AdminController extends Controller {
 
     public function toolsFaq()
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            Url::redirect('');
-        }
+        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin');
 
         $data["menu"] = 3;
 
@@ -614,60 +667,11 @@ class AdminController extends Controller {
 
     public function toolsNews()
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            Url::redirect('');
-        }
+        if(!$this->_member->isSuperAdmin()) Url::redirect('/admin');
 
         $data["menu"] = 3;
 
         return View::make('Admin/Main/ToolsNews')
-            ->shares("title", __("admin_tools_title"))
-            ->shares("data", $data);
-    }
-
-    public function toolsSource()
-    {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            Url::redirect('');
-        }
-
-        $data["menu"] = 3;
-
-        $arr = $this->_eventsModel->getSuperadminLanguages(Session::get("memberID"));
-        $adminLangs = [];
-        foreach ($arr as $item)
-        {
-            $adminLangs[] = $item->gwLang;
-        }
-
-        $data["gwLangs"] = $this->_eventsModel->getAllLanguages(true, $adminLangs);
-        $data["sources"] = $this->_translationModel->getSources();
-        $data["sourceTypes"] = $this->_translationModel->getKnownSourceTypes();
-
-        // Filter resources of the languages that this user donsn't have access to
-        $tmp = [];
-        foreach ($data["sources"] as $source) {
-            if(in_array($source->langID, $adminLangs)) {
-                $tmp[] = $source;
-            }
-        }
-        $data["sources"] = $tmp;
-
-        return View::make('Admin/Main/ToolsSource')
             ->shares("title", __("admin_tools_title"))
             ->shares("data", $data);
     }
@@ -679,14 +683,10 @@ class AdminController extends Controller {
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $response["error"] = "login";
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
             $response["error"] = "admin";
+            echo json_encode($response);
+            return;
         }
 
         $_POST = Gump::xss_clean($_POST);
@@ -700,45 +700,42 @@ class AdminController extends Controller {
 
         if(!isset($response["error"]))
         {
-            $event = $this->_eventsModel->getEvent($eventID);
+            $event = $this->eventRepo->get($eventID);
 
-            if(!empty($event))
+            if($event)
             {
-                if(EventStates::enum($event[0]->state) >= EventStates::enum(EventStates::L2_CHECKED))
-                {
-                    $admins = $event[0]->admins_l3;
-                }
-                elseif(EventStates::enum($event[0]->state) >= EventStates::enum(EventStates::TRANSLATED))
-                {
-                    if(in_array($event[0]->bookProject, ["tn","tq","tw"]))
-                        $admins = $event[0]->admins_l3;
-                    else
-                        $admins = $event[0]->admins_l2;
-                }
-                else
-                {
-                    $admins = $event[0]->admins;
+                if (!$event->project->admins->contains($this->_member)
+                    && !$event->project->gatewayLanguage->admins->contains($this->_member)) {
+                    $response["error"] = "admin";
+                    echo json_encode($response);
+                    return;
                 }
 
                 $members = [];
-                $membersArray = (array)$this->_membersModel->getMembers(json_decode($admins));
 
-                foreach ($membersArray as $member) {
+                foreach ($event->admins as $member) {
                     $members[$member->memberID] = "{$member->firstName} "
                         .mb_substr($member->lastName, 0, 1)
                         .". ({$member->userName})";
                 }
 
-                if(in_array($event[0]->bookProject, ["tn","tq","tw"]))
+                if(in_array($event->project->bookProject, ["tn","tq","tw"]))
                 {
-                    $ulbEvent = $this->_eventsModel->getEventByBookAndLanguage($event[0]->bookCode, $event[0]->targetLang);
-                    if(!empty($ulbEvent))
-                        $response["ulb"] = $ulbEvent[0];
+                    $ulbEvent = $this->eventRepo->all()->filter(function($ev) use ($event) {
+                        return $ev->bookCode == $event->bookCode
+                            && $ev->project->targetLang == $event->project->targetLang
+                            && $ev->project->bookProject == "ulb";
+                    })->first();
+
+                    if($ulbEvent)
+                        $response["ulb"] = $ulbEvent;
                 }
+
+                $event->load('bookInfo');
 
                 $response["success"] = true;
                 $response["admins"] = $members;
-                $response["event"] = $event[0];
+                $response["event"] = $event;
             }
             else
             {
@@ -754,14 +751,9 @@ class AdminController extends Controller {
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $response["error"] = "login";
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            $response["error"] = "admin";
+        if(!$this->_member->isGlAdmin()) {
+            echo json_encode(array("login" => true));
+            exit;
         }
 
         $_POST = Gump::xss_clean($_POST);
@@ -775,12 +767,13 @@ class AdminController extends Controller {
 
         if(!isset($response["error"]))
         {
-            $project = $this->_eventsModel->getProject(["projects.*"], [["projectID", $projectID]]);
+            $project = $this->projectRepo->get($projectID);
+            $project->load("admins");
 
-            if(!empty($project))
+            if($project && $project->gatewayLanguage->admins->contains($this->_member))
             {
                 $response["success"] = true;
-                $response["project"] = $project[0];
+                $response["project"] = $project;
             }
             else
             {
@@ -799,14 +792,10 @@ class AdminController extends Controller {
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $response["error"] = "login";
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
             $response["error"] = "admin";
+            echo json_encode($response);
+            exit;
         }
 
         $_POST = Gump::xss_clean($_POST);
@@ -815,20 +804,20 @@ class AdminController extends Controller {
         $level = isset($_POST['level']) && $_POST['level'] != "" ? (integer)$_POST['level'] : 1;
         $mode = isset($_POST['mode']) && $_POST['mode'] != "" ? $_POST['mode'] : "ulb";
 
-        if($eventID == null)
-        {
-            $response["error"] = __('wrong_parameters_error');
-        }
+        $event = $this->eventRepo->get($eventID);
 
-        if(!isset($response["error"]))
+        if($event)
         {
-            $contributors = $this->_eventsModel->getEventContributors($eventID, $level, $mode);
+            $eventContributors = new EventContributors($event, $level, $mode);
+            $contributors = $eventContributors->get();
 
             if(!empty($contributors))
             {
                 $response["success"] = true;
                 $response = array_merge($response, $contributors);
             }
+        } else {
+            $response["error"] = __('wrong_parameters_error');
         }
 
         echo json_encode($response);
@@ -837,7 +826,7 @@ class AdminController extends Controller {
     public function getProjectContributors() {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
+        if (!Session::get('memberID'))
         {
             $response["error"] = "login";
         }
@@ -858,25 +847,20 @@ class AdminController extends Controller {
 
         if(!isset($response["error"]))
         {
-            $response["contributors"] = $this->_eventsModel->getProjectContributors($projectID);;
+            $project = $this->projectRepo->get($projectID);
+            if ($project) {
+                $projectContributors = new ProjectContributors($project);
+                $response["contributors"] = $projectContributors->get();
+            }
             $response["success"] = true;
         }
 
         echo json_encode($response);
     }
 
-    public function createGwProject()
+    public function createGatewayLanguage()
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            return;
-        }
+        if(!$this->_member->isSuperAdmin()) return;
 
         $_POST = Gump::xss_clean($_POST);
 
@@ -889,29 +873,16 @@ class AdminController extends Controller {
 
         if(!isset($error))
         {
-            $exist = $this->_eventsModel->getGatewayProject(array("gateway_projects.gwProjectID"),
-                array("gateway_projects.gwLang", $gwLang));
-
-            if(!empty($exist))
+            $gatewayLanguage = $this->glRepo->where("gwLang", $gwLang)->first();
+            if($gatewayLanguage)
             {
-                $error[] = __("gw_project_exists_error");
+                $error[] = __("gateway_language_exists_error");
                 echo json_encode(array("error" => Error::display($error)));
                 return;
             }
 
-            $id = $this->_eventsModel->createGatewayProject([
-                "gwLang" => $gwLang,
-                "admins" => json_encode([Session::get("memberID")])
-            ]);
-            $msg = json_encode(array("success" => __("successfully_created")));
-
-            if($id)
-                echo $msg;
-            else
-            {
-                $error[] = __("error_ocured");
-                echo json_encode(array("error" => Error::display($error)));
-            }
+            $this->glRepo->create(["gwLang" => $gwLang]);
+            echo json_encode(array("success" => __("successfully_created")));
         }
         else
         {
@@ -919,17 +890,11 @@ class AdminController extends Controller {
         }
     }
 
-    public function getSuperAdmins()
+    public function getGlAdmins()
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            echo json_encode(array("login" => true));
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             echo json_encode(array());
             exit;
@@ -937,24 +902,14 @@ class AdminController extends Controller {
 
         $_POST = Gump::xss_clean($_POST);
 
-        $gwProjectID = isset($_POST['gwProjectID']) && $_POST['gwProjectID'] != "" ? (integer)$_POST['gwProjectID'] : 0;
+        $glID = isset($_POST['glID']) && $_POST['glID'] != "" ? (integer)$_POST['glID'] : 0;
 
-        $gwProject = $this->_eventsModel->getGatewayProject(["admins"], ["gwProjectID", "=", $gwProjectID]);
+        $gatewayLanguage = $this->glRepo->where("glID", $glID)->first();
 
-        if(!empty($gwProject))
+        if($gatewayLanguage)
         {
-            $admins = (array) json_decode($gwProject[0]->admins, true);
-
-            if(!in_array(Session::get("memberID"), $admins))
-            {
-                echo json_encode(array("error" => __("not_enough_rights_error")));
-                return;
-            }
-
             $members = [];
-            $membersArray = (array)$this->_membersModel->getMembers(json_decode($gwProject[0]->admins));
-
-            foreach ($membersArray as $member) {
+            foreach ($gatewayLanguage->admins as $member) {
                 $members[$member->memberID] = "{$member->firstName} "
                     .mb_substr($member->lastName, 0, 1)
                     .". ({$member->userName})";
@@ -965,24 +920,18 @@ class AdminController extends Controller {
         }
         else
         {
-            $response["error"] = __("gw_project_not_exist");
+            $response["error"] = __("gateway_language_not_exist");
         }
 
         echo json_encode($response);
     }
 
 
-    public function editSuperAdmins()
+    public function editGlAdmins()
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            echo json_encode(array("login" => true));
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             echo json_encode(array());
             exit;
@@ -990,31 +939,17 @@ class AdminController extends Controller {
 
         $_POST = Gump::xss_clean($_POST);
 
-        $gwProjectID = isset($_POST['gwProjectID']) && $_POST['gwProjectID'] != "" ? (integer)$_POST['gwProjectID'] : 0;
-        $superadmins = isset($_POST['superadmins']) && !empty($_POST['superadmins']) ? array_unique($_POST['superadmins']) : [];
+        $glID = isset($_POST['glID']) && $_POST['glID'] != "" ? (integer)$_POST['glID'] : 0;
+        $glAdmins = isset($_POST['gl_admins']) && !empty($_POST['gl_admins']) ? array_unique($_POST['gl_admins']) : [];
 
-        $gwProject = $this->_eventsModel->getGatewayProject(["admins"], [
-            ["gwProjectID", $gwProjectID]
-        ]);
+        $gatewayLanguage = $this->glRepo->where("glID", $glID)->first();
 
-        $admins = (array) json_decode($gwProject[0]->admins, true);
-
-        if(!in_array(Session::get("memberID"), $admins))
-        {
-            echo json_encode(array("error" => __("not_enough_rights_error")));
-            return;
-        }
-
-        $superadmins = array_filter($superadmins, function($elm) {
+        $glAdmins = array_filter($glAdmins, function($elm) {
             return is_numeric($elm);
         });
-        $superadmins = array_values($superadmins);
+        $glAdmins = array_values($glAdmins);
 
-        foreach ($superadmins as $admin) {
-            $this->_membersModel->updateMember(array("isAdmin" => true, "isSuperAdmin" => true), array("memberID" => $admin));
-        }
-
-        $this->_eventsModel->updateGatewayProject(["admins" => json_encode($superadmins)], ["gwProjectID" => $gwProjectID]);
+        $gatewayLanguage->admins()->sync($glAdmins);
 
         $response["success"] = true;
 
@@ -1023,15 +958,8 @@ class AdminController extends Controller {
 
     public function createProject()
     {
-        if (!Session::get('loggedin'))
-        {
+        if(!$this->_member->isGlAdmin()) {
             echo json_encode(array("login" => true));
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            echo json_encode(array());
             exit;
         }
 
@@ -1048,9 +976,20 @@ class AdminController extends Controller {
         $projectType = isset($_POST['projectType']) && $_POST['projectType'] != "" ? $_POST['projectType'] : null;
         $act = isset($_POST['act']) && $_POST['act'] != "" ? $_POST['act'] : "create";
         $projectID = isset($_POST['projectID']) && $_POST['projectID'] != "" ? $_POST['projectID'] : null;
+        $admins = isset($_POST['project_admins']) && !empty($_POST['project_admins']) ? array_filter($_POST['project_admins']) : [];
+
+        $admins = array_filter($admins, function($elm) {
+            return is_numeric($elm);
+        });
+        $admins = array_values($admins);
 
         if($act == "create")
         {
+            if(empty($admins))
+            {
+                $error[] = __('enter_project_admins');
+            }
+
             if($subGwLangs == null)
             {
                 $error[] = __('choose_gw_lang');
@@ -1101,39 +1040,35 @@ class AdminController extends Controller {
                 $sourceTrPair = explode("|", $sourceTranslation);
                 $gwLangsPair = explode("|", $subGwLangs);
 
-                $gwProject = $this->_eventsModel->getGatewayProject(["admins"], [
-                    ["gwProjectID", $gwLangsPair[1]]
-                ]);
-                $admins = (array) json_decode($gwProject[0]->admins, true);
+                $gatewayLanguage = $this->_member->adminGatewayLanguages->where("glID", $gwLangsPair[1])->first();
 
-                if(!in_array(Session::get("memberID"), $admins))
+                if(!$gatewayLanguage)
                 {
                     $error[] = __("not_enough_rights_error");
                     echo json_encode(array("error" => Error::display($error)));
                     return;
                 }
 
-                $projType = in_array($projectMode, ['tn','tq','tw']) ?
-                    $projectMode : $projectType;
+                $projType = in_array($projectMode, ['tn','tq','tw']) ? $projectMode : $projectType;
 
                 $search = [
-                    ["projects.gwLang", $gwLangsPair[0]],
-                    ["projects.targetLang", $targetLang],
-                    ["projects.bookProject", $projType]
+                    "gwLang" => $gwLangsPair[0],
+                    "targetLang" => $targetLang,
+                    "bookProject" => $projType
                 ];
 
                 if($projectMode == "odb")
                 {
-                    $search[] = ["projects.sourceBible", "odb"];
+                    $search["sourceBible"] = "odb";
                 }
                 elseif ($projectMode == "rad")
                 {
-                    $search[] = ["projects.sourceBible", "rad"];
+                    $search["sourceBible"] = "rad";
                 }
 
-                $exist = $this->_eventsModel->getProject(["projects.projectID"], $search);
+                $project = $this->projectRepo->where($search)->first();
 
-                if(!empty($exist))
+                if($project)
                 {
                     $error[] = __("project_exists");
                     echo json_encode(array("error" => Error::display($error)));
@@ -1141,7 +1076,6 @@ class AdminController extends Controller {
                 }
 
                 $postdata = array(
-                    "gwProjectID" => $gwLangsPair[1],
                     "gwLang" => $gwLangsPair[0],
                     "targetLang" => $targetLang,
                     "bookProject" => $projType,
@@ -1157,15 +1091,10 @@ class AdminController extends Controller {
                 if($toolsTw)
                     $postdata["twLangID"] = $toolsTw;
 
-                $id = $this->_eventsModel->createProject($postdata);
+                $project = $this->projectRepo->create($postdata, $gatewayLanguage);
+                $project->admins()->sync($admins);
 
-                if($id)
-                    echo json_encode(array("success" => __("successfully_created")));
-                else
-                {
-                    $error[] = __("error_ocured");
-                    echo json_encode(array("error" => Error::display($error)));
-                }
+                echo json_encode(array("success" => __("successfully_created")));
             }
             else
             {
@@ -1174,18 +1103,16 @@ class AdminController extends Controller {
         }
         elseif($act == "edit")
         {
-            $project = $this->_eventsModel->getProject(["*"], [
-                ["projectID", $projectID]
-            ]);
+            $project = $this->projectRepo->get($projectID);
 
-            if(empty($project))
+            if(!$project)
             {
                 $error[] = __("error_ocured");
                 echo json_encode(array("error" => Error::display($error)));
                 exit;
             }
 
-            $projectMode = $project[0]->bookProject;
+            $projectMode = $project->bookProject;
 
             if($sourceTranslation == null)
             {
@@ -1213,12 +1140,9 @@ class AdminController extends Controller {
 
             if(!isset($error))
             {
-                $gwProject = $this->_eventsModel->getGatewayProject(["admins"], [
-                    ["gwProjectID", $project[0]->gwProjectID]
-                ]);
-                $admins = (array) json_decode($gwProject[0]->admins, true);
+                $gatewayLanguage = $project->gatewayLanguage;
 
-                if(!in_array(Session::get("memberID"), $admins))
+                if(!$gatewayLanguage->admins->contains($this->_member))
                 {
                     $error[] = __("not_enough_rights_error");
                     echo json_encode(array("error" => Error::display($error)));
@@ -1227,21 +1151,19 @@ class AdminController extends Controller {
 
                 $sourceTrPair = explode("|", $sourceTranslation);
 
-                $postdata = array(
-                    "sourceBible" => $sourceTrPair[0],
-                    "sourceLangID" => $sourceTrPair[1],
-                    "resLangID" => $sourceTools
-                );
+                $project->sourceBible = $sourceTrPair[0];
+                $project->sourceLangID = $sourceTrPair[1];
+                $project->resLangID = $sourceTools;
 
                 if($toolsTn)
-                    $postdata["tnLangID"] = $toolsTn;
+                    $project->tnLangID = $toolsTn;
                 if($toolsTq)
-                    $postdata["tqLangID"] = $toolsTq;
+                    $project->tqLangID = $toolsTq;
                 if($toolsTw)
-                    $postdata["twLangID"] = $toolsTw;
+                    $project->twLangID = $toolsTw;
 
-                $this->_eventsModel->updateProject($postdata, ["projectID" => $projectID]);
-
+                $project->save();
+                $project->admins()->sync($admins);
                 echo json_encode(array("success" => __("successfully_updated")));
             }
             else
@@ -1253,14 +1175,10 @@ class AdminController extends Controller {
 
     public function getMembers()
     {
-        if (!Session::get('loggedin'))
-        {
-            echo json_encode(array("login" => true));
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
+        if(!$this->_member->isSuperAdmin()
+            && !$this->_member->isGlAdmin()
+            && !$this->_member->isProjectAdmin()
+            && !$this->_member->isBookAdmin()) {
             echo json_encode(array());
             exit;
         }
@@ -1289,13 +1207,7 @@ class AdminController extends Controller {
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            echo json_encode(array("login" => true));
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             echo json_encode(array());
             exit;
@@ -1326,14 +1238,7 @@ class AdminController extends Controller {
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $response["error"] = "not_loggedin";
-            echo json_encode($response);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $response["error"] = "not_allowed";
             echo json_encode($response);
@@ -1344,45 +1249,35 @@ class AdminController extends Controller {
 
         $memberID = isset($_POST["memberID"]) ? (integer)$_POST["memberID"] : null;
 
-        if($memberID)
-        {
+        if($memberID) {
             $this->_membersModel->updateMember(
                 ["active" => true, "verified" => true, "activationToken" => null],
                 ["memberID" => $memberID]);
             $response["success"] = true;
-            echo json_encode($response);
         }
         else
         {
             $response["error"] = "wrong_parameters";
-            echo json_encode($response);
         }
+        echo json_encode($response);
     }
 
     public function clearCache()
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $response["error"] = "not_loggedin";
-            echo json_encode($response);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            $response["error"] = "not_allowed";
-            echo json_encode($response);
-            exit;
+        if(!$this->_member->isGlAdmin() && $this->_member->isProjectAdmin()) {
+            $error[] = __("not_enough_rights_error");
+            echo json_encode(array("error" => Error::display($error)));
+            return;
         }
 
         $_POST = Gump::xss_clean($_POST);
 
-        $abbrID = isset($_POST["abbrID"]) ? $_POST["abbrID"] : null;
-        $bookCode = isset($_POST["bookCode"]) ? $_POST["bookCode"] : null;
-        $sourceLangID = isset($_POST["sourceLangID"]) ? $_POST["sourceLangID"] : null;
-        $sourceBible = isset($_POST["sourceBible"]) ? $_POST["sourceBible"] : null;
+        $sort = $_POST["sort"] ?? null;
+        $bookCode = $_POST["bookCode"] ?? null;
+        $sourceLangID = $_POST["sourceLangID"] ?? null;
+        $sourceBible = $_POST["sourceBible"] ?? null;
 
         // Book source
         $cache_keyword = $bookCode."_".$sourceLangID."_".$sourceBible."_usfm";
@@ -1394,7 +1289,7 @@ class AdminController extends Controller {
             $sourceBible,
             $bookCode,
             $sourceLangID,
-            $abbrID);
+            $sort);
 
         if($source)
             $response["success"] = true;
@@ -1406,30 +1301,22 @@ class AdminController extends Controller {
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $response["error"] = "not_loggedin";
-            echo json_encode($response);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            $response["error"] = "not_allowed";
-            echo json_encode($response);
-            exit;
+        if(!$this->_member->isGlAdmin() && $this->_member->isProjectAdmin()) {
+            $error[] = __("not_enough_rights_error");
+            echo json_encode(array("error" => Error::display($error)));
+            return;
         }
 
         $_POST = Gump::xss_clean($_POST);
 
-        $sourceLangID = isset($_POST["sourceLangID"]) ? $_POST["sourceLangID"] : null;
-        $sourceBible = isset($_POST["sourceBible"]) ? $_POST["sourceBible"] : null;
+        $sourceLangID = $_POST["sourceLangID"] ?? null;
+        $sourceBible = $_POST["sourceBible"] ?? null;
 
         $booksUpdated = 0;
 
         if($sourceLangID && $sourceBible)
         {
-            $books = $this->_eventsModel->getBooks();
+            $books = $this->bookInfoRepo->all();
 
             $renDir = "../app/Templates/Default/Assets/source/".$sourceLangID."_".$sourceBible."_tmp";
             $origDir = "../app/Templates/Default/Assets/source/".$sourceLangID."_".$sourceBible;
@@ -1441,7 +1328,7 @@ class AdminController extends Controller {
             foreach ($books as $book)
             {
                 $bookCode = $book->code;
-                $abbrID = $book->abbrID;
+                $sort = $book->sort;
 
                 // Book source
                 $cache_keyword = $bookCode."_".$sourceLangID."_".$sourceBible."_usfm";
@@ -1453,7 +1340,7 @@ class AdminController extends Controller {
                     $sourceBible,
                     $bookCode,
                     $sourceLangID,
-                    $abbrID);
+                    $sort);
 
                 if($source)
                 {
@@ -1482,14 +1369,7 @@ class AdminController extends Controller {
     {
         $response = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $response["error"] = "not_loggedin";
-            echo json_encode($response);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $response["error"] = "not_allowed";
             echo json_encode($response);
@@ -1533,16 +1413,8 @@ class AdminController extends Controller {
 
     public function getTargetLanguagesByGwLanguage()
     {
-        if (!Session::get('loggedin'))
-        {
-            echo json_encode(array("login" => true));
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            echo json_encode(array());
-            exit;
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
+            echo json_encode([]);
         }
 
         $gwLang = isset($_POST["gwLang"]) && $_POST["gwLang"] != "" ? $_POST["gwLang"] : null;
@@ -1550,21 +1422,21 @@ class AdminController extends Controller {
         if($gwLang)
         {
             $gwLang = explode("|", $gwLang)[0];
-            $response['targetLangs'] = $this->_eventsModel->getTargetLanguages($gwLang);
-            echo json_encode($response);
+            $gatewayLanguage = $this->languageRepo->where("langID", $gwLang)->first();
+            echo $this->languageRepo
+                ->where("gwLang", $gatewayLanguage->langName)
+                ->get()
+                ->toJson();
         }
     }
 
     public function createEvent()
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
+            $error[] = __("not_enough_rights_error");
+            echo json_encode(array("error" => Error::display($error)));
             return;
+        }
 
         $_POST = Gump::xss_clean($_POST);
 
@@ -1583,13 +1455,14 @@ class AdminController extends Controller {
 
         if(!isset($error))
         {
-            $exist = $this->_eventsModel->getEvent(null, $projectID, $bookCode);
-            $project = $this->_eventsModel->getProject(
-                ["projects.sourceLangID", "projects.sourceBible",
-                    "projects.bookProject", "projects.gwProjectID", "projects.gwLang",
-                    "projects.targetLang"],
-                ["projectID", $projectID]
-            );
+            $event = $this->eventRepo->where(["projectID" => $projectID, "bookCode" => $bookCode])->first();
+            if ($event) {
+                $project = $event->project;
+                $bookInfo = $event->bookInfo;
+            } else {
+                $project = $this->projectRepo->get($projectID);
+                $bookInfo = $this->bookInfoRepo->where("code", $bookCode)->first();
+            }
 
             $postdata = [];
 
@@ -1603,7 +1476,7 @@ class AdminController extends Controller {
                         return;
                     }
 
-                    if($project[0]->bookProject != "ulb" || $eventLevel != 1)
+                    if($project->bookProject != "ulb" || $eventLevel != 1)
                     {
                         if($langInput)
                         {
@@ -1613,11 +1486,11 @@ class AdminController extends Controller {
                         }
                     }
 
-                    // Check if the event is ready for Level 2, Level 3 check
+                    // Check if event is ready for Level 2, Level 3 check
                     switch ($eventLevel)
                     {
                         case 1:
-                            if(!empty($exist))
+                            if($event)
                             {
                                 $error[] = __("event_already_exists");
                                 echo json_encode(array("error" => Error::display($error)));
@@ -1625,18 +1498,18 @@ class AdminController extends Controller {
                             }
                             break;
                         case 2:
-                            if (in_array($project[0]->bookProject, ["ulb","udb"]))
+                            if (in_array($project->bookProject, ["ulb","udb"]))
                             {
-                                if(empty($exist) || $exist[0]->state != EventStates::TRANSLATED)
+                                if(!$event || $event->state != EventStates::TRANSLATED)
                                 {
                                     $error[] = __("l2_l3_create_event_error");
                                     echo json_encode(array("error" => Error::display($error)));
                                     return;
                                 }
                             }
-                            elseif (in_array($project[0]->bookProject, ["tn","tq"]))
+                            elseif (in_array($project->bookProject, ["tn","tq"]))
                             {
-                                if(!empty($exist))
+                                if($event)
                                 {
                                     $error[] = __("event_already_exists");
                                     echo json_encode(array("error" => Error::display($error)));
@@ -1645,38 +1518,35 @@ class AdminController extends Controller {
                             }
                             break;
                         case 3:
-                            if (in_array($project[0]->bookProject, ["ulb","udb"]))
-                            {
-                                if(empty($exist) || $exist[0]->state != EventStates::L2_CHECKED)
-                                {
+                            if (in_array($project->bookProject, ["ulb","udb"])) {
+                                if(!$event || $event->state != EventStates::L2_CHECKED) {
                                     $error[] = __("l2_l3_create_event_error");
                                     echo json_encode(array("error" => Error::display($error)));
                                     return;
                                 }
-                            }
-                            elseif (in_array($project[0]->bookProject, ["tn","tq"]))
-                            {
+                            } elseif (in_array($project->bookProject, ["tn","tq"])) {
                                 // Check if related ulb event is complete (level 3 checked)
-                                $ulbProject = $this->_eventsModel->getProject(["projects.projectID"],[
-                                    ["projects.gwProjectID", $project[0]->gwProjectID],
-                                    ["projects.gwLang", $project[0]->gwLang],
-                                    ["projects.targetLang", $project[0]->targetLang],
-                                    ["projects.bookProject", "ulb"]
-                                ]);
+                                $ulbProject = $this->projectRepo->where([
+                                    "glID" => $project->glID,
+                                    "gwLang" => $project->gwLang,
+                                    "targetLang" => $project->targetLang,
+                                    "bookProject" => "ulb",
+                                ])->first();
 
-                                if(!empty($ulbProject))
-                                    $ulbEvent = $this->_eventsModel->getEvent(null, $ulbProject[0]->projectID, $bookCode);
+                                $ulbEvent = null;
+                                if($ulbProject)
+                                    $ulbEvent = $this->eventRepo->where([
+                                        "projectID" => $ulbProject->projectID,
+                                        "bookCode" => $bookCode
+                                    ])->first();
 
-                                if(empty($exist) || $exist[0]->state != EventStates::TRANSLATED
-                                    || empty($ulbEvent) || $ulbEvent[0]->state != EventStates::COMPLETE)
-                                {
+                                if(!$event || $event->state != EventStates::TRANSLATED
+                                    || !$ulbEvent || $ulbEvent->state != EventStates::COMPLETE) {
                                     $error[] = __("l2_l3_create_event_error");
                                     echo json_encode(array("error" => Error::display($error)));
                                     return;
                                 }
-                            }
-                            elseif ($project[0]->bookProject == "sun" && !empty($exist))
-                            {
+                            } elseif ($project->bookProject == "sun" && $event) {
                                 $error[] = __("event_already_exists");
                                 echo json_encode(array("error" => Error::display($error)));
                                 return;
@@ -1687,111 +1557,66 @@ class AdminController extends Controller {
                     $postdata["projectID"] = $projectID;
                     $postdata["bookCode"] = $bookCode;
 
-                    $bookInfo = $this->_translationModel->getBookInfo($bookCode);
+                    if($bookInfo->category == "odb") {
+                        $odb = $this->_apiModel->getOtherSource("odb", $bookInfo->code, $project->sourceLangID);
+                        if(empty($odb)) {
+                            $error[] = __("no_source_error");
+                            echo json_encode(array("error" => Error::display($error)));
+                            return;
+                        }
+                    } elseif ($bookInfo->category == "rad") {
+                        $radio = $this->_apiModel->getOtherSource("rad", $bookInfo->code, $project->sourceLangID);
+                        if(empty($radio)) {
+                            $error[] = __("no_source_error");
+                            echo json_encode(array("error" => Error::display($error)));
+                            return;
+                        }
+                    } else {
+                        // Book source
+                        $cache_keyword = $bookCode."_".$project->sourceLangID."_".$project->sourceBible."_usfm";
 
-                    if(!empty($bookInfo))
-                    {
-                        if($bookInfo[0]->category == "odb")
-                        {
-                            $odb = $this->_apiModel->getOtherSource("odb", $bookInfo[0]->code, $project[0]->sourceLangID);
-                            if(empty($odb))
-                            {
+                        if(!Cache::has($cache_keyword)) {
+                            $usfm = $this->_apiModel->getCachedSourceBookFromApi(
+                                $project->sourceBible,
+                                $bookInfo->code,
+                                $project->sourceLangID,
+                                $bookInfo->sort);
+
+                            if(!$usfm || empty($usfm)) {
                                 $error[] = __("no_source_error");
                                 echo json_encode(array("error" => Error::display($error)));
                                 return;
                             }
                         }
-                        elseif ($bookInfo[0]->category == "rad")
-                        {
-                            $radio = $this->_apiModel->getOtherSource("rad", $bookInfo[0]->code, $project[0]->sourceLangID);
-                            if(empty($radio))
-                            {
-                                $error[] = __("no_source_error");
-                                echo json_encode(array("error" => Error::display($error)));
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            // Book source
-                            $cache_keyword = $bookCode."_".$project[0]->sourceLangID."_".$project[0]->sourceBible."_usfm";
-
-                            if(!Cache::has($cache_keyword))
-                            {
-                                $usfm = $this->_apiModel->getCachedSourceBookFromApi(
-                                    $project[0]->sourceBible,
-                                    $bookInfo[0]->code,
-                                    $project[0]->sourceLangID,
-                                    $bookInfo[0]->abbrID);
-
-                                if(!$usfm || empty($usfm))
-                                {
-                                    $error[] = __("no_source_error");
-                                    echo json_encode(array("error" => Error::display($error)));
-                                    return;
-                                }
-                            }
-                        }
-
-                        if(!isset($error))
-                        {
-                            foreach ($admins as $admin) {
-                                $this->_membersModel->updateMember(array("isAdmin" => true), array("memberID" => $admin));
-                            }
-
-                            if(empty($exist))
-                            {
-                                $postdata["admins"] = json_encode($admins);
-                                $postdata["dateFrom"] = date("Y-m-d H:i:s", strtotime("0000-00-00"));
-                                $postdata["dateTo"] = date("Y-m-d H:i:s", strtotime("0000-00-00"));
-                                $postdata["langInput"] = $langInput;
-                                $eventID = $this->_eventsModel->createEvent($postdata);
-                            }
-                            else
-                            {
-                                $superadmins = (array)json_decode($exist[0]->superadmins, true);
-                                if(!in_array(Session::get("memberID"), $superadmins))
-                                {
-                                    $error[] = __("wrong_project_id");
-                                    echo json_encode(array("error" => Error::display($error)));
-                                    return;
-                                }
-
-                                // Create(change state) L2 event
-                                if($exist[0]->state == EventStates::TRANSLATED)
-                                {
-                                    if(in_array($project[0]->bookProject, ["tn","tq"]))
-                                    {
-                                        $postdata["admins_l3"] = json_encode($admins);
-                                        $postdata["state"] = EventStates::L3_RECRUIT;
-                                    }
-                                    else
-                                    {
-                                        $postdata["admins_l2"] = json_encode($admins);
-                                        $postdata["state"] = EventStates::L2_RECRUIT;
-                                    }
-                                }
-                                else
-                                {
-                                    $postdata["admins_l3"] = json_encode($admins);
-                                    $postdata["state"] = EventStates::L3_RECRUIT;
-                                }
-                                $eventID = $this->_eventsModel->updateEvent($postdata, ["projectID" => $projectID, "bookCode" => $bookCode]);
-                            }
-
-                            if($eventID)
-                                echo json_encode(array("success" => __("successfully_created")));
-                        }
                     }
-                    else
-                    {
-                        $error[] = __("wrong_book_error");
-                        echo json_encode(array("error" => Error::display($error)));
+
+                    if(!$event) {
+                        $postdata["dateFrom"] = date("Y-m-d H:i:s", strtotime("0000-00-00"));
+                        $postdata["dateTo"] = date("Y-m-d H:i:s", strtotime("0000-00-00"));
+                        $postdata["langInput"] = $langInput;
+
+                        $event = $this->eventRepo->create($postdata, $project);
+                    } else {
+                        // Create(change state) L2 event
+                        if($event->state == EventStates::TRANSLATED) {
+                            if(in_array($project->bookProject, ["tn","tq"])) {
+                                $event->state = EventStates::L3_RECRUIT;
+                            } else {
+                                $event->state = EventStates::L2_RECRUIT;
+                            }
+                        } else {
+                            $event->state = EventStates::L3_RECRUIT;
+                        }
+
+                        $event->save();
                     }
+                    $event->admins()->sync($admins);
+
+                    echo json_encode(array("success" => __("successfully_created")));
                     break;
 
                 case "edit":
-                    if(empty($exist))
+                    if(!$event)
                     {
                         $error[] = __("event_not_exists_error");
                         echo json_encode(array("error" => Error::display($error)));
@@ -1803,67 +1628,20 @@ class AdminController extends Controller {
                         $error[] = __('enter_admins');
                     }
 
-                    $superadmins = (array)json_decode($exist[0]->superadmins, true);
-                    if(!in_array(Session::get("memberID"), $superadmins))
-                    {
-                        $error[] = __("wrong_project_id");
-                        echo json_encode(array("error" => Error::display($error)));
-                        return;
-                    }
-
-                    if(EventStates::enum($exist[0]->state) <= EventStates::enum(EventStates::TRANSLATED))
-                    {
-                        $dbAdmins = (array)json_decode($exist[0]->admins, true);
-                        $postdata["admins"] = json_encode($admins);
-                    }
-                    elseif(EventStates::enum($exist[0]->state) <= EventStates::enum(EventStates::L2_CHECKED))
-                    {
-                        $dbAdmins = (array)json_decode($exist[0]->admins_l2, true);
-                        $postdata["admins_l2"] = json_encode($admins);
-                    }
-                    else
-                    {
-                        $dbAdmins = (array)json_decode($exist[0]->admins_l3, true);
-                        $postdata["admins_l3"] = json_encode($admins);
-                    }
-
-                    $oldAdmins = $dbAdmins;
-                    $deletedAdmins = array_diff($oldAdmins, $admins);
-                    $addedAdmins = array_diff($admins, $oldAdmins);
-
-                    // Remove facilitator role from member if he is not in any events
-                    foreach ($deletedAdmins as $admin) {
-                        $events = $this->_eventsModel->getMemberEventsForAdmin($admin);
-                        if(sizeof($events) == 1)
-                            $this->_membersModel->updateMember(array("isAdmin" => false), array("memberID" => $admin));
-                    }
-
-                    // Assign facilitator role to added member
-                    foreach ($addedAdmins as $admin) {
-                        $this->_membersModel->updateMember(array("isAdmin" => true), array("memberID" => $admin));
-                    }
-
-                    $this->_eventsModel->updateEvent($postdata, ["projectID" => $projectID, "bookCode" => $bookCode]);
+                    $event->admins()->sync($admins);
                     echo json_encode(array("success" => __("successfully_updated")));
                     break;
 
                 case "delete":
-                    if(empty($exist))
+                    if(!$event)
                     {
                         $error[] = __("event_not_exists_error");
                         echo json_encode(array("error" => Error::display($error)));
                         return;
                     }
 
-                    $superadmins = (array)json_decode($exist[0]->superadmins, true);
-                    if(!in_array(Session::get("memberID"), $superadmins))
-                    {
-                        $error[] = __("wrong_project_id");
-                        echo json_encode(array("error" => Error::display($error)));
-                        return;
-                    }
-
-                    $this->_eventsModel->deleteEvent(["eventID" => $exist[0]->eventID]);
+                    $event->admins()->detach();
+                    $event->delete();
                     echo json_encode(array("success" => __("successfully_deleted")));
 
                     break;
@@ -1878,14 +1656,9 @@ class AdminController extends Controller {
 
     public function createEventTw()
     {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
+        if(!$this->_member->isGlAdmin() && !$this->_member->isProjectAdmin()) {
+            $error[] = __("not_enough_rights_error");
+            echo json_encode(array("error" => Error::display($error)));
             return;
         }
 
@@ -1903,22 +1676,30 @@ class AdminController extends Controller {
         if($projectID == null)
             $error[] = __('wrong_project_id');
 
-        if(empty($admins))
-            $error[] = __('enter_admins');
-
         if(!isset($error))
         {
-            $exist = $this->_eventsModel->getEvent(null, $projectID, $bookCode);
+            $event = $this->eventRepo->where(["projectID" => $projectID, "bookCode" => $bookCode])->first();
+            if ($event) {
+                $project = $event->project;
+            } else {
+                $project = $this->projectRepo->get($projectID);
+            }
+
             $postdata = [];
 
-            switch($act)
-            {
+            switch($act) {
                 case "create":
                     // Check if the event is ready for Level 2, Level 3 check
-                    switch ($eventLevel)
+                    if(empty($admins))
                     {
+                        $error[] = __('enter_admins');
+                        echo json_encode(array("error" => Error::display($error)));
+                        return;
+                    }
+
+                    switch ($eventLevel) {
                         case 2:
-                            if(!empty($exist))
+                            if($event)
                             {
                                 $error[] = __("event_already_exists");
                                 echo json_encode(array("error" => Error::display($error)));
@@ -1926,7 +1707,7 @@ class AdminController extends Controller {
                             }
                             break;
                         case 3:
-                            if(empty($exist) || $exist[0]->state != EventStates::TRANSLATED)
+                            if(!$event || $event->state != EventStates::TRANSLATED)
                             {
                                 $error[] = __("l2_l3_create_event_error");
                                 echo json_encode(array("error" => Error::display($error)));
@@ -1935,99 +1716,54 @@ class AdminController extends Controller {
                             break;
                     }
 
-                    $postdata["projectID"] = $projectID;
                     $postdata["bookCode"] = $bookCode;
 
-                    foreach ($admins as $admin) {
-                        $this->_membersModel->updateMember(array("isAdmin" => true), array("memberID" => $admin));
-                    }
-
-                    if(empty($exist))
+                    if(!$event)
                     {
-                        $postdata["admins"] = json_encode($admins);
                         $postdata["dateFrom"] = date("Y-m-d H:i:s", strtotime("0000-00-00"));
                         $postdata["dateTo"] = date("Y-m-d H:i:s", strtotime("0000-00-00"));
-                        $eventID = $this->_eventsModel->createEvent($postdata);
+                        $event = $this->eventRepo->create($postdata, $project);
                     }
                     else
                     {
                         // Create(change state) L3 event
-                        if($exist[0]->state == EventStates::TRANSLATED)
-                        {
-                            $postdata["admins_l3"] = json_encode($admins);
-                            $postdata["state"] = EventStates::L3_RECRUIT;
-                        }
-                        $eventID = $this->_eventsModel->updateEvent($postdata, ["projectID" => $projectID, "bookCode" => $bookCode]);
+                        $event->state = EventStates::L3_RECRUIT;
+                        $event->save();
                     }
+                    $event->admins()->sync($admins);
 
-                    if($eventID)
-                        echo json_encode(array("success" => __("successfully_created")));
+                    echo json_encode(array("success" => __("successfully_created")));
                     break;
 
                 case "edit":
-                    if(empty($exist))
+                    if(!$event)
                     {
                         $error[] = __("event_not_exists_error");
                         echo json_encode(array("error" => Error::display($error)));
                         return;
                     }
 
-                    $superadmins = (array)json_decode($exist[0]->superadmins, true);
-                    if(!in_array(Session::get("memberID"), $superadmins))
+                    if(empty($admins))
                     {
-                        $error[] = __("wrong_project_id");
+                        $error[] = __('enter_admins');
                         echo json_encode(array("error" => Error::display($error)));
                         return;
                     }
 
-                    if(EventStates::enum($exist[0]->state) <= EventStates::enum(EventStates::TRANSLATED))
-                    {
-                        $dbAdmins = (array)json_decode($exist[0]->admins, true);
-                        $postdata["admins"] = json_encode($admins);
-                    }
-                    else
-                    {
-                        $dbAdmins = (array)json_decode($exist[0]->admins_l3, true);
-                        $postdata["admins_l3"] = json_encode($admins);
-                    }
-
-                    $oldAdmins = $dbAdmins;
-                    $deletedAdmins = array_diff($oldAdmins, $admins);
-                    $addedAdmins = array_diff($admins, $oldAdmins);
-
-                    // Remove facilitator role from member if he is not in any events
-                    foreach ($deletedAdmins as $admin) {
-                        $events = $this->_eventsModel->getMemberEventsForAdmin($admin);
-                        if(sizeof($events) == 1)
-                            $this->_membersModel->updateMember(array("isAdmin" => false), array("memberID" => $admin));
-                    }
-
-                    // Assign facilitator role to added member
-                    foreach ($addedAdmins as $admin) {
-                        $this->_membersModel->updateMember(array("isAdmin" => true), array("memberID" => $admin));
-                    }
-
-                    $this->_eventsModel->updateEvent($postdata, ["projectID" => $projectID, "bookCode" => $bookCode]);
+                    $event->admins()->sync($admins);
                     echo json_encode(array("success" => __("successfully_updated")));
                     break;
 
                 case "delete":
-                    if(empty($exist))
+                    if(!$event)
                     {
                         $error[] = __("event_not_exists_error");
                         echo json_encode(array("error" => Error::display($error)));
                         return;
                     }
 
-                    $superadmins = (array)json_decode($exist[0]->superadmins, true);
-                    if(!in_array(Session::get("memberID"), $superadmins))
-                    {
-                        $error[] = __("wrong_project_id");
-                        echo json_encode(array("error" => Error::display($error)));
-                        return;
-                    }
-
-                    $this->_eventsModel->deleteEvent(["eventID" => $exist[0]->eventID]);
+                    $event->admins()->detach();
+                    $event->delete();
                     echo json_encode(array("success" => __("successfully_deleted")));
 
                     break;
@@ -2094,10 +1830,9 @@ class AdminController extends Controller {
         $usfmData = UsfmParser::parse($usfm);
 
         // Check if a "fake" user exists
-        $member = $this->_membersModel->getMemberWithProfile("spec");
-        if(empty($member))
-        {
-            $mid = $this->_membersModel->createMember([
+        $member = $this->memberRepo->getByUsername("spec");
+        if (!$member) {
+            $memberData = [
                 "userName" => "spec",
                 "firstName" => "Special",
                 "lastName" => "User",
@@ -2105,101 +1840,84 @@ class AdminController extends Controller {
                 "email" => "none",
                 "active" => true,
                 "verified" => true
-            ]);
-
-            $this->_membersModel->createProfile([
-                "mID" => $mid
-            ]);
-        }
-        else
-        {
-            $mid = $member[0]->memberID;
+            ];
+            $member = $this->memberRepo->create($memberData, ["complete", true]);
         }
 
-        $project = $this->_eventsModel->getProject(["projects.sourceLangID", "projects.sourceBible",
-            "projects.bookProject", "projects.gwProjectID", "projects.gwLang",
-            "projects.targetLang"],["projectID", $projectID]);
-        $ulbProjectID = $projectID;
+        $project = $this->projectRepo->get($projectID);
 
-        if($project[0]->bookProject == "sun")
+        if($project->bookProject == "sun")
         {
             $response["error"] = __("not_allowed_action");
             return $response;
         }
 
-        if(in_array($project[0]->bookProject, ["tn","tq","tw"]))
+        if(in_array($project->bookProject, ["tn","tq","tw"]))
         {
-            $ulbProject = $this->_eventsModel->getProject(["projects.projectID"],[
-                ["projects.gwProjectID", $project[0]->gwProjectID],
-                ["projects.gwLang", $project[0]->gwLang],
-                ["projects.targetLang", $project[0]->targetLang],
-                ["projects.bookProject", "ulb"]
-            ]);
+            $ulbProject = $this->projectRepo->where([
+                "glID" => $project->glID,
+                "gwLang" => $project->gwLang,
+                "targetLang" => $project->targetLang,
+                "bookProject" => "ulb"
+            ])->first();
 
             // Create ulb project if it doesn't exist
-            if(empty($ulbProject))
+            if(!$ulbProject)
             {
-                $ulbProjectID = $this->_eventsModel->createProject([
-                    "gwProjectID" => $project[0]->gwProjectID,
-                    "gwLang" => $project[0]->gwLang,
-                    "targetLang" => $project[0]->targetLang,
+                $postData = [
+                    "gwLang" => $project->gwLang,
+                    "targetLang" => $project->targetLang,
                     "bookProject" => "ulb",
-                    "sourceLangID" => $project[0]->sourceLangID,
-                    "sourceBible" => $project[0]->sourceBible
-                ]);
-            }
-            else
-            {
-                $ulbProjectID = $ulbProject[0]->projectID;
+                    "sourceLangID" => $project->sourceLangID,
+                    "sourceBible" => $project->sourceBible
+                ];
+                $ulbProject = $this->projectRepo->create($postData, $project->gatewayLanguage);
             }
 
-            $event = $this->_eventsModel->getEvent(null, $ulbProjectID, $bookCode);
-            if(!empty($event))
-                $eventID = $event[0]->eventID;
+            $project = $ulbProject;
+
+            $event = $this->eventRepo->where([
+                "projectID" => $project->projectID,
+                "bookCode" => $bookCode
+            ])->first();
+
+            if($event)
+                $eventID = $event->eventID;
         }
         else
         {
-            $event = $this->_eventsModel->getEvent($eventID);
+            $event = $this->eventRepo->get($eventID);
         }
 
         // Create event if it doesn't exist
-        if(empty($event))
+        if(!$event)
         {
-            $newEventID = $this->_eventsModel->createEvent([
-                "projectID" => $ulbProjectID,
+            $event = $this->eventRepo->create([
                 "bookCode" => $bookCode,
-                "state" => EventStates::STARTED,
-                "admins" => json_encode([$mid]),
-            ]);
-
-            $event = $this->_eventsModel->getEvent($newEventID);
-            $eventID = $newEventID;
+                "state" => EventStates::STARTED
+            ], $project);
+            $eventID = $event->eventID;
         }
 
-        if(!empty($event))
-        {
-            if(isset($usfmData["chapters"]) && sizeof($usfmData["chapters"]) == $event[0]->chaptersNum)
+        if($event) {
+            if(isset($usfmData["chapters"]) && sizeof($usfmData["chapters"]) == $event->bookInfo->chaptersNum)
             {
                 // Check if there are translations of this event in database
-                $trans = $this->_translationModel->getEventTranslationByEventID($eventID);
-                if(empty($trans))
-                {
-                    if($level == 3)
-                    {
+                $translations = $event->chunks;
+                if($translations->isEmpty()) {
+                    if($level == 3) {
                         $response["error"] = __("not_allowed_action");
                         return $response;
                     }
 
                     // Create new translator
                     $chkData = [];
-                    for($i=1; $i<=$event[0]->chaptersNum; $i++)
+                    for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                     {
-                        $chkData[$i] = ["memberID" => $mid, "done" => 1];
+                        $chkData[$i] = ["memberID" => $member->memberID, "done" => 1];
                     }
 
                     $trData = array(
-                        "memberID" => $mid,
-                        "eventID" => $eventID,
                         "step" => EventSteps::NONE,
                         "currentChapter" => 0,
                         "verbCheck" => json_encode($chkData),
@@ -2207,34 +1925,34 @@ class AdminController extends Controller {
                         "kwCheck" => json_encode($chkData),
                         "crCheck" => json_encode($chkData)
                     );
-                    $trID = $this->_eventsModel->addTranslator($trData);
+                    $event->translators()->attach($member, $trData);
+                    $translator = $member->translators->where("eventID", $eventID, false)->first();
+                    $trID = $translator->trID;
 
                     $l2chID = 0;
-                    if($level == 2)
-                    {
+                    if($level == 2) {
                         // Create new checker
                         $sndCheckData = [];
                         $peerCheckData = [];
-                        for($i=1; $i<=$event[0]->chaptersNum; $i++)
+                        for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                         {
-                            $sndCheckData[$i] = ["memberID" => $mid, "done" => 2];
-                            $peerCheckData[$i] = ["memberID" => $mid, "done" => 1];
+                            $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
+                            $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
                         }
 
                         $l2chData = array(
-                            "memberID" => $mid,
-                            "eventID" => $eventID,
                             "step" => EventSteps::NONE,
                             "currentChapter" => 0,
                             "sndCheck" => json_encode($sndCheckData),
                             "peer1Check" => json_encode($peerCheckData),
                             "peer2Check" => json_encode($peerCheckData)
                         );
-                        $l2chID = $this->_eventsModel->addL2Checker($l2chData);
+                        $event->checkersL2()->attach($member, $l2chData);
+                        $checkerL2 = $member->checkersL2->where("eventID", $eventID, false)->first();
+                        $l2chID = $checkerL2->l2chID;
                     }
 
-                    foreach ($usfmData["chapters"] as $key => $chapter)
-                    {
+                    foreach ($usfmData["chapters"] as $key => $chapter) {
                         $chunks = [];
                         foreach ($chapter as $chunkkey => $chunk) {
                             $chunks[] = array_keys($chunk);
@@ -2254,14 +1972,14 @@ class AdminController extends Controller {
 
                             // Create new translations
                             $this->_translationModel->createTranslation([
-                                "projectID" => $event[0]->projectID,
+                                "projectID" => $event->projectID,
                                 "eventID" => $eventID,
                                 "trID" => $trID,
                                 "l2chID" => $l2chID,
-                                "targetLang" => $event[0]->targetLang,
-                                "bookProject" => $event[0]->bookProject,
-                                "abbrID" => $event[0]->abbrID,
-                                "bookCode" => $event[0]->bookCode,
+                                "targetLang" => $project->targetLang,
+                                "bookProject" => $project->bookProject,
+                                "sort" => $event->bookInfo->sort,
+                                "bookCode" => $event->bookCode,
                                 "chapter" => $key,
                                 "chunk" => $chunkkey,
                                 "firstvs" => key($chunk),
@@ -2271,24 +1989,19 @@ class AdminController extends Controller {
                         }
 
                         // Assign chapters to new translator
-                        $this->_eventsModel->assignChapter([
-                            "eventID" => $eventID,
-                            "memberID" => $mid,
-                            "l2memberID" => $level == 2 ? $mid : 0,
+                        $postdata = [
                             "trID" => $trID,
+                            "l2memberID" => $level == 2 ? $member->memberID : 0,
                             "l2chID" => $l2chID,
                             "chapter" => $key,
                             "chunks" => json_encode($chunks),
                             "done" => true,
-                            "l2checked" => $level == 2 ? true : false
-                        ]);
+                            "l2checked" => $level == 2
+                        ];
+                        $event->translatorsWithChapters()->attach($member, $postdata);
 
-                        $this->_eventsModel->updateEvent([
-                            "state" => $level == 2 ? EventStates::L2_CHECKED : EventStates::TRANSLATED,
-                            "admins_l2" => $level == 2 ? json_encode([$mid]) : $event[0]->admins_l2
-                        ], [
-                            "eventID" => $eventID
-                        ]);
+                        $event->state = $level == 2 ? EventStates::L2_CHECKED : EventStates::TRANSLATED;
+                        $event->save();
                     }
 
                     $response["success"] = true;
@@ -2296,10 +2009,10 @@ class AdminController extends Controller {
                 }
                 else
                 {
-                    if(in_array($event[0]->state, [EventStates::TRANSLATED,EventStates::L2_CHECKED]))
+                    if(in_array($event->state, [EventStates::TRANSLATED, EventStates::L2_CHECKED]))
                     {
-                        if(($event[0]->state == EventStates::TRANSLATED && $level == 3) ||
-                            $event[0]->state == EventStates::L2_CHECKED && $level == 1)
+                        if(($event->state == EventStates::TRANSLATED && $level == 3) ||
+                            $event->state == EventStates::L2_CHECKED && $level == 1)
                         {
                             $response["error"] = __("not_allowed_action");
                             return $response;
@@ -2307,7 +2020,7 @@ class AdminController extends Controller {
 
                         foreach ($usfmData["chapters"] as $chapter => $chunks) {
                             $new_chapter = [];
-                            foreach ($chunks as $chunk => $verses) {
+                            foreach ($chunks as $verses) {
                                 foreach ($verses as $verse => $text) {
                                     $new_chapter[$verse] = $text;
                                 }
@@ -2315,7 +2028,7 @@ class AdminController extends Controller {
                             $usfmData["chapters"][$chapter] = $new_chapter;
                         }
 
-                        foreach ($trans as $tran) {
+                        foreach ($translations as $tran) {
                             $verses = (array)json_decode($tran->translatedVerses, true);
 
                             foreach ($verses[EventMembers::TRANSLATOR]["verses"] as $verse => $text) {
@@ -2340,80 +2053,77 @@ class AdminController extends Controller {
 
                             $this->_translationModel->updateTranslation([
                                 "translatedVerses" => json_encode($verses),
-                                "l2chID" => ($tran->l2chID == 0 && $level == 2 ? $mid : $tran->l2chID),
-                                "l3chID" => $tran->l3chID == 0 && $level == 3 ? $mid : $tran->l3chID
+                                "l2chID" => ($tran->l2chID == 0 && $level == 2 ? $member->memberID : $tran->l2chID),
+                                "l3chID" => $tran->l3chID == 0 && $level == 3 ? $member->memberID : $tran->l3chID
                             ], ["tID" => $tran->tID]);
                         }
 
-                        $chapters = $this->_eventsModel->getChapters($eventID);
+                        $chapters = $event->chapters;
 
-                        if($event[0]->state == EventStates::TRANSLATED && $level == 2)
+                        if($event->state == EventStates::TRANSLATED && $level == 2)
                         {
                             // Create new level 2 checker
                             $sndCheckData = [];
                             $peerCheckData = [];
-                            for($i=1; $i<=$event[0]->chaptersNum; $i++)
+                            for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                             {
-                                $sndCheckData[$i] = ["memberID" => $mid, "done" => 2];
-                                $peerCheckData[$i] = ["memberID" => $mid, "done" => 1];
+                                $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
+                                $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
                             }
 
                             $l2chData = array(
-                                "memberID" => $mid,
-                                "eventID" => $eventID,
                                 "step" => EventSteps::NONE,
                                 "currentChapter" => 0,
                                 "sndCheck" => json_encode($sndCheckData),
                                 "peer1Check" => json_encode($peerCheckData),
                                 "peer2Check" => json_encode($peerCheckData)
                             );
-                            $l2chID = $this->_eventsModel->addL2Checker($l2chData);
+
+                            $event->checkersL2()->attach($member, $l2chData);
+                            $checkerL2 = $member->checkersL2->where("eventID", $eventID, false)->first();
+                            $l2chID = $checkerL2->l2chID;
 
                             // Assign chapters to new level 2 checker
                             foreach ($chapters as $chapter) {
                                 $this->_eventsModel->updateChapter([
-                                    "l2memberID" => $mid,
+                                    "l2memberID" => $member->memberID,
                                     "l2chID" => $l2chID,
                                     "l2checked" => true
                                 ],["chapterID" => $chapter["chapterID"]]);
                             }
                         }
 
-                        if($event[0]->state == EventStates::L2_CHECKED && $level == 3)
+                        if($event->state == EventStates::L2_CHECKED && $level == 3)
                         {
                             // Create new level 3 checker
                             $peerCheckData = [];
-                            for($i=1; $i<=$event[0]->chaptersNum; $i++)
+                            for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                             {
-                                $peerCheckData[$i] = ["memberID" => $mid, "done" => 2];
+                                $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
                             }
 
                             $l3chData = array(
-                                "memberID" => $mid,
-                                "eventID" => $eventID,
                                 "step" => EventSteps::NONE,
                                 "currentChapter" => 0,
                                 "peerCheck" => json_encode($peerCheckData)
                             );
-                            $l3chID = $this->_eventsModel->addL3Checker($l3chData);
+
+                            $event->checkersL3()->attach($member, $l3chData);
+                            $checkerL3 = $member->checkersL3->where("eventID", $eventID, false)->first();
+                            $l3chID = $checkerL3->l3chID;
 
                             // Assign chapters to new level 3 checker
                             foreach ($chapters as $chapter) {
                                 $this->_eventsModel->updateChapter([
-                                    "l3memberID" => $mid,
+                                    "l3memberID" => $member->memberID,
                                     "l3chID" => $l3chID,
                                     "l3checked" => true
                                 ],["chapterID" => $chapter["chapterID"]]);
                             }
                         }
 
-                        $this->_eventsModel->updateEvent([
-                            "state" => $level == 2 ? EventStates::L2_CHECKED : ($level == 3 ? EventStates::COMPLETE : EventStates::TRANSLATED),
-                            "admins_l2" => $level == 2 ? json_encode([$mid]) : $event[0]->admins_l2,
-                            "admins_l3" => $level == 3 ? json_encode([$mid]) : $event[0]->admins_l3
-                        ], [
-                            "eventID" => $eventID
-                        ]);
+                        $event->state = $level == 2 ? EventStates::L2_CHECKED : ($level == 3 ? EventStates::COMPLETE : EventStates::TRANSLATED);
+                        $event ->save();
 
                         $response["success"] = true;
                         $response["message"] = __("import_successful_message");
@@ -2443,10 +2153,9 @@ class AdminController extends Controller {
         $response = ["success" => false];
 
         // Check if a "fake" user exists
-        $member = $this->_membersModel->getMemberWithProfile("spec");
-        if(empty($member))
-        {
-            $mid = $this->_membersModel->createMember([
+        $member = $this->memberRepo->getByUsername("spec");
+        if (!$member) {
+            $memberData = [
                 "userName" => "spec",
                 "firstName" => "Special",
                 "lastName" => "User",
@@ -2454,58 +2163,51 @@ class AdminController extends Controller {
                 "email" => "none",
                 "active" => true,
                 "verified" => true
-            ]);
-
-            $this->_membersModel->createProfile([
-                "mID" => $mid
-            ]);
-        }
-        else
-        {
-            $mid = $member[0]->memberID;
+            ];
+            $member = $this->memberRepo->create($memberData, ["complete", true]);
         }
 
-        $project = $this->_eventsModel->getProject(["*"],["projectID", $projectID]);
-        $event = $this->_eventsModel->getEvent($eventID);
+        $project = $this->projectRepo->get($projectID);
+        $event = $this->eventRepo->get($eventID);
+
+        $isNewEvent = false;
 
         // Create event if it doesn't exist
-        if(empty($event))
+        if(!$event)
         {
-            $newEventID = $this->_eventsModel->createEvent([
-                "projectID" => $project[0]->projectID,
+            $event = $this->eventRepo->create([
                 "bookCode" => $bookCode,
                 "state" => $importLevel == 1 ? EventStates::TRANSLATING : EventStates::TRANSLATED,
-                "admins" => json_encode([$mid]),
-            ]);
-
-            $event = $this->_eventsModel->getEvent($newEventID);
-            $eventID = $newEventID;
+            ], $project);
+            $eventID = $event->eventID;
+            $isNewEvent = true;
         }
 
-        if(!empty($event))
+        if($event)
         {
-            if($event[0]->state == EventStates::TRANSLATED)
+            if($event->state == EventStates::TRANSLATED)
             {
                 // Check if there are translations of this event in database
-                $trans = $this->_translationModel->getEventTranslationByEventID($eventID);
-                if(empty($trans))
+                $translations = $event->chunks;
+                if($translations->isEmpty())
                 {
                     // Create new translator
                     $peerCheckData = [];
                     $otherCheckData = [];
 
                     $trData = array(
-                        "memberID" => $mid,
-                        "eventID" => $eventID,
                         "step" => EventSteps::NONE,
                         "currentChapter" => 0
                     );
-                    $trID = $this->_eventsModel->addTranslator($trData);
+
+                    $event->translators()->attach($member, $trData);
+                    $translator = $member->translators->where("eventID", $eventID, false)->first();
+                    $trID = $translator->trID;
 
                     foreach ($resource as $chapter => $chunks)
                     {
                         ksort($chunks, SORT_NUMERIC);
-                        if($event[0]->bookProject == "tw")
+                        if($event->project->bookProject == "tw")
                         {
                             $words_list = array_map(function ($elm) {
                                 return $elm["word"];
@@ -2517,18 +2219,18 @@ class AdminController extends Controller {
                             ]);
                         }
 
-                        $peerCheckData[$chapter] = ["memberID" => $mid, "done" => 1];
-                        $done = $event[0]->bookProject == "tn" ? 6 : 3;
-                        $otherCheckData[$chapter] = ["memberID" => $mid, "done" => $done];
+                        $peerCheckData[$chapter] = ["memberID" => $member->memberID, "done" => 1];
+                        $done = $event->project->bookProject == "tn" ? 6 : 3;
+                        $otherCheckData[$chapter] = ["memberID" => $member->memberID, "done" => $done];
 
                         $chunkKey = 0;
                         foreach ($chunks as $firstvs => $chunk) {
                             $translationVerses = [
                                 EventMembers::TRANSLATOR => [
-                                    "verses" => $event[0]->bookProject == "tw" ? $chunk["text"] : $chunk[0]
+                                    "verses" => $event->project->bookProject == "tw" ? $chunk["text"] : $chunk[0]
                                 ],
                                 EventMembers::CHECKER => [
-                                    "verses" => $event[0]->bookProject == "tw" ? $chunk["text"] : $chunk[0]
+                                    "verses" => $event->project->bookProject == "tw" ? $chunk["text"] : $chunk[0]
                                 ],
                                 EventMembers::L2_CHECKER => [
                                     "verses" => array()
@@ -2540,13 +2242,13 @@ class AdminController extends Controller {
 
                             // Create new translations
                             $this->_translationModel->createTranslation([
-                                "projectID" => $event[0]->projectID,
+                                "projectID" => $project->projectID,
                                 "eventID" => $eventID,
                                 "trID" => $trID,
-                                "targetLang" => $event[0]->targetLang,
-                                "bookProject" => $event[0]->bookProject,
-                                "abbrID" => $event[0]->abbrID,
-                                "bookCode" => $event[0]->bookCode,
+                                "targetLang" => $project->targetLang,
+                                "bookProject" => $project->bookProject,
+                                "sort" => $event->bookInfo->sort,
+                                "bookCode" => $event->bookCode,
                                 "chapter" => $chapter,
                                 "chunk" => $chunkKey,
                                 "firstvs" => $firstvs,
@@ -2557,7 +2259,7 @@ class AdminController extends Controller {
                             $chunkKey++;
                         }
 
-                        if($event[0]->bookProject == "tw")
+                        if($event->project->bookProject == "tw")
                         {
                             $resource_chunks = array_keys($words_list);
                             usort($resource_chunks, function($a, $b) {
@@ -2572,47 +2274,40 @@ class AdminController extends Controller {
                             {
                                 // Get related Scripture to define total verses of the chapter
                                 $relatedScripture = $this->_apiModel->getBookText([
-                                    "sourceBible" => $project[0]->sourceBible,
-                                    "bookCode" => $event[0]->bookCode,
-                                    "sourceLangID" => $project[0]->sourceLangID,
-                                    "abbrID" => $event[0]->abbrID
+                                    "sourceBible" => $project->sourceBible,
+                                    "bookCode" => $event->bookCode,
+                                    "sourceLangID" => $project->sourceLangID,
+                                    "sort" => $event->bookInfo->sort
                                 ], $chapter);
 
                                 if(empty($relatedScripture))
                                     $relatedScripture = $this->_apiModel->getBookText([
                                         "sourceBible" => "ulb",
-                                        "bookCode" => $event[0]->bookCode,
+                                        "bookCode" => $event->bookCode,
                                         "sourceLangID" => "en",
-                                        "abbrID" => $event[0]->abbrID
+                                        "sort" => $event->bookInfo->sort
                                     ], $chapter);
 
                                 if(empty($relatedScripture))
                                     $response["warning"] = true;
 
-                                if($event[0]->bookProject == "tn")
-                                {
+                                if($project->bookProject == "tn") {
                                     $notes = [
                                         "notes" => $chunks,
                                         "totalVerses" => isset($relatedScripture) ? $relatedScripture["totalVerses"] : 0];
                                     $resource_chunks = $this->_apiModel->getNotesChunks($notes);
-                                    usort($resource_chunks, function($a, $b) {
-                                        if(!isset($a[0])) return -1;
-                                        if(!isset($b[0])) return 1;
-                                        return $a[0] <= $b[0] ? -1 : 1;
-                                    });
-                                }
-                                else
-                                {
+                                } else {
                                     $questions = [
                                         "questions" => $chunks,
                                         "totalVerses" => isset($relatedScripture) ? $relatedScripture["totalVerses"] : 0];
                                     $resource_chunks = $this->_apiModel->getQuestionsChunks($questions);
-                                    usort($resource_chunks, function($a, $b) {
-                                        if(!isset($a[0])) return -1;
-                                        if(!isset($b[0])) return 1;
-                                        return $a[0] <= $b[0] ? -1 : 1;
-                                    });
                                 }
+
+                                usort($resource_chunks, function($a, $b) {
+                                    if(!isset($a[0])) return -1;
+                                    if(!isset($b[0])) return 1;
+                                    return $a[0] <= $b[0] ? -1 : 1;
+                                });
                             }
                             else
                             {
@@ -2621,28 +2316,22 @@ class AdminController extends Controller {
                         }
 
                         // Assign chapters to new translator
-                        $this->_eventsModel->assignChapter([
-                            "eventID" => $eventID,
-                            "memberID" => $mid,
+                        $postdata = [
                             "trID" => $trID,
                             "chapter" => $chapter,
                             "chunks" => json_encode($resource_chunks),
                             "done" => true,
-                            "checked" => true,
-                        ]);
+                            "checked" => true
+                        ];
+                        $event->translatorsWithChapters()->attach($member, $postdata);
 
-                        $this->_eventsModel->updateEvent([
-                            "state" => EventStates::TRANSLATED,
-                            "admins" => json_encode([$mid])
-                        ], [
-                            "eventID" => $eventID
-                        ]);
+                        $event->state = EventStates::TRANSLATED;
+                        $event->save();
                     }
 
-                    $this->_eventsModel->updateTranslator([
-                        "peerCheck" => json_encode($peerCheckData),
-                        "otherCheck" => json_encode($otherCheckData)
-                    ], ["trID" => $trID]);
+                    $translator->peerCheck = json_encode($peerCheckData);
+                    $translator->otherCheck = json_encode($otherCheckData);
+                    $translator->save();
 
                     $response["success"] = true;
                     $response["message"] = __("import_successful_message");
@@ -2653,9 +2342,9 @@ class AdminController extends Controller {
                         return array_merge((array)$arr, array_keys($elm));
                     });
 
-                    if(sizeof($contentChunks) == sizeof($trans))
+                    if(sizeof($contentChunks) == sizeof($translations))
                     {
-                        foreach ($trans as $tran) {
+                        foreach ($translations as $tran) {
                             $verses = (array)json_decode($tran->translatedVerses, true);
 
                             if(isset($resource[$tran->chapter]) &&
@@ -2678,26 +2367,25 @@ class AdminController extends Controller {
                         $response["message"] = __("content_chunks_not_equal_error");
                     }
                 }
-            }
-            elseif (isset($newEventID))
-            {
+            } elseif ($isNewEvent) {
                 // Add level 1 translation for a just created event
 
                 // Create new translator
                 $otherCheckData = [];
 
-                $trData = [
-                    "memberID" => $mid,
-                    "eventID" => $eventID,
+                $trData = array(
                     "step" => EventSteps::NONE,
                     "currentChapter" => 0
-                ];
-                $trID = $this->_eventsModel->addTranslator($trData);
+                );
+
+                $event->translators()->attach($member, $trData);
+                $translator = $member->translators->where("eventID", $eventID, false)->first();
+                $trID = $translator->trID;
 
                 foreach ($resource as $chapter => $chunks)
                 {
                     ksort($chunks, SORT_NUMERIC);
-                    if($event[0]->bookProject == "tw")
+                    if($project->bookProject == "tw")
                     {
                         $words_list = array_map(function ($elm) {
                             return $elm["word"];
@@ -2715,7 +2403,7 @@ class AdminController extends Controller {
                     foreach ($chunks as $firstvs => $chunk) {
                         $translationVerses = [
                             EventMembers::TRANSLATOR => [
-                                "verses" => $event[0]->bookProject == "tw" ? $chunk["text"] : $chunk[0]
+                                "verses" => $project->bookProject == "tw" ? $chunk["text"] : $chunk[0]
                             ],
                             EventMembers::CHECKER => [
                                 "verses" => []
@@ -2730,13 +2418,13 @@ class AdminController extends Controller {
 
                         // Create new translations
                         $this->_translationModel->createTranslation([
-                            "projectID" => $event[0]->projectID,
+                            "projectID" => $project->projectID,
                             "eventID" => $eventID,
                             "trID" => $trID,
-                            "targetLang" => $event[0]->targetLang,
-                            "bookProject" => $event[0]->bookProject,
-                            "abbrID" => $event[0]->abbrID,
-                            "bookCode" => $event[0]->bookCode,
+                            "targetLang" => $project->targetLang,
+                            "bookProject" => $project->bookProject,
+                            "sort" => $event->bookInfo->sort,
+                            "bookCode" => $event->bookCode,
                             "chapter" => $chapter,
                             "chunk" => $chunkKey,
                             "firstvs" => $firstvs,
@@ -2747,7 +2435,7 @@ class AdminController extends Controller {
                         $chunkKey++;
                     }
 
-                    if($event[0]->bookProject == "tw")
+                    if($project->bookProject == "tw")
                     {
                         $resource_chunks = array_keys($words_list);
                         usort($resource_chunks, function($a, $b) {
@@ -2762,34 +2450,29 @@ class AdminController extends Controller {
                         {
                             // Get related Scripture to define total verses of the chapter
                             $relatedScripture = $this->_apiModel->getBookText([
-                                "sourceBible" => $project[0]->sourceBible,
-                                "bookCode" => $event[0]->bookCode,
-                                "sourceLangID" => $project[0]->sourceLangID,
-                                "abbrID" => $event[0]->abbrID
+                                "sourceBible" => $project->sourceBible,
+                                "bookCode" => $event->bookCode,
+                                "sourceLangID" => $project->sourceLangID,
+                                "sort" => $event->bookInfo->sort
                             ], $chapter);
 
                             if(empty($relatedScripture))
                                 $relatedScripture = $this->_apiModel->getBookText([
                                     "sourceBible" => "ulb",
-                                    "bookCode" => $event[0]->bookCode,
+                                    "bookCode" => $event->bookCode,
                                     "sourceLangID" => "en",
-                                    "abbrID" => $event[0]->abbrID
+                                    "sort" => $event->bookInfo->sort
                                 ], $chapter);
 
                             if(empty($relatedScripture))
                                 $response["warning"] = true;
 
-                            if($event[0]->bookProject == "tn")
+                            if($project->bookProject == "tn")
                             {
                                 $notes = [
                                     "notes" => $chunks,
                                     "totalVerses" => isset($relatedScripture) ? $relatedScripture["totalVerses"] : 0];
                                 $resource_chunks = $this->_apiModel->getNotesChunks($notes);
-                                usort($resource_chunks, function($a, $b) {
-                                    if(!isset($a[0])) return -1;
-                                    if(!isset($b[0])) return 1;
-                                    return $a[0] <= $b[0] ? -1 : 1;
-                                });
                             }
                             else
                             {
@@ -2797,12 +2480,13 @@ class AdminController extends Controller {
                                     "questions" => $chunks,
                                     "totalVerses" => isset($relatedScripture) ? $relatedScripture["totalVerses"] : 0];
                                 $resource_chunks = $this->_apiModel->getQuestionsChunks($questions);
-                                usort($resource_chunks, function($a, $b) {
-                                    if(!isset($a[0])) return -1;
-                                    if(!isset($b[0])) return 1;
-                                    return $a[0] <= $b[0] ? -1 : 1;
-                                });
                             }
+
+                            usort($resource_chunks, function($a, $b) {
+                                if(!isset($a[0])) return -1;
+                                if(!isset($b[0])) return 1;
+                                return $a[0] <= $b[0] ? -1 : 1;
+                            });
                         }
                         else
                         {
@@ -2811,27 +2495,21 @@ class AdminController extends Controller {
                     }
 
                     // Assign chapters to new translator
-                    $this->_eventsModel->assignChapter([
-                        "eventID" => $eventID,
-                        "memberID" => $mid,
+                    $postdata = [
                         "trID" => $trID,
                         "chapter" => $chapter,
                         "chunks" => json_encode($resource_chunks),
                         "done" => true,
-                        "checked" => false,
-                    ]);
+                        "checked" => false
+                    ];
+                    $event->translatorsWithChapters()->attach($member, $postdata);
 
-                    $this->_eventsModel->updateEvent([
-                        "state" => EventStates::TRANSLATING,
-                        "admins" => json_encode([$mid])
-                    ], [
-                        "eventID" => $eventID
-                    ]);
+                    $event->state = EventStates::TRANSLATING;
+                    $event->save();
                 }
 
-                $this->_eventsModel->updateTranslator([
-                    "otherCheck" => json_encode($otherCheckData)
-                ], ["trID" => $trID]);
+                $translator->otherCheck = json_encode($otherCheckData);
+                $translator->save();
 
                 $response["success"] = true;
                 $response["message"] = __("import_successful_message");
@@ -2853,14 +2531,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -2878,14 +2549,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -2904,14 +2568,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -2928,14 +2585,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -2987,14 +2637,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3019,14 +2662,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3078,14 +2714,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3153,14 +2782,7 @@ class AdminController extends Controller {
     public function uploadSunDict() {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3232,14 +2854,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3285,14 +2900,7 @@ class AdminController extends Controller {
     public function uploadSource() {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isGlAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3310,14 +2918,15 @@ class AdminController extends Controller {
                 $lang = $srcArr[0];
                 $slug = $srcArr[1];
 
-                $arr = $this->_eventsModel->getSuperadminLanguages(Session::get("memberID"));
-                $adminLangs = [];
-                foreach ($arr as $item)
-                {
-                    $adminLangs[] = $item->gwLang;
+                $allowedLanguages = new Collection();
+                foreach ($this->_member->adminGatewayLanguages as $gl) {
+                    $allowedLanguages = $allowedLanguages->merge($gl->language->targetLanguages);
                 }
+                $allowedLanguage = $allowedLanguages->filter(function($language) use ($lang) {
+                    return $language->langID == $lang;
+                })->first();
 
-                if(in_array($lang, $adminLangs))
+                if($allowedLanguage)
                 {
                     $mime = $sourceZip->getMimeType();
                     if($mime == "application/zip")
@@ -3365,14 +2974,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3420,14 +3022,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3452,14 +3047,7 @@ class AdminController extends Controller {
     {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isSuperAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3500,24 +3088,37 @@ class AdminController extends Controller {
 
 
     public function getEventProgress($eventID) {
-        $result = ["success" => false];
+        $result = ["success" => false, "progress" => 0];
 
-        if (!Session::get('loggedin'))
-        {
+        if(!$this->_member->isGlAdmin() && $this->_member->isProjectAdmin()) {
             $result["error"] = __("not_loggedin_error");
             echo json_encode($result);
             exit;
         }
 
-        if(!Session::get('isSuperAdmin'))
-        {
-            $result["error"] = __("not_enough_rights_error");
-            echo json_encode($result);
-            exit;
+        $event = $this->eventRepo->get($eventID);
+        if ($event) {
+            switch ($event->state) {
+                case EventStates::L2_RECRUIT:
+                case EventStates::L2_CHECK:
+                case EventStates::L2_CHECKED:
+                    $level = "l2";
+                    break;
+
+                case EventStates::L3_RECRUIT:
+                case EventStates::L3_CHECK:
+                case EventStates::COMPLETE:
+                    $level = "l3";
+                    break;
+
+                default:
+                    $level = "l1";
+                    break;
+            }
+            $result["progress"] = $this->eventRepo->calculateEventProgress($event, $level);
         }
 
         $result["success"] = true;
-        $result["progress"] = $this->_eventsModel->calculateEventProgress($eventID);
 
         echo json_encode($result);
 
@@ -3526,14 +3127,7 @@ class AdminController extends Controller {
     public function createCustomSource() {
         $result = ["success" => false];
 
-        if (!Session::get('loggedin'))
-        {
-            $result["error"] = __("not_loggedin_error");
-            echo json_encode($result);
-            exit;
-        }
-
-        if(!Session::get('isSuperAdmin'))
+        if(!$this->_member->isGlAdmin())
         {
             $result["error"] = __("not_enough_rights_error");
             echo json_encode($result);
@@ -3543,56 +3137,46 @@ class AdminController extends Controller {
         $lang = Input::get("lang", "");
         $type = Input::get("type", "");
 
-        if(trim($lang) != "" && trim($type))
-        {
-            $arr = $this->_eventsModel->getSuperadminLanguages(Session::get("memberID"));
-            $adminLangs = [];
-            foreach ($arr as $item)
-            {
-                $adminLangs[] = $item->gwLang;
+        if(trim($lang) != "" && trim($type)) {
+            $allowedLanguages = new Collection();
+            foreach ($this->_member->adminGatewayLanguages as $gl) {
+                $allowedLanguages = $allowedLanguages->merge($gl->language->targetLanguages);
             }
+            $allowedLanguage = $allowedLanguages->filter(function($language) use ($lang) {
+                return $language->langID == $lang;
+            })->first();
 
-            if(in_array($lang, $adminLangs))
+            if($allowedLanguage)
             {
                 $typeArr = explode("|", $type);
                 if(sizeof($typeArr) == 2) {
                     $slug = $typeArr[0];
                     $name = $typeArr[1];
 
-                    if(preg_match("/[a-z-]+/", $slug))
-                    {
+                    if(preg_match("/[a-z-]+/", $slug)) {
                         try {
-                            $insert = $this->_apiModel->insertSource($lang, $slug, $name);
-                            if($insert)
-                            {
-                                $result["success"] = true;
-                                $result["message"] = __("successfully_created");
-                            }
-                            else
-                            {
-                                $result["error"] = __("error_ocured", ["insert failed"]);
-                            }
+                            $postData = [
+                                "langID" => $lang,
+                                "slug" => $slug,
+                                "name" => $name
+                            ];
+                            $this->sourceRepo->create($postData);
+
+                            $result["success"] = true;
+                            $result["message"] = __("successfully_created");
                         } catch(QueryException $e) {
                             $result["success"] = true;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         $result["error"] = __("Only english letters and hyphens are allowed for the source slug");
                     }
-                }
-                else
-                {
+                } else {
                     $result["error"] = __("wrong_parameters");
                 }
-            }
-            else
-            {
+            } else {
                 $result["error"] = __("not_enough_lang_rights_error");
             }
-        }
-        else
-        {
+        } else {
             $result["error"] = __("wrong_parameters");
         }
 
@@ -3604,229 +3188,11 @@ class AdminController extends Controller {
     // ----------------- Migration functions -------------------- //
 
     /**
-     * Move chapters from "events" table to "chapters" chapters
-     * @return mixed
-     */
-    function migrateChapters()
-    {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            return;
-        }
-
-        $events = $this->_eventsModel->getEvents();
-
-        try {
-            foreach ($events as $event) {
-                $chapters = (array)json_decode($event->chapters, true);
-
-                foreach ($chapters as $key => $chapter) {
-                    if(!empty($chapter))
-                    {
-                        $postdata = [
-                            "eventID" => $event->eventID,
-                            "trID" => $chapter["trID"],
-                            "memberID" => $chapter["memberID"],
-                            "chunks" => json_encode($chapter["chunks"]),
-                            "chapter" => $key,
-                            "done" => isset($chapter["done"]) ? $chapter["done"] : false
-                        ];
-
-                        $this->_eventsModel->assignChapter($postdata);
-                    }
-                }
-            }
-
-            echo "<h2>Done</h2>";
-            echo "<a href='/admin'>Go Back</a>";
-        } catch (\ErrorException $e) {
-            echo "<h3>There was an error or already migrated</h3>";
-            echo "<b>Reason:</b> " . $e->getMessage();
-        }
-    }
-
-
-    public function migrateQuestionsWords()
-    {
-        if (!Session::get('loggedin'))
-        {
-            Session::set('redirect', 'admin');
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get('isSuperAdmin'))
-        {
-            return;
-        }
-
-        $translators = $this->_eventsModel->getMembersForProject(["tq", "tw"]);
-
-        $updated = 0;
-        $eventID = 0;
-        $checkers = [];
-        $members = [];
-
-        foreach ($translators as $key => $translator)
-        {
-            if($eventID == 0)
-            {
-                $eventID = $translator->eventID;
-            }
-
-            // Set isChecker status for member
-            if($translator->eventID != $eventID) {
-                $checkers = array_unique($checkers);
-
-                foreach ($members as $trID => $member)
-                {
-                    if(in_array($member, $checkers))
-                    {
-                        $this->_eventsModel->updateTranslator(["isChecker" => 1], ["trID" => $trID]);
-                    }
-                }
-
-                $eventID = $translator->eventID;
-                $checkers = [];
-                $members = [];
-            }
-
-            $members[$translator->trID] = $translator->memberID;
-
-            $kwCheck = (array)json_decode($translator->kwCheck, true);
-            $peerCheck = (array)json_decode($translator->peerCheck, true);
-            $currentChapter = $translator->currentChapter;
-            $currentStep = $translator->step;
-
-            foreach ($kwCheck as $chap => $chk)
-            {
-                // Add kw checkers to array
-                if($chk["memberID"] > 0)
-                {
-                    $checkers[] = $chk["memberID"];
-                }
-
-                // Assign peer checker as the translator if kw and peer are the same
-                if(isset($peerCheck[$chap]) && $peerCheck[$chap]["memberID"] == $chk["memberID"])
-                {
-                    $peerCheck[$chap]["memberID"] = $translator->memberID;
-                }
-
-                // Set translation finished if checking started
-                if($translator->currentChapter == $chap)
-                {
-                    $currentChapter = 0;
-                    $currentStep = EventSteps::PRAY;
-                }
-
-                // Update checking status
-                if(isset($peerCheck[$chap]))
-                {
-                    $kwCheck[$chap]["done"] = 2;
-
-                    // Add peer checkers to array
-                    if($peerCheck[$chap]["memberID"] > 0)
-                    {
-                        $checkers[] = $peerCheck[$chap]["memberID"];
-                    }
-
-                    if($peerCheck[$chap]["done"] == 1) {
-                        $kwCheck[$chap]["done"] = 3;
-                    }
-                }
-
-                // Update chapter status
-                // Set L1 done
-                $this->_eventsModel->updateChapter(["done" => true], [
-                    "eventID" => $eventID,
-                    "chapter" => $chap
-                ]);
-
-                // Set L2 done
-                if($kwCheck[$chap]["done"] == 3)
-                {
-                    $this->_eventsModel->updateChapter(["checked" => true], [
-                        "eventID" => $eventID,
-                        "chapter" => $chap
-                    ]);
-                }
-
-                // Copy translator's text to the checker's section
-                $trData = $this->_translationModel->getEventTranslationByEventID($eventID, $chap);
-                foreach ($trData as $tr) {
-                    $data = ["translateDone" => 1];
-
-                    if($kwCheck[$chap]["done"] > 1)
-                    {
-                        $translation = (array)json_decode($tr->translatedVerses, true);
-                        $translation[EventMembers::CHECKER] = $translation[EventMembers::TRANSLATOR];
-                        $data["translatedVerses"] = json_encode($translation);
-                    }
-
-                    $this->_translationModel->updateTranslation($data, [
-                        "tID" => $tr->tID
-                    ]);
-                }
-            }
-
-            // Set isChecker status for member
-            if($key == (sizeof($translators)-1)) {
-                $checkers = array_unique($checkers);
-
-                foreach ($members as $trID => $member)
-                {
-                    if(in_array($member, $checkers))
-                    {
-                        $this->_eventsModel->updateTranslator(["isChecker" => 1], ["trID" => $trID]);
-                    }
-                }
-
-                $eventID = $translator->eventID;
-                $checkers = [];
-                $members = [];
-            }
-
-            if(empty($kwCheck)) continue;
-
-            $postdata = [
-                "kwCheck" => "",
-                "otherCheck" => json_encode($kwCheck),
-                "peerCheck" => json_encode($peerCheck),
-                "currentChapter" => $currentChapter,
-                "step" => $currentStep
-            ];
-
-            $updated += $this->_eventsModel->updateTranslator($postdata, ["trID" => $translator->trID]);
-        }
-
-        echo "<h2>Done (Updated rows: ".$updated.")</h2>";
-        echo "<a href='/admin'>Go Back</a>";
-    }
-
-
-    /**
      * Migrate to version v.6.9.0
      */
     function migrate8steps()
     {
         $data["menu"] = 1;
-
-        if (Session::get('loggedin') !== true) {
-            Url::redirect("members/login");
-        }
-
-        if (Session::get("isDemo")) {
-            Url::redirect('events/demo');
-        }
-
-        if (empty(Session::get("profile"))) {
-            Url::redirect("members/profile");
-        }
 
         if (Session::get("isSuperAdmin")) {
             $translators = $this->_eventsModel->getMembersForProject(["ulb", "udb"]);
@@ -3923,6 +3289,79 @@ class AdminController extends Controller {
                     pr("trID: " . $trID . ", updated: " . ($updated ? "TRUE" : "FALSE"));
                 }
             } catch (\ErrorException $e) {
+                pr("There was an error or already migrated");
+                pr("Reason: " . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Migrate to version v.7.0.0
+     */
+    function migrateAdmins()
+    {
+        $data["menu"] = 1;
+
+        if (Session::get("isSuperAdmin")) {
+
+            $glAdmins = $this->_eventsModel->getSuperadminLanguages();
+            $admins = $this->_eventsModel->getAdminLanguages();
+
+            $membersCache = [];
+            $glProjectsCache = [];
+
+            try {
+                pr("Reassigning GL Project admins and Project admins");
+                foreach ($glAdmins as $admin) {
+                    $glProjectObj = null;
+                    if (!array_key_exists($admin->glID, $glProjectsCache)) {
+                        $glProjectObj = $this->glRepo->get($admin->glID);
+                        $glProjectsCache[$admin->glID] = $glProjectObj;
+                    } else {
+                        $glProjectObj = $glProjectsCache[$admin->glID];
+                    }
+
+                    $members = (array)json_decode($admin->admins, true);
+                    foreach ($members as $member) {
+                        $memberObj = null;
+                        if (!array_key_exists($member, $membersCache)) {
+                            $memberObj = $this->memberRepo->get($member);
+                            $membersCache[$member] = $memberObj;
+                        } else {
+                            $memberObj = $membersCache[$member];
+                        }
+
+                        $memberObj->adminGatewayLanguages()->attach($glProjectObj);
+
+                        // Assign GL project admins to project admins
+                        foreach ($glProjectObj->projects as $project) {
+                            $memberObj->adminProjects()->attach($project);
+                        }
+                    }
+                }
+
+                pr("Reassigning Event admins");
+                foreach ($admins as $admin) {
+                    $members = (array)json_decode($admin->admins, true);
+                    $members = array_merge($members, (array)json_decode($admin->admins_l2, true));
+                    $members = array_merge($members, (array)json_decode($admin->admins_l3, true));
+                    $members = array_unique($members);
+
+                    foreach ($members as $member) {
+                        $memberObj = null;
+                        if (!array_key_exists($member, $membersCache)) {
+                            $memberObj = $this->memberRepo->get($member);
+                            $membersCache[$member] = $memberObj;
+                        } else {
+                            $memberObj = $membersCache[$member];
+                        }
+
+                        $memberObj->adminEvents()->attach($admin->eventID);
+                    }
+                }
+
+                pr("Migration completed!");
+            } catch (\Exception $e) {
                 pr("There was an error or already migrated");
                 pr("Reason: " . $e->getMessage());
             }

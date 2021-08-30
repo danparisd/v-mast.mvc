@@ -16,16 +16,16 @@ if(!isset($error)):
 <div class="manage_container row">
     <div class="row">
         <div class="col-sm-6">
-            <div class="book_title" style="padding-left: 15px"><?php echo $data["event"][0]->name ?></div>
-            <div class="project_title" style="padding-left: 15px"><?php echo __($data["event"][0]->bookProject)." - ".$data["event"][0]->langName ?></div>
+            <div class="book_title" style="padding-left: 15px"><?php echo $event->bookInfo->name ?></div>
+            <div class="project_title" style="padding-left: 15px"><?php echo __($event->project->bookProject)." - ".$event->project->targetLanguage->langName ?></div>
         </div>
         <div class="col-sm-6 start_translation">
-            <?php if($data["event"][0]->state == EventStates::L3_RECRUIT): ?>
+            <?php if($event->state == EventStates::L3_RECRUIT): ?>
                 <form action="" method="post">
                     <button type="submit" name="submit" class="btn btn-warning" id="startTranslation" style="width: 150px; height: 50px;"><?php echo __("start_checking")?></button>
                 </form>
             <?php else: ?>
-                <div class="event_state"><?php echo __("event_status").": ".__("state_".$data["event"][0]->state) ?></div>
+                <div class="event_state"><?php echo __("event_status").": ".__("state_".$event->state) ?></div>
             <?php endif; ?>
         </div>
     </div>
@@ -33,14 +33,14 @@ if(!isset($error)):
     <div class="manage_chapters col-sm-6">
         <h3><?php echo __("chapters") ?></h3>
         <ul>
-            <?php foreach ($data["chapters"] as $chapter => $chapData): ?>
+            <?php foreach ($chapters as $chapter => $chapData): ?>
                 <?php
                 if(!empty($chapData))
                 {
-                    $key = array_search($chapData["l3memberID"], array_column($data["members"], 'memberID'));
-                    $userName = $data["members"][$key]["userName"];
-                    $name = $data["members"][$key]["firstName"] . " " . mb_substr($data["members"][$key]["lastName"], 0, 1).".";
-                    $data["members"][$key]["assignedChapters"][] = $chapter;
+                    $member = $members->find($chapData["l3memberID"]);
+                    $name = $member
+                        ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                        : $chapData["l3memberID"];
                 }
                 ?>
                 <li class="row" style="position:relative;">
@@ -63,17 +63,26 @@ if(!isset($error)):
                     <div class="manage_chapters_buttons" data-chapter="<?php echo $chapter ?>"
                             data-member="<?php echo !empty($chapData) ? $chapData["l3memberID"] : "" ?>">
                         <?php
-                        $p = !empty($chapData["peerCheck"])
+                        $peer = !empty($chapData["peerCheck"])
                             && array_key_exists($chapter, $chapData["peerCheck"])
                             && $chapData["peerCheck"][$chapter]["memberID"] > 0;
+
+                        $peerName = "unknown";
+
+                        if ($peer) {
+                            $member = $members->find($chapData["peerCheck"][$chapter]["memberID"]);
+                            $peerName = $member
+                                ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
+                                : $chapData["peerCheck"][$chapter]["memberID"];
+                        }
                         ?>
-                        <?php if($p): ?>
+                        <?php if($peer): ?>
                             <div class="glyphicon glyphicon-menu-hamburger checker_remove_button"
                                  data-chapter="<?php echo $chapter?>"
                                  data-shown="0"></div>
                             <div class="checker_remove_menu" data-chapter="<?php echo $chapter?>">
                                 <div class="remove_menu_title"><?php echo __("remove_checker") ?></div>
-                                <button class="btn btn-danger remove_checker_alt" id="p_checker">
+                                <button class="btn btn-danger remove_checker_alt" id="p_checker" data-name="<?php echo $peerName ?>">
                                     <?php echo __("l3_p_checker") ?>
                                 </button>
                             </div>
@@ -86,7 +95,7 @@ if(!isset($error)):
 
     <div class="manage_members col-sm-6">
         <h3>
-            <?php echo __("people_number", ["people_number" => sizeof($data["members"])]) ?>
+            <?php echo __("people_number", ["people_number" => sizeof($members)]) ?>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <button 
                 class="btn btn-primary" 
@@ -100,27 +109,35 @@ if(!isset($error)):
             </button>
         </h3>
         <ul>
-            <?php foreach ($data["members"] as $member):?>
+            <?php foreach ($members as $member):?>
+                <?php
+                $assignedChapters = $member->chaptersL3->filter(function($chap) use($event) {
+                    return $chap->eventID == $event->eventID;
+                })->getDictionary();
+                $chapterNumbers = array_map(function($chap) {
+                    return $chap->chapter;
+                }, $assignedChapters);
+                ?>
                 <li>
-                    <div class="member_usname" data="<?php echo $member["memberID"] ?>">
-                        <a href="/members/profile/<?php echo $member["memberID"] ?>" target="_blank"><?php echo $member["firstName"] . " " . mb_substr($member["lastName"], 0, 1)."."; ?></a>
-                        (<span><?php echo isset($member["assignedChapters"]) ? sizeof($member["assignedChapters"]) : 0 ?></span>)
+                    <div class="member_usname" data="<?php echo $member->memberID ?>">
+                        <a href="/members/profile/<?php echo $member->memberID ?>" target="_blank"><?php echo $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."; ?></a>
+                        (<span><?php echo sizeof($chapterNumbers) ?></span>)
                         <div class="glyphicon glyphicon-remove delete_user" title="<?php echo __("remove_from_event") ?>"></div>
                     </div>
-                    <div class="member_chapters" <?php echo isset($member["assignedChapters"]) ? "style='display:block'" : "" ?>>
-                        <?php echo __("chapters").": <span><b>". (isset($member["assignedChapters"]) ? join("</b>, <b>", $member["assignedChapters"]) : "")."</b></span>" ?>
+                    <div class="member_chapters" <?php echo !empty($chapterNumbers) ? "style='display:block'" : "" ?>>
+                        <?php echo __("chapters").": <span><b>". join("</b>, <b>", $chapterNumbers)."</b></span>" ?>
                     </div>
                     <div class="step_selector_block row">
                         <div class="col-sm-6">
                             <?php
                             $mode = "l3";
-                            $s_disabled = EventCheckSteps::enum($member["step"], $mode) < 2;
+                            $s_disabled = EventCheckSteps::enum($member->pivot->step, $mode) < 2;
                             ?>
                             <label><?php echo __("current_step") ?>:</label>
                             <select class="step_selector form-control" 
                                 <?php echo $s_disabled ? "disabled" : "" ?> 
-                                data-event="<?php echo $data["event"][0]->eventID ?>"
-                                data-member="<?php echo $member["memberID"] ?>"
+                                data-event="<?php echo $event->eventID ?>"
+                                data-member="<?php echo $member->memberID ?>"
                                 data-mode="<?php echo $mode ?>">
                                 <?php foreach (EventCheckSteps::enumArray($mode) as $step => $i): ?>
                                     <?php
@@ -128,9 +145,9 @@ if(!isset($error)):
                                     if($step == EventCheckSteps::NONE) continue;
                                     if(EventCheckSteps::enum($step, $mode) > 3) continue;
                                     
-                                    $selected = $step == $member["step"];
-                                    $o_disabled = EventCheckSteps::enum($member["step"], $mode) < $i ||
-                                        (EventCheckSteps::enum($member["step"], $mode) - $i) > 1;
+                                    $selected = $step == $member->pivot->step;
+                                    $o_disabled = EventCheckSteps::enum($member->pivot->step, $mode) < $i ||
+                                        (EventCheckSteps::enum($member->pivot->step, $mode) - $i) > 1;
                                     ?>
 
                                     <option <?php echo ($selected ? " selected" : "").($o_disabled ? " disabled" : "") ?> value="<?php echo $step ?>">
@@ -148,8 +165,8 @@ if(!isset($error)):
     <div class="clear"></div>
 </div>
 
-<input type="hidden" id="eventID" value="<?php echo $data["event"][0]->eventID ?>">
-<input type="hidden" id="mode" value="<?php echo $data["event"][0]->bookProject ?>">
+<input type="hidden" id="eventID" value="<?php echo $event->eventID ?>">
+<input type="hidden" id="mode" value="<?php echo $event->project->bookProject ?>">
 
 
 <div class="chapter_members">
@@ -162,13 +179,21 @@ if(!isset($error)):
             <img src="<?php echo template_url("img/loader.gif") ?>">
         </div>
         <ul>
-            <?php foreach ($data["members"] as $member): ?>
+            <?php foreach ($members as $member): ?>
+                <?php
+                $assignedChapters = $member->chaptersL2->filter(function($chap) use($event) {
+                    return $chap->eventID == $event->eventID;
+                })->getDictionary();
+                $chapterNumbers = array_map(function($chap) {
+                    return $chap->chapter;
+                }, $assignedChapters);
+                ?>
             <li>
                 <div class="member_usname userlist chapter_ver">
-                    <div class="divname"><?php echo $member["firstName"] . " " . mb_substr($member["lastName"], 0, 1)."."; ?></div>
-                    <div class="divvalue">(<span><?php echo isset($member["assignedChapters"]) ? sizeof($member["assignedChapters"]) : 0 ?></span>)</div>
+                    <div class="divname"><?php echo $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."; ?></div>
+                    <div class="divvalue">(<span><?php echo sizeof($chapterNumbers) ?></span>)</div>
                 </div>
-                <button class="btn btn-success assign_chapter" data="<?php echo $member["memberID"] ?>"><?php echo __("assign") ?></button>
+                <button class="btn btn-success assign_chapter" data="<?php echo $member->memberID ?>"><?php echo __("assign") ?></button>
                 <div class="clear"></div>
             </li>
             <?php endforeach; ?>

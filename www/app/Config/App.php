@@ -107,6 +107,14 @@ Config::set('app', array(
         'View\ViewServiceProvider',
         'Template\TemplateServiceProvider',
         'Cron\CronServiceProvider',
+        'App\Providers\AdminServiceProvider',
+        'App\Providers\MemberServiceProvider',
+        'App\Providers\GatewayLanguageServiceProvider',
+        'App\Providers\ProjectServiceProvider',
+        'App\Providers\EventServiceProvider',
+        'App\Providers\LanguageServiceProvider',
+        'App\Providers\SourceServiceProvider',
+        'App\Providers\BookInfoServiceProvider',
     ),
 
     /**

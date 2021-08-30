@@ -1,10 +1,7 @@
 <div id="tools">
     <ul class="nav nav-tabs">
-        <li role="presentation" class="url_tab">
-            <a href="/admin/tools"><?php echo __("common_tools") ?></a>
-        </li>
         <li role="presentation" class="url_tab active">
-            <a href="/admin/tools/source"><?php echo __("source") ?></a>
+            <a href="/admin/tools"><?php echo __("source") ?></a>
         </li>
         <li role="presentation" class="url_tab">
             <a href="/admin/tools/vsun"><?php echo __("sun_tools") ?></a>
@@ -14,6 +11,9 @@
         </li>
         <li role="presentation" class="url_tab">
             <a href="/admin/tools/news"><?php echo __("news") ?></a>
+        </li>
+        <li role="presentation" class="url_tab">
+            <a href="/admin/tools/common"><?php echo __("common_tools") ?></a>
         </li>
     </ul>
 
@@ -26,11 +26,11 @@
                     <label for="src_language" class=""><?php echo __("tools_src_language"); ?>:</label>
                     <select class="form-control" id="src_language" name="src_language">
                         <option value="" class="hidden"><?php echo __('select_src_language'); ?></option>
-                        <?php foreach ($data["gwLangs"] as $gwLang): ?>
-                        <option value="<?php echo $gwLang->langID ?>">
-                            <?php echo "[".$gwLang->langID."] " . $gwLang->langName .
-                                ($gwLang->langName != $gwLang->angName && $gwLang->angName != ""
-                                    ? " ( ".$gwLang->angName." )" : ""); ?>
+                        <?php foreach ($gwLangs as $gwLang): ?>
+                        <option value="<?php echo $gwLang->language->langID ?>">
+                            <?php echo "[".$gwLang->language->langID."] " . $gwLang->language->langName .
+                                ($gwLang->language->langName != $gwLang->language->angName && $gwLang->language->angName != ""
+                                    ? " ( ".$gwLang->language->angName." )" : ""); ?>
                         </option>
                         <?php endforeach; ?>
                     </select>
@@ -40,11 +40,11 @@
                     <label for="src_type" class=""><?php echo __("tools_src_type"); ?>:</label>
                     <select class="form-control" id="src_type" name="src_type">
                         <option value="" class="hidden"><?php echo __('select_src_type'); ?></option>
-                        <?php foreach ($data["sourceTypes"] as $srcType): ?>
-                        <option value="<?php echo $srcType->slug . "|" . $srcType->name ?>">
-                            <?php echo "[" . $srcType->slug . "]" . " " .
-                                (__($srcType->slug) == $srcType->slug ? $srcType->name : __($srcType->slug)) ?>
-                        </option>
+                        <?php foreach ($sourceTypes as $srcType): ?>
+                            <option value="<?php echo $srcType->slug . "|" . $srcType->name ?>">
+                                <?php echo "[" . $srcType->slug . "]" . " " .
+                                    (__($srcType->slug) == $srcType->slug ? $srcType->name : __($srcType->slug)) ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                     <div class="add_custom_src"><?php echo __("add_custom_src") ?></div>
@@ -74,12 +74,13 @@
                     <label for="src" class=""><?php echo __("tools_src"); ?>:</label>
                     <select class="form-control" id="src" name="src">
                         <option value="" class="hidden"><?php echo __('select_src'); ?></option>
-                        <?php foreach ($data["sources"] as $source) : ?>
+                        <?php foreach ($sources as $source): ?>
                         <option value="<?php echo $source->langID . "|" . $source->slug ?>">
                             <?php
                             echo "[" . $source->langID . "_" . $source->slug . "]"
-                                . " " . $source->langName . ($source->langName != $source->angName && $source->angName != ""
-                                    ? " ( ".$source->angName." )" : "")
+                                . " " . ($source->language ? $source->language->langName : "")
+                                . ($source->language && $source->language->langName != $source->language->angName && $source->language->angName != ""
+                                    ? " ( ".$source->language->angName." )" : "")
                                 . " - " . $source->name
                             ?>
                         </option>

@@ -31,7 +31,7 @@ use Helpers\Session;
 
                 <h4><?php echo $data["event"][0]->tLang." - "
                         .__($data["event"][0]->bookProject)." - "
-                        .($data["event"][0]->abbrID <= 39 ? __("old_test") : __("new_test"))." - "
+                        .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
                         ."<span class='book_name'>".$data["event"][0]->name." ".
                         $data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
 

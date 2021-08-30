@@ -2,10 +2,13 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Domain\EventContributors;
 use App\Models\ApiModel;
 use App\Models\CloudModel;
 use App\Models\TranslationsModel;
 use App\Models\EventsModel;
+use App\Repositories\Event\IEventRepository;
+use App\Repositories\Member\IMemberRepository;
 use Helpers\Constants\EventMembers;
 use Helpers\Constants\EventStates;
 use Helpers\Constants\OdbSections;
@@ -28,37 +31,32 @@ class TranslationsController extends Controller
     private $_eventModel;
     private $_apiModel;
 
-    public function __construct()
-    {
+    private $eventsRepo = null;
+    private $memberRepo = null;
+
+    public function __construct(
+        IEventRepository $eventsRepo,
+        IMemberRepository $memberRepo
+    ) {
         parent::__construct();
 
+        $this->eventsRepo = $eventsRepo;
+        $this->memberRepo = $memberRepo;
+
         if(Config::get("app.isMaintenance")
-            && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips")))
-        {
+            && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips"))) {
             Url::redirect("maintenance");
         }
 
+        $member = $this->memberRepo->get(Session::get("memberID"));
+
+        if (!$member) Url::redirect('members/login');
+        if(!$member->verified) Url::redirect("members/error/verification");
+        if(!$member->profile->exists()) Url::redirect("members/profile");
+
         $this->_model = new TranslationsModel();
-        $this->_eventModel = new EventsModel();
+        $this->_eventModel = new EventsModel($this->eventsRepo);
         $this->_apiModel = new ApiModel();
-
-        if (!Session::get('loggedin'))
-        {
-            Url::redirect('members/login');
-        }
-
-        if(!Session::get("verified"))
-        {
-            Url::redirect("members/error/verification");
-        }
-
-        if(Session::get("isDemo"))
-            Url::redirect('events/demo');
-
-        if(empty(Session::get("profile")))
-        {
-            Url::redirect("members/profile");
-        }
     }
 
     public function languages() {
@@ -553,8 +551,14 @@ class TranslationsController extends Controller
         }
         else
         { // Only for specific book
-            $contributors = $this->_eventModel->getEventContributors($books[0]->eventID, $manifest->getCheckingLevel(), $books[0]->bookProject, false);
-            foreach ($contributors as $cat => $list)
+            $event = $this->eventsRepo->get($books[0]->eventID);
+            $eventContributors = new EventContributors(
+                $event,
+                $manifest->getCheckingLevel(),
+                $books[0]->bookProject,
+                false
+            );
+            foreach ($eventContributors->get() as $cat => $list)
             {
                 if($cat == "admins") continue;
                 foreach ($list as $contributor)
@@ -570,7 +574,7 @@ class TranslationsController extends Controller
         $chapterStarted = false;
 
         foreach ($books as $chunk) {
-            $code = sprintf('%02d', $chunk->abbrID)."-".strtoupper($chunk->bookCode);
+            $code = sprintf('%02d', $chunk->sort)."-".strtoupper($chunk->bookCode);
 
             if($code != $lastCode)
             {
@@ -640,9 +644,9 @@ class TranslationsController extends Controller
                     $chunk->bookName,
                     'other',
                     $chunk->bookCode,
-                    (int)$chunk->abbrID,
-                    "./".(sprintf("%02d", $chunk->abbrID))."-".(strtoupper($chunk->bookCode)).".usfm",
-                    ["bible-".($chunk->abbrID < 41 ? "ot" : "nt")]
+                    (int)$chunk->sort,
+                    "./".(sprintf("%02d", $chunk->sort))."-".(strtoupper($chunk->bookCode)).".usfm",
+                    ["bible-".($chunk->sort < 41 ? "ot" : "nt")]
                 ));
             }
         }
@@ -690,8 +694,15 @@ class TranslationsController extends Controller
         $manifest = $this->_model->generateTstudioManifest($book[0]);
 
         // Set translators/checkers
-        $contributors = $this->_eventModel->getEventContributors($book[0]->eventID, $chk_lvl, $book[0]->bookProject, false);
-        foreach ($contributors as $cat => $list)
+        $event = $this->eventsRepo->get($book[0]->eventID);
+        $eventContributors = new EventContributors(
+            $event,
+            $chk_lvl,
+            $book[0]->bookProject,
+            false
+        );
+
+        foreach ($eventContributors->get() as $cat => $list)
         {
             if($cat == "admins") continue;
             foreach ($list as $contributor)
@@ -835,8 +846,14 @@ class TranslationsController extends Controller
                 // Set contributor list from book contributors
                 if(!$all)
                 {
-                    $contributors = $this->_eventModel->getEventContributors($chunk->eventID, $chk_lvl, $chunk->bookProject, false);
-                    foreach ($contributors as $cat => $list)
+                    $event = $this->eventsRepo->get($chunk->eventID);
+                    $eventContributors = new EventContributors(
+                        $event,
+                        $chk_lvl,
+                        $chunk->bookProject,
+                        false
+                    );
+                    foreach ($eventContributors->get() as $cat => $list)
                     {
                         if($cat == "admins") continue;
                         foreach ($list as $contributor)
@@ -912,7 +929,7 @@ class TranslationsController extends Controller
                     $chunk->bookName,
                     'other',
                     $chunk->bookCode,
-                    (int)$chunk->abbrID,
+                    (int)$chunk->sort,
                     "./".(strtoupper($chunk->bookCode)).".json",
                     ["rad"]
                 ));
@@ -1015,8 +1032,14 @@ class TranslationsController extends Controller
                 // Set contributor list from book contributors
                 if(!$all)
                 {
-                    $contributors = $this->_eventModel->getEventContributors($chunk->eventID, $manifest->getCheckingLevel(), $chunk->bookProject, false);
-                    foreach ($contributors as $cat => $list)
+                    $event = $this->eventsRepo->get($chunk->eventID);
+                    $eventContributors = new EventContributors(
+                        $event,
+                        $manifest->getCheckingLevel(),
+                        $chunk->bookProject,
+                        false
+                    );
+                    foreach ($eventContributors->get() as $cat => $list)
                     {
                         if($cat == "admins") continue;
                         foreach ($list as $contributor)
@@ -1030,7 +1053,7 @@ class TranslationsController extends Controller
                     $chunk->bookName . " " . __($books[0]->bookProject),
                     "",
                     $chunk->bookCode,
-                    (int)$chunk->abbrID,
+                    (int)$chunk->sort,
                     "./".$chunk->bookCode,
                     []
                 ));

@@ -15,7 +15,7 @@ if(isset($data["error"])) return;
 
                 <h4><?php echo $data["event"][0]->sLang." - "
                             .__($data["event"][0]->bookProject)." - "
-                            .($data["event"][0]->abbrID <= 39 ? __("old_test") : __("new_test"))." - "
+                            .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
                             ."<span class='book_name'>".$data["event"][0]->name." "
                                 .($data["currentChapter"] > 0 ? $data["currentChapter"].":"
                                 .(!$data["no_chunk_source"]
