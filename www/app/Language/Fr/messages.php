@@ -1746,7 +1746,7 @@ return array (
 
     "peer-review-l3_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are used when referring to God the Father and Jesus Christ.</b></li>
                             <li>This step is done with a peer-checker.</li>
-                            <li>Before you start, please review the Rubric for your translation by clicking the orange Rubric icon on the sidebar.</li>
+                            <li>Before you start, please review the QA Guide for your translation by clicking the orange QA Guide icon on the sidebar.</li>
                             <li>While checking, keep in mind the difference between accuracy and preference.</li>
                             <li>The column on the left is the <b>scripture</b> source text, and the right is target text.</li>
                             <li>Check the accuracy of the translation in detail.</li>

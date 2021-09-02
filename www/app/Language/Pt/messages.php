@@ -196,7 +196,7 @@ return array (
     "lang_select" => "Select language",
     "proj_lang_public" => "Project Language",
     "projects_public" => "Project",
-    "show_rubric" => "Rubric",
+    "show_rubric" => "QA Guide",
     "choose_event_level" => "Checking level",
 
     // Passwordreset method
@@ -1066,7 +1066,7 @@ return array (
                                         <li>Does it sound good in your language?</li>
                                         <li>Is it smooth, clear, and understandable?</li>
                                         <li>Is the author’s intended meaning there?</li>
-                                        <li>Is it accurate according to your Authentic Assessment/Rubric?</li>
+                                        <li>Is it accurate according to your Authentic Assessment/QA Guide?</li>
                                     </ol>
                                 </li>
                                 <li>The review can be done in two ways:
@@ -1121,7 +1121,7 @@ return array (
                                                 <li>Does it sound good in your language?</li>
                                                 <li>Is it smooth, clear, and understandable?</li>
                                                 <li>Is the author’s intended meaning there?</li>
-                                                <li>Is it accurate according to your Authentic Assessment/Rubric?</li>
+                                                <li>Is it accurate according to your Authentic Assessment/QA Guide?</li>
                                             </ol>
                                         </li>
                                         <li>The review can be done in two ways:
@@ -1713,7 +1713,7 @@ return array (
 
     "peer-review-l3_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are used when referring to God the Father and Jesus Christ.</b></li>
                             <li>This step is done with a peer-checker.</li>
-                            <li>Before you start, please review the Rubric for your translation by clicking the orange Rubric icon on the sidebar.</li>
+                            <li>Before you start, please review the QA Guide for your translation by clicking the orange QA Guide icon on the sidebar.</li>
                             <li>While checking, keep in mind the difference between accuracy and preference.</li>
                             <li>The column on the left is the <b>scripture</b> source text, and the right is target text.</li>
                             <li>Check the accuracy of the translation in detail.</li>
