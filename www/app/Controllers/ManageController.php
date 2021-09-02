@@ -24,6 +24,7 @@ use Helpers\Constants\EventSteps;
 use Helpers\Constants\EventCheckSteps;
 use Helpers\Constants\EventStates;
 use Helpers\Constants\EventMembers;
+use Mailer;
 
 class ManageController extends Controller {
     private $_model;
@@ -1226,6 +1227,21 @@ class ManageController extends Controller {
                                 $event->translators()->updateExistingPivot($memberID, ["step" => EventSteps::PRAY]);
                             }
 
+                            // Send chapter assignment notification email
+                            Mailer::send('Emails/Manage/ChapterAssignmentNotification',
+                                [
+                                    "book" => $event->bookInfo->name,
+                                    "language" => $event->project->gatewayLanguage->language->langName,
+                                    "project" => __($event->project->bookProject),
+                                    "target" => $event->project->targetLanguage->langName,
+                                    "chapter" => $chapter
+                                ],
+                                function($message) use($translator)
+                                {
+                                    $message->to($translator->email)->subject(__('Chapter assignment notification'));
+                                });
+
+
                             $response["success"] = true;
                         } else {
                             $response["error"] = __("error_ocured", ["wrong parameters"]);
@@ -1530,6 +1546,21 @@ class ManageController extends Controller {
                         );
 
                         $event->translators()->attach($appliedMember, $trData);
+
+                        // Send project assignment notification email
+                        Mailer::send('Emails/Manage/BookAssignmentNotification',
+                            [
+                                "book" => $event->bookInfo->name,
+                                "language" => $event->project->gatewayLanguage->language->langName,
+                                "project" => __($event->project->bookProject),
+                                "target" => $event->project->targetLanguage->langName
+                            ],
+                            function($message) use($appliedMember)
+                        {
+                            $message->to($appliedMember->email)->subject(__('Translator assignment notification'));
+                        });
+
+
                         echo json_encode(array("success" => __("successfully_applied")));
                     } else {
                         $error[] = __("error_member_in_event");
@@ -1542,6 +1573,20 @@ class ManageController extends Controller {
                             "step" => EventSteps::NONE
                         );
                         $event->checkersL2()->attach($appliedMember, $l2Data);
+
+                        // Send project assignment notification email
+                        Mailer::send('Emails/Manage/BookAssignmentNotification',
+                            [
+                                "book" => $event->bookInfo->name,
+                                "language" => $event->project->gatewayLanguage->language->langName,
+                                "project" => __($event->project->bookProject),
+                                "target" => $event->project->targetLanguage->langName
+                            ],
+                            function($message) use($appliedMember)
+                            {
+                                $message->to($appliedMember->email)->subject(__('Translator assignment notification'));
+                            });
+
                         echo json_encode(array("success" => __("successfully_applied")));
                     } else {
                         $error[] = __("error_member_in_event");
@@ -1556,6 +1601,20 @@ class ManageController extends Controller {
                             "currentChapter" => $chapter
                         );
                         $event->checkersL3()->attach($appliedMember, $l3Data);
+
+                        // Send project assignment notification email
+                        Mailer::send('Emails/Manage/BookAssignmentNotification',
+                            [
+                                "book" => $event->bookInfo->name,
+                                "language" => $event->project->gatewayLanguage->language->langName,
+                                "project" => __($event->project->bookProject),
+                                "target" => $event->project->targetLanguage->langName
+                            ],
+                            function($message) use($appliedMember)
+                            {
+                                $message->to($appliedMember->email)->subject(__('Translator assignment notification'));
+                            });
+
                         echo json_encode(array("success" => __("successfully_applied")));
                     } else {
                         $error[] = __("error_member_in_event");
