@@ -598,7 +598,7 @@ return array (
                             <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "verbalize" => "Verbalize",
-    "verbalize_desc" => "<li><b>PURPOSE:</b> to express verbally what you have consumed to engage short-term memory.</li>
+    "verbalize_desc" => "<li><b>PURPOSE:</b> to express verbally what you have consumed in the target language to engage short-term memory.</li>
                             <li><b>LENGTH:</b> Take 2-3 minutes on this step (per person).</li>
                             <li>Choose a partner to verbalize with.  It does not have to be another translator in V-MAST. 
                                 <ol>
