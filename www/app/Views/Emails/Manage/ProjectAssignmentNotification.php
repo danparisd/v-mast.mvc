@@ -5,14 +5,19 @@
 </head>
 <body>
 
-<h6>
+<h3>
     <?php echo __("project_assigned_msg")?>
-</h6>
-<div style="font-weight: bold; margin-top: 20px;">
-    <?php echo __("book") . ": " . $book ?><br/>
-    <?php echo __("project") . ": " . $project ?><br/>
-    <?php echo __("gateway_language") . ": " . $language ?><br/>
-    <?php echo __("target_lang") . ": " . $target?>
+</h3>
+<div style="margin-top: 20px;">
+
+    <span style="font-weight: bold;"><?php echo __("book")?></span>
+    <?php echo ": " . $book ?><br/>
+    <span style="font-weight: bold;"><?php echo __("project")?></span>
+    <?php echo ": " . $project ?><br/>
+    <span style="font-weight: bold;"><?php echo __("gateway_language")?></span>
+    <?php echo ": " . $language ?><br/>
+    <span style="font-weight: bold;"><?php echo __("target_lang")?></span>
+    <?php echo ": " . $target?>
 </div>
 </body>
 </html>
