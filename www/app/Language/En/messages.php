@@ -2082,6 +2082,6 @@ return array (
 
     "project_assignment_notif" => "Project Assignment Notification",
     "chapter_assignment_notif" => "Chapter Assignment Notification",
-    "project_assigned_msg" => "You have been added as a translator to the following project.",
-    "chapter_assigned_msg" => "You have been added as a translator to the following chapter."
+    "project_assigned_msg" => "You have been assigned to the following project.",
+    "chapter_assigned_msg" => "You have been assigned to the following chapter."
 );
