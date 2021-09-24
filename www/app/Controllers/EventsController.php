@@ -134,10 +134,14 @@ class EventsController extends Controller {
             }
         }
 
-        $data["myTranslatorChapters"] = $this->_member->translators->filter(function($tr) {
-            return $tr->step != EventSteps::NONE
-                && $tr->step != EventSteps::FINISHED;
-        });
+        $data["myTranslatorEvents"] = $this->_model->getMemberEvents(
+            Session::get("memberID"),
+            null,
+            null,
+            true,
+            false,
+            false
+        );
 
         $data["myCheckerL1Events"] = $this->_model->getMemberEventsForChecker(Session::get("memberID"));
         $notesCheckers = $this->_model->getMemberEventsForNotes(Session::get("memberID"));
@@ -244,7 +248,7 @@ class EventsController extends Controller {
                             }
                         }
 
-                        // Check if translator just started translating of this book
+                        // Check if translator just started translating this book
                         $data["event"][0]->justStarted = $data["event"][0]->verbCheck == "";
                         $data["next_step"] = $data["event"][0]->langInput ? "multi-draft_lang_input" : EventSteps::CONSUME;
 
