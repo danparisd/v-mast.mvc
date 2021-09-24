@@ -8,14 +8,13 @@
 
 namespace App\Models;
 
+use App\Models\ORM\Event;
 use App\Repositories\Event\IEventRepository;
 use Database\Model;
 use DB;
 use Helpers\Arrays;
 use Helpers\Constants\EventCheckSteps;
-use Helpers\Constants\EventStates;
 use Helpers\Constants\EventSteps;
-use Helpers\Constants\StepsStates;
 use Helpers\Session;
 use PDO;
 
@@ -60,14 +59,21 @@ class EventsModel extends Model
     /**
      * Get all events of a member or specific event
      * @param $memberID
-     * @param $memberType
      * @param null $eventID
+     * @param null $chapter
+     * @param bool $includeCheckers
      * @param bool $includeFinished
      * @param bool $includeNone
      * @return array
      */
-    public function getMemberEvents($memberID, $eventID = null, $chapter = null, $includeCheckers = false, $includeFinished = true, $includeNone = true)
-    {
+    public function getMemberEvents(
+        $memberID,
+        $eventID = null,
+        $chapter = null,
+        $includeCheckers = false,
+        $includeFinished = true,
+        $includeNone = true
+    ) {
         $sql = "SELECT translators.trID, " .
             "translators.memberID AS myMemberID, translators.step, " .
             "translators.currentChunk, translators.currentChapter, " .
@@ -111,6 +117,9 @@ class EventsModel extends Model
         $filtered = [];
 
         foreach ($events as $event) {
+            $eventObj = Event::find($event->eventID);
+            $event->admins = $eventObj->admins;
+
             $checkingSteps = [
                 EventSteps::PEER_REVIEW,
                 EventSteps::KEYWORD_CHECK,

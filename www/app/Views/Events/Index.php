@@ -38,7 +38,7 @@ use Helpers\Session;
 
     <li role="presentation" id="my_translations" class="my_tab">
         <a href="#"><?php echo __("translator_events") ?>
-            <span>(<?php echo sizeof($data["myTranslatorChapters"]) ?>)</span>
+            <span>(<?php echo sizeof($data["myTranslatorEvents"]) ?>)</span>
         </a>
     </li>
     <li role="presentation" id="my_checks" class="my_tab">
@@ -301,24 +301,24 @@ use Helpers\Session;
 <?php endif ?>
 
 <div id="my_translations_content" class="my_content">
-    <?php foreach($data["myTranslatorChapters"] as $key => $tr): ?>
+    <?php foreach($data["myTranslatorEvents"] as $key => $event): ?>
         <?php
-        $mode = $tr->event->project->bookProject;
+        $mode = $event->bookProject;
 
         if(in_array($mode, ["ulb","udb"]))
         {
-            $eventType = $tr->event->langInput ? __("lang_input") : __("8steps_vmast");
+            $eventType = $event->langInput ? __("lang_input") : __("8steps_vmast");
         }
         elseif ($mode == "sun")
         {
-            $eventType = $tr->event->project->sourceBible == "odb" ? __("odb") : __("vsail");
+            $eventType = $event->sourceBible == "odb" ? __("odb") : __("vsail");
         }
         else
         {
             $eventType = "";
         }
 
-        if($tr->event->langInput)
+        if($event->langInput)
         {
             $eventImg = template_url("img/steps/big/consume.png");
         }
@@ -335,26 +335,26 @@ use Helpers\Session;
             $eventImg = template_url("img/steps/big/peer-review.png");
         }
 
-        $tw_group = $tr->event->project->bookProject == "tw" ? json_decode($tr->twGroup->words, true) : [];
+        $tw_group = $event->bookProject == "tw" ? json_decode($event->words, true) : [];
         ?>
         <div class="event_block <?php echo $key%2 == 0 ? "green-marked" : "" ?>">
             <div class="event_logo translation">
                 <div class="event_type"><?php echo $eventType ?></div>
-                <div class="event_mode <?php echo $tr->event->project->bookProject ?>"><?php echo __($tr->event->project->bookProject) ?></div>
+                <div class="event_mode <?php echo $event->bookProject ?>"><?php echo __($event->bookProject) ?></div>
                 <div class="event_img">
                     <img width="146" src="<?php echo $eventImg?>">
                 </div>
             </div>
             <div class="event_project">
-                <div class="event_book"><?php echo $tr->event->bookInfo->name ?></div>
+                <div class="event_book"><?php echo $event->name ?></div>
                 <div class="event_proj">
-                    <div><?php echo $tr->event->project->sourceBible == "odb" ? __($tr->event->project->sourceBible) : __($tr->event->project->bookProject) ?></div>
-                    <div><?php echo $tr->event->project->targetLanguage->langName . ", " . ($tr->event->bookInfo->sort < 41 ? __("old_test") : __("new_test"))?></div>
+                    <div><?php echo $event->sourceBible == "odb" ? __($event->sourceBible) : __($event->bookProject) ?></div>
+                    <div><?php echo $event->tLang . ", " . ($event->sort < 41 ? __("old_test") : __("new_test"))?></div>
                 </div>
                 <div class="event_facilitator">
                     <div><?php echo __("facilitators") ?>:</div>
                     <div class="facil_names">
-                        <?php foreach ($tr->event->admins as $admin): ?>
+                        <?php foreach ($event->admins as $admin): ?>
                             <a href="#" data="<?php echo $admin->memberID ?>">
                                 <?php echo $admin->firstName . " " . mb_substr($admin->lastName, 0, 1) . "."?>
                             </a>
@@ -363,48 +363,55 @@ use Helpers\Session;
                 </div>
             </div>
             <div class="event_current_pos">
-                <div class="event_current_title"><?php echo __("you_are_at") ?></div>
-                <div class="event_curr_step">
-                    <?php
-                    $step = $tr->step;
-                    if($step == EventSteps::READ_CHUNK)
-                        $step = EventSteps::BLIND_DRAFT;
-                    ?>
-                    <img class='img_current' src="<?php echo template_url("img/steps/green_icons/". $step. ".png") ?>">
-                    <div class="step_current">
-                        <div>
-                            <?php echo ($tr->currentChapter > 0
-                                ? (!empty($tw_group)
+                <?php if($event->step != EventSteps::NONE): ?>
+                    <div class="event_current_title"><?php echo __("you_are_at") ?></div>
+                    <div class="event_curr_step">
+                        <?php
+                        $step = $event->step;
+                        if($step == EventSteps::READ_CHUNK)
+                            $step = EventSteps::BLIND_DRAFT;
+                        ?>
+                        <img class='img_current' src="<?php echo template_url("img/steps/green_icons/". $step. ".png") ?>">
+                        <div class="step_current">
+                            <div>
+                                <?php echo ($event->currentChapter > 0
+                                ? ($event->bookProject == "tw"
                                     ? "[".$tw_group[0]."...".$tw_group[sizeof($tw_group)-1]."]"
-                                    : __("chapter_number", ["chapter" => $tr->currentChapter]))
-                                : ($tr->currentChapter == 0 && in_array($tr->event->project->bookProject, ["tn"])
+                                    : __("chapter_number", ["chapter" => $event->currentChapter]))
+                                : ($event->currentChapter == 0 && in_array($event->bookProject, ["tn"])
                                     ? __("front")
                                     : "")) ?>
-                        </div>
-                        <div>
-                            <?php echo __($tr->step . (in_array($tr->event->project->bookProject, ["tn"]) ? "_tn" :
-                                    ($tr->event->project->bookProject == "sun" && $tr->step == EventSteps::CHUNKING ? "_sun" : ""))) ?>
+                            </div>
+                            <div>
+                                <?php echo __($event->step . (in_array($event->bookProject, ["tn"]) ? "_tn" :
+                                        ($event->bookProject == "sun" && $event->step == EventSteps::CHUNKING ? "_sun" : ""))) ?>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
             <div class="event_action">
                 <div class="event_link">
                     <?php
-                    $chapterLink = in_array($tr->step, [
+                    $chapterLink = in_array($event->step, [
                             EventSteps::PEER_REVIEW,
                             EventSteps::KEYWORD_CHECK,
                             EventSteps::CONTENT_REVIEW,
                             EventSteps::FINAL_REVIEW,
                     ])
-                        && in_array($tr->event->project->bookProject, ["ulb","udb"])
-                        && $tr->currentChapter > 0 ? "/" . $tr->currentChapter : "";
+                        && in_array($event->bookProject, ["ulb","udb"])
+                        && $event->currentChapter > 0
+                            ? "/" . $event->currentChapter : "";
                     ?>
-                    <a href="/events/translator<?php echo ($tr->event->project->sourceBible == "odb" ? "-odb" : "")
-                            .(in_array($tr->event->project->bookProject, ["tn","sun","tq","tw","rad"]) ? "-".
-                            $tr->event->project->bookProject : "") ?>/<?php echo $tr->eventID . $chapterLink?>">
+                    <a href="/events/translator<?php echo ($event->sourceBible == "odb" ? "-odb" : "")
+                            .(in_array($event->bookProject, ["tn","sun","tq","tw","rad"]) ? "-".
+                            $event->bookProject : "") ?>/<?php echo $event->eventID . $chapterLink?>">
                         <?php echo __("continue_alt") ?>
                     </a>
+                </div>
+                <div class="event_members">
+                    <div><?php echo __("translators") ?></div>
+                    <div class="trs_num"><?php echo $event->currTrs ?></div>
                 </div>
             </div>
 
@@ -412,7 +419,7 @@ use Helpers\Session;
         </div>
     <?php endforeach ?>
 
-    <?php if(sizeof($data["myTranslatorChapters"]) <= 0): ?>
+    <?php if(sizeof($data["myTranslatorEvents"]) <= 0): ?>
         <div class="no_events_message"><?php echo __("no_events_message") ?></div>
     <?php endif; ?>
 </div>
