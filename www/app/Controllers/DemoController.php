@@ -903,6 +903,86 @@ class DemoController extends Controller {
             ->shares("data", $data);
     }
 
+    public function demoSunL3($page = null)
+    {
+        if (!isset($page))
+            Url::redirect("events/demo-sun-l3/pray");
+
+        $notifObj = new stdClass();
+        $notifObj->step = EventCheckSteps::PEER_REVIEW_L3;
+        $notifObj->currentChapter = 17;
+        $notifObj->firstName = "Mark";
+        $notifObj->lastName = "Patton";
+        $notifObj->bookCode = "mat";
+        $notifObj->bookProject = "sun";
+        $notifObj->tLang = "English";
+        $notifObj->bookName = "Matthew";
+        $notifObj->manageMode = "l3";
+        $notifObj->sourceBible = "ulb";
+
+        $notifications[] = $notifObj;
+
+        $data["notifications"] = $notifications;
+        $data["isDemo"] = true;
+        $data["menu"] = 5;
+        $data["isCheckerPage"] = true;
+        $data["isPeer"] = false;
+        $data["next_step"] = EventCheckSteps::PRAY;
+
+        $data["bookCode"] = "mat";
+        $data["currentChapter"] = 17;
+        $data["tnLangID"] = "en";
+        $data["twLangID"] = "en";
+        $data["totalVerses"] = 27;
+        $data["targetLang"] = "en";
+
+        $view = View::make("Events/L3Sun/Demo/DemoHeader");
+        $data["step"] = "";
+
+        switch ($page) {
+            case "pray":
+                $view->nest("page", "Events/L3Sun/Demo/Pray");
+                $data["step"] = EventCheckSteps::PRAY;
+                $data["next_step"] = EventCheckSteps::PEER_REVIEW_L3;
+                break;
+
+            case "peer_review_l3":
+                $view->nest("page", "Events/L3Sun/Demo/PeerReview");
+                $data["step"] = EventCheckSteps::PEER_REVIEW_L3;
+                $data["next_step"] = EventCheckSteps::PEER_EDIT_L3;
+                break;
+
+            case "peer_edit_l3":
+                $view->nest("page", "Events/L3Sun/Demo/PeerEdit");
+                $data["step"] = EventCheckSteps::PEER_EDIT_L3;
+                $data["next_step"] = "continue_alt";
+                break;
+
+            case "peer_review_l3_checker":
+                $view->nest("page", "Events/L3Sun/Demo/PeerReviewChecker");
+                $data["step"] = EventCheckSteps::PEER_REVIEW_L3;
+                $data["next_step"] = EventCheckSteps::PEER_EDIT_L3;
+                $data["isPeer"] = true;
+                break;
+
+            case "peer_edit_l3_checker":
+                $view->nest("page", "Events/L3Sun/Demo/PeerEditChecker");
+                $data["step"] = EventCheckSteps::PEER_EDIT_L3;
+                $data["next_step"] = "continue_alt";
+                $data["isPeer"] = true;
+                break;
+
+            case "information":
+                return View::make("Events/L3Sun/Demo/Information")
+                    ->shares("title", __("event_info"));
+                break;
+        }
+
+        return $view
+            ->shares("title", __("demo"))
+            ->shares("data", $data);
+    }
+
     public function demoSunOdb($page = null)
     {
         if (!isset($page))

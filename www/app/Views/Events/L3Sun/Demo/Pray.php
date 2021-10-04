@@ -1,9 +1,9 @@
-<?php
-if(isset($data["error"])) return;
-?>
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
-        <div class="main_content_title"><?php echo __("pray")?></div>
+        <div class="main_content_title">
+            <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l3").")" ?></div>
+            <div><?php echo __("pray")?></div>
+        </div>
     </div>
 
     <div class="row">
@@ -24,10 +24,10 @@ if(isset($data["error"])) return;
                 <form action="" method="post">
                     <div class="form-group">
                         <div class="main_content_confirm_desc"><?php echo __("confirm_finished")?></div>
-                        <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
+                        <label><input name="confirm_step" id="confirm_step" value="1" type="checkbox"> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                    <button id="next_step" class="btn btn-primary" disabled="disabled">
                         <?php echo __($data["next_step"])?>
                     </button>
                 </form>
@@ -40,19 +40,30 @@ if(isset($data["error"])) return;
     <div id="help_hide" class="glyphicon glyphicon-chevron-left"> <?php echo __("help") ?></div>
 
     <div class="help_float">
-        <div class="help_info_steps">
+        <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("pray")?></span></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("pray_desc", ["step" => __($data["next_step"])])?></ul>
             </div>
         </div>
 
-        <div class="event_info">
+        <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/information-tn-l3/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-sun-l3/information"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        
+        $("#next_step").click(function (e) {
+            e.preventDefault();
+            window.location.href = '/events/demo-sun-l3/peer_review_l3';
+            return false;
+        });
+    });
+</script>

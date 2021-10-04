@@ -229,34 +229,30 @@ class EventContributors
     }
 
     private function setContributorsL3() {
-        if ($this->mode == "sun") {
-            $this->setContributorsL1();
-        } else {
-            foreach ($this->event->checkersL3 as $translator) {
-                $peerCheck = (array)json_decode($translator->pivot->peerCheck);
-                $peerMems = [];
-                foreach ($peerCheck as $item) {
-                    $peerMems[] = $item->memberID;
-                }
-                $this->checkersArr = Arrays::append($this->checkersArr, $peerMems);
+        foreach ($this->event->checkersL3 as $translator) {
+            $peerCheck = (array)json_decode($translator->pivot->peerCheck);
+            $peerMems = [];
+            foreach ($peerCheck as $item) {
+                $peerMems[] = $item->memberID;
             }
-
-            // Chapters
-            $data["chapters"] = [];
-            for ($i = 1; $i <= $this->event->bookInfo->chaptersNum; $i++) {
-                $data["chapters"][$i] = [];
-            }
-
-            foreach ($this->event->chapters as $chapter) {
-                $tmp["l3memberID"] = $chapter->l3memberID;
-                $data["chapters"][$chapter["chapter"]] = $tmp;
-            }
-
-            foreach ($data["chapters"] as $chapter) {
-                if (!empty($chapter))
-                    $this->checkersArr[] = $chapter["l3memberID"];
-            }
-            $this->checkersArr = array_unique($this->checkersArr);
+            $this->checkersArr = Arrays::append($this->checkersArr, $peerMems);
         }
+
+        // Chapters
+        $data["chapters"] = [];
+        for ($i = 1; $i <= $this->event->bookInfo->chaptersNum; $i++) {
+            $data["chapters"][$i] = [];
+        }
+
+        foreach ($this->event->chapters as $chapter) {
+            $tmp["l3memberID"] = $chapter->l3memberID;
+            $data["chapters"][$chapter["chapter"]] = $tmp;
+        }
+
+        foreach ($data["chapters"] as $chapter) {
+            if (!empty($chapter))
+                $this->checkersArr[] = $chapter["l3memberID"];
+        }
+        $this->checkersArr = array_unique($this->checkersArr);
     }
 }

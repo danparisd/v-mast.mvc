@@ -195,24 +195,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $menuPage = $data["event"][0]->langInput ? "TranslatorLangInput" : "Translator";
 
@@ -762,24 +745,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PEER_REVIEW:
@@ -1150,24 +1116,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information-tn/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
@@ -1542,24 +1491,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information-tq/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
@@ -1823,24 +1755,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information-tw/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
@@ -2132,24 +2047,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information-sun/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
@@ -2525,24 +2423,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information-odb-sun/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
@@ -2959,24 +2840,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information-rad/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
@@ -3254,24 +3118,7 @@ class EventsController extends Controller {
             if (!empty($data["event"])) {
                 if ($data["event"][0]->step != EventSteps::FINISHED) {
                     if (in_array($data["event"][0]->step, [EventSteps::PEER_REVIEW, EventSteps::KEYWORD_CHECK, EventSteps::CONTENT_REVIEW])) {
-                        $turnSecret = $this->_membersModel->getTurnSecret();
-                        $turnUsername = (time() + 3600) . ":vmast";
-                        $turnPassword = "";
-
-                        if (!empty($turnSecret)) {
-                            if (($turnSecret[0]->expire - time()) < 0) {
-                                $pass = $this->_membersModel->generateStrongPassword(22);
-                                if ($this->_membersModel->updateTurnSecret(array("value" => $pass, "expire" => time() + (30 * 24 * 3600)))) // Update turn secret each month
-                                {
-                                    $turnSecret[0]->value = $pass;
-                                }
-                            }
-
-                            $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                        }
-
-                        $data["turn"][] = $turnUsername;
-                        $data["turn"][] = base64_encode($turnPassword);
+                        $data["turn"] = $this->makeTurnCredentials();
 
                         $data["comments"] = $this->getComments($data["event"][0]->eventID, $data["event"][0]->currentChapter);
                         $sourceText = $this->getSourceText($data);
@@ -3398,24 +3245,7 @@ class EventsController extends Controller {
                 . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::TRANSLATING || $data["event"][0]->state == EventStates::TRANSLATED) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -3900,24 +3730,7 @@ class EventsController extends Controller {
                 . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::TRANSLATING || $data["event"][0]->state == EventStates::TRANSLATED) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -4222,24 +4035,7 @@ class EventsController extends Controller {
             $title = $data["event"][0]->name . " - " . $data["event"][0]->tLang . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::TRANSLATING || $data["event"][0]->state == EventStates::TRANSLATED) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -4552,24 +4348,7 @@ class EventsController extends Controller {
                 . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::TRANSLATING || $data["event"][0]->state == EventStates::TRANSLATED) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -4812,7 +4591,7 @@ class EventsController extends Controller {
                                                 $chapters[$chapter["chapter"]] = $tmp;
                                             }
 
-                                            $chapters[$data["event"][0]->currentChapter]["done"] = true;
+                                            $chapters[$data["event"][0]->currentChapter]["checked"] = true;
 
                                             // Check if whole book is finished
                                             if ($this->checkBookFinished($chapters, $data["event"][0]->chaptersNum, true))
@@ -4821,7 +4600,13 @@ class EventsController extends Controller {
                                                     "dateTo" => date("Y-m-d H:i:s", time())],
                                                     ["eventID" => $data["event"][0]->eventID]);
 
-                                            $this->_model->updateChapter(["checked" => true], ["eventID" => $data["event"][0]->eventID, "chapter" => $data["event"][0]->currentChapter]);
+                                            $this->_model->updateChapter([
+                                                "done" => true,
+                                                "checked" => true
+                                            ], [
+                                                "eventID" => $data["event"][0]->eventID,
+                                                "chapter" => $data["event"][0]->currentChapter
+                                            ]);
 
                                             $crCheck = (array)json_decode($data["event"][0]->crCheck, true);
                                             if (array_key_exists($data["event"][0]->currentChapter, $crCheck)) {
@@ -4902,24 +4687,7 @@ class EventsController extends Controller {
                 . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::TRANSLATING || $data["event"][0]->state == EventStates::TRANSLATED) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -5151,24 +4919,7 @@ class EventsController extends Controller {
                 . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::TRANSLATING || $data["event"][0]->state == EventStates::TRANSLATED) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -5332,24 +5083,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventCheckSteps::NONE)
                     Url::redirect("events/information-l2/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::PRAY:
@@ -5623,24 +5357,7 @@ class EventsController extends Controller {
                 . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::L2_CHECK || $data["event"][0]->state == EventStates::L2_CHECKED) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -5938,7 +5655,6 @@ class EventsController extends Controller {
         $data["newNewsCount"] = $this->_newNewsCount;
         $data["isChecker"] = false;
         $data["isCheckerPage"] = true;
-        //$data["event"] = $this->_model->getMemberEvents(Session::get("memberID"), EventMembers::L3_CHECKER, $eventID);
         $data["event"] = $this->_model->getMemberEventsForCheckerL3(Session::get("memberID"), $eventID);
 
         if (!empty($data["event"])) {
@@ -5960,24 +5676,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information-tn-l3/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::PRAY:
@@ -6331,7 +6030,7 @@ class EventsController extends Controller {
             $error[] = __("not_in_event_error");
             $title = "Error";
 
-            return View::make('Events/Notes/Translator')
+            return View::make('Events/L3Notes/Checker')
                 ->shares("title", $title)
                 ->shares("data", $data)
                 ->shares("error", @$error);
@@ -6365,24 +6064,7 @@ class EventsController extends Controller {
                 . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::L3_CHECK || $data["event"][0]->state == EventStates::COMPLETE) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -6520,6 +6202,444 @@ class EventsController extends Controller {
         }
     }
 
+    public function checkerSunL3($eventID)
+    {
+        $data["menu"] = 1;
+        $data["notifications"] = $this->_notifications;
+        $data["newNewsCount"] = $this->_newNewsCount;
+        $data["isChecker"] = false;
+        $data["isCheckerPage"] = true;
+        $data["event"] = $this->_model->getMemberEventsForCheckerL3(Session::get("memberID"), $eventID);
+
+        if (!empty($data["event"])) {
+            if ($data["event"][0]->bookProject != "sun") {
+                if (in_array($data["event"][0]->bookProject, ["udb", "ulb"]))
+                    Url::redirect("events/checker-l3/" . $eventID);
+                else
+                    Url::redirect("events/checker-" . $data["event"][0]->bookProject . "-l3/" . $eventID);
+            }
+
+            $title = $data["event"][0]->name
+                . " " . ($data["event"][0]->currentChapter > 0 ? $data["event"][0]->currentChapter : "")
+                . " - " . $data["event"][0]->tLang
+                . " - " . __($data["event"][0]->bookProject);
+
+            if (($data["event"][0]->state == EventStates::L3_CHECK
+                || $data["event"][0]->state == EventStates::COMPLETE)) {
+                if ($data["event"][0]->step == EventSteps::NONE)
+                    Url::redirect("events/information-sun-l3/" . $eventID);
+
+                $data["turn"] = $this->makeTurnCredentials();
+
+                switch ($data["event"][0]->step) {
+                    case EventCheckSteps::PRAY:
+
+                        $data["currentChapter"] = $data["event"][0]->currentChapter;
+                        if ($data["event"][0]->currentChapter == 0) {
+                            $nextChapter = $this->_model->getNextChapter(
+                                $data["event"][0]->eventID,
+                                $data["event"][0]->memberID,
+                                "l3");
+                            $data["currentChapter"] = $nextChapter[0]->chapter;
+                        }
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+                                $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
+                                $peerCheck[$data["currentChapter"]] = [
+                                    "memberID" => 0,
+                                    "done" => 0
+                                ];
+
+                                $postdata = [
+                                    "step" => EventCheckSteps::PEER_REVIEW_L3,
+                                    "currentChapter" => $data["currentChapter"],
+                                    "peerCheck" => json_encode($peerCheck)
+                                ];
+                                $this->_model->updateL3Checker($postdata, ["l3chID" => $data["event"][0]->l3chID]);
+
+                                Url::redirect('events/checker-sun-l3/' . $data["event"][0]->eventID);
+                            }
+                        }
+
+                        // Check if translator just started translating of this book
+                        $data["event"][0]->justStarted = $data["event"][0]->peerCheck == "";
+                        $data["next_step"] = EventCheckSteps::PEER_REVIEW_L3;
+
+                        return View::make('Events/L3Sun/Checker')
+                            ->nest('page', 'Events/L3Sun/Pray')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+
+                    case EventCheckSteps::PEER_REVIEW_L3:
+                        $sourceText = $this->getSourceText($data);
+                        $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
+
+                        if ($sourceText !== false) {
+                            if (!array_key_exists("error", $sourceText)) {
+                                $data = $sourceText;
+
+                                $translationData = $this->_translationModel->getEventTranslationByEventID(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter
+                                );
+                                $translation = array();
+
+                                foreach ($translationData as $tv) {
+                                    $arr = (array)json_decode($tv->translatedVerses, true);
+                                    $arr["tID"] = $tv->tID;
+                                    $translation[] = $arr;
+                                }
+                                $data["translation"] = $translation;
+
+                                $data["comments"] = $this->getComments(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter);
+
+                                $data["event"][0]->chkMemberID = null;
+                                $data["event"][0]->checkerFName = null;
+                                $data["event"][0]->checkerLName = null;
+
+                                if (array_key_exists($data["event"][0]->currentChapter, $peerCheck)
+                                    && $peerCheck[$data["event"][0]->currentChapter]["memberID"] > 0) {
+                                    $member = $this->memberRepo->get($peerCheck[$data["event"][0]->currentChapter]["memberID"]);
+                                    if ($member) {
+                                        $data["event"][0]->chkMemberID = $member->memberID;
+                                        $data["event"][0]->checkerFName = $member->firstName;
+                                        $data["event"][0]->checkerLName = $member->lastName;
+                                    }
+                                }
+                            } else {
+                                $error[] = $sourceText["error"];
+                                $data["error"] = $sourceText["error"];
+                            }
+                        } else {
+                            $this->_model->updateL3Checker([
+                                "step" => EventCheckSteps::NONE
+                            ], [
+                                "l3chID" => $data["event"][0]->l3chID
+                            ]);
+                            Url::redirect('events/checker-sun-l3/' . $data["event"][0]->eventID);
+                        }
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+                                if (array_key_exists($data["event"][0]->currentChapter, $peerCheck)
+                                    && $peerCheck[$data["event"][0]->currentChapter]["done"] == 1) {
+                                    $postdata = [
+                                        "step" => EventCheckSteps::PEER_EDIT_L3
+                                    ];
+                                    $this->_model->updateL3Checker($postdata, ["l3chID" => $data["event"][0]->l3chID]);
+                                    Url::redirect('events/checker-sun-l3/' . $data["event"][0]->eventID);
+                                } else {
+                                    $error[] = __("checker_not_ready_error");
+                                }
+                            }
+                        }
+
+                        $data["next_step"] = EventCheckSteps::PEER_EDIT_L3;
+
+                        return View::make('Events/L3Sun/Checker')
+                            ->nest('page', 'Events/L3Sun/PeerReview')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+
+                        break;
+
+                    case EventCheckSteps::PEER_EDIT_L3:
+                        $sourceText = $this->getSourceText($data);
+                        $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
+
+                        if ($sourceText !== false) {
+                            if (!array_key_exists("error", $sourceText)) {
+                                $data = $sourceText;
+
+                                $translationData = $this->_translationModel->getEventTranslationByEventID(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter
+                                );
+                                $translation = array();
+
+                                foreach ($translationData as $tv) {
+                                    $arr = (array)json_decode($tv->translatedVerses, true);
+                                    $arr["tID"] = $tv->tID;
+                                    $translation[] = $arr;
+                                }
+                                $data["translation"] = $translation;
+
+                                $data["comments"] = $this->getComments(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter);
+
+                                $data["event"][0]->chkMemberID = null;
+                                $data["event"][0]->checkerFName = null;
+                                $data["event"][0]->checkerLName = null;
+
+                                if (array_key_exists($data["event"][0]->currentChapter, $peerCheck)
+                                    && $peerCheck[$data["event"][0]->currentChapter]["memberID"] > 0) {
+                                    $member = $this->memberRepo->get($peerCheck[$data["event"][0]->currentChapter]["memberID"]);
+                                    if ($member) {
+                                        $data["event"][0]->chkMemberID = $member->memberID;
+                                        $data["event"][0]->checkerFName = $member->firstName;
+                                        $data["event"][0]->checkerLName = $member->lastName;
+                                    }
+                                }
+                            } else {
+                                $error[] = $sourceText["error"];
+                                $data["error"] = $sourceText["error"];
+                            }
+                        } else {
+                            $this->_model->updateL3Checker([
+                                "step" => EventCheckSteps::NONE
+                            ], [
+                                "l3chID" => $data["event"][0]->l3chID
+                            ]);
+                            Url::redirect('events/checker-sun-l3/' . $data["event"][0]->eventID);
+                        }
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+                                if (array_key_exists($data["event"][0]->currentChapter, $peerCheck)
+                                    && $peerCheck[$data["event"][0]->currentChapter]["done"] == 2) {
+                                    // Update L3 if it's empty
+                                    foreach ($translation as $tr) {
+                                        if (empty($tr[EventMembers::L3_CHECKER]["verses"])) {
+                                            $tr[EventMembers::L3_CHECKER]["verses"] = $tr[EventMembers::TRANSLATOR]["verses"];
+                                            $tID = $tr["tID"];
+                                            unset($tr["tID"]);
+                                            $this->_translationModel->updateTranslation(
+                                                ["translatedVerses" => json_encode($tr)],
+                                                ["tID" => $tID]
+                                            );
+                                        }
+                                    }
+
+                                    $chapters = [];
+                                    for ($i = 1; $i <= $data["event"][0]->chaptersNum; $i++) {
+                                        $data["chapters"][$i] = [];
+                                    }
+
+                                    $chaptersDB = $this->_model->getChapters($data["event"][0]->eventID);
+
+                                    foreach ($chaptersDB as $chapter) {
+                                        $tmp["trID"] = $chapter["trID"];
+                                        $tmp["memberID"] = $chapter["memberID"];
+                                        $tmp["chunks"] = json_decode($chapter["chunks"], true);
+                                        $tmp["l3checked"] = $chapter["l3checked"];
+
+                                        $chapters[$chapter["chapter"]] = $tmp;
+                                    }
+
+                                    $chapters[$data["event"][0]->currentChapter]["l3checked"] = true;
+                                    $this->_model->updateChapter(["l3checked" => true], [
+                                        "eventID" => $data["event"][0]->eventID,
+                                        "chapter" => $data["event"][0]->currentChapter]);
+
+                                    // Check if whole scripture is finished
+                                    if ($this->checkBookFinished($chapters, $data["event"][0]->chaptersNum, false, 3))
+                                        $this->_model->updateEvent([
+                                            "state" => EventStates::COMPLETE,
+                                            "dateTo" => date("Y-m-d H:i:s", time())],
+                                            ["eventID" => $data["event"][0]->eventID]);
+
+                                    // Check if the member has another chapter to check
+                                    // then redirect to preparation page
+                                    $nextChapter = 0;
+                                    $nextChapterDB = $this->_model->getNextChapter($data["event"][0]->eventID, Session::get("memberID"), "l3");
+
+                                    if (!empty($nextChapterDB))
+                                        $nextChapter = $nextChapterDB[0]->chapter;
+
+                                    $postdata = [
+                                        "step" => EventSteps::NONE,
+                                        "currentChapter" => 0
+                                    ];
+
+                                    if ($nextChapter > 0) {
+                                        $postdata["step"] = EventSteps::PRAY;
+                                        $postdata["currentChapter"] = $nextChapter;
+                                    }
+
+                                    $this->_model->updateL3Checker($postdata, ["l3chID" => $data["event"][0]->l3chID]);
+
+                                    if ($nextChapter > 0)
+                                        Url::redirect('events/checker-sun-l3/' . $data["event"][0]->eventID);
+                                    else
+                                        Url::redirect('events/');
+                                } else {
+                                    $error[] = __("checker_not_ready_error");
+                                }
+                            }
+                        }
+
+                        $data["next_step"] = "continue_alt";
+
+                        return View::make('Events/L3Sun/Checker')
+                            ->nest('page', 'Events/L3Sun/PeerEdit')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+
+                        break;
+
+                    case EventSteps::FINISHED:
+                        $data["success"] = __("you_event_finished_success");
+
+                        return View::make('Events/L3Sun/Checker')
+                            ->nest('page', 'Events/L3Sun/Finished')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+                        break;
+                }
+            } else {
+                $data["error"] = true;
+                $error[] = __("wrong_event_state_error");
+
+                return View::make('Events/L3Sun/Checker')
+                    ->shares("title", $title)
+                    ->shares("data", $data)
+                    ->shares("error", @$error);
+            }
+        } else {
+            $error[] = __("not_in_event_error");
+            $title = "Error";
+
+            return View::make('Events/L3Sun/Checker')
+                ->shares("title", $title)
+                ->shares("data", $data)
+                ->shares("error", @$error);
+        }
+    }
+
+    public function checkerSunL3Peer($eventID, $memberID, $chapter)
+    {
+        $isXhr = false;
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $isXhr = true;
+            $response["success"] = false;
+        }
+
+        $data["menu"] = 1;
+        $data["notifications"] = $this->_notifications;
+        $data["newNewsCount"] = $this->_newNewsCount;
+        $data["event"] = $this->_model->getMemberEventsForCheckerL3(
+            Session::get("memberID"), $eventID, $memberID, $chapter);
+        $data["isChecker"] = true;
+
+        if (!empty($data["event"])) {
+            if (Session::get("memberID") == $data["event"][0]->memberID) {
+                Url::redirect('events/');
+            }
+
+            $title = $data["event"][0]->name
+                . " " . ($data["event"][0]->currentChapter > 0 ? $data["event"][0]->currentChapter : "")
+                . " - " . $data["event"][0]->tLang
+                . " - " . __($data["event"][0]->bookProject);
+
+            if ($data["event"][0]->state == EventStates::L3_CHECK || $data["event"][0]->state == EventStates::COMPLETE) {
+                $data["turn"] = $this->makeTurnCredentials();
+
+                $chapters = $this->_model->getChapters($eventID, null, $chapter);
+                $data["event"][0]->chunks = [];
+                if (!empty($chapters)) {
+                    $data["event"][0]->chunks = $chapters[0]["chunks"];
+                }
+
+                switch ($data["event"][0]->step) {
+                    case EventCheckSteps::PEER_REVIEW_L3:
+                    case EventCheckSteps::PEER_EDIT_L3:
+                        $sourceText = $this->getSourceText($data);
+                        $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
+
+                        if ($sourceText !== false) {
+                            if (!array_key_exists("error", $sourceText)) {
+                                $data = $sourceText;
+
+                                $translationData = $this->_translationModel->getEventTranslationByEventID(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter
+                                );
+                                $translation = array();
+
+                                foreach ($translationData as $tv) {
+                                    $arr = (array)json_decode($tv->translatedVerses, true);
+                                    $arr["tID"] = $tv->tID;
+                                    $translation[] = $arr;
+                                }
+                                $data["translation"] = $translation;
+
+                                $data["comments"] = $this->getComments(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter);
+                            } else {
+                                $error[] = $sourceText["error"];
+                                $data["error"] = $sourceText["error"];
+                            }
+                        } else {
+                            $error[] = $sourceText["error"];
+                            $data["error"] = $sourceText["error"];
+                        }
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+                                if (array_key_exists($data["event"][0]->currentChapter, $peerCheck)) {
+                                    if ($data["event"][0]->step == $data["event"][0]->peerStep) {
+                                        if ($peerCheck[$data["event"][0]->currentChapter]["done"] == 0)
+                                            $peerCheck[$data["event"][0]->currentChapter]["done"] = 1;
+                                        else
+                                            $peerCheck[$data["event"][0]->currentChapter]["done"] = 2;
+
+                                        $this->_model->updateL3Checker([
+                                                "peerCheck" => json_encode($peerCheck)
+                                            ]
+                                            , ["l3chID" => $data["event"][0]->l3chID]);
+
+                                        $response["success"] = true;
+                                    } else {
+                                        $error[] = __("peer_checker_not_ready_error");
+                                        $response["errors"] = $error;
+                                    }
+                                    echo json_encode($response);
+                                    exit;
+                                }
+                            }
+                        }
+
+                        $data["next_step"] = $data["event"][0]->step == EventCheckSteps::PEER_REVIEW_L3
+                            ? EventCheckSteps::PEER_EDIT_L3
+                            : "continue_alt";
+
+                        return View::make('Events/L3Sun/Checker')
+                            ->nest('page', 'Events/L3Sun/PeerReview')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+                        break;
+                }
+            } else {
+                $data["error"] = true;
+                $error[] = __("wrong_event_state_error");
+
+                return View::make('Events/L3Sun/Checker')
+                    ->shares("title", $title)
+                    ->shares("data", $data)
+                    ->shares("error", @$error);
+            }
+        } else {
+            $error[] = __("not_in_event_error");
+            $title = "Error";
+
+            return View::make('Events/L3Sun/Checker')
+                ->shares("title", $title)
+                ->shares("data", $data)
+                ->shares("error", @$error);
+        }
+    }
+
     public function checkerL3($eventID)
     {
         $data["menu"] = 1;
@@ -6535,8 +6655,7 @@ class EventsController extends Controller {
             }
 
             $title = $data["event"][0]->name
-                . " " . ($data["event"][0]->currentChapter > -1 ? ($data["event"][0]->currentChapter == 0
-                    ? __("front") : $data["event"][0]->currentChapter) : "")
+                . " " . ($data["event"][0]->currentChapter > 0 ? $data["event"][0]->currentChapter : "")
                 . " - " . $data["event"][0]->tLang
                 . " - " . __($data["event"][0]->bookProject);
 
@@ -6545,24 +6664,7 @@ class EventsController extends Controller {
                 if ($data["event"][0]->step == EventSteps::NONE)
                     Url::redirect("events/information-l3/" . $eventID);
 
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::PRAY:
@@ -6831,7 +6933,7 @@ class EventsController extends Controller {
                 $data["error"] = true;
                 $error[] = __("wrong_event_state_error");
 
-                return View::make('Events/L3Notes/Checker')
+                return View::make('Events/L3/Checker')
                     ->shares("title", $title)
                     ->shares("data", $data)
                     ->shares("error", @$error);
@@ -6840,7 +6942,7 @@ class EventsController extends Controller {
             $error[] = __("not_in_event_error");
             $title = "Error";
 
-            return View::make('Events/Notes/Translator')
+            return View::make('Events/L3/Checker')
                 ->shares("title", $title)
                 ->shares("data", $data)
                 ->shares("error", @$error);
@@ -6874,24 +6976,7 @@ class EventsController extends Controller {
                 . " - " . __($data["event"][0]->bookProject);
 
             if ($data["event"][0]->state == EventStates::L3_CHECK || $data["event"][0]->state == EventStates::COMPLETE) {
-                $turnSecret = $this->_membersModel->getTurnSecret();
-                $turnUsername = (time() + 3600) . ":vmast";
-                $turnPassword = "";
-
-                if (!empty($turnSecret)) {
-                    if (($turnSecret[0]->expire - time()) < 0) {
-                        $pass = $this->_membersModel->generateStrongPassword(22);
-                        if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
-                        {
-                            $turnSecret[0]->value = $pass;
-                        }
-                    }
-
-                    $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
-                }
-
-                $data["turn"][] = $turnUsername;
-                $data["turn"][] = base64_encode($turnPassword);
+                $data["turn"] = $this->makeTurnCredentials();
 
                 $chapters = $this->_model->getChapters($eventID, null, $chapter);
                 $data["event"][0]->chunks = [];
@@ -6974,7 +7059,7 @@ class EventsController extends Controller {
                 $data["error"] = true;
                 $error[] = __("wrong_event_state_error");
 
-                return View::make('Events/L3Notes/Checker')
+                return View::make('Events/L3/Checker')
                     ->shares("title", $title)
                     ->shares("data", $data)
                     ->shares("error", @$error);
@@ -6983,7 +7068,7 @@ class EventsController extends Controller {
             $error[] = __("not_in_event_error");
             $title = "Error";
 
-            return View::make('Events/L3Notes/Checker')
+            return View::make('Events/L3/Checker')
                 ->shares("title", $title)
                 ->shares("data", $data)
                 ->shares("error", @$error);
@@ -8965,87 +9050,28 @@ class EventsController extends Controller {
         return time();
     }
 
-    /**
-     * Manually check and set status of event
-     * Do not use it without understanding
-     */
-    private function setUpEventStatus()
+    private function makeTurnCredentials(): array
     {
-        exit;
+        $turnSecret = $this->_membersModel->getTurnSecret();
+        $turnUsername = (time() + 3600) . ":vmast";
+        $turnPassword = "";
 
-        $trans = $this->_translationModel->getAllTranslations();
-
-        $prevEvent = 0;
-        $currentEvent = 0;
-        $prevChapter = 0;
-        $currentChapter = 0;
-        $currentChunk = 0;
-        $events = [];
-        $chapters = [];
-        $currentChapterDone = true;
-        foreach ($trans as $tran) {
-            if ($tran->state == EventStates::STARTED
-                || $tran->translateDone === null) continue;
-
-            if ($tran->eventID > $currentEvent) {
-                if ($prevEvent > 0) {
-                    if ($prevChapter > 0) {
-                        if ($currentChapterDone && sizeof($chapters[$prevChapter]["chunks"]) == $currentChunk) {
-                            $chapters[$prevChapter]["done"] = true;
-                        }
-                    }
-                    $events[$prevEvent] = $chapters;
-                }
-
-                $prevEvent = $tran->eventID;
-                $currentEvent = $tran->eventID;
-                $prevChapter = 0;
-                $currentChapter = 0;
-                $currentChapterDone = false;
-                $chapters = (array)json_decode($tran->chapters, true);
-
-                foreach ($chapters as $key => $chapter) {
-                    if (empty($chapter)) continue;
-                    $chapters[$key]["done"] = false;
+        if (!empty($turnSecret)) {
+            if (($turnSecret[0]->expire - time()) < 0) {
+                $pass = $this->_membersModel->generateStrongPassword(22);
+                if ($this->_membersModel->updateTurnSecret(["value" => $pass, "expire" => time() + (30 * 24 * 3600)])) // Update turn secret each month
+                {
+                    $turnSecret[0]->value = $pass;
                 }
             }
 
-            if ($tran->chapter != $currentChapter) {
-                if ($prevChapter > 0) {
-                    if ($currentChapterDone && sizeof($chapters[$prevChapter]["chunks"]) == $currentChunk) {
-                        $chapters[$prevChapter]["done"] = true;
-                    }
-                }
-
-                $currentChunk = 0;
-                $prevChapter = $tran->chapter;
-                $currentChapter = $tran->chapter;
-                $currentChapterDone = true;
-            }
-
-            $currentChunk++;
-
-            if (!$tran->translateDone)
-                $currentChapterDone = false;
+            $turnPassword = hash_hmac("sha1", $turnUsername, $turnSecret[0]->value, true);
         }
 
-        $bookDone = true;
-        foreach ($events as $eventID => $chapters) {
-            foreach ($chapters as $chapter) {
-                if (empty($chapter) || !$chapter["done"])
-                    $bookDone = false;
-            }
+        $turn = [];
+        $turn[] = $turnUsername;
+        $turn[] = base64_encode($turnPassword);
 
-            $postdata = [];
-            $postdata["chapters"] = json_encode($chapters);
-            if ($bookDone) {
-                echo $eventID . " ";
-                $postdata["state"] = EventStates::TRANSLATED;
-            }
-
-            $this->_model->updateEvent($postdata, ["eventID" => $eventID]);
-
-            $bookDone = true;
-        }
+        return $turn;
     }
 }

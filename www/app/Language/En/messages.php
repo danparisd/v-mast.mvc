@@ -268,6 +268,7 @@ return array (
     "tw" => "Translation Words",
     "rad" => "RADIO",
     "vsail" => "vSUN",
+    "vsail_l3" => "vSUN L3 Check",
     "old_test" => "Old Testament",
     "new_test" => "New Testament",
     "checker_apply" => "<b>{name}</b> is ready for checking <b>{step}</b> book of <b>{book}</b>, chapter <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",

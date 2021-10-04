@@ -96,7 +96,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css'),
-    template_url('css/style.css?115'),
+    template_url('css/style.css?116'),
     template_url('css/jquery-ui.min.css'),
     template_url('css/jquery-ui.structure.min.css'),
     template_url('css/jquery-ui.theme.min.css'),
@@ -112,7 +112,7 @@ Assets::js([
     template_url('js/jquery.js'),
     template_url('js/jquery.actual.min.js'),
     template_url('js/unicornFormatter.js'),
-    template_url('js/main.js?111', 'Default'),
+    template_url('js/main.js?112', 'Default'),
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
@@ -120,7 +120,7 @@ Assets::js([
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
-        || Session::get("isSuperAdmin") ?  template_url('js/admin.js?51') : ''),
+        || Session::get("isSuperAdmin") ?  template_url('js/admin.js?52') : ''),
     template_url('js/bootstrap.min.js'),
     template_url('js/autosize.min.js?2'),
     template_url('js/jquery-ui.min.js'),
@@ -186,6 +186,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                 <a href="/events/demo-tq"><li><?php echo __("tq") ?></li></a>
                                 <a href="/events/demo-tw"><li><?php echo __("tw") ?></li></a>
                                 <a href="/events/demo-sun"><li><?php echo __("vsail") ?></li></a>
+                                <a href="/events/demo-sun-l3"><li><?php echo __("vsail_l3") ?></li></a>
                                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
                             </ul>
