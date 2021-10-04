@@ -268,6 +268,7 @@ return array (
     "tw" => "Translation Words",
     "rad" => "RADIO",
     "vsail" => "vSUN",
+    "vsail_l3" => "vSUN L3 Check",
     "old_test" => "Daang Kasabotan",
     "new_test" => "Bag-ong Kasabotan",
     "checker_apply" => "<b>{name}</b> andam na para sa pagsusi <b>{step}</b> libro sa <b>{book}</b>, kapitulo <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",

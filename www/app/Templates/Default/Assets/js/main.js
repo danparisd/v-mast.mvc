@@ -83,8 +83,8 @@ $(document).ready(function() {
     setTimeout(function () {
         $('[data-toggle="tooltip"]').tooltip();
 
-        if(typeof autosize == "function")
-            autosize.update($('textarea'));
+        /*if(typeof autosize == "function")
+            autosize.update($('textarea'));*/
     }, 2000);
 
     if(typeof autosize == "function")

@@ -11,6 +11,7 @@ namespace App\Models;
 use App\Models\ORM\Event;
 use App\Repositories\Event\IEventRepository;
 use Database\Model;
+use Database\ORM\Collection;
 use DB;
 use Helpers\Arrays;
 use Helpers\Constants\EventCheckSteps;
@@ -1025,11 +1026,14 @@ class EventsModel extends Model
 
         $events = $this->db->select($sql, $prepare);
         $filtered = [];
-        $eventAdmins = [];
+        $eventAdmins = new Collection();
 
         foreach ($events as $event) {
             // First Checker events
-            if (empty($eventAdmins)) $eventAdmins = $this->eventRepo->get($event->eventID)->admins;
+            if ($eventAdmins->isEmpty()) {
+                $eventAdmins = $this->eventRepo->get($event->eventID)->admins;
+            }
+
             $event->admins = $eventAdmins;
             if ($event->memberID == $memberID
                 && $event->step != EventCheckSteps::NONE

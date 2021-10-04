@@ -7,4 +7,4 @@
  */
 ?>
 
-<a href="/events/information-tn-l3/<?php echo $data["event"][0]->eventID ?>"><?php echo __("goto_event_info") ?></a>
+<a href="/events/information-l3/<?php echo $data["event"][0]->eventID ?>"><?php echo __("goto_event_info") ?></a>

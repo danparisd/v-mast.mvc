@@ -148,7 +148,7 @@ class TranslationsController extends Controller
                     }
                     else
                     {
-                        if(in_array($chunk->bookProject, ["tn","tq","tw"]))
+                        if(in_array($chunk->bookProject, ["tn","tq","tw","sun"]))
                         {
                             $level = " - ".($chapter["l3checked"] ? "L3" : ($chapter["checked"] ? "L2" : "L1"));
                         }

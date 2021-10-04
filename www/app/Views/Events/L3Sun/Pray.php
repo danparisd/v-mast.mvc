@@ -40,17 +40,17 @@ if(isset($data["error"])) return;
     <div id="help_hide" class="glyphicon glyphicon-chevron-left"> <?php echo __("help") ?></div>
 
     <div class="help_float">
-        <div class="help_info_steps">
+        <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("pray")?></span></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("pray_desc", ["step" => __($data["next_step"])])?></ul>
             </div>
         </div>
 
-        <div class="event_info">
+        <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/information-tn-l3/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
+                    <a href="/events/information-sun-l3/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>

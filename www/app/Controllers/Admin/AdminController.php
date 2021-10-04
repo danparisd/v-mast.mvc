@@ -380,7 +380,7 @@ class AdminController extends Controller {
                     if(File::extension($import["name"]) == "tstudio")
                     {
                         $path = $this->_apiModel->processZipFile($import);
-                        if(in_array($bookProject, ["ulb","udb"]))
+                        if(in_array($bookProject, ["ulb","udb","sun"]))
                         {
                             $usfm = $this->_apiModel->compileUSFMProject($path);
 
@@ -1515,6 +1515,10 @@ class AdminController extends Controller {
                                     echo json_encode(array("error" => Error::display($error)));
                                     return;
                                 }
+                            } elseif ($project->bookProject == "sun" && $event) {
+                                $error[] = __("event_already_exists");
+                                echo json_encode(array("error" => Error::display($error)));
+                                return;
                             }
                             break;
                         case 3:
@@ -1546,10 +1550,12 @@ class AdminController extends Controller {
                                     echo json_encode(array("error" => Error::display($error)));
                                     return;
                                 }
-                            } elseif ($project->bookProject == "sun" && $event) {
-                                $error[] = __("event_already_exists");
-                                echo json_encode(array("error" => Error::display($error)));
-                                return;
+                            } elseif ($project->bookProject == "sun") {
+                                if(!$event || $event->state != EventStates::TRANSLATED) {
+                                    $error[] = __("l2_l3_create_event_error");
+                                    echo json_encode(array("error" => Error::display($error)));
+                                    return;
+                                }
                             }
                             break;
                     }
@@ -1599,7 +1605,7 @@ class AdminController extends Controller {
                     } else {
                         // Create(change state) L2 event
                         if($event->state == EventStates::TRANSLATED) {
-                            if(in_array($project->bookProject, ["tn","tq"])) {
+                            if(in_array($project->bookProject, ["tn","tq","sun"])) {
                                 $event->state = EventStates::L3_RECRUIT;
                             } else {
                                 $event->state = EventStates::L2_RECRUIT;
@@ -1846,7 +1852,7 @@ class AdminController extends Controller {
 
         $project = $this->projectRepo->get($projectID);
 
-        if($project->bookProject == "sun")
+        if($project->bookProject == "sun" && $project->sourceBible != "ulb")
         {
             $response["error"] = __("not_allowed_action");
             return $response;
@@ -1930,7 +1936,7 @@ class AdminController extends Controller {
                     $trID = $translator->trID;
 
                     $l2chID = 0;
-                    if($level == 2) {
+                    if($level == 2 && $project->bookProject != "sun") {
                         // Create new checker
                         $sndCheckData = [];
                         $peerCheckData = [];
@@ -1963,7 +1969,7 @@ class AdminController extends Controller {
                                     "verses" => $chunk
                                 ],
                                 EventMembers::L2_CHECKER => [
-                                    "verses" => $level == 2 ? $chunk : array()
+                                    "verses" => ($level == 2 && $project->bookProject != "sun") ? $chunk : array()
                                 ],
                                 EventMembers::L3_CHECKER => [
                                     "verses" => array()
@@ -1991,16 +1997,19 @@ class AdminController extends Controller {
                         // Assign chapters to new translator
                         $postdata = [
                             "trID" => $trID,
-                            "l2memberID" => $level == 2 ? $member->memberID : 0,
+                            "l2memberID" => ($level == 2 && $project->bookProject != "sun") ? $member->memberID : 0,
                             "l2chID" => $l2chID,
                             "chapter" => $key,
                             "chunks" => json_encode($chunks),
                             "done" => true,
-                            "l2checked" => $level == 2
+                            "checked" => $level == 2 && $project->bookProject == "sun",
+                            "l2checked" => $level == 2 && $project->bookProject != "sun"
                         ];
                         $event->translatorsWithChapters()->attach($member, $postdata);
 
-                        $event->state = $level == 2 ? EventStates::L2_CHECKED : EventStates::TRANSLATED;
+                        $event->state = $level == 2 && $project->bookProject != "sun" ?
+                            EventStates::L2_CHECKED :
+                            EventStates::TRANSLATED;
                         $event->save();
                     }
 
@@ -2009,6 +2018,11 @@ class AdminController extends Controller {
                 }
                 else
                 {
+                    if($project->bookProject == "sun"){
+                        $response["error"] = __("not_allowed_action");
+                        return $response;
+                    }
+
                     if(in_array($event->state, [EventStates::TRANSLATED, EventStates::L2_CHECKED]))
                     {
                         if(($event->state == EventStates::TRANSLATED && $level == 3) ||

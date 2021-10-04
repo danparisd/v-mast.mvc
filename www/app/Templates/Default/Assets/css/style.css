@@ -42,13 +42,21 @@
 }
 
 .font_sun {
-    font-family: SUN;
+    font-family: SUN, serif;
 }
 
 .font_backsun {
-    font-family: BACKSUN;
+    font-family: BACKSUN, serif;
     font-size: 40px;
     line-height: 25px;
+}
+
+.backsun_content {
+    font-family: BACKSUN, serif;
+    font-size: 40px;
+    word-wrap: break-word;
+    padding: 0px 8px !important;
+    text-align: inherit !important;
 }
 
 html, body, .container {
@@ -2079,6 +2087,10 @@ mark {
 }
 
 .comment_div .panel-heading {
+    cursor: move;
+}
+
+.comment_div .glyphicon-remove {
     cursor: pointer;
 }
 
@@ -4645,6 +4657,12 @@ button.startEvnt, button.editEvnt {
 
 .verse_block {
     position: relative;
+}
+
+.sun_verse_block {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
 }
 
 .verse_number_l2, .verse_number_l3 {

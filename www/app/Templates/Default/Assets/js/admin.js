@@ -326,7 +326,7 @@ $(function () {
 
         if(["tn","tq","tw"].indexOf(bookProject) > -1) {
             $(".event_imports").show();
-        } else if(bookProject == "ulb") {
+        } else if(bookProject === "ulb") {
             $(".language_input_checkbox").show();
         }
 
@@ -342,9 +342,9 @@ $(function () {
     // Submit event form
     $("#startEvent").submit(function(e) {
         $.ajax({
-                url: $("#startEvent").prop("action"),
+                url: $(this).prop("action"),
                 method: "post",
-                data: $("#startEvent").serialize(),
+                data: $(this).serialize(),
                 dataType: "json",
                 beforeSend: function() {
                     $(".startEventLoader").show();
@@ -591,7 +591,7 @@ $(function () {
                     $(".event_imports").hide();
                 break;
             case "3":
-                if(["ulb","udb"].indexOf(bookProject) > -1)
+                if(["ulb","udb","sun"].indexOf(bookProject) > -1)
                 {
                     $(".l1_import").hide();
                     $(".l2_import").show();
@@ -1986,18 +1986,21 @@ var ImportStates = {
 // --------------- Functions ---------------- //
 function setImportLinks(project, importState)
 {
+    let done = $("."+project+"_import .import_done");
+    let progress = $("."+project+"_import .import_progress");
+
     switch (importState) {
         case ImportStates.PROGRESS:
-            $("."+project+"_import .import_done").removeClass("done").hide();
-            $("."+project+"_import .import_progress").show();
+            done.removeClass("done").hide();
+            progress.show();
             break;
         case ImportStates.DONE:
-            $("."+project+"_import .import_done").addClass("done").show();
-            $("."+project+"_import .import_progress").hide();
+            done.addClass("done").show();
+            progress.hide();
             break;
         default:
-            $("."+project+"_import .import_done").removeClass("done").show();
-            $("."+project+"_import .import_progress").hide();
+            done.removeClass("done").show();
+            progress.hide();
     }
 }
 
@@ -2033,6 +2036,8 @@ function setImportLinksUlb(data) {
             {
                 $(".import.l2_import").show();
                 $(".import.l3_import").show();
+            } else if(data.event.project.bookProject == "sun") {
+                $(".import.l2_import").show();
             }
             break;
     }
@@ -2161,6 +2166,7 @@ function setEventMenuLinks(event, level) {
         case "tn":
         case "tq":
         case "tw":
+        case "sun":
             $(".event_links_l1").hide();
             $(".event_links_l2").show();
             $(".event_links_l2 .event_progress a")
@@ -2219,7 +2225,7 @@ function setEventMenu(event) {
         case EventStates.states.translated:
             if(["ulb","udb"].indexOf(event.project.bookProject) > -1)
                 setEventMenuLinks(event, 1);
-            else if(["tn","tq","tw"].indexOf(event.project.bookProject) > -1)
+            else if(["tn","tq","tw","sun"].indexOf(event.project.bookProject) > -1)
                 setEventMenuLinks(event, 2);
             else
                 setEventMenuLinks(event, 3);
