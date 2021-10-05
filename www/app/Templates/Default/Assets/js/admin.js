@@ -554,8 +554,9 @@ $(function () {
         var level = $("input[name=eventLevel]:checked").val();
         var initialLevel = $("#initialLevel").val();
         var bookProject = $("#bookProject").val();
+        var eventID = $("#eID").val();
 
-        if(level > initialLevel)
+        if(level > initialLevel || eventID == "0")
         {
             $("button[name=startEvent]").text(Language.create);
             $("#eventAction").val("create");
@@ -2351,6 +2352,8 @@ function setProjectForm(data) {
 function resetEventForm() {
     $("#startEvent").trigger("reset");
 
+    $("#eID").val(0);
+    $("#initialLevel").val(1);
     $(".event_menu").hide();
     $("#adminsSelect").empty().trigger("chosen:updated");
     $(".delinput").hide();
