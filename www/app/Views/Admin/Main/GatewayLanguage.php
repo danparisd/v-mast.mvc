@@ -97,6 +97,7 @@
                                     <option value="tw"><?php echo __("words_mode") ?></option>
                                     <option value="odb"><?php echo __("odb_mode") ?></option>
                                     <option value="rad"><?php echo __("radio_mode") ?></option>
+                                    <option value="obs"><?php echo __("obs_mode") ?></option>
                                 </select>
                             </div>
 

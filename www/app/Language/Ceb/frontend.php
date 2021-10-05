@@ -115,6 +115,7 @@ return array(
     "book_tn" => "Source Notes",
     "book_tq" => "Source Questions",
     "book_tw" => "Source Words",
+    "book_obs" => "Source OBS",
     "chooseSource_tn" => "Choose Source Notes",
     "chooseSource_tq" => "Choose Source Questions",
     "chooseSource_tw" => "Choose Source Words",

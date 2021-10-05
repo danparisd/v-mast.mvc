@@ -8,6 +8,7 @@
 
 namespace App\Models;
 
+use App\Domain\ParseObs;
 use Cache;
 use Database\Model;
 use Database\QueryException;
@@ -214,7 +215,7 @@ class ApiModel extends Model
 
 
     /**
-     * Get odb book source from local file
+     * Get odb|rad book source from local file
      * @param string $bookProject
      * @param string $bookCode
      * @param string $sourceLang
@@ -261,56 +262,6 @@ class ApiModel extends Model
 
         return $source;
     }
-
-
-    /**
-     * Get radio book source from local file
-     * @param string $bookCode
-     * @param string $sourceLang
-     * @return mixed
-     */
-    public function getRadio($bookCode, $sourceLang = "en")
-    {
-        $source = [];
-        $filepath = "../app/Templates/Default/Assets/source/".$sourceLang."_rad/".strtoupper($bookCode).".json";
-
-        if(File::exists($filepath))
-        {
-            $sourceData = File::get($filepath);
-            $source = (array)json_decode($sourceData, true);
-            $chapters = [];
-
-            if(!empty($source) && isset($source["root"]))
-            {
-                foreach ($source["root"] as $i => $chapter) {
-                    $chapters[$i+1] = [];
-                    $k = 1;
-                    foreach ($chapter as $key => $section) {
-                        if(!is_array($section))
-                        {
-                            $chapters[$i+1][$k] = $section;
-                            $k++;
-                        }
-                        else
-                        {
-                            foreach ($section as $p) {
-                                $chapters[$i+1][$k] = $p;
-                                $k++;
-                            }
-                        }
-                    }
-                }
-                return ["chapters" => $chapters];
-            }
-            else
-            {
-                return [];
-            }
-        }
-
-        return $source;
-    }
-
 
     public function downloadRubricFromApi($lang = "en") {
         $folderPath = "../app/Templates/Default/Assets/source/".$lang."_rubric/";
@@ -541,6 +492,48 @@ class ApiModel extends Model
         if(!File::exists($filepath))
         {
             $catalog = $this->getFullCatalog();
+
+            if($catalog)
+                File::put($filepath, $catalog);
+            else
+                $catalog = "[]";
+        }
+        else
+        {
+            $catalog = File::get($filepath);
+        }
+
+        $catalog = json_decode($catalog);
+
+        return $catalog;
+    }
+
+    public function getDoor43FullCatalog()
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://api.door43.org/v3/catalog.json");
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $cat = curl_exec($ch);
+
+        if(curl_errno($ch))
+        {
+            return false;
+        }
+
+        curl_close($ch);
+        return $cat;
+
+    }
+
+
+    public function getCachedDoor43FullCatalog()
+    {
+        $filepath = "../app/Templates/Default/Assets/source/catalog_door43.json";
+        if(!File::exists($filepath))
+        {
+            $catalog = $this->getDoor43FullCatalog();
 
             if($catalog)
                 File::put($filepath, $catalog);
@@ -1031,7 +1024,7 @@ class ApiModel extends Model
 
 
     /**
-     * Download questions from DCS and extract them
+     * Download questions and extract them
      * @param string $lang
      * @param bool $update
      * @return bool|string
@@ -1175,6 +1168,113 @@ class ApiModel extends Model
             }
 
             $result[$chapter][$chunk][] = $html;
+        }
+
+        ksort($result);
+        return $result;
+    }
+
+    /**
+     * Download OBS and extract them
+     * @param string $lang
+     * @param bool $update
+     * @return bool|string
+     */
+    public function downloadAndExtractObs($lang = "en", $update = false)
+    {
+        $filepath = "../app/Templates/Default/Assets/source/".$lang."_obs.zip";
+        $folderpath = "../app/Templates/Default/Assets/source/".$lang."_obs";
+
+        if(!File::exists($folderpath) || $update)
+        {
+            // Get catalog
+            $catalog = $this->getCachedDoor43FullCatalog();
+            if(empty($catalog)) return false;
+
+            $url = "";
+
+            foreach($catalog->languages as $language)
+            {
+                if($language->identifier == $lang)
+                {
+                    foreach($language->resources as $resource)
+                    {
+                        if($resource->identifier == "obs")
+                        {
+                            foreach($resource->formats as $format)
+                            {
+                                $url = $format->url;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if($url == "") return false;
+
+            $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_URL, $url);
+
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+            $zip = curl_exec($ch);
+
+            if(curl_errno($ch))
+            {
+                return "error: " . curl_error($ch);
+            }
+
+            curl_close($ch);
+
+            File::put($filepath, $zip);
+
+            if(File::exists($filepath))
+            {
+                $zip = new ZipArchive();
+                $res = $zip->open($filepath);
+                $zip->extractTo("../app/Templates/Default/Assets/source/");
+                $zip->close();
+
+                File::delete($filepath);
+            }
+        }
+
+        return $folderpath;
+    }
+
+
+    /**
+     * Parses .md files of obs and returns array
+     * @param $lang
+     * @param $folderpath
+     * @return  array
+     **/
+    public function getObs($lang ="en", $folderpath = null)
+    {
+        if($folderpath == null)
+            $folderpath = $this->downloadAndExtractObs($lang);
+
+        if(!$folderpath) return [];
+
+        $contentpath = $folderpath . "/content";
+
+        $result = [];
+        $files = File::allFiles($contentpath);
+        foreach($files as $file)
+        {
+            preg_match("/([0-9]{2,3}).md$/i", $file, $matches);
+            if(!isset($matches[1])) continue;
+            $chapter = (int)$matches[1];
+
+            if(!isset($result[$chapter]))
+                $result[$chapter] = [];
+
+            $md = File::get($file);
+            $result[$chapter] = ParseObs::parse($md);
         }
 
         ksort($result);

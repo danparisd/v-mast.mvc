@@ -2,6 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+use App\Data\ObsChunkType;
 use App\Domain\EventContributors;
 use App\Domain\ProjectContributors;
 use App\Models\ApiModel;
@@ -193,6 +194,11 @@ class AdminController extends Controller {
                 $page = 'Admin/Main/ProjectODB';
                 $category = 'odb';
             }
+            elseif ($project->bookProject == "obs")
+            {
+                $page = 'Admin/Main/ProjectOBS';
+                $category = 'obs';
+            }
 
             $otDone = 0;
             $ntDone = 0;
@@ -207,6 +213,9 @@ class AdminController extends Controller {
 
             $twDone = 0;
             $data["TWprogress"] = 0;
+
+            $obsDone = 0;
+            $data["OBSprogress"] = 0;
 
             $events = $project->events;
 
@@ -255,6 +264,13 @@ class AdminController extends Controller {
                             $radDone++;
                         }
                     }
+                    else if($bookInfo->category == "obs") // OBS books
+                    {
+                        if(EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                        {
+                            $obsDone++;
+                        }
+                    }
                 }
             }
 
@@ -273,6 +289,12 @@ class AdminController extends Controller {
                 $count = $this->bookInfoRepo->all()->where("category", "rad", false)->count();
                 if($count > 0)
                     $data["RADprogress"] = 100*$radDone/$count;
+            }
+            elseif ($project->bookProject == "obs")
+            {
+                $count = $this->bookInfoRepo->all()->where("category", "obs", false)->count();
+                if($count > 0)
+                    $data["OBSprogress"] = 100*$obsDone/$count;
             }
         }
 
@@ -965,7 +987,7 @@ class AdminController extends Controller {
 
         $_POST = Gump::xss_clean($_POST);
 
-        $projectMode = isset($_POST['projectMode']) && preg_match("/(bible|tn|tq|tw|odb|rad)/", $_POST['projectMode']) ? $_POST['projectMode'] : "bible";
+        $projectMode = isset($_POST['projectMode']) && preg_match("/(bible|tn|tq|tw|odb|rad|obs)/", $_POST['projectMode']) ? $_POST['projectMode'] : "bible";
         $subGwLangs = isset($_POST['subGwLangs']) && $_POST['subGwLangs'] != "" ? $_POST['subGwLangs'] : null;
         $targetLang = isset($_POST['targetLangs']) && $_POST['targetLangs'] != "" ? $_POST['targetLangs'] : null;
         $sourceTranslation = isset($_POST['sourceTranslation']) && $_POST['sourceTranslation'] != "" ? $_POST['sourceTranslation'] : null;
@@ -1008,7 +1030,7 @@ class AdminController extends Controller {
 
             if($projectType == null)
             {
-                if(!in_array($projectMode, ["tn","tq","tw","rad"]))
+                if(!in_array($projectMode, ["tn","tq","tw","rad","obs"]))
                     $error[] = __("choose_project_type");
 
                 if($projectMode == "rad")
@@ -1017,7 +1039,7 @@ class AdminController extends Controller {
                 }
             }
 
-            if(in_array($projectMode, ["tn","tq","tw"]) && $sourceTools == null)
+            if(in_array($projectMode, ["tn","tq","tw","obs"]) && $sourceTools == null)
             {
                 $error[] = __("choose_source_".$projectMode);
             }
@@ -1049,7 +1071,7 @@ class AdminController extends Controller {
                     return;
                 }
 
-                $projType = in_array($projectMode, ['tn','tq','tw']) ? $projectMode : $projectType;
+                $projType = in_array($projectMode, ['tn','tq','tw',"obs"]) ? $projectMode : $projectType;
 
                 $search = [
                     "gwLang" => $gwLangsPair[0],
@@ -1573,6 +1595,13 @@ class AdminController extends Controller {
                     } elseif ($bookInfo->category == "rad") {
                         $radio = $this->_apiModel->getOtherSource("rad", $bookInfo->code, $project->sourceLangID);
                         if(empty($radio)) {
+                            $error[] = __("no_source_error");
+                            echo json_encode(array("error" => Error::display($error)));
+                            return;
+                        }
+                    } elseif ($bookInfo->category == "obs") {
+                        $obs = $this->_apiModel->getObs($project->sourceLangID);
+                        if(empty($obs)) {
                             $error[] = __("no_source_error");
                             echo json_encode(array("error" => Error::display($error)));
                             return;

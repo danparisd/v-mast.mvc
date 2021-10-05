@@ -152,7 +152,7 @@ $(function () {
                 $(".sourceTranslation").removeClass("hidden");
             }
         }
-        else if(["tn","tq","tw"].indexOf($(this).val()) > -1)
+        else if(["tn","tq","tw","obs"].indexOf($(this).val()) > -1)
         {
             $(".projectType").addClass("hidden");
             $(".sourceTranslation").removeClass("hidden");
@@ -2167,6 +2167,7 @@ function setEventMenuLinks(event, level) {
         case "tq":
         case "tw":
         case "sun":
+        case "obs":
             $(".event_links_l1").hide();
             $(".event_links_l2").show();
             $(".event_links_l2 .event_progress a")
@@ -2225,7 +2226,7 @@ function setEventMenu(event) {
         case EventStates.states.translated:
             if(["ulb","udb"].indexOf(event.project.bookProject) > -1)
                 setEventMenuLinks(event, 1);
-            else if(["tn","tq","tw","sun"].indexOf(event.project.bookProject) > -1)
+            else if(["tn","tq","tw","sun","obs"].indexOf(event.project.bookProject) > -1)
                 setEventMenuLinks(event, 2);
             else
                 setEventMenuLinks(event, 3);

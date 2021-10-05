@@ -128,7 +128,7 @@ use Helpers\Session;
                     $manageLink = "/events/manage".($mode == "tw" ? "-tw" : "")."/".$event->eventID;
                     $progressLink = "/events/information".
                         ($event->project->sourceBible == "odb" ? "-odb" : "").
-                        (in_array($mode, ["tn","sun","tq","tw","rad"]) ? "-".$mode : "").
+                        (in_array($mode, ["tn","sun","tq","tw","rad","obs"]) ? "-".$mode : "").
                         "/".$event->eventID;
                     break;
             }
@@ -251,7 +251,7 @@ use Helpers\Session;
                     $manageLink = "/events/manage/".$event->eventID;
                     $progressLink = "/events/information".
                         ($event->project->sourceBible == "odb" ? "-odb" : "").
-                        (in_array($mode, ["tn","sun","tq","tw","rad"]) ? "-".$mode : "").
+                        (in_array($mode, ["tn","sun","tq","tw","rad","obs"]) ? "-".$mode : "").
                         "/".$event->eventID;
                     break;
             }
@@ -350,7 +350,10 @@ use Helpers\Session;
                 <div class="event_book"><?php echo $event->name ?></div>
                 <div class="event_proj">
                     <div><?php echo $event->sourceBible == "odb" ? __($event->sourceBible) : __($event->bookProject) ?></div>
-                    <div><?php echo $event->tLang . ", " . ($event->sort < 41 ? __("old_test") : __("new_test"))?></div>
+                    <div><?php echo $event->tLang .
+                            (!in_array($event->bookProject, ["obs","tw","rad","odb"]) ? ", " . ($event->sort < 41
+                                    ? __("old_test")
+                                    : __("new_test")) : "")?></div>
                 </div>
                 <div class="event_facilitator">
                     <div><?php echo __("facilitators") ?>:</div>
@@ -405,7 +408,7 @@ use Helpers\Session;
                             ? "/" . $event->currentChapter : "";
                     ?>
                     <a href="/events/translator<?php echo ($event->sourceBible == "odb" ? "-odb" : "")
-                            .(in_array($event->bookProject, ["tn","sun","tq","tw","rad"]) ? "-".
+                            .(in_array($event->bookProject, ["tn","sun","tq","tw","rad","obs"]) ? "-".
                             $event->bookProject : "") ?>/<?php echo $event->eventID . $chapterLink?>">
                         <?php echo __("continue_alt") ?>
                     </a>
