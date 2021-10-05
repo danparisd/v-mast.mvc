@@ -950,7 +950,8 @@ class MembersController extends Controller
 
                 $profiledata = [
                     "projects" => json_encode([$projects]),
-                    "proj_lang" => $projLang
+                    "proj_lang" => $projLang,
+                    "languages" => '[]'
                 ];
                 if(Config::get("app.type") != "remote") {
                     $profiledata["prefered_roles"] = json_encode(["translator"]);

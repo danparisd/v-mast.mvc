@@ -20,6 +20,7 @@ use Helpers\Session;
                 <a href="/events/demo-tq"><li><?php echo __("tq") ?></li></a>
                 <a href="/events/demo-tw"><li><?php echo __("tw") ?></li></a>
                 <a href="/events/demo-sun"><li><?php echo __("vsail") ?></li></a>
+                <!--<a href="/events/demo-sun-l3"><li><?php /*echo __("vsail_l3") */?></li></a>-->
                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
             </ul>
@@ -621,7 +622,7 @@ use Helpers\Session;
             </div>
             <div class="event_action <?php echo !empty($event->isContinue) ? "check3" : "" ?>">
                 <div class="event_link">
-                    <a href="/events/checker<?php echo (in_array($event->bookProject, ["tn","tq","tw"]) ? "-".$event->bookProject : "")
+                    <a href="/events/checker<?php echo (in_array($event->bookProject, ["tn","tq","tw","sun"]) ? "-".$event->bookProject : "")
                         ."-l3/".$event->eventID
                         .(isset($event->isContinue) ? "/".$event->memberID."/".$event->currentChapter : "")?>"
                         data="<?php echo $event->eventID."_".$event->memberID?>">

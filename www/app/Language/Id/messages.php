@@ -268,6 +268,7 @@ return array (
     "tw" => "Translation Words",
     "rad" => "RADIO",
     "vsail" => "vSUN",
+    "vsail_l3" => "vSUN L3 Check",
     "old_test" => "Perjanjian Lama",
     "new_test" => "Perjanjian Baru",
     "checker_apply" => "<b>{name}</b> sudah siap untuk diperiksa <b>{step}</b> buku <b>{book}</b>, pasal <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",

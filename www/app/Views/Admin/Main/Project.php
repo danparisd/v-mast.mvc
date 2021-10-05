@@ -106,8 +106,7 @@ if($project):
                                 <?php if($bookInfo->event && $bookInfo->event->state != ""
                                     && (EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::L2_CHECKED)
                                         || (EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED)
-                                        && in_array($project->bookProject, ["tn","tq","tw"])))
-                                    && $project->bookProject != "sun"): ?>
+                                        && in_array($project->bookProject, ["tn","tq","tw","sun"])))): ?>
                                     <button class="btn btn-warning showContributors"
                                             data-eventid="<?php echo $bookInfo->event->eventID?>"
                                             data-level="2"
@@ -192,14 +191,12 @@ if($project):
                     </div>
                     <?php endif; ?>
 
-                    <?php if($project->bookProject != "sun"): ?>
                     <hr>
                     <div class="event_links_l2">
                         <li class="option_group"><?php echo __("l2_3_events", ["level" => 2]) ?></li>
                         <li class="event_progress"><a href="#"><?php echo __("progress"); ?></a></li>
                         <li class="event_manage"><a href="#"><?php echo __("manage"); ?></a></li>
                     </div>
-                    <?php endif; ?>
 
                     <hr>
                     <div class="event_links_l3">
@@ -230,7 +227,6 @@ if($project):
                             </div>
                         </div>
 
-                        <?php if($project->bookProject != "sun"): ?>
                         <div class="event_level_radio">
                             <label style="width: 100%; display: block"><?php echo __('choose_event_level'); ?></label>
                             <?php if(in_array($project->bookProject, ["ulb","udb"])):?>
@@ -289,7 +285,7 @@ if($project):
                             </div>
                             <?php endif; ?>
 
-                            <?php if(!in_array($project->bookProject, ["tn","tq"])): ?>
+                            <?php if(!in_array($project->bookProject, ["tn","tq","sun"])): ?>
                             <div class="import l1_import">
                                 <div class="import_title"><?php echo __("book") ?> L1</div>
                                 <div class="import_link" data-source="l1" title="<?php echo __("import_translation_tip") ?>">
@@ -320,7 +316,6 @@ if($project):
                             </div>
                             <?php endif; ?>
                         </div>
-                        <?php endif; ?>
 
                         <?php if($project->bookProject == "ulb"): ?>
                         <div class="form-control language_input_checkbox">

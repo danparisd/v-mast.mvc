@@ -1319,7 +1319,7 @@ class ManageController extends Controller {
 
                                         // Clear checker's data to default if current chapter was removed
                                         // Change checker's step to NONE when no chapter is assigned to him
-                                        if ($data["event"][0]->currentChapter == $chapter || $newChapters->count() == 0) {
+                                        if ($checker->currentChapter == $chapter || $newChapters->count() == 0) {
                                             $trPostData["step"] = $newChapters->count() == 0 ? EventSteps::NONE : EventSteps::PRAY;
                                             $trPostData["currentChapter"] = 0;
                                         }
@@ -1344,7 +1344,7 @@ class ManageController extends Controller {
                                         $data["chapters"][$chapter]["l3memberID"] = 0;
                                         $data["chapters"][$chapter]["l3chID"] = 0;
 
-                                        $trPostData = [];pr($action,1);
+                                        $trPostData = [];
 
                                         $checker = $event->checkersL3->find($memberID);
                                         $newChapters = $checker->chaptersL3->filter(function($chapter) use($eventID) {
@@ -1353,9 +1353,9 @@ class ManageController extends Controller {
 
                                         // Clear checker's data to default if current chapter was removed
                                         // Change checker's step to NONE when no chapter is assigned to him
-                                        if ($data["event"][0]->currentChapter == $chapter || $newChapters->count() == 0) {
+                                        if ($checker->currentChapter == $chapter || $newChapters->count() == 0) {
                                             $trPostData["step"] = $newChapters->count() == 0 ? EventCheckSteps::NONE : EventCheckSteps::PRAY;
-                                            $trPostData["currentChapter"] = $data["event"][0]->bookProject == "tn" ? -1 : 0;
+                                            $trPostData["currentChapter"] = $event->project->bookProject == "tn" ? -1 : 0;
                                         }
 
                                         if (!empty($trPostData)) {
@@ -1373,9 +1373,10 @@ class ManageController extends Controller {
                         } else if ($action == "add" && $manageMode == "l2") {
                             if ($data["chapters"][$chapter]["l2memberID"] == 0) {
                                 $checker = $event->checkersL2->find($memberID);
+                                $checkerL2 = $checker->checkersL2->where("eventID", $eventID, false)->first();
 
                                 $postdata = [
-                                    "l2chID" => $checker->l2chID,
+                                    "l2chID" => $checkerL2->l2chID,
                                     "l2memberID" => $checker->memberID
                                 ];
 
@@ -1396,9 +1397,10 @@ class ManageController extends Controller {
                         } else if ($action == "add" && $manageMode == "l3") {
                             if ($data["chapters"][$chapter]["l3memberID"] == 0) {
                                 $checker = $event->checkersL3->find($memberID);
+                                $checkerL3 = $checker->checkersL3->where("eventID", $eventID, false)->first();
 
                                 $postdata = [
-                                    "l3chID" => $checker->l3chID,
+                                    "l3chID" => $checkerL3->l3chID,
                                     "l3memberID" => $checker->memberID
                                 ];
 
@@ -1822,37 +1824,34 @@ class ManageController extends Controller {
     }
 
     private function sendProjectAssignmentNotif($event, $user) {
-
-        Mailer::send('Emails/Manage/ProjectAssignmentNotification',
-            [
-                "book" => $event->bookInfo->name,
-                "language" => $event->project->gatewayLanguage->language->langName,
-                "project" => __($event->project->bookProject),
-                "target" => $event->project->targetLanguage->langName
-            ],
-            function($message) use($user)
-            {
-                $message->to($user->email)->subject(__("project_assignment_notif"));
-            });
+        if(Config::get("app.type") == "remote") {
+            Mailer::send('Emails/Manage/ProjectAssignmentNotification',
+                [
+                    "book" => $event->bookInfo->name,
+                    "language" => $event->project->gatewayLanguage->language->langName,
+                    "project" => __($event->project->bookProject),
+                    "target" => $event->project->targetLanguage->langName
+                ],
+                function($message) use($user)
+                {
+                    $message->to($user->email)->subject(__("project_assignment_notif"));
+                });
+        }
     }
 
     private function sendChapterAssignmentNotif($event, $user, $chapter) {
-
-        Mailer::send('Emails/Manage/ChapterAssignmentNotification',
-            [
-                "book" => $event->bookInfo->name,
-                "language" => $event->project->gatewayLanguage->language->langName,
-                "project" => __($event->project->bookProject),
-                "target" => $event->project->targetLanguage->langName,
-                "chapter" => $chapter
-            ],
-            function($message) use($user)
-            {
-                $message->to($user->email)->subject(__('chapter_assignment_notif'));
-            });
-
+        if(Config::get("app.type") == "remote") {
+            Mailer::send('Emails/Manage/ChapterAssignmentNotification',
+                [
+                    "book" => $event->bookInfo->name,
+                    "language" => $event->project->gatewayLanguage->language->langName,
+                    "project" => __($event->project->bookProject),
+                    "target" => $event->project->targetLanguage->langName,
+                    "chapter" => $chapter
+                ],
+                function ($message) use ($user) {
+                    $message->to($user->email)->subject(__('chapter_assignment_notif'));
+                });
+        }
     }
-
-
-
 }
