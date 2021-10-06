@@ -268,7 +268,7 @@ return array (
     "tw" => "Mots pour la Traduction",
     "rad" => "RADIO",
     "vsail" => "vSUN",
-    "vsail_l3" => "vSUN L3 Check",
+    "vsail_l2_l3" => "vSUN L{level} Check",
     "old_test" => "Ancien Testament",
     "new_test" => "Nouveau Testament",
     "checker_apply" => "<b>{name}</b> est prêt à vérifier <b>{step}</b> le livre de <b>{book}</b>, chapitre <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",

@@ -268,7 +268,7 @@ return array (
     "tw" => "Слова для перевода",
     "rad" => "РАДИО",
     "vsail" => "vSUN",
-    "vsail_l3" => "vSUN L3 Check",
+    "vsail_l2_l3" => "vSUN L{level} Check",
     "old_test" => "Ветхий Завет",
     "new_test" => "Новый Завет",
     "checker_apply" => "<b>{name}</b> готов(а) для проверки <b>{step}</b> книги <b>{book}</b>, главы <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",

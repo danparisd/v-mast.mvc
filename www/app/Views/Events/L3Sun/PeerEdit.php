@@ -7,7 +7,7 @@ use Helpers\Session;
 
 $parsedown = new Parsedown();
 ?>
-<div class="comment_div panel panel-default font_<?php echo $data["event"][0]->targetLang ?>"
+<div class="comment_div panel panel-default font_sun"
      dir="<?php echo $data["event"][0]->tLangDir ?>">
     <div class="panel-heading">
         <h1 class="panel-title"><?php echo __("write_note_title")?></h1>
@@ -17,27 +17,6 @@ $parsedown = new Parsedown();
     <textarea style="overflow-x: hidden; word-wrap: break-word; overflow-y: visible;" class="textarea textarea_editor"></textarea>
     <div class="other_comments_list"></div>
     <img src="<?php echo template_url("img/loader.gif") ?>" class="commentEditorLoader">
-</div>
-
-<div class="footnote_editor panel panel-default">
-    <div class="panel-heading">
-        <h1 class="panel-title"><?php echo __("write_footnote_title")?></h1>
-        <span class="footnote-editor-close btn btn-success"><?php echo __("save") ?></span>
-        <span class="xbtnf glyphicon glyphicon-remove"></span>
-    </div>
-    <div class="footnote_window">
-        <div class="fn_preview"></div>
-        <div class="fn_buttons" dir="<?php echo $data["event"][0]->sLangDir ?>">
-            <!--<button class="btn btn-default" data-fn="fr" title="footnote text">fr</button>-->
-            <button class="btn btn-default" data-fn="ft" title="footnote text">ft</button>
-            <!--<button class="btn btn-default" data-fn="fq" title="footnote translation quotation">fq</button>-->
-            <button class="btn btn-default" data-fn="fqa" title="footnote alternate translation">fqa</button>
-            <!--<button class="btn btn-default" data-fn="fk" title="footnote keyword">fk</button>-->
-            <!--<button class="btn btn-default" data-fn="fl" title="footnote label text">fl</button>-->
-            <!--<button class="btn btn-link" data-fn="link">Footnotes Specification</button>-->
-        </div>
-        <div class="fn_builder"></div>
-    </div>
 </div>
 
 <div id="translator_contents" class="row panel-body">
@@ -56,10 +35,8 @@ $parsedown = new Parsedown();
                     <h4><?php echo $data["event"][0]->tLang." - "
                             .__($data["event"][0]->bookProject)." - "
                             .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
-                            ."<span class='book_name'>".$data["event"][0]->name." ".
-                            ($data["currentChapter"] > 0
-                                ? $data["currentChapter"].":1-".$data["totalVerses"]
-                                : __("front"))."</span>"?></h4>
+                            ."<span class='book_name'>".$data["event"][0]->name." "
+                            .$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
 
                     <ul class="nav nav-tabs">
                         <li role="presentation" id="target_scripture" class="my_tab">

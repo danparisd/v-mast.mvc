@@ -1,7 +1,7 @@
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l2_l3", ["level" => 3]).")" ?></div>
+            <div class="demo_title"><?php echo __("demo") . " (".__("l2_3_events", ["level" => 2]).")" ?></div>
             <div><?php echo __("pray")?></div>
         </div>
     </div>
@@ -50,7 +50,7 @@
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/demo-sun-l3/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-l2/information"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
         
         $("#next_step").click(function (e) {
             e.preventDefault();
-            window.location.href = '/events/demo-sun-l3/peer_review_l3';
+            window.location.href = '/events/demo-l2/consume';
             return false;
         });
     });

@@ -6206,6 +6206,426 @@ class EventsController extends Controller {
         }
     }
 
+    /**
+     * View for SUN Level 2 check page
+     * @url /events/check-sun-l2
+     * @param $eventID
+     * @return View
+     */
+    public function checkerSunL2($eventID)
+    {
+        $data["menu"] = 1;
+        $data["notifications"] = $this->_notifications;
+        $data["newNewsCount"] = $this->_newNewsCount;
+        $data["isCheckerPage"] = true;
+        $data["event"] = $this->_model->getMemberEventsForCheckerL2(
+            Session::get("memberID"),
+            $eventID
+        );
+
+        $title = "";
+
+        if (!empty($data["event"])) {
+            $title = $data["event"][0]->name
+                . " " . ($data["event"][0]->currentChapter > 0 ? $data["event"][0]->currentChapter : "")
+                . " - " . $data["event"][0]->tLang
+                . " - " . __($data["event"][0]->bookProject);
+
+            if ($data["event"][0]->state == EventStates::L2_CHECK || $data["event"][0]->state == EventStates::L2_CHECKED) {
+                if ($data["event"][0]->step == EventCheckSteps::NONE)
+                    Url::redirect("events/information-sun-l2/" . $eventID);
+
+                $data["turn"] = $this->makeTurnCredentials();
+
+                switch ($data["event"][0]->step) {
+                    case EventCheckSteps::PRAY:
+                        $sourceText = $this->getSourceText($data);
+
+                        if ($sourceText !== false) {
+                            if (!array_key_exists("error", $sourceText)) {
+                                $data = $sourceText;
+                            } else {
+                                $error[] = $sourceText["error"];
+                                $data["error"] = $sourceText["error"];
+                            }
+                        } else {
+                            $this->_model->updateL2Checker([
+                                "step" => EventCheckSteps::NONE
+                            ], [
+                                "l2chID" => $data["event"][0]->l2chID
+                            ]);
+                            Url::redirect('events/checker-sun-l2/' . $data["event"][0]->eventID);
+                        }
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+
+                                $postdata = [
+                                    "step" => EventCheckSteps::CONSUME,
+                                    "currentChapter" => $sourceText["currentChapter"]
+                                ];
+                                $this->_model->updateL2Checker($postdata, [
+                                    "l2chID" => $data["event"][0]->l2chID
+                                ]);
+                                Url::redirect('events/checker-sun-l2/' . $data["event"][0]->eventID);
+                            }
+                        }
+
+                        $data["next_step"] = EventCheckSteps::CONSUME;
+
+                        return View::make('Events/L2Sun/Checker')
+                            ->nest('page', 'Events/L2Sun/Pray')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+
+                    case EventCheckSteps::CONSUME:
+                        $sourceText = $this->getSourceText($data);
+
+                        if ($sourceText !== false) {
+                            if (!array_key_exists("error", $sourceText)) {
+                                $data = $sourceText;
+
+                                $translationData = $this->_translationModel->getEventTranslationByEventID(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter
+                                );
+                                $translation = array();
+
+                                foreach ($translationData as $tv) {
+                                    $arr = (array)json_decode($tv->translatedVerses, true);
+                                    $arr["tID"] = $tv->tID;
+                                    $translation[] = $arr;
+                                }
+                                $data["translation"] = $translation;
+                            } else {
+                                $error[] = $sourceText["error"];
+                                $data["error"] = $sourceText["error"];
+                            }
+                        } else {
+                            $this->_model->updateL2Checker([
+                                "step" => EventCheckSteps::NONE
+                            ], [
+                                "l2chID" => $data["event"][0]->l2chID
+                            ]);
+                            Url::redirect('events/checker-sun-l2/' . $data["event"][0]->eventID);
+                        }
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+
+                                $this->_model->updateL2Checker([
+                                    "step" => EventCheckSteps::FST_CHECK
+                                ], [
+                                    "l2chID" => $data["event"][0]->l2chID
+                                ]);
+                                Url::redirect('events/checker-sun-l2/' . $data["event"][0]->eventID);
+                            }
+                        }
+
+                        $data["next_step"] = EventCheckSteps::FST_CHECK;
+
+                        return View::make('Events/L2Sun/Checker')
+                            ->nest('page', 'Events/L2Sun/Consume')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+                        break;
+
+                    case EventCheckSteps::FST_CHECK:
+                        $sourceText = $this->getSourceText($data);
+
+                        if ($sourceText !== false) {
+                            if (!array_key_exists("error", $sourceText)) {
+                                $data = $sourceText;
+
+                                $data["comments"] = $this->getComments(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter);
+
+                                $translationData = $this->_translationModel->getEventTranslationByEventID(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter
+                                );
+                                $translation = array();
+
+                                foreach ($translationData as $tv) {
+                                    $arr = (array)json_decode($tv->translatedVerses, true);
+                                    $arr["tID"] = $tv->tID;
+                                    $translation[] = $arr;
+                                }
+                                $data["translation"] = $translation;
+                            } else {
+                                $error[] = $sourceText["error"];
+                                $data["error"] = $sourceText["error"];
+                            }
+                        } else {
+                            $this->_model->updateL2Checker([
+                                "step" => EventCheckSteps::NONE
+                            ], [
+                                "l2chID" => $data["event"][0]->l2chID
+                            ]);
+                            Url::redirect('events/checker-sun-l2/' . $data["event"][0]->eventID);
+                        }
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+                                // Update L2 if it's empty
+                                foreach ($translation as $tr) {
+                                    if (empty($tr[EventMembers::L2_CHECKER]["verses"])) {
+                                        $tr[EventMembers::L2_CHECKER]["verses"] = $tr[EventMembers::TRANSLATOR]["verses"];
+                                        $tID = $tr["tID"];
+                                        unset($tr["tID"]);
+                                        $this->_translationModel->updateTranslation(
+                                            ["translatedVerses" => json_encode($tr)],
+                                            ["tID" => $tID]
+                                        );
+                                    }
+                                }
+
+                                $chapters = [];
+                                for ($i = 1; $i <= $data["event"][0]->chaptersNum; $i++) {
+                                    $data["chapters"][$i] = [];
+                                }
+
+                                $chaptersDB = $this->_model->getChapters($data["event"][0]->eventID);
+
+                                foreach ($chaptersDB as $chapter) {
+                                    $tmp["trID"] = $chapter["trID"];
+                                    $tmp["memberID"] = $chapter["memberID"];
+                                    $tmp["chunks"] = json_decode($chapter["chunks"], true);
+                                    $tmp["done"] = $chapter["done"];
+                                    $tmp["l2memberID"] = $chapter["l2memberID"];
+                                    $tmp["l2chID"] = $chapter["l2chID"];
+                                    $tmp["l2checked"] = $chapter["l2checked"];
+
+                                    $chapters[$chapter["chapter"]] = $tmp;
+                                }
+
+                                $this->_model->updateChapter([
+                                    "l2checked" => true
+                                ], [
+                                    "eventID" => $data["event"][0]->eventID,
+                                    "chapter" => $data["event"][0]->currentChapter
+                                ]);
+
+                                $chapters[$data["event"][0]->currentChapter]["l2checked"] = true;
+
+                                // Check if the member has another chapter to check
+                                // then redirect to preparation page
+                                $nextChapter = 0;
+                                $nextChapterDB = $this->_model->getNextChapter(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->memberID,
+                                    "l2");
+                                if (!empty($nextChapterDB))
+                                    $nextChapter = $nextChapterDB[0]->chapter;
+
+                                $sndCheck = (array)json_decode($data["event"][0]->sndCheck, true);
+                                if (!array_key_exists($data["event"][0]->currentChapter, $sndCheck)) {
+                                    $sndCheck[$data["event"][0]->currentChapter] = [
+                                        "memberID" => 0,
+                                        "done" => 0
+                                    ];
+                                }
+
+                                $postdata = [
+                                    "step" => EventSteps::NONE,
+                                    "currentChapter" => 0,
+                                    "sndCheck" => json_encode($sndCheck)
+                                ];
+
+                                if ($nextChapter > 0) {
+                                    $postdata["step"] = EventSteps::PRAY;
+                                    $postdata["currentChapter"] = $nextChapter;
+                                }
+
+                                $this->_model->updateL2Checker($postdata, [
+                                    "l2chID" => $data["event"][0]->l2chID
+                                ]);
+
+                                if ($nextChapter > 0)
+                                    Url::redirect('events/checker-sun-l2/' . $data["event"][0]->eventID);
+                                else
+                                    Url::redirect('events/');
+                            }
+                        }
+
+                        $data["next_step"] = "continue_alt";
+
+                        return View::make('Events/L2Sun/Checker')
+                            ->nest('page', 'Events/L2Sun/FstCheck')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+                        break;
+                }
+            } else {
+                $data["error"] = true;
+                $error[] = __("wrong_event_state_error");
+
+                return View::make('Events/L2Sun/Checker')
+                    ->shares("title", $title)
+                    ->shares("data", $data)
+                    ->shares("error", @$error);
+            }
+        } else {
+            $error[] = __("not_in_event_error");
+            $title = "Error";
+
+            return View::make('Events/L2Sun/Checker')
+                ->shares("title", $title)
+                ->shares("data", $data)
+                ->shares("error", @$error);
+        }
+    }
+
+    /**
+     * View for 2nd check in Sun Level2 event
+     * @param $eventID
+     * @param $memberID
+     * @return View
+     */
+    public function checkerSunL2Continue($eventID, $memberID, $chapter)
+    {
+        $isXhr = false;
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $isXhr = true;
+            $response["success"] = false;
+        }
+
+        $data["menu"] = 1;
+        $data["notifications"] = $this->_notifications;
+        $data["newNewsCount"] = $this->_newNewsCount;
+        $data["isCheckerPage"] = true;
+        $data["event"] = $this->_model->getMemberEventsForCheckerL2(
+            Session::get("memberID"), $eventID, $memberID, $chapter);
+
+        if (!empty($data["event"])) {
+            $title = $data["event"][0]->name
+                . " " . ($data["event"][0]->currentChapter > 0 ? $data["event"][0]->currentChapter : "")
+                . " - " . $data["event"][0]->tLang
+                . " - " . __($data["event"][0]->bookProject);
+
+            if ($data["event"][0]->state == EventStates::L2_CHECK || $data["event"][0]->state == EventStates::L2_CHECKED) {
+                $data["turn"] = $this->makeTurnCredentials();
+
+                $chapters = $this->_model->getChapters($eventID, null, $chapter);
+                $data["event"][0]->chunks = [];
+                if (!empty($chapters)) {
+                    $data["event"][0]->chunks = $chapters[0]["chunks"];
+                }
+
+                switch ($data["event"][0]->step) {
+                    case EventCheckSteps::SND_CHECK:
+                        $sourceText = $this->getSourceText($data);
+
+                        if ($sourceText !== false) {
+                            if (!array_key_exists("error", $sourceText)) {
+                                $data = $sourceText;
+
+                                $data["comments"] = $this->getComments(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter);
+
+                                $translationData = $this->_translationModel->getEventTranslationByEventID(
+                                    $data["event"][0]->eventID,
+                                    $data["event"][0]->currentChapter
+                                );
+                                $translation = array();
+
+                                foreach ($translationData as $tv) {
+                                    $arr = (array)json_decode($tv->translatedVerses, true);
+                                    $arr["tID"] = $tv->tID;
+                                    $translation[] = $arr;
+                                }
+                                $data["translation"] = $translation;
+                            } else {
+                                $error[] = $sourceText["error"];
+                                $data["error"] = $sourceText["error"];
+                            }
+                        } else {
+                            Url::redirect('events');
+                        }
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+                                $sndCheck = (array)json_decode($data["event"][0]->sndCheck, true);
+                                if (array_key_exists($data["event"][0]->currentChapter, $sndCheck)) {
+                                    $sndCheck[$data["event"][0]->currentChapter]["done"] = 1;
+                                }
+
+                                $postdata = [
+                                    "sndCheck" => json_encode($sndCheck)
+                                ];
+
+                                $this->_model->updateL2Checker($postdata, [
+                                    "l2chID" => $data["event"][0]->l2chID
+                                ]);
+
+                                // Check if the whole book was checked and set its state to L2_CHECKED
+                                $chapters = [];
+                                $events = $this->_model->getMembersForL2Event($data["event"][0]->eventID);
+
+                                foreach ($events as $event) {
+                                    $snd = (array)json_decode($event["sndCheck"], true);
+                                    if (!empty($snd)) {
+                                        $chapters += $snd;
+                                    }
+                                }
+
+                                if (sizeof($chapters) == $data["event"][0]->chaptersNum) {
+                                    $allDone = true;
+                                    foreach ($chapters as $chapter) {
+                                        if ($chapter["done"] == 0) {
+                                            $allDone = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if ($allDone) {
+                                        $this->_model->updateEvent([
+                                            "state" => EventStates::L2_CHECKED
+                                        ], [
+                                            "eventID" => $data["event"][0]->eventID
+                                        ]);
+                                    }
+                                }
+
+                                Url::redirect('events');
+                            }
+                        }
+
+                        $data["next_step"] = "continue_alt";
+
+                        return View::make('Events/L2Sun/Checker')
+                            ->nest('page', 'Events/L2Sun/SndCheck')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+                        break;
+                }
+            } else {
+                $data["error"] = true;
+                $error[] = __("wrong_event_state_error");
+
+                return View::make('Events/L2Sun/Checker')
+                    ->shares("title", $title)
+                    ->shares("data", $data)
+                    ->shares("error", @$error);
+            }
+        } else {
+            $error[] = __("not_in_event_error");
+            $title = "Error";
+
+            return View::make('Events/L2Sun/Checker')
+                ->shares("title", $title)
+                ->shares("data", $data)
+                ->shares("error", @$error);
+        }
+    }
+
     public function checkerSunL3($eventID)
     {
         $data["menu"] = 1;
@@ -8257,7 +8677,9 @@ class EventsController extends Controller {
                     "memberID" => $memberID
                 ]);
 
-                Url::redirect('events/checker-l2/' . $eventID . '/' . $memberID . '/' . $chapter);
+                Url::redirect('events/checker' .
+                    (!in_array($notif->bookProject, ["ulb", "udb"])
+                        ? "-" . $notif->bookProject : "") . '-l2/' . $eventID . '/' . $memberID . '/' . $chapter);
             } elseif ($notif->manageMode == "l3") {
                 $postdata = [
                     "peerCheck" => $notif->peerCheck,
@@ -8485,7 +8907,7 @@ class EventsController extends Controller {
                             (in_array($notification->bookProject, ["tq", "tw"])
                             && $notification->step == EventSteps::PEER_REVIEW
                                 ? "_" . $notification->bookProject : ($notification->sourceBible == "odb"
-                                    ? "_odb" : ""))) . ")" : ""),
+                                    ? "_odb" : ($notification->bookProject == "sun" ? "_sun" : "")))) . ")" : ""),
                     "book" => $notification->bookName,
                     "chapter" => ($notification->bookProject == "tw"
                         ? $notification->group

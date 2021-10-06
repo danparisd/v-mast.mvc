@@ -1,4 +1,4 @@
-<div class="comment_div panel panel-default">
+<div class="comment_div panel panel-default font_sun">
     <div class="panel-heading">
         <h1 class="panel-title"><?php echo __("write_note_title")?></h1>
         <span class="editor-close btn btn-success"><?php echo __("save") ?></span>
@@ -12,7 +12,7 @@
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l3").")" ?></div>
+            <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l2_l3", ["level" => 3]).")" ?></div>
             <div><?php echo __("step_num", ["step_number" => 2]) . ": " . __("peer-edit-l3_full")?></div>
         </div>
     </div>

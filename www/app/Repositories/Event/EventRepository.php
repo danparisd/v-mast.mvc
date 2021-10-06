@@ -7,6 +7,7 @@ namespace App\Repositories\Event;
 use App\Domain\ScriptureL2Progress;
 use App\Domain\AnyL3Progress;
 use App\Domain\ScriptureProgress;
+use App\Domain\SunL2Progress;
 use App\Domain\SunProgress;
 use App\Domain\TnProgress;
 use App\Domain\TqProgress;
@@ -45,15 +46,17 @@ class EventRepository implements IEventRepository
     }
 
     public function calculateEventProgress($event, $level) {
-        if (in_array($event->project->bookProject, ["ulb", "udb"]) && $level == "l1") {
-            // ULB, UDB of level 1
-            return ScriptureProgress::calculateEventProgress($event, true);
-        } elseif ($level == "l2") {
-            // ULB, UDB of level 2
-            return ScriptureL2Progress::calculateEventProgress($event, true);
-        } elseif ($level == "l3") {
+        if ($level == "l3") {
             // All projects of level 3
             return AnyL3Progress::calculateEventProgress($event, true);
+        } elseif (in_array($event->project->bookProject, ["ulb", "udb"])) {
+            // ULB, UDB of level 1, 2
+            if ($level == "l1") {
+                $progress = ScriptureProgress::calculateEventProgress($event, true);
+            } else {
+                $progress = ScriptureL2Progress::calculateEventProgress($event, true);
+            }
+            return $progress;
         } elseif ($event->project->bookProject == "tn") {
             // Notes of level 1,2
             return TnProgress::calculateEventProgress($event, true);
@@ -64,8 +67,13 @@ class EventRepository implements IEventRepository
             // Words of level 1,2
             return TwProgress::calculateEventProgress($event, true);
         } elseif ($event->project->bookProject == "sun") {
-            // SUNs of level 1,2,3
-            return SunProgress::calculateEventProgress($event, true);
+            // SUNs of level 1, 2
+            if ($level == "l1") {
+                $progress = SunProgress::calculateEventProgress($event, true);
+            } else {
+                $progress = SunL2Progress::calculateEventProgress($event, true);
+            }
+            return $progress;
         } else {
             return 0;
         }
