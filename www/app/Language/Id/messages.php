@@ -268,7 +268,7 @@ return array (
     "tw" => "Translation Words",
     "rad" => "RADIO",
     "vsail" => "vSUN",
-    "vsail_l3" => "vSUN L3 Check",
+    "vsail_l2_l3" => "vSUN L{level} Check",
     "old_test" => "Perjanjian Lama",
     "new_test" => "Perjanjian Baru",
     "checker_apply" => "<b>{name}</b> sudah siap untuk diperiksa <b>{step}</b> buku <b>{book}</b>, pasal <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",
@@ -499,6 +499,7 @@ return array (
     "other_checker" => "First Checker",
     "other_peer_checker" => "Peer Checker",
     "l2_snd_checker" => "2nd Checker",
+    "l2_sun_snd_checker" => "Theological Checker",
     "l2_p1_checker" => "1st Peer Checker",
     "l2_p2_checker" => "2nd peer checker",
     "l3_p_checker" => "Peer checker",
@@ -811,6 +812,7 @@ return array (
 
     "fst-check" => "Check Text",
     "fst-check_full" => "Check Target Text (Checker 1)",
+    "fst-check_sun" => "Peer Check",
     "fst-check_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language.</li>
                         <li>The column on the left is the source text and the right is editable target text.</li>
                         <li>Any changes made on this step by the checker will be reflected in the next checking steps:
@@ -833,9 +835,11 @@ return array (
                         <li>Any resources can be used for checking.</li>
                         <li>Spend about 30 minutes on this step. </li>
                         <li>When all changes and notes have been made click, \"Yes I did\" and \"{step}\". </li>",
+    "fst-check_sun_desc" => "Temporary unavailable",
 
     "snd-check" => "Peer Check",
     "snd-check_full" => "Peer-Check Target Text (Checker 2)",
+    "snd-check_sun" => "Theological Check",
     "snd-check_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language.</li>
                     <li>This is the second check on this chapter of target text.</li>
                     <li>There are two tabs: The Source text tab is the source text for checker to review before checking.
@@ -865,6 +869,7 @@ return array (
                     <li>Any resources can be used for checking.</li>
                     <li>Spend about 30 minutes on this step. </li>
                     <li>When all changes and notes have been made click, \"Yes I did\" and \"{step}\".</li>",
+    "snd-check_sun_desc" => "Temporary unavailable",
 
     "keyword-check-l2" => "Keyword Check",
     "keyword-check-l2_full" => "Keyword Check (Checker 2)",

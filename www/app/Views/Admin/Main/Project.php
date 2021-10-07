@@ -98,7 +98,7 @@ if($project):
                             <td style="white-space: nowrap">
                                 <?php if($bookInfo->event && $bookInfo->event->state != ""
                                     && EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED)
-                                    && in_array($project->bookProject, ["ulb","udb"])): ?>
+                                    && in_array($project->bookProject, ["ulb","udb","sun"])): ?>
                                     <button class="btn btn-warning showContributors" data-eventid="<?php echo $bookInfo->event->eventID?>" data-level="1">
                                         <?php echo __("L1") ?>
                                     </button>
@@ -106,7 +106,7 @@ if($project):
                                 <?php if($bookInfo->event && $bookInfo->event->state != ""
                                     && (EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::L2_CHECKED)
                                         || (EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED)
-                                        && in_array($project->bookProject, ["tn","tq","tw","sun"])))): ?>
+                                        && in_array($project->bookProject, ["tn","tq","tw"])))): ?>
                                     <button class="btn btn-warning showContributors"
                                             data-eventid="<?php echo $bookInfo->event->eventID?>"
                                             data-level="2"
@@ -182,7 +182,7 @@ if($project):
                     </li>
                     <li class="deleteEvent"><?php echo __("delete"); ?></li>
 
-                    <?php if(in_array($project->bookProject, ["ulb","udb"])):?>
+                    <?php if(in_array($project->bookProject, ["ulb","udb","sun"])):?>
                     <hr>
                     <div class="event_links_l1">
                         <li class="option_group"><?php echo __("translation_event") ?></li>
@@ -229,7 +229,7 @@ if($project):
 
                         <div class="event_level_radio">
                             <label style="width: 100%; display: block"><?php echo __('choose_event_level'); ?></label>
-                            <?php if(in_array($project->bookProject, ["ulb","udb"])):?>
+                            <?php if(in_array($project->bookProject, ["ulb","udb","sun"])):?>
                             <label>
                                 <input type="radio" name="eventLevel" value="1" class="event_l_1" checked>
                                 <?php echo __("level2_3_check", ["level" => 1]) ?>
@@ -237,7 +237,7 @@ if($project):
                             <?php endif; ?>
                             <label>
                                 <input type="radio" name="eventLevel" value="2" class="event_l_2"
-                                    <?php echo !in_array($project->bookProject, ["ulb","udb"]) ? "checked" : "" ?>>
+                                    <?php echo !in_array($project->bookProject, ["ulb","udb","sun"]) ? "checked" : "" ?>>
                                 <?php echo __("level2_3_check", ["level" => 2]) ?>
                             </label>&nbsp;&nbsp;
                             <label>
@@ -285,7 +285,7 @@ if($project):
                             </div>
                             <?php endif; ?>
 
-                            <?php if(!in_array($project->bookProject, ["tn","tq","sun"])): ?>
+                            <?php if(!in_array($project->bookProject, ["tn","tq"])): ?>
                             <div class="import l1_import">
                                 <div class="import_title"><?php echo __("book") ?> L1</div>
                                 <div class="import_link" data-source="l1" title="<?php echo __("import_translation_tip") ?>">
@@ -305,7 +305,7 @@ if($project):
                                 <div class="import_progress glyphicon glyphicon-info-sign" title="<?php echo __("step_status_in_progress"); ?>"></div>
                             </div>
 
-                            <?php if(!in_array($project->bookProject, ["ulb","udb"])): ?>
+                            <?php if(!in_array($project->bookProject, ["ulb","udb","sun"])): ?>
                             <div class="import l3_import">
                                 <div class="import_title"><?php echo __("book") ?> L3</div>
                                 <div class="import_link" data-source="l3" title="<?php echo __("import_translation_tip") ?>">

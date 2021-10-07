@@ -429,7 +429,7 @@ $(function () {
                 {
                     if(typeof data.error != "undefined")
                     {
-                        if(data.error == "login" || data.error == "admin")
+                        if(data.error === "login" || data.error === "admin")
                             window.location.href = "/members/login";
                         else
                         {
@@ -573,7 +573,7 @@ $(function () {
                 $(".language_input_checkbox").slideDown(200);
                 break;
             case "2":
-                if(["ulb","udb"].indexOf(bookProject) > -1)
+                if(["ulb","udb","sun"].indexOf(bookProject) > -1)
                 {
                     $(".l1_import").show();
                     $(".l2_import").hide();
@@ -2037,8 +2037,6 @@ function setImportLinksUlb(data) {
             {
                 $(".import.l2_import").show();
                 $(".import.l3_import").show();
-            } else if(data.event.project.bookProject == "sun") {
-                $(".import.l2_import").show();
             }
             break;
     }
@@ -2048,7 +2046,7 @@ function setImportComponent(event) {
     switch (EventStates.states[event.state]) {
         case EventStates.states.started:
         case EventStates.states.translating:
-            if(["ulb","udb"].indexOf(event.project.bookProject) > -1)
+            if(["ulb","udb","sun"].indexOf(event.project.bookProject) > -1)
             {
                 $(".event_l_1").prop("checked", true);
                 setImportLinks("l1", ImportStates.PROGRESS);
@@ -2066,7 +2064,7 @@ function setImportComponent(event) {
         case EventStates.states.translated:
             $(".event_l_1").prop("disabled", true);
 
-            if(["ulb","udb"].indexOf(event.project.bookProject) > -1)
+            if(["ulb","udb","sun"].indexOf(event.project.bookProject) > -1)
             {
                 $(".event_l_2").prop("checked", true);
                 setImportLinks("l1", ImportStates.DONE);
@@ -2120,7 +2118,7 @@ function setImportComponent(event) {
             $(".event_l_2").prop("disabled", true);
             $(".event_l_3").prop("checked", true);
 
-            if(["ulb","udb"].indexOf(event.project.bookProject) > -1)
+            if(["ulb","udb","sun"].indexOf(event.project.bookProject) > -1)
             {
                 $(".l1_import").hide();
                 $(".l2_import").show();
@@ -2143,31 +2141,51 @@ function setImportComponent(event) {
 
 function setEventMenuLinks(event, level) {
     $("#initialLevel").val(level);
+    const mode = event.project.bookProject;
+    const category = event.book_info.category;
 
-    switch (event.project.bookProject) {
+    switch (mode) {
         case "ulb":
         case "udb":
-            $(".event_links_l1").show();
-            $(".event_links_l1 .event_progress a").attr("href", "/events/information/"+event.eventID);
-            $(".event_links_l1 .event_manage a").attr("href", "/events/manage/"+event.eventID);
-            $(".event_links_l2").hide();
-            $(".event_links_l3").hide();
+        case "sun":
+            if (category === "odb") {
+                $(".event_links_l1").hide();
+                $(".event_links_l2").hide();
+                $(".event_links_l3").show();
 
-            if(level > 1)
-            {
-                for(var i=2;i<=level;i++) {
-                    $(".event_links_l" + i).show();
-                    $(".event_links_l" + i + " .event_progress a")
-                        .attr("href", "/events/information-l" + i + "/" + event.eventID);
-                    $(".event_links_l" + i + " .event_manage a")
-                        .attr("href", "/events/manage-l" + i + "/" + event.eventID);
+                $(".event_links_l3 .event_progress a")
+                    .attr("href", "/events/information-odb-sun/"+event.eventID);
+                $(".event_links_l3 .event_manage a")
+                    .attr("href", "/events/manage/"+event.eventID);
+            } else {
+                $(".event_links_l1").show();
+                $(".event_links_l1 .event_progress a")
+                    .attr(
+                        "href",
+                        "/events/information" + (mode === "sun" ? "-sun" : "") + "/"+event.eventID
+                    );
+                $(".event_links_l1 .event_manage a").attr("href", "/events/manage/"+event.eventID);
+                $(".event_links_l2").hide();
+                $(".event_links_l3").hide();
+
+                if(level > 1)
+                {
+                    for(var i=2;i<=level;i++) {
+                        $(".event_links_l" + i).show();
+                        $(".event_links_l" + i + " .event_progress a")
+                            .attr(
+                                "href",
+                                "/events/information" + (mode === "sun" ? "-sun" : "") + "-l" + i + "/" + event.eventID
+                            );
+                        $(".event_links_l" + i + " .event_manage a")
+                            .attr("href", "/events/manage-l" + i + "/" + event.eventID);
+                    }
                 }
             }
             break;
         case "tn":
         case "tq":
         case "tw":
-        case "sun":
             $(".event_links_l1").hide();
             $(".event_links_l2").show();
             $(".event_links_l2 .event_progress a")
@@ -2195,16 +2213,6 @@ function setEventMenuLinks(event, level) {
                         .attr("href", "/events/manage-tw-l3/"+event.eventID);
             }
             break;
-        case "sun":
-            $(".event_links_l1").hide();
-            $(".event_links_l2").hide();
-            $(".event_links_l3").show();
-
-            $(".event_links_l3 .event_progress a")
-                .attr("href", "/events/information"+(event.book_info.category == "odb" ? "-odb" : "")+"-sun/"+event.eventID);
-            $(".event_links_l3 .event_manage a")
-                .attr("href", "/events/manage/"+event.eventID);
-            break;
         case "rad":
             $(".event_links_l1").hide();
             $(".event_links_l2").hide();
@@ -2224,9 +2232,9 @@ function setEventMenu(event) {
         case EventStates.states.started:
         case EventStates.states.translating:
         case EventStates.states.translated:
-            if(["ulb","udb"].indexOf(event.project.bookProject) > -1)
+            if(["ulb","udb","sun"].indexOf(event.project.bookProject) > -1)
                 setEventMenuLinks(event, 1);
-            else if(["tn","tq","tw","sun"].indexOf(event.project.bookProject) > -1)
+            else if(["tn","tq","tw"].indexOf(event.project.bookProject) > -1)
                 setEventMenuLinks(event, 2);
             else
                 setEventMenuLinks(event, 3);
