@@ -18,7 +18,7 @@ use Helpers\Constants\EventMembers;
 
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
-        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 2]) . ": " . __(EventCheckSteps::FST_CHECK . "_sun")?></div>
+        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::SND_CHECK . "_sun")?></div>
     </div>
 
     <div class="" style="position: relative">
@@ -74,7 +74,6 @@ use Helpers\Constants\EventMembers;
                                         <div class="vnote">
                                             <?php foreach($verses as $verse => $text): ?>
                                                 <div class="verse_block flex_chunk" data-verse="<?php echo $verse ?>">
-                                                    <span class="verse_number_l2"><?php echo $verse?></span>
                                                     <textarea name="chunks[<?php echo $key ?>][<?php echo $verse ?>]"
                                                               class="peer_verse_ta textarea" style="min-width: 400px"><?php echo $text; ?></textarea>
                                                 </div>
@@ -132,7 +131,7 @@ use Helpers\Constants\EventMembers;
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
-            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 2])?></div>
+            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 3])?></div>
         </div>
     </div>
 </div>
@@ -142,9 +141,9 @@ use Helpers\Constants\EventMembers;
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 2])?>: </span><?php echo __("fst-check")?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>: </span><?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("fst-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -184,8 +183,8 @@ use Helpers\Constants\EventMembers;
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __(EventCheckSteps::FST_CHECK . "_sun")?></h3>
-            <ul><?php echo __("fst-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></h3>
+            <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -224,6 +223,10 @@ use Helpers\Constants\EventMembers;
                 $(".flex_middle").removeClass("sun_content");
                 $(".flex_middle").addClass("font_backsun");
             }
+
+            $("p.verse_text").css("height", "initial");
+            autosize.update($(".verse_block textarea"));
+            equal_verses_height();
         });
     });
 </script>

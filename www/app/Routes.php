@@ -282,6 +282,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("rpc/create_words_group", "ManageController@createWordsGroup");
     Router::any("rpc/delete_words_group", "ManageController@deleteWordsGroup");
     Router::any("rpc/get_event_members", "ManageController@getEventMembers");
+    Router::any("rpc/send_user_email", "ManageController@sendUserEmail");
 });
 
 //DEMO
@@ -295,6 +296,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("demo-tq/{page?}", "DemoController@demoTq");
     Router::any("demo-tw/{page?}", "DemoController@demoTw");
     Router::any("demo-sun/{page?}", "DemoController@demoSun");
+    Router::any("demo-sun-l2/{page?}", "DemoController@demoSunL2");
     Router::any("demo-sun-l3/{page?}", "DemoController@demoSunL3");
     Router::any("demo-sun-odb/{page?}", "DemoController@demoSunOdb");
     Router::any("demo-rad/{page?}", "DemoController@demoRadio");

@@ -96,7 +96,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css'),
-    template_url('css/style.css?118'),
+    template_url('css/style.css?119'),
     template_url('css/jquery-ui.min.css'),
     template_url('css/jquery-ui.structure.min.css'),
     template_url('css/jquery-ui.theme.min.css'),
@@ -116,13 +116,13 @@ Assets::js([
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
-        || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?35') : ''),
+        || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?36') : ''),
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
         || Session::get("isSuperAdmin") ?  template_url('js/admin.js?54') : ''),
     template_url('js/bootstrap.min.js'),
-    template_url('js/autosize.min.js?2'),
+    template_url('js/autosize.min.js?3'),
     template_url('js/jquery-ui.min.js'),
     template_url('js/offline.min.js'),
     template_url('js/dragdroptouch.js'),
@@ -219,7 +219,8 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                             (in_array($notification->bookProject, ["tq","tw"])
                                             && $notification->step == EventSteps::PEER_REVIEW
                                                 ? "_".$notification->bookProject : ($notification->sourceBible == "odb"
-                                                    ? "_odb" : ($notification->bookProject == "sun" ? "_sun" : "")))).")" : ""),
+                                                    ? "_odb"
+                                                    : (isset($notification->manageMode) && $notification->manageMode == "l2" && $notification->bookProject == "sun" ? "_sun" : "")))).")" : ""),
                                     "book" => $notification->bookName,
                                     "chapter" => ($notification->bookProject == "tw"
                                         ? $notification->group : ($notification->currentChapter == 0

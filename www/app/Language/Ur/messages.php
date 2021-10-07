@@ -499,6 +499,7 @@ return array (
     "other_checker" => "First Checker",
     "other_peer_checker" => "Peer Checker",
     "l2_snd_checker" => "2nd Checker",
+    "l2_sun_snd_checker" => "Theological Checker",
     "l2_p1_checker" => "1st Peer Checker",
     "l2_p2_checker" => "2nd peer checker",
     "l3_p_checker" => "Peer checker",
@@ -1270,6 +1271,7 @@ return array (
 
     "fst-check" => "Check Text",
     "fst-check_full" => "Check Target Text (Checker 1)",
+    "fst-check_sun" => "Peer Check",
     "fst-check_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
                             language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
                             used when referring to God the Father and Jesus Christ.</b></li>
@@ -1308,9 +1310,11 @@ return array (
                             </ol>
                         </li>
                         <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
+    "fst-check_sun_desc" => "Temporary unavailable",
 
     "snd-check" => "Peer Check",
     "snd-check_full" => "Peer-Check Target Text (Checker 2)",
+    "snd-check_sun" => "Theological Check",
     "snd-check_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
                         language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
                         used when referring to God the Father and Jesus Christ.</b></li>
@@ -1355,6 +1359,7 @@ return array (
                         </ol>
                     </li>
                     <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
+    "snd-check_sun_desc" => "Temporary unavailable",
 
     "keyword-check-l2" => "Keyword Check",
     "keyword-check-l2_full" => "Keyword Check (Checker 2)",

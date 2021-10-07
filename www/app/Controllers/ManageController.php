@@ -1227,9 +1227,6 @@ class ManageController extends Controller {
                                 $event->translators()->updateExistingPivot($memberID, ["step" => EventSteps::PRAY]);
                             }
 
-                            // Send chapter assignment notification email
-                            $this->sendChapterAssignmentNotif($event, $translator, $chapter);
-
                             $response["success"] = true;
                         } else {
                             $response["error"] = __("error_ocured", ["wrong parameters"]);
@@ -1387,9 +1384,6 @@ class ManageController extends Controller {
 
                                 $event->checkersL2()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
 
-                                // Send chapter assignment notification email
-                                $this->sendChapterAssignmentNotif($event, $checker, $chapter);
-
                                 $response["success"] = true;
                             } else {
                                 $response["error"] = __("chapter_aready_assigned_error");
@@ -1410,9 +1404,6 @@ class ManageController extends Controller {
                                 ]);
 
                                 $event->checkersL3()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
-
-                                // Send chapter assignment notification email
-                                $this->sendChapterAssignmentNotif($event, $checker, $chapter);
 
                                 $response["success"] = true;
                             } else {
@@ -1543,9 +1534,6 @@ class ManageController extends Controller {
 
                         $event->translators()->attach($appliedMember, $trData);
 
-                        // Send project assignment notification email
-                        $this->sendProjectAssignmentNotif($event, $appliedMember);
-
                         echo json_encode(array("success" => __("successfully_applied")));
                     } else {
                         $error[] = __("error_member_in_event");
@@ -1558,9 +1546,6 @@ class ManageController extends Controller {
                             "step" => EventSteps::NONE
                         );
                         $event->checkersL2()->attach($appliedMember, $l2Data);
-
-                        // Send project assignment notification email
-                        $this->sendProjectAssignmentNotif($event, $appliedMember);
 
                         echo json_encode(array("success" => __("successfully_applied")));
                     } else {
@@ -1576,9 +1561,6 @@ class ManageController extends Controller {
                             "currentChapter" => $chapter
                         );
                         $event->checkersL3()->attach($appliedMember, $l3Data);
-
-                        // Send project assignment notification email
-                        $this->sendProjectAssignmentNotif($event, $appliedMember);
 
                         echo json_encode(array("success" => __("successfully_applied")));
                     } else {
@@ -1798,6 +1780,43 @@ class ManageController extends Controller {
         }
 
         echo json_encode($response);
+    }
+
+    public function sendUserEmail() {
+        $response = array("success" => false);
+
+        $_POST = Gump::xss_clean($_POST);
+
+        $eventID = isset($_POST["eventID"]) && $_POST["eventID"] != "" ? (integer)$_POST["eventID"] : null;
+        $memberID = isset($_POST["memberID"]) && $_POST["memberID"] != "" ? (integer)$_POST["memberID"] : null;
+        $chapter = isset($_POST["chapter"]) && $_POST["chapter"] != "" ? (integer)$_POST["chapter"] : null;
+
+        if ($eventID && $memberID) {
+            $event = $this->eventRepo->get($eventID);
+
+            if ($event) {
+                if ($event->admins->contains($this->_member)
+                    || $event->project->admins->contains($this->_member)
+                    || $event->project->gatewayLanguage->admins->contains($this->_member)) {
+
+                    $member = $this->memberRepo->get($memberID);
+
+                    if ($member) {
+                        if ($chapter) {
+                            $this->sendChapterAssignmentNotif($event, $member, $chapter);
+                        } else {
+                            $this->sendProjectAssignmentNotif($event, $member);
+                        }
+
+                        $response["success"] = true;
+                    }
+                } else {
+                    $response["error"] = __("not_enough_rights_error");
+                }
+            } else {
+                $response["error"] = __("error_ocured", array("wrong parameters"));
+            }
+        }
     }
 
     private function getTranslationWordsByCategory($category, $lang = "en", $onlyNames = false)

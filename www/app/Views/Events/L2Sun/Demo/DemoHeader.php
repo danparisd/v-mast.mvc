@@ -2,44 +2,32 @@
 use Helpers\Constants\EventCheckSteps;
 ?>
 
-<div id="translator_steps" class="open pray <?php echo isset($data["isCheckerPage"]) ? " is_checker_page" : "is_checker_page isPeer" ?>">
+<div id="translator_steps" class="open pray is_checker_page">
     <div id="tr_steps_hide" class="glyphicon glyphicon-chevron-left pray <?php echo isset($data["isCheckerPage"]) ? " is_checker_page" : "is_checker_page isPeer" ?>"></div>
 
     <ul class="steps_list">
         <li class="pray-step <?php echo $data["step"] == EventCheckSteps::PRAY ? "active" : "" ?>">
-            <a href="/events/demo-l2/pray"><span><?php echo __(EventCheckSteps::PRAY)?></span></a>
+            <a href="/events/demo-sun-l2/pray"><span><?php echo __(EventCheckSteps::PRAY)?></span></a>
         </li>
 
         <li class="consume-step <?php echo $data["step"] == EventCheckSteps::CONSUME ? "active" : "" ?>">
-            <a href="/events/demo-l2/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
+            <a href="/events/demo-sun-l2/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
         </li>
 
         <li class="fst-check-step <?php echo $data["step"] == EventCheckSteps::FST_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-l2/fst_check"><span><?php echo __(EventCheckSteps::FST_CHECK)?></span></a>
+            <a href="/events/demo-sun-l2/fst_check"><span><?php echo __(EventCheckSteps::FST_CHECK . "_sun")?></span></a>
         </li>
 
         <li class="snd-check-step <?php echo $data["step"] == EventCheckSteps::SND_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-l2/snd_check"><span><?php echo __(EventCheckSteps::SND_CHECK)?></span></a>
-        </li>
-
-        <li class="keyword-check-l2-step <?php echo $data["step"] == EventCheckSteps::KEYWORD_CHECK_L2 ? "active" : "" ?>">
-            <a href="/events/demo-l2/keyword_check_l2"><span><?php echo __(EventCheckSteps::KEYWORD_CHECK_L2)?></span></a>
-        </li>
-
-        <li class="peer-review-l2-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW_L2 ? "active" : "" ?>">
-            <a href="/events/demo-l2/peer_review_l2"><span><?php echo __(EventCheckSteps::PEER_REVIEW_L2)?></span></a>
+            <a href="/events/demo-sun-l2/snd_check"><span><?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></span></a>
         </li>
     </ul>
 </div>
 
-<?php
-$isCheckPage = $data["step"] == EventCheckSteps::PEER_REVIEW_L2;
-?>
-
 <script>
     var memberID = 0;
     var eventID = 0;
-    var chkMemberID = <?php echo $isCheckPage? "1" : "0"; ?>;
+    var chkMemberID = 0;
     var step = '<?php echo $data["step"]; ?>';
     var isDemo = true;
     var myChapter = 2;
@@ -70,7 +58,7 @@ $isCheckPage = $data["step"] == EventCheckSteps::PEER_REVIEW_L2;
                     <div class="missed"></div>
                 </div>
                 <div class="col-sm-4" style="text-align: right; padding: 2px 20px 0 0">
-                    <div class="<?php echo !$isCheckPage ? "videoBtnHide" : "" ?>">
+                    <div class="videoBtnHide">
                         <button class="btn btn-success videoCallOpen videocall glyphicon glyphicon-facetime-video" title="<?php echo __("video_call") ?>"></button>
                         <button class="btn btn-success videoCallOpen audiocall glyphicon glyphicon-earphone" title="<?php echo __("audio_call") ?>"></button>
                     </div>
@@ -142,66 +130,3 @@ $isCheckPage = $data["step"] == EventCheckSteps::PEER_REVIEW_L2;
 </script>
 
 <?php echo isset($page) ? $page : "" ?>
-
-
-<?php if($isCheckPage): ?>
-<style>
-    .buttons_spec {
-        position: absolute;
-        top: 97px;
-        left: 930px;
-        text-align: center;
-        border: 1px solid #ccc;
-        background-color: white;
-        padding: 5px 10px;
-        z-index: 102;
-    }
-    
-    .buttons_spec.unlinked {
-        position: fixed;
-        left: calc(50% + 345px);
-        top: 20px;
-    }
-</style>
-
-<!--<div class="buttons_spec">
-    <button class="spec_char" data="D̃">D̃</button>
-    <button class="spec_char" data="d̃">d̃</button>&nbsp;&nbsp;
-    <button class="spec_char" data="Õ">Õ</button>
-    <button class="spec_char" data="õ">õ</button>&nbsp;&nbsp;
-    <button class="spec_char" data="T̃">T̃</button>
-    <button class="spec_char" data="t̃">t̃</button><br>
-    <button class="spec_char" data="Ṽ">Ṽ</button>
-    <button class="spec_char" data="ṽ">ṽ</button>&nbsp;&nbsp;
-    <button class="spec_char" data="W̃">W̃</button>
-    <button class="spec_char" data="w̃">w̃</button>
-</div>-->
-
-<script>
-    $(document).ready(function () {
-        var focused;
-        
-        $("textarea").focus(function() {
-            focused = $(this);
-        });
-        
-        $(".spec_char").click(function(e) {
-            e.preventDefault();
-            var char = $(this).attr("data");
-            if(typeof focused != "undefined")
-            {
-                var caretPos = focused[0].selectionStart;
-                var textAreaTxt = focused.val();
-                focused.val(textAreaTxt.substring(0, caretPos) + char + textAreaTxt.substring(caretPos));
-            }
-        });
-        
-        $(window).scroll(function () {
-            if($(this).scrollTop() > 150)
-                $(".buttons_spec").addClass("unlinked");
-            else
-                $(".buttons_spec").removeClass("unlinked");
-        });
-    });
-</script>
-<?php endif; ?>

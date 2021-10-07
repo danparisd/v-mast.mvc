@@ -56,7 +56,7 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         <div class="step_status"><?php echo __("step_status_" . $chapter["consume"]["state"]) ?></div>
                         <div class="step_light"></div>
                         <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventCheckSteps::CONSUME.".png") ?>"></div>
-                        <div class="step_name">1. <?php echo __(EventCheckSteps::CONSUME."_tn"); ?></div>
+                        <div class="step_name">1. <?php echo __(EventCheckSteps::CONSUME); ?></div>
                     </div>
                     <!-- Peer Check Step -->
                     <div class="section_step <?php echo $chapter["fstChk"]["state"] ?>">

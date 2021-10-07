@@ -94,7 +94,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css', 'Default'),
-    template_url('css/style.css?118', 'Default'),
+    template_url('css/style.css?119', 'Default'),
     template_url('css/jquery-ui.min.css', 'Default'),
     template_url('css/jquery-ui.structure.min.css', 'Default'),
     template_url('css/jquery-ui.theme.min.css', 'Default'),
@@ -108,8 +108,8 @@ Assets::js([
     template_url('js/jquery.actual.min.js', 'Default'),
     template_url('js/unicornFormatter.js'),
     template_url('js/main.js?112', 'Default'),
-    template_url('js/facilitator.js?35', 'Default'),
-    template_url('js/autosize.min.js?2', 'Default'),
+    template_url('js/facilitator.js?36', 'Default'),
+    template_url('js/autosize.min.js?3', 'Default'),
     template_url('js/admin.js?54', 'Default'),
     template_url('js/bootstrap.min.js', 'Default'),
     template_url('js/jquery-ui.min.js', 'Default'),

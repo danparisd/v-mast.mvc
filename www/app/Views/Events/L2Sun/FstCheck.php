@@ -77,7 +77,6 @@ use Helpers\Constants\EventMembers;
                                         <div class="vnote">
                                             <?php foreach($verses as $verse => $text): ?>
                                                 <div class="verse_block flex_chunk" data-verse="<?php echo $verse ?>">
-                                                    <span class="verse_number_l2"><?php echo $verse?></span>
                                                     <textarea name="chunks[<?php echo $key ?>][<?php echo $verse ?>]"
                                                               class="peer_verse_ta textarea" style="min-width: 400px"><?php echo $text; ?></textarea>
                                                 </div>
@@ -225,6 +224,10 @@ use Helpers\Constants\EventMembers;
                 $(".flex_middle").removeClass("sun_content");
                 $(".flex_middle").addClass("font_backsun");
             }
+
+            $("p.verse_text").css("height", "initial");
+            autosize.update($(".verse_block textarea"));
+            equal_verses_height();
         });
     });
 </script>

@@ -1,6 +1,7 @@
 <?php
 use Helpers\Constants\EventStates;
 use Helpers\Constants\EventSteps;
+use Helpers\Constants\EventCheckSteps;
 use Helpers\Session;
 ?>
 
@@ -556,7 +557,7 @@ use Helpers\Session;
                 </div>
             </div>
             <div class="event_current_pos">
-                <?php if($event->step != EventSteps::NONE): ?>
+                <?php if($event->step != EventCheckSteps::NONE): ?>
                     <div class="event_current_title"><?php echo __("you_are_at") ?></div>
                     <div class="event_curr_step">
                         <img class='img_current' src="<?php echo template_url("img/steps/green_icons/". $event->step. ".png") ?>">
@@ -566,7 +567,14 @@ use Helpers\Session;
                                         ["chapter" => $event->currentChapter]) : "") ?>
                             </div>
                             <div>
-                                <?php echo __($event->step) ?>
+                                <?php
+                                $add = "";
+                                if ($event->bookProject == "sun"
+                                    && in_array($event->step, [EventCheckSteps::FST_CHECK, EventCheckSteps::SND_CHECK])) {
+                                    $add = "_sun";
+                                }
+                                ?>
+                                <?php echo __($event->step.$add) ?>
                             </div>
                         </div>
                     </div>
@@ -607,7 +615,7 @@ use Helpers\Session;
                 </div>
             </div>
             <div class="event_current_pos">
-                <?php if($event->step != EventSteps::NONE): ?>
+                <?php if($event->step != EventCheckSteps::NONE): ?>
                     <div class="event_current_title"><?php echo __("you_are_at") ?></div>
                     <div class="event_curr_step">
                         <img class='img_current' src="<?php echo template_url("img/steps/green_icons/". $event->step. ".png") ?>">

@@ -16,26 +16,59 @@ use Helpers\Constants\EventMembers;
                     .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
                     ."<span class='book_name'>".$data["event"][0]->name." ".$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
 
-                <ul class="nav nav-tabs">
-                    <li role="presentation" id="target_scripture" class="my_tab">
-                        <a href="#"><?php echo __("target_text") ?></a>
-                    </li>
-                    <li role="presentation" id="source_scripture" class="my_tab">
-                        <a href="#"><?php echo __("source_text") ?></a>
-                    </li>
-                </ul>
+                <div class="no_padding">
+                    <div class="sun_mode">
+                        <label>
+                            <input type="checkbox" autocomplete="off" checked data-toggle="toggle" data-on="SUN" data-off="BACKSUN">
+                        </label>
+                    </div>
 
-                <div id="target_scripture_content" class="my_content shown">
-                    <?php foreach ($data["translation"] as $translation): ?>
-                        <?php foreach ($translation[EventMembers::TRANSLATOR]["verses"] as $verse => $text): ?>
-                            <p class="sun_content"><?php echo "<strong><sup>".$verse."</sup></strong> ".$text; ?></p>
-                        <?php endforeach; ?>
-                    <?php endforeach; ?>
-                </div>
+                    <?php foreach($data["chunks"] as $key => $chunk) : ?>
+                        <div class="row chunk_block no_autosize">
+                            <div class="flex_container">
+                                <div class="chunk_verses flex_left" dir="<?php echo $data["event"][0]->sLangDir ?>">
+                                    <?php $firstVerse = 0; ?>
+                                    <?php foreach ($chunk as $verse): ?>
+                                        <?php
+                                        // process combined verses
+                                        if (!isset($data["text"][$verse]))
+                                        {
+                                            if($firstVerse == 0)
+                                            {
+                                                $firstVerse = $verse;
+                                                continue;
+                                            }
+                                            $combinedVerse = $firstVerse . "-" . $verse;
 
-                <div id="source_scripture_content" class="my_content">
-                    <?php foreach($data["text"] as $verse => $text): ?>
-                        <p><?php echo "<strong><sup>".$verse."</sup></strong> ".$text; ?></p>
+                                            if(!isset($data["text"][$combinedVerse]))
+                                                continue;
+                                            $verse = $combinedVerse;
+                                        }
+                                        ?>
+                                        <p class="verse_text" data-verse="<?php echo $verse ?>">
+                                            <strong class="<?php echo $data["event"][0]->sLangDir ?>">
+                                                <sup><?php echo $verse; ?></sup>
+                                            </strong>
+                                            <?php echo $data["text"][$verse]; ?>
+                                        </p>
+                                    <?php endforeach; ?>
+                                </div>
+                                <div class="flex_middle editor_area sun_content">
+                                    <?php
+                                    if(!empty($data["translation"][$key][EventMembers::L2_CHECKER]["verses"]))
+                                        $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
+                                    else
+                                        $verses = $data["translation"][$key][EventMembers::TRANSLATOR]["verses"];
+                                    ?>
+                                    <?php foreach($verses as $verse => $text): ?>
+                                        <div class="verse_block flex_chunk" data-verse="<?php echo $verse ?>">
+                                            <?php echo $text; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chunk_divider"></div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -86,6 +119,12 @@ use Helpers\Constants\EventMembers;
 </div>
 
 <!-- Data for tools -->
+<input type="hidden" id="bookCode" value="<?php echo $data["event"][0]->bookCode ?>">
+<input type="hidden" id="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
+<input type="hidden" id="tn_lang" value="<?php echo $data["event"][0]->tnLangID ?>">
+<input type="hidden" id="tq_lang" value="<?php echo $data["event"][0]->tqLangID ?>">
+<input type="hidden" id="tw_lang" value="<?php echo $data["event"][0]->twLangID ?>">
+<input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["event"][0]->targetLang ?>">
 
 <div class="tutorial_container">
@@ -94,7 +133,6 @@ use Helpers\Constants\EventMembers;
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/consume.png") ?>" width="100px" height="100px">
             <img src="<?php echo template_url("img/steps/big/consume.png") ?>" width="280px" height="280px">
-
         </div>
 
         <div class="tutorial_content">
@@ -103,3 +141,41 @@ use Helpers\Constants\EventMembers;
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            equal_verses_height();
+        }, 1000);
+
+        function equal_verses_height() {
+            $(".verse_text").each(function() {
+                var verse = $(this).data("verse");
+                var p_height = $(this).outerHeight();
+                var sun = $(".verse_block[data-verse="+verse+"]");
+
+                if(sun.length > 0) {
+                    var sun_height = sun.outerHeight();
+                    sun.outerHeight(Math.max(p_height, sun_height));
+                    $(this).outerHeight(Math.max(p_height, sun_height));
+                }
+            });
+        }
+
+        $(".sun_mode input").change(function () {
+            const active = $(this).prop('checked');
+
+            if (active) {
+                $(".flex_middle").removeClass("backsun_content");
+                $(".flex_middle").addClass("sun_content");
+            } else {
+                $(".flex_middle").removeClass("sun_content");
+                $(".flex_middle").addClass("backsun_content");
+            }
+
+            $(".verse_text").removeAttr("style");
+            $(".verse_block").removeAttr("style");
+            equal_verses_height();
+        });
+    });
+</script>

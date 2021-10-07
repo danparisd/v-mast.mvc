@@ -6323,7 +6323,7 @@ class EventsController extends Controller {
                             }
                         }
 
-                        $data["next_step"] = EventCheckSteps::FST_CHECK;
+                        $data["next_step"] = EventCheckSteps::FST_CHECK . "_sun";
 
                         return View::make('Events/L2Sun/Checker')
                             ->nest('page', 'Events/L2Sun/Consume')
@@ -8907,7 +8907,8 @@ class EventsController extends Controller {
                             (in_array($notification->bookProject, ["tq", "tw"])
                             && $notification->step == EventSteps::PEER_REVIEW
                                 ? "_" . $notification->bookProject : ($notification->sourceBible == "odb"
-                                    ? "_odb" : ($notification->bookProject == "sun" ? "_sun" : "")))) . ")" : ""),
+                                    ? "_odb"
+                                    : (isset($notification->manageMode) && $notification->manageMode == "l2" && $notification->bookProject == "sun" ? "_sun" : "")))) . ")" : ""),
                     "book" => $notification->bookName,
                     "chapter" => ($notification->bookProject == "tw"
                         ? $notification->group
