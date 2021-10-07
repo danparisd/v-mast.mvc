@@ -842,7 +842,9 @@ class EventsModel extends Model
             $sndCheck = (array)json_decode($event->sndCheck, true);
             foreach ($sndCheck as $chap => $data) {
                 if (!isset($chapter) || $chapter == $chap) {
-                    if ($data["memberID"] == $memberID && $data["done"] != 2) {
+                    $done = in_array($event->bookProject, ["ulb","udb"]) ? 2 : 1;
+
+                    if ($data["memberID"] == $memberID && $data["done"] != $done) {
                         $ev = clone $event;
 
                         $ev->step = $data["done"] == 0 ?

@@ -270,7 +270,7 @@ return array (
     "rad" => "RADIO",
     "obs" => "Open Bible Stories",
     "vsail" => "vSUN",
-    "vsail_l3" => "vSUN L3 Check",
+    "vsail_l2_l3" => "vSUN L{level} Check",
     "old_test" => "Ancien Testament",
     "new_test" => "Nouveau Testament",
     "checker_apply" => "<b>{name}</b> est prêt à vérifier <b>{step}</b> le livre de <b>{book}</b>, chapitre <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",
@@ -497,6 +497,7 @@ return array (
     "other_checker" => "First checker",
     "other_peer_checker" => "Peer checker",
     "l2_snd_checker" => "2eme vérificateur",
+    "l2_sun_snd_checker" => "Theological Checker",
     "l2_p1_checker" => "1er vérificateur pair",
     "l2_p2_checker" => "2eme vérificateur pair",
     "l3_p_checker" => "Peer checker",
@@ -1306,6 +1307,7 @@ return array (
 
     "fst-check" => "Check Text",
     "fst-check_full" => "Check Target Text (Checker 1)",
+    "fst-check_sun" => "Peer Check",
     "fst-check_desc" => "<li><b>BUT:</b> to check the target text for accuracy while maintaining the naturalness of the 
                             language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
                             used when referring to God the Father and Jesus Christ.</b></li>
@@ -1344,9 +1346,11 @@ return array (
                             </ol>
                         </li>
                         <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
+    "fst-check_sun_desc" => "Temporary unavailable",
 
     "snd-check" => "Peer Check",
     "snd-check_full" => "Peer-Check Target Text (Checker 2)",
+    "snd-check_sun" => "Theological Check",
     "snd-check_desc" => "<li><b>BUT:</b> to check the target text for accuracy while maintaining the naturalness of the 
                         language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
                         used when referring to God the Father and Jesus Christ.</b></li>
@@ -1391,6 +1395,7 @@ return array (
                         </ol>
                     </li>
                     <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
+    "snd-check_sun_desc" => "Temporary unavailable",
 
     "keyword-check-l2" => "Keyword Check",
     "keyword-check-l2_full" => "Keyword Check (Checker 2)",

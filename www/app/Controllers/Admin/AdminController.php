@@ -1520,7 +1520,7 @@ class AdminController extends Controller {
                             }
                             break;
                         case 2:
-                            if (in_array($project->bookProject, ["ulb","udb"]))
+                            if (in_array($project->bookProject, ["ulb","udb","sun"]))
                             {
                                 if(!$event || $event->state != EventStates::TRANSLATED)
                                 {
@@ -1537,14 +1537,10 @@ class AdminController extends Controller {
                                     echo json_encode(array("error" => Error::display($error)));
                                     return;
                                 }
-                            } elseif ($project->bookProject == "sun" && $event) {
-                                $error[] = __("event_already_exists");
-                                echo json_encode(array("error" => Error::display($error)));
-                                return;
                             }
                             break;
                         case 3:
-                            if (in_array($project->bookProject, ["ulb","udb"])) {
+                            if (in_array($project->bookProject, ["ulb","udb","sun"])) {
                                 if(!$event || $event->state != EventStates::L2_CHECKED) {
                                     $error[] = __("l2_l3_create_event_error");
                                     echo json_encode(array("error" => Error::display($error)));
@@ -1568,12 +1564,6 @@ class AdminController extends Controller {
 
                                 if(!$event || $event->state != EventStates::TRANSLATED
                                     || !$ulbEvent || $ulbEvent->state != EventStates::COMPLETE) {
-                                    $error[] = __("l2_l3_create_event_error");
-                                    echo json_encode(array("error" => Error::display($error)));
-                                    return;
-                                }
-                            } elseif ($project->bookProject == "sun") {
-                                if(!$event || $event->state != EventStates::TRANSLATED) {
                                     $error[] = __("l2_l3_create_event_error");
                                     echo json_encode(array("error" => Error::display($error)));
                                     return;
@@ -1634,7 +1624,7 @@ class AdminController extends Controller {
                     } else {
                         // Create(change state) L2 event
                         if($event->state == EventStates::TRANSLATED) {
-                            if(in_array($project->bookProject, ["tn","tq","sun"])) {
+                            if(in_array($project->bookProject, ["tn","tq"])) {
                                 $event->state = EventStates::L3_RECRUIT;
                             } else {
                                 $event->state = EventStates::L2_RECRUIT;
@@ -1947,9 +1937,13 @@ class AdminController extends Controller {
 
                     // Create new translator
                     $chkData = [];
+                    $crData = [];
                     for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                     {
                         $chkData[$i] = ["memberID" => $member->memberID, "done" => 1];
+
+                        $done = $project->bookProject == "sun" ? 2 : 1;
+                        $crData[$i] = ["memberID" => $member->memberID, "done" => $done];
                     }
 
                     $trData = array(
@@ -1958,21 +1952,25 @@ class AdminController extends Controller {
                         "verbCheck" => json_encode($chkData),
                         "peerCheck" => json_encode($chkData),
                         "kwCheck" => json_encode($chkData),
-                        "crCheck" => json_encode($chkData)
+                        "crCheck" => json_encode($crData)
                     );
                     $event->translators()->attach($member, $trData);
                     $translator = $member->translators->where("eventID", $eventID, false)->first();
                     $trID = $translator->trID;
 
                     $l2chID = 0;
-                    if($level == 2 && $project->bookProject != "sun") {
+                    if($level == 2) {
                         // Create new checker
                         $sndCheckData = [];
                         $peerCheckData = [];
                         for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                         {
-                            $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
-                            $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
+                            if ($project->bookProject == "sun") {
+                                $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
+                            } else {
+                                $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
+                                $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
+                            }
                         }
 
                         $l2chData = array(
@@ -1998,7 +1996,7 @@ class AdminController extends Controller {
                                     "verses" => $chunk
                                 ],
                                 EventMembers::L2_CHECKER => [
-                                    "verses" => ($level == 2 && $project->bookProject != "sun") ? $chunk : array()
+                                    "verses" => $level == 2 ? $chunk : array()
                                 ],
                                 EventMembers::L3_CHECKER => [
                                     "verses" => array()
@@ -2026,17 +2024,17 @@ class AdminController extends Controller {
                         // Assign chapters to new translator
                         $postdata = [
                             "trID" => $trID,
-                            "l2memberID" => ($level == 2 && $project->bookProject != "sun") ? $member->memberID : 0,
+                            "l2memberID" => $level == 2 ? $member->memberID : 0,
                             "l2chID" => $l2chID,
                             "chapter" => $key,
                             "chunks" => json_encode($chunks),
                             "done" => true,
-                            "checked" => $level == 2 && $project->bookProject == "sun",
-                            "l2checked" => $level == 2 && $project->bookProject != "sun"
+                            "checked" => $level == 2 || $project->bookProject == "sun",
+                            "l2checked" => $level == 2
                         ];
                         $event->translatorsWithChapters()->attach($member, $postdata);
 
-                        $event->state = $level == 2 && $project->bookProject != "sun" ?
+                        $event->state = $level == 2 ?
                             EventStates::L2_CHECKED :
                             EventStates::TRANSLATED;
                         $event->save();
@@ -2047,11 +2045,6 @@ class AdminController extends Controller {
                 }
                 else
                 {
-                    if($project->bookProject == "sun"){
-                        $response["error"] = __("not_allowed_action");
-                        return $response;
-                    }
-
                     if(in_array($event->state, [EventStates::TRANSLATED, EventStates::L2_CHECKED]))
                     {
                         if(($event->state == EventStates::TRANSLATED && $level == 3) ||
@@ -2110,8 +2103,12 @@ class AdminController extends Controller {
                             $peerCheckData = [];
                             for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                             {
-                                $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
-                                $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
+                                if ($project->bookProject == "sun") {
+                                    $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
+                                } else {
+                                    $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
+                                    $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
+                                }
                             }
 
                             $l2chData = array(

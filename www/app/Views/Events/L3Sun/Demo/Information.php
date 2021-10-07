@@ -6,7 +6,7 @@ use Helpers\Constants\EventSteps;
     <?php if(isset($_SERVER["HTTP_REFERER"])): ?>
         <a href="<?php echo $_SERVER["HTTP_REFERER"] ?>"><?php echo __("go_back") ?></a>
     <?php endif; ?>
-    <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l3").")" ?></div>
+    <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l2_l3", ["level" => 3]).")" ?></div>
 </div>
 
 <div>

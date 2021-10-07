@@ -903,6 +903,77 @@ class DemoController extends Controller {
             ->shares("data", $data);
     }
 
+    public function demoSunL2($page = null)
+    {
+        if (!isset($page))
+            Url::redirect("events/demo-sun-l2/pray");
+
+        $notifObj = new stdClass();
+        $notifObj->step = EventCheckSteps::SND_CHECK . "_sun";
+        $notifObj->currentChapter = 2;
+        $notifObj->firstName = "Mark";
+        $notifObj->lastName = "Patton";
+        $notifObj->bookCode = "2ti";
+        $notifObj->bookProject = "ulb";
+        $notifObj->tLang = "English";
+        $notifObj->bookName = "2 Timothy";
+        $notifObj->manageMode = "l2";
+        $notifObj->sourceBible = "ulb";
+
+        $notifications[] = $notifObj;
+
+        $data["notifications"] = $notifications;
+        $data["isDemo"] = true;
+        $data["menu"] = 5;
+        $data["isCheckerPage"] = true;
+        $data["next_step"] = EventCheckSteps::PRAY;
+
+        $data["bookCode"] = "2ti";
+        $data["currentChapter"] = 2;
+        $data["tnLangID"] = "en";
+        $data["twLangID"] = "en";
+        $data["totalVerses"] = 26;
+        $data["targetLang"] = "en";
+
+        $view = View::make("Events/L2Sun/Demo/DemoHeader");
+        $data["step"] = "";
+
+        switch ($page) {
+            case "pray":
+                $view->nest("page", "Events/L2Sun/Demo/Pray");
+                $data["step"] = EventCheckSteps::PRAY;
+                $data["next_step"] = EventCheckSteps::CONSUME;
+                break;
+
+            case "consume":
+                $view->nest("page", "Events/L2Sun/Demo/Consume");
+                $data["step"] = EventCheckSteps::CONSUME;
+                $data["next_step"] = EventCheckSteps::FST_CHECK . "_sun";
+                break;
+
+            case "fst_check":
+                $view->nest("page", "Events/L2Sun/Demo/FstCheck");
+                $data["step"] = EventCheckSteps::FST_CHECK;
+                $data["next_step"] = "continue_alt";
+                break;
+
+            case "snd_check":
+                $view->nest("page", "Events/L2Sun/Demo/SndCheck");
+                $data["step"] = EventCheckSteps::SND_CHECK;
+                $data["next_step"] = "continue_alt";
+                break;
+
+            case "information":
+                return View::make("Events/L2Sun/Demo/Information")
+                    ->shares("title", __("event_info"));
+                break;
+        }
+
+        return $view
+            ->shares("title", __("demo"))
+            ->shares("data", $data);
+    }
+
     public function demoSunL3($page = null)
     {
         if (!isset($page))

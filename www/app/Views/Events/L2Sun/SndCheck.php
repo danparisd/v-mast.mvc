@@ -1,47 +1,39 @@
 <?php
+use \Helpers\Constants\EventCheckSteps;
+
 if(isset($data["error"])) return;
 
-use \Helpers\Constants\EventMembers;
-use Helpers\Parsedown;
-use Helpers\Session;
-
-$parsedown = new Parsedown();
+use Helpers\Constants\EventMembers;
 ?>
-<div class="comment_div panel panel-default font_sun"
-     dir="<?php echo $data["event"][0]->tLangDir ?>">
+<div class="comment_div panel panel-default font_sun">
     <div class="panel-heading">
         <h1 class="panel-title"><?php echo __("write_note_title")?></h1>
-        <span class="editor-close btn btn-success" data-level="3"><?php echo __("save") ?></span>
+        <span class="editor-close btn btn-success" data-level="2"><?php echo __("save") ?></span>
         <span class="xbtn glyphicon glyphicon-remove"></span>
     </div>
-    <textarea style="overflow-x: hidden; word-wrap: break-word; overflow-y: visible;" class="textarea textarea_editor"></textarea>
+    <textarea dir="<?php echo $data["event"][0]->sLangDir ?>" style="overflow-x: hidden; word-wrap: break-word; overflow-y: visible;" class="textarea textarea_editor"></textarea>
     <div class="other_comments_list"></div>
     <img src="<?php echo template_url("img/loader.gif") ?>" class="commentEditorLoader">
 </div>
 
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
-        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 2]) . ": " . __("peer-edit-l3_full")?></div>
+        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::SND_CHECK . "_sun")?></div>
     </div>
 
-    <div class="">
+    <div class="" style="position: relative">
         <div class="main_content">
-            <form action="" id="main_form" method="post">
-                <div class="main_content_text">
-                    <?php if($data["event"][0]->checkerFName == null): ?>
-                        <div class="alert alert-success check_request"><?php echo __("check_request_sent_success") ?></div>
-                    <?php endif; ?>
-
+            <form action="" id="main_form" method="post" >
+                <div class="main_content_text" dir="<?php echo $data["event"][0]->sLangDir ?>">
                     <h4><?php echo $data["event"][0]->tLang." - "
                             .__($data["event"][0]->bookProject)." - "
                             .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
-                            ."<span class='book_name'>".$data["event"][0]->name." "
-                            .$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
+                            ."<span class='book_name'>".$data["event"][0]->name." ".$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
 
                     <div class="no_padding">
                         <div class="sun_mode">
                             <label>
-                                <input type="checkbox" autocomplete="off" checked data-toggle="toggle" data-on="SUN" data-off="BACKSUN">
+                                <input type="checkbox" checked data-toggle="toggle" data-on="SUN" data-off="BACKSUN">
                             </label>
                         </div>
 
@@ -77,10 +69,7 @@ $parsedown = new Parsedown();
                                     </div>
                                     <div class="flex_middle editor_area sun_content">
                                         <?php
-                                        if(!empty($data["translation"][$key][EventMembers::L3_CHECKER]["verses"]))
-                                            $verses = $data["translation"][$key][EventMembers::L3_CHECKER]["verses"];
-                                        else
-                                            $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
+                                        $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
                                         ?>
                                         <div class="vnote">
                                             <?php foreach($verses as $verse => $text): ?>
@@ -104,8 +93,8 @@ $parsedown = new Parsedown();
                                             <div class="comments">
                                                 <?php if(array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]])): ?>
                                                     <?php foreach($data["comments"][$data["currentChapter"]][$key] as $comment): ?>
-                                                        <?php if($comment->memberID == $data["event"][0]->memberID
-                                                            && $comment->level == 3): ?>
+                                                        <?php if($comment->memberID == $data["event"][0]->myChkMemberID
+                                                            && $comment->level == 2): ?>
                                                             <div class="my_comment"><?php echo $comment->text; ?></div>
                                                         <?php else: ?>
                                                             <div class="other_comments">
@@ -127,22 +116,22 @@ $parsedown = new Parsedown();
                     </div>
                 </div>
 
-                <div class="main_content_footer row">
+                <div class="main_content_footer">
                     <div class="form-group">
                         <div class="main_content_confirm_desc"><?php echo __("confirm_finished")?></div>
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <input type="hidden" name="step" value="<?php echo $data["event"][0]->step ?>">
-                    <input type="hidden" name="level" value="l3">
-
+                    <input type="hidden" name="level" value="l2continue">
+                    <input type="hidden" name="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
+                    <input type="hidden" name="memberID" value="<?php echo $data["event"][0]->l2memberID ?>">
                     <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
                         <?php echo __($data["next_step"])?>
                     </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
-            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 2])?></div>
+            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 3])?></div>
         </div>
     </div>
 </div>
@@ -151,30 +140,18 @@ $parsedown = new Parsedown();
     <div id="help_hide" class="glyphicon glyphicon-chevron-left"> <?php echo __("help") ?></div>
 
     <div class="help_float">
-        <div class="help_info_steps <?php echo isset($data["isCheckerPage"]) ? "is_checker_page_help" : "is_checker_page_help isPeer" ?>">
-            <div class="help_name_steps">
-                <span><?php echo __("step_num", ["step_number" => 2])?>: </span>
-                <?php echo __("peer-edit-l3")?>
-            </div>
+        <div class="help_info_steps is_checker_page_help">
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>: </span><?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("peer-edit-l3_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
 
-        <div class="event_info <?php echo isset($data["isCheckerPage"]) ? "is_checker_page_help" : "is_checker_page_help isPeer" ?>">
+        <div class="event_info is_checker_page_help">
             <div class="participant_info">
-                <div class="participant_name">
-                    <span><?php echo __("your_checker") ?>:</span>
-                    <span class="checker_name_span">
-                                <?php echo $data["event"][0]->checkerFName !== null
-                                    ? $data["event"][0]->checkerFName . " "
-                                    . mb_substr($data["event"][0]->checkerLName, 0, 1)."."
-                                    : __("not_available") ?>
-                            </span>
-                </div>
                 <div class="additional_info">
-                    <a href="/events/information-tn-l3/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
+                    <a href="/events/information-sun-l2/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -187,21 +164,6 @@ $parsedown = new Parsedown();
     </div>
 </div>
 
-<div class="tutorial_container">
-    <div class="tutorial_popup">
-        <div class="tutorial-close glyphicon glyphicon-remove"></div>
-        <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" width="100px" height="100px">
-            <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" width="280px" height="280px">
-        </div>
-
-        <div class="tutorial_content <?php echo "is_checker_page_help" ?>">
-            <h3><?php echo __("peer-edit-l3_full")?></h3>
-            <ul><?php echo __("peer-edit-l3_desc", ["step" => __($data["next_step"])])?></ul>
-        </div>
-    </div>
-</div>
-
 <!-- Data for tools -->
 <input type="hidden" id="bookCode" value="<?php echo $data["event"][0]->bookCode ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
@@ -210,6 +172,22 @@ $parsedown = new Parsedown();
 <input type="hidden" id="tw_lang" value="<?php echo $data["event"][0]->twLangID ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["event"][0]->targetLang ?>">
+
+<div class="tutorial_container">
+    <div class="tutorial_popup">
+        <div class="tutorial-close glyphicon glyphicon-remove"></div>
+        <div class="tutorial_pic">
+            <img src="<?php echo template_url("img/steps/icons/fst-check.png") ?>" width="100px" height="100px">
+            <img src="<?php echo template_url("img/steps/big/consume.png") ?>" width="280px" height="280px">
+
+        </div>
+
+        <div class="tutorial_content">
+            <h3><?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></h3>
+            <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+        </div>
+    </div>
+</div>
 
 <script>
     $(document).ready(function () {
@@ -250,5 +228,5 @@ $parsedown = new Parsedown();
             autosize.update($(".verse_block textarea"));
             equal_verses_height();
         });
-    })
+    });
 </script>

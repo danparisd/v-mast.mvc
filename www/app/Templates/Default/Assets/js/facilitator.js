@@ -166,6 +166,8 @@ $(function () {
                 {
                     $this.parents("li").remove();
                     getNewMembersList();
+
+                    sendUserEmail(eventID, memberID, null);
                 }
                 else
                 {
@@ -892,7 +894,7 @@ function assignChapter(data, action)
 
                 // Update chapters block
                 var chapterBlock = $(".chapter_"+data.chapter);
-                if(action == "add")
+                if(action === "add")
                 {
                     $("button", chapterBlock).hide();
                     $(".manage_username", chapterBlock).show();
@@ -907,15 +909,14 @@ function assignChapter(data, action)
                     $(".manage_username .uname_delete", chapterBlock).attr("data", "");
                 }
 
-
                 // Update members block
                 var memberBlock = $(".manage_members .member_usname[data="+data.memberID+"]").parent("li");
                 var arr = $(".member_chapters span", memberBlock).text().split(", ");
                 var currentChapNum = parseInt($(".member_usname span", memberBlock).text());
 
-                if(action == "add")
+                if(action === "add")
                 {
-                    if(arr[0] == "")
+                    if(arr[0] === "")
                         arr[0] = data.chapter;
                     else
                         arr.push(data.chapter);
@@ -945,6 +946,10 @@ function assignChapter(data, action)
                     $(".member_chapters span", memberBlock).html("");
                     $(".member_chapters", memberBlock).hide();
                 }
+
+                if (action === "add") {
+                    sendUserEmail(data.eventID, data.memberID, data.chapter);
+                }
             }
             else
             {
@@ -955,4 +960,12 @@ function assignChapter(data, action)
             $(".assignChapterLoader.dialog_f").hide();
             $(".assignChapterLoader[data="+data.chapter+"]").hide();
         });
+}
+
+function sendUserEmail(eventID, memberID, chapter) {
+    $.post("/events/rpc/send_user_email", {
+        eventID: eventID,
+        chapter: chapter,
+        memberID: memberID
+    });
 }

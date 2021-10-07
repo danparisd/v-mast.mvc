@@ -107,7 +107,13 @@ if(!isset($error)):
                                             data-name="<?php echo $sndName ?>"
                                             data-level="<?php echo $chapData["sndCheck"][$chapter]["done"] ?>"
                                             <?php echo $p1 ? "disabled" : "" ?>>
-                                        <?php echo __("l2_snd_checker") ?>
+                                        <?php
+                                        if ($event->project->bookProject == "sun") {
+                                            echo __("l2_sun_snd_checker");
+                                        } else {
+                                            echo __("l2_snd_checker");
+                                        }
+                                        ?>
                                     </button>
                                     <?php if($p1): ?>
                                         <button class="btn btn-danger remove_checker_alt" id="p1_checker"
@@ -183,13 +189,18 @@ if(!isset($error)):
                                         if($step == EventCheckSteps::NONE) continue;
                                         if(EventCheckSteps::enum($step, $mode) > 3) continue;
 
+                                        $add = "";
+                                        if ($step == EventCheckSteps::FST_CHECK && $event->project->bookProject == "sun") {
+                                            $add = "_sun";
+                                        }
+
                                         $selected = $step == $member->pivot->step;
                                         $o_disabled = EventCheckSteps::enum($member->pivot->step, $mode) < $i ||
                                             (EventCheckSteps::enum($member->pivot->step, $mode) - $i) > 1;
                                         ?>
 
                                         <option <?php echo ($selected ? " selected" : "").($o_disabled ? " disabled" : "") ?> value="<?php echo $step ?>">
-                                            <?php echo __($step) ?>
+                                            <?php echo __($step.$add) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
