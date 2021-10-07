@@ -1908,9 +1908,13 @@ class AdminController extends Controller {
 
                     // Create new translator
                     $chkData = [];
+                    $crData = [];
                     for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                     {
                         $chkData[$i] = ["memberID" => $member->memberID, "done" => 1];
+
+                        $done = $project->bookProject == "sun" ? 2 : 1;
+                        $crData[$i] = ["memberID" => $member->memberID, "done" => $done];
                     }
 
                     $trData = array(
@@ -1919,7 +1923,7 @@ class AdminController extends Controller {
                         "verbCheck" => json_encode($chkData),
                         "peerCheck" => json_encode($chkData),
                         "kwCheck" => json_encode($chkData),
-                        "crCheck" => json_encode($chkData)
+                        "crCheck" => json_encode($crData)
                     );
                     $event->translators()->attach($member, $trData);
                     $translator = $member->translators->where("eventID", $eventID, false)->first();
