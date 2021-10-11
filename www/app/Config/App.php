@@ -115,6 +115,7 @@ Config::set('app', array(
         'App\Providers\LanguageServiceProvider',
         'App\Providers\SourceServiceProvider',
         'App\Providers\BookInfoServiceProvider',
+        'App\Providers\ResourcesServiceProvider',
     ),
 
     /**

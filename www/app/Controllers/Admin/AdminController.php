@@ -2,7 +2,6 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Data\ObsChunkType;
 use App\Domain\EventContributors;
 use App\Domain\ProjectContributors;
 use App\Models\ApiModel;
@@ -17,6 +16,7 @@ use App\Repositories\GatewayLanguage\IGatewayLanguageRepository;
 use App\Repositories\Language\ILanguageRepository;
 use App\Repositories\Member\IMemberRepository;
 use App\Repositories\Project\IProjectRepository;
+use App\Repositories\Resources\IResourcesRepository;
 use App\Repositories\Source\ISourceRepository;
 use Config\Config;
 use Database\ORM\Collection;
@@ -53,6 +53,7 @@ class AdminController extends Controller {
     protected $languageRepo = null;
     protected $sourceRepo = null;
     protected $bookInfoRepo = null;
+    protected $resourcesRepo = null;
 
     private $_member;
 
@@ -63,7 +64,8 @@ class AdminController extends Controller {
         IEventRepository $eventRepo,
         ILanguageRepository $languageRepo,
         ISourceRepository $sourceRepo,
-        IBookInfoRepository $bookInfoRepo
+        IBookInfoRepository $bookInfoRepo,
+        IResourcesRepository $resourcesRepo
     ) {
         parent::__construct();
 
@@ -74,6 +76,7 @@ class AdminController extends Controller {
         $this->languageRepo = $languageRepo;
         $this->sourceRepo = $sourceRepo;
         $this->bookInfoRepo = $bookInfoRepo;
+        $this->resourcesRepo = $resourcesRepo;
 
         if(Config::get("app.isMaintenance")
             && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips")))
@@ -1590,8 +1593,8 @@ class AdminController extends Controller {
                             return;
                         }
                     } elseif ($bookInfo->category == "obs") {
-                        $obs = $this->_apiModel->getObs($project->sourceLangID);
-                        if(empty($obs)) {
+                        $obs = $this->resourcesRepo->getObs($project->sourceLangID);
+                        if(!$obs || $obs->isEmpty()) {
                             $error[] = __("no_source_error");
                             echo json_encode(array("error" => Error::display($error)));
                             return;

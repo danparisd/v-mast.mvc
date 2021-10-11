@@ -92,6 +92,8 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
         ->where(["eventID" => "[0-9]+"]);
     Router::any("translator-rad/{eventID}", "EventsController@translatorRadio")
         ->where(["eventID" => "[0-9]+"]);
+    Router::any("translator-obs/{eventID}", "EventsController@translatorObs")
+        ->where(["eventID" => "[0-9]+"]);
     Router::any("checker-l2/{eventID}", "EventsController@checkerL2")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("checker-sun-l2/{eventID}", "EventsController@checkerSunL2")

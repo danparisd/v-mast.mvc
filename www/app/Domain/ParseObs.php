@@ -2,15 +2,17 @@
 
 namespace App\Domain;
 
-use App\Data\ObsChunk;
-use App\Data\ObsChunkType;
+use App\Data\Obs\ObsChapter;
+use App\Data\Obs\ObsChunk;
+use App\Data\Obs\ObsChunkType;
 use Support\Collection;
 
 class ParseObs
 {
-    public static function parse($md) {
+    public static function parse($md, $chapter) {
         $lines = preg_split("/\\r\\n|\\n|\\r/", $md);
-        $chapter = new Collection();
+        $obsChunks = new Collection();
+
         $tmpImg = null;
         foreach ($lines as $line) {
             $title = ParseObs::parseTitle($line);
@@ -19,15 +21,22 @@ class ParseObs
             $description = ParseObs::parseDescription($line);
 
             if ($title)
-                $chapter->push(ParseObs::toChunk(ObsChunkType::TITLE, $title));
+                $obsChunks->push(
+                    ParseObs::toChunk(ObsChunkType::TITLE, $title)
+                );
             if ($image)
                 $tmpImg = $image;
             if ($paragraph)
-                $chapter->push(ParseObs::toChunk(ObsChunkType::PARAGRAPH, $paragraph, $tmpImg));
+                $obsChunks->push(
+                    ParseObs::toChunk(ObsChunkType::PARAGRAPH, $paragraph, $tmpImg)
+                );
             if ($description)
-                $chapter->push(ParseObs::toChunk(ObsChunkType::DESCRIPTION, $description));
+                $obsChunks->push(
+                    ParseObs::toChunk(ObsChunkType::DESCRIPTION, $description)
+                );
         }
-        return $chapter;
+
+        return new ObsChapter($chapter, $obsChunks);
     }
 
     private static function parseTitle($line) {
@@ -66,7 +75,7 @@ class ParseObs
         return null;
     }
 
-    private static function toChunk($type, $title, $img = null) {
+    private static function toChunk( $type, $title, $img = null) {
         return new ObsChunk($type, $title, $img);
     }
 }
