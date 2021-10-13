@@ -94,6 +94,8 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
         ->where(["eventID" => "[0-9]+"]);
     Router::any("checker-l2/{eventID}", "EventsController@checkerL2")
         ->where(["eventID" => "[0-9]+"]);
+    Router::any("checker-sun-l2/{eventID}", "EventsController@checkerSunL2")
+        ->where(["eventID" => "[0-9]+"]);
     Router::any("checker-l3/{eventID}", "EventsController@checkerL3")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("checker-l3/{eventID}/{memberID}/{chapter}", "EventsController@checkerL3Peer")
@@ -134,6 +136,12 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
             "memberID" => "[0-9]+"
             ]);
     Router::any("checker-l2/{eventID}/{memberID}/{chapter}", "EventsController@checkerL2Continue")
+        ->where([
+            "eventID" => "[0-9]+",
+            "memberID" => "[0-9]+",
+            "chapter" => "[0-9]+"
+        ]);
+    Router::any("checker-sun-l2/{eventID}/{memberID}/{chapter}", "EventsController@checkerSunL2Continue")
         ->where([
             "eventID" => "[0-9]+",
             "memberID" => "[0-9]+",
@@ -239,6 +247,8 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
         ->where(["eventID" => "[0-9]+"]);
     Router::any("information-l2/{eventID}", "InformationController@informationL2")
         ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-sun-l2/{eventID}", "InformationController@informationSunL2")
+        ->where(["eventID" => "[0-9]+"]);
     Router::any("information-tn-l3/{eventID}", "InformationController@informationL3")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("information-sun-l3/{eventID}", "InformationController@informationL3")
@@ -272,6 +282,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("rpc/create_words_group", "ManageController@createWordsGroup");
     Router::any("rpc/delete_words_group", "ManageController@deleteWordsGroup");
     Router::any("rpc/get_event_members", "ManageController@getEventMembers");
+    Router::any("rpc/send_user_email", "ManageController@sendUserEmail");
 });
 
 //DEMO
@@ -285,6 +296,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("demo-tq/{page?}", "DemoController@demoTq");
     Router::any("demo-tw/{page?}", "DemoController@demoTw");
     Router::any("demo-sun/{page?}", "DemoController@demoSun");
+    Router::any("demo-sun-l2/{page?}", "DemoController@demoSunL2");
     Router::any("demo-sun-l3/{page?}", "DemoController@demoSunL3");
     Router::any("demo-sun-odb/{page?}", "DemoController@demoSunOdb");
     Router::any("demo-rad/{page?}", "DemoController@demoRadio");

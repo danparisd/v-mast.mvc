@@ -182,7 +182,7 @@ class EventContributors
     }
 
     private function setContributorsL2() {
-        if (in_array($this->mode, ["udb", "ulb"])) {
+        if (in_array($this->mode, ["udb", "ulb","sun"])) {
             foreach ($this->event->checkersL2 as $checker) {
                 $sndCheck = (array)json_decode($checker->pivot->sndCheck);
                 $peer1Check = (array)json_decode($checker->pivot->peer1Check);
@@ -220,7 +220,7 @@ class EventContributors
 
             foreach ($data["chapters"] as $chapter) {
                 if (!empty($chapter))
-                    $checkersArr[] = $chapter["l2memberID"];
+                    $this->checkersArr[] = $chapter["l2memberID"];
             }
             $this->checkersArr = array_unique($this->checkersArr);
         } else {

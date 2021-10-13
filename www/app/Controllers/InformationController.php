@@ -10,6 +10,7 @@ use App\Domain\OdbSunProgress;
 use App\Domain\RadioProgress;
 use App\Domain\ScriptureL2Progress;
 use App\Domain\ScriptureProgress;
+use App\Domain\SunL2Progress;
 use App\Domain\SunProgress;
 use App\Domain\TnProgress;
 use App\Domain\TqProgress;
@@ -798,6 +799,108 @@ class InformationController extends Controller {
             $response["admins"] = $data["admins"];
             $response["members"] = $data["members"];
             $response["html"] = View::make("Events/SUN/GetInfo")
+                ->shares("data", $data)
+                ->renderContents();
+
+            echo json_encode($response);
+        }
+    }
+
+    public function informationSunL2($eventID)
+    {
+        $isXhr = false;
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $isXhr = true;
+            $response = ["success" => false];
+        }
+
+        $event = $this->eventRepo->get($eventID);
+
+        $data["menu"] = 1;
+        $data["isAdmin"] = false;
+
+        if ($event) {
+            if ($event->project->bookProject != "sun") {
+                Url::redirect("events/");
+            }
+
+            if (!$this->canViewInfo($event)) {
+                if (!$isXhr)
+                    $error[] = __("empty_or_not_permitted_event_error");
+                else {
+                    $response["errorType"] = "empty_no_permission";
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+
+            $data["isAdmin"] = $this->isAdmin($event);
+        } else {
+            if (!$isXhr)
+                $error[] = __("empty_or_not_permitted_event_error");
+            else {
+                $response["errorType"] = "empty_no_permission";
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+        if (!isset($error)) {
+            $data = array_merge($data, SunL2Progress::calculateEventProgress($event));
+            $members = $data["members"];
+
+            $admins = array_keys($event->admins->getDictionary());
+
+            $empty = array_fill(0, sizeof($admins), "");
+            $adminsArr = array_combine($admins, $empty);
+
+            $members += $adminsArr;
+
+            $membersData = $this->memberRepo->all()->filter(function($m) use ($members) {
+                return array_key_exists($m->memberID, $members);
+            });
+
+            foreach ($membersData as $member) {
+                $members[$member->memberID] = [];
+                $members[$member->memberID]["userName"] = $member->userName;
+                $members[$member->memberID]["name"] = $member->firstName . " " . mb_substr($member->lastName, 0, 1) . ".";
+                $members[$member->memberID]["avatar"] = $member->profile->avatar;
+            }
+
+            foreach ($members as $key => $member) {
+                if (!is_numeric($key) && $key != "na") {
+                    $name = $members[$key];
+                    $members[$key] = [];
+                    $members[$key]["userName"] = $key;
+                    $members[$key]["name"] = $name;
+                    $members[$key]["avatar"] = "n1";
+                }
+            }
+
+            $members["na"] = __("not_available");
+            $members = array_filter($members);
+
+            $data["admins"] = $admins;
+            $data["members"] = $members;
+        }
+
+        $data["notifications"] = $this->_notifications;
+        $data["newNewsCount"] = $this->_newNewsCount;
+
+        if (!$isXhr) {
+            return View::make('Events/L2Sun/Information')
+                ->shares("title", __("event_info"))
+                ->shares("data", $data)
+                ->shares("event", $event)
+                ->shares("error", @$error);
+        } else {
+            $this->layout = "dummy";
+            $response["success"] = true;
+            $response["progress"] = $data["overall_progress"];
+            $response["admins"] = $data["admins"];
+            $response["members"] = $data["members"];
+            $response["html"] = View::make("Events/L2Sun/GetInfo")
                 ->shares("data", $data)
                 ->renderContents();
 

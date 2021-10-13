@@ -1,6 +1,7 @@
 <?php
 use Helpers\Constants\EventStates;
 use Helpers\Constants\EventSteps;
+use Helpers\Constants\EventCheckSteps;
 use Helpers\Session;
 ?>
 
@@ -20,7 +21,8 @@ use Helpers\Session;
                 <a href="/events/demo-tq"><li><?php echo __("tq") ?></li></a>
                 <a href="/events/demo-tw"><li><?php echo __("tw") ?></li></a>
                 <a href="/events/demo-sun"><li><?php echo __("vsail") ?></li></a>
-                <!--<a href="/events/demo-sun-l3"><li><?php /*echo __("vsail_l3") */?></li></a>-->
+                <a href="/events/demo-sun-l2"><li><?php echo __("vsail_l2_l3", ["level" => 2]) ?></li></a>
+                <a href="/events/demo-sun-l3"><li><?php echo __("vsail_l2_l3", ["level" => 3]) ?></li></a>
                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
             </ul>
@@ -73,7 +75,7 @@ use Helpers\Session;
                     $currentMembers = $event->checkersL2->count();
                     $members = __("checkers");
                     $manageLink = "/events/manage-l2/".$event->eventID;
-                    $progressLink = "/events/information-l2/".$event->eventID;
+                    $progressLink = "/events/information".(!in_array($event->project->bookProject, ["ulb","udb"]) ? "-".$event->project->bookProject : "")."-l2/".$event->eventID;
                     break;
 
                 case EventStates::L3_RECRUIT:
@@ -193,7 +195,7 @@ use Helpers\Session;
                     $currentMembers = $event->checkersL2->count();
                     $members = __("checkers");
                     $manageLink = "/events/manage-l2/".$event->eventID;
-                    $progressLink = "/events/information-l2/".$event->eventID;
+                    $progressLink = "/events/information".(!in_array($event->project->bookProject, ["ulb","udb"]) ? "-".$event->project->bookProject : "")."-l2/".$event->eventID;
                     break;
 
                 case EventStates::L3_RECRUIT:
@@ -523,6 +525,14 @@ use Helpers\Session;
     <?php endforeach ?>
 
     <?php foreach($data["myCheckerL2Events"] as $key => $event): ?>
+        <?php
+        $mode = $event->bookProject;
+        $link = "/events/checker"
+            .(!in_array($mode, ["ulb","udb"]) ? "-".$mode : "")
+            ."-l2/"
+            . $event->eventID
+            .(isset($event->isContinue) ? "/".$event->l2memberID."/".$event->currentChapter : "");
+        ?>
         <div class="event_block <?php echo $key%2 == 0 ? "lemon-marked" : "" ?>">
             <div class="event_logo checkingl2">
                 <div class="event_type"><?php echo __("l2_3_events", ["level" => 2]) ?></div>
@@ -547,7 +557,7 @@ use Helpers\Session;
                 </div>
             </div>
             <div class="event_current_pos">
-                <?php if($event->step != EventSteps::NONE): ?>
+                <?php if($event->step != EventCheckSteps::NONE): ?>
                     <div class="event_current_title"><?php echo __("you_are_at") ?></div>
                     <div class="event_curr_step">
                         <img class='img_current' src="<?php echo template_url("img/steps/green_icons/". $event->step. ".png") ?>">
@@ -557,7 +567,14 @@ use Helpers\Session;
                                         ["chapter" => $event->currentChapter]) : "") ?>
                             </div>
                             <div>
-                                <?php echo __($event->step) ?>
+                                <?php
+                                $add = "";
+                                if ($event->bookProject == "sun"
+                                    && in_array($event->step, [EventCheckSteps::FST_CHECK, EventCheckSteps::SND_CHECK])) {
+                                    $add = "_sun";
+                                }
+                                ?>
+                                <?php echo __($event->step.$add) ?>
                             </div>
                         </div>
                     </div>
@@ -565,10 +582,7 @@ use Helpers\Session;
             </div>
             <div class="event_action check2">
                 <div class="event_link">
-                    <a href="/events/checker-l2/<?php echo $event->eventID
-                        .(isset($event->isContinue) ? "/".$event->l2memberID."/".$event->currentChapter : "") ?>">
-                        <?php echo __("continue_alt") ?>
-                    </a>
+                    <a href="<?php echo $link ?>"><?php echo __("continue_alt") ?></a>
                 </div>
             </div>
 
@@ -601,7 +615,7 @@ use Helpers\Session;
                 </div>
             </div>
             <div class="event_current_pos">
-                <?php if($event->step != EventSteps::NONE): ?>
+                <?php if($event->step != EventCheckSteps::NONE): ?>
                     <div class="event_current_title"><?php echo __("you_are_at") ?></div>
                     <div class="event_curr_step">
                         <img class='img_current' src="<?php echo template_url("img/steps/green_icons/". $event->step. ".png") ?>">
