@@ -514,7 +514,7 @@ use Helpers\Session;
             <div class="event_action check1">
                 <div class="event_link">
                     <a href="/events/checker<?php echo ($event->sourceBible == "odb" ? "-odb" : "")
-                        .(in_array($event->bookProject, ["tn","sun","tq","tw","rad"]) ? "-".$event->bookProject : "")
+                        .(in_array($event->bookProject, ["tn","sun","tq","tw","rad","obs"]) ? "-".$event->bookProject : "")
                             ."/".$event->eventID."/".$event->memberID
                             .(isset($event->isContinue) || in_array($event->bookProject, ["tq","tw", "ulb", "udb"]) ? "/".$event->currentChapter : "")?>"
                        data="<?php echo $event->eventID."_".$event->memberID?>">

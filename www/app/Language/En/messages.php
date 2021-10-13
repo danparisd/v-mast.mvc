@@ -656,6 +656,7 @@ return array (
                                 <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
     
     "blind-draft" => "Blind Draft",
+    "blind-draft-alt" => "Blind Draft",
     "blind-draft_previous" => "Blind Draft - Previous chunk",
     "blind-draft_desc" => "<li><b>PURPOSE:</b> to translate the source text as naturally as possible in the target language.</li>
                             <li><b>LENGTH:</b> Take no more than 11 minutes for each chunk.</li>
@@ -1564,6 +1565,7 @@ return array (
 
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
+    "peer-review_obs" => "Pastor Review",
 
     "peer-review_tq_desc" => "<li><b>PURPOSE:</b> to review the Questions/Answers and check accuracy while maintaining naturalness.</li>
                         <li>The reviewer will look for spelling, punctuation, and flow/naturalness errors, as well as 

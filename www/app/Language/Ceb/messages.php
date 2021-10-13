@@ -601,6 +601,7 @@ return array (
                                 <li>Click \"Yes I did\" and \"{step}\" to move to the next step.</li>",
     
     "blind-draft" => "Pagsulat",
+    "blind-draft-alt" => "Pagsulat",
     "blind-draft_previous" => "Pagsulat - Previous chunk",
     "blind-draft_desc" => "<li><b>KATUYOUAN:</b> Aron mas natural ang paghubad ngadto sa kaugalingong pinulongan. </li><li>Kutob sa imong mahinumdoman, isulat ang imong hinubad niana nga bahin ug dili ka mahimong maglantaw sa gigikanan nga teksto, sa natural nga paagi ginamit ang mga pulong nga klaro ug masabtan. </li><li>Ayaw paglantaw sa gigikanan nga teksto. Isulat kung unsa lang ang imong nahinumdoman. </li><li>Ayaw hunahunaa ang pagbutang sa mga bersikulo. Buhaton kini sa kataposan na nga bahin sa lakang. </li><li>Ang usa sa pundasyon sa kinaiyahan sa maayo nga hinubad mao ang pagkanatural sa pinulongan. Ang pagsulat nga dili maglantaw sa gigikanan nga pinulongan ang makabuhat niini ug ang short-term nga hunahuna ang magpugos nga mogawas sa hunahuna ang pinakanatural nga paagi sa paghubad. Dili kini kinahanglan nga mahimong perpekto nga teksto (ang mosunod nga upat ka mga lakang ang magbuhat niini), gituyo kini aron mahimong mas natural kay kung dili natural ang hinubad, moabot kini sa mas daghan nga sayop ug taas nga trabahoon sa pagtul-id sa mga sayop. </li><li>Kinahanglan dili ka molapas sa 10-12 ka minute niini nga lakang.</li>",
 
@@ -1044,6 +1045,7 @@ return array (
 
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
+    "peer-review_obs" => "Pastor Review",
 
     "peer-review_tq_desc" => "<li><b>PURPOSE:</b> to review the Questions/Answers and check accuracy while maintaining naturalness.</li>
                         <li>The reviewer will look for spelling, punctuation, flow/naturalness errors, as well as, 

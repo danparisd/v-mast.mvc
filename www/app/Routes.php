@@ -31,8 +31,13 @@ Route::group(["prefix" => "translations", "namespace" => "App\Controllers"], fun
     Router::any("{lang}/tw/{sourceBible?}/{bookCode}/md", "TranslationsController@downloadMdTw")
         ->where([
             "lang" => "[a-zA-Z0-9-]+",
-            "bookProject" => "[a-z0-9]+",
+            "sourceBible" => "[a-z0-9]+",
             "bookCode" => "[a-z0-9]+"
+        ]);
+    Router::any("{lang}/obs/{sourceBible?}/obs/md", "TranslationsController@downloadMdObs")
+        ->where([
+            "lang" => "[a-zA-Z0-9-]+",
+            "sourceBible" => "[a-z0-9]+"
         ]);
     Router::any("{lang}/{bookProject}/{sourceBible?}/{bookCode}/md", "TranslationsController@downloadMd")
         ->where([
@@ -175,6 +180,12 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
             "memberID" => "[0-9]+",
             "chapter" => "[0-9]+"
         ]);
+    Router::any("checker-obs/{eventID}/{memberID}/{chapter}", "EventsController@checkerObs")
+        ->where([
+            "eventID" => "[0-9]+",
+            "memberID" => "[0-9]+",
+            "chapter" => "[0-9]+"
+        ]);
     Router::any("checker/{eventID}/{memberID}/{chapter}/{step}/apply", "EventsController@applyChecker")
         ->where([
             "eventID" => "[0-9]+",
@@ -184,14 +195,14 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
         ]);
     Router::any("checker-{bookProject}/{eventID}/{memberID}/other/{chapter}/apply", "EventsController@applyCheckerOther")
         ->where([
-            "bookProject" => "tn|tq|tw",
+            "bookProject" => "tn|tq|tw|obs",
             "eventID" => "[0-9]+",
             "memberID" => "[0-9]+",
             "chapter" => "[0-9]+"
         ]);
     Router::any("checker-{bookProject}/{eventID}/{memberID}/peer-review/{chapter}/apply", "EventsController@applyCheckerOther")
         ->where([
-            "bookProject" => "tn|tq|tw",
+            "bookProject" => "tn|tq|tw|obs",
             "eventID" => "[0-9]+",
             "memberID" => "[0-9]+",
             "chapter" => "[0-9]+"
@@ -262,6 +273,8 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("information-odb-sun/{eventID}", "InformationController@informationOdbSun")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("information-rad/{eventID}", "InformationController@informationRadio")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-obs/{eventID}", "InformationController@informationObs")
         ->where(["eventID" => "[0-9]+"]);
 });
 

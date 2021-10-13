@@ -1509,6 +1509,15 @@ class ApiModel extends Model
         return $chunks;
     }
 
+    public function getObsChunks($chapter)
+    {
+        $chunks = $chapter->chunks->map(function($item, $key) {
+            return [$key];
+        });
+
+        return $chunks->toArray();
+    }
+
 
     public function testChunks($chunks, $totalVerses)
     {
@@ -1623,6 +1632,25 @@ class ApiModel extends Model
         }
 
         return $postChunks;
+    }
+
+    public function testChunkObs($chunks, $obs)
+    {
+        if(!is_array($chunks))
+            return false;
+
+        if($obs->count() != sizeof($chunks))
+            return false;
+
+        foreach ($chunks as $key => $chunk) {
+            if(trim($chunk["title"]) == "")
+                return false;
+
+            $chunks[$key]["title"] = $chunk["title"];
+            $chunks[$key]["img"] = $chunk["img"];
+        }
+
+        return $chunks;
     }
 
     public function getRanges($arr)

@@ -11,6 +11,7 @@ use Doctrine\DBAL\Connection as DoctrineConnection;
 use PDO;
 use Closure;
 use DateTime;
+use Support\Str;
 
 
 class Connection implements ConnectionInterface
@@ -612,7 +613,7 @@ class Connection implements ConnectionInterface
     {
         $message = $e->getMessage();
 
-        return str_contains($message, array(
+        return Str::contains($message, array(
             'server has gone away',
             'no connection to the server',
             'Lost connection',

@@ -505,7 +505,7 @@ class EventsModel extends Model
      * @param $chapter
      * @return array
      */
-    public function getMemberEventsForQuestionsWords($memberID, $eventID = null, $chkMemberID = null, $chapter = null)
+    public function getMemberEventsForOther($memberID, $eventID = null, $chkMemberID = null, $chapter = null)
     {
         $prepare = [];
         if ($eventID)
@@ -534,7 +534,7 @@ class EventsModel extends Model
             "LEFT JOIN " . PREFIX . "languages AS res_lang ON " . PREFIX . "projects.resLangID = res_lang.langID " .
             "LEFT JOIN " . PREFIX . "book_info ON evnt.bookCode = " . PREFIX . "book_info.code " .
             "LEFT JOIN " . PREFIX . "tw_groups ON trs.currentChapter = " . PREFIX . "tw_groups.groupID " .
-            "WHERE (" . PREFIX . "projects.bookProject = 'tq' OR " . PREFIX . "projects.bookProject = 'tw') " .
+            "WHERE " . PREFIX . "projects.bookProject IN ('tq','tw','obs') " .
             ($eventID ? "AND trs.eventID = :eventID " : " ") .
             ($chkMemberID ? "AND trs.memberID = :chkMemberID " : " ") .
             "ORDER BY tLang, " . PREFIX . "book_info.sort";
@@ -1397,7 +1397,7 @@ class EventsModel extends Model
                 $peer3Check = (array)json_decode($participant->peer3Check);
 
                 // Resource Checkers
-                if (in_array($mode, ["tn", "sun", "tw", "tq", "ulb", "udb"])) {
+                if (in_array($mode, ["tn", "sun", "tw", "tq", "ulb", "udb", "obs"])) {
                     $contributorsIDs = Arrays::append($contributorsIDs, array_values(array_map(function ($elm) {
                         return $elm->memberID;
                     }, $peerCheck)));
@@ -1639,7 +1639,7 @@ class EventsModel extends Model
             "LEFT JOIN " . PREFIX . "languages AS s_lang ON " . PREFIX . "projects.sourceLangID = s_lang.langID " .
             "LEFT JOIN " . PREFIX . "book_info ON " . PREFIX . "events.bookCode = " . PREFIX . "book_info.code " .
             "WHERE trs.eventID IN(SELECT eventID FROM " . PREFIX . "translators WHERE memberID = :memberID AND isChecker=1) " .
-            "AND " . PREFIX . "projects.bookProject IN ('tq', 'tw', 'tn')";
+            "AND " . PREFIX . "projects.bookProject IN ('tq','tw','tn','obs')";
 
         $prepare = [
             ":memberID" => Session::get("memberID")

@@ -634,7 +634,7 @@ $(function () {
                     {
                         prev_step = Language.other_consume;
                     }
-                    if(["tq","tw"].indexOf(mode) > -1)
+                    if(["tq","tw","obs"].indexOf(mode) > -1)
                     {
                         prev_step = Language.keyword_check;
                     }

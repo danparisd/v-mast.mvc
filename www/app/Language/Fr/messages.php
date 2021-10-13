@@ -650,6 +650,7 @@ return array (
                                 <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
     "blind-draft" => "Brouillon Aveugle",
+    "blind-draft-alt" => "Brouillon Aveugle",
     "blind-draft_previous" => "Brouillon Aveugle – Tronçon d’Avant",
     "blind-draft_desc" => "<li><b>BUT:</b> Traduire le texte d’origine de la façon la plus naturelle dans le langage target.</li>
                             <li><b>DURÉE:</b> ne prenez pas plus de 11 minutes pour chaque section.</li>
@@ -1596,6 +1597,7 @@ return array (
 
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
+    "peer-review_obs" => "Pastor Review",
 
     "peer-review_tq_desc" => "<li><b>PURPOSE:</b> to review the Questions/Answers and check accuracy while maintaining naturalness.</li>
                         <li>The reviewer will look for spelling, punctuation, and flow/naturalness errors, as well as 

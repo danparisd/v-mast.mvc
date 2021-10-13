@@ -4,6 +4,7 @@
 namespace App\Repositories\Event;
 
 
+use App\Domain\ObsProgress;
 use App\Domain\ScriptureL2Progress;
 use App\Domain\AnyL3Progress;
 use App\Domain\ScriptureProgress;
@@ -74,6 +75,8 @@ class EventRepository implements IEventRepository
                 $progress = SunL2Progress::calculateEventProgress($event, true);
             }
             return $progress;
+        } elseif ($event->project->bookProject == "obs") {
+            return ObsProgress::calculateEventProgress($event, true);
         } else {
             return 0;
         }

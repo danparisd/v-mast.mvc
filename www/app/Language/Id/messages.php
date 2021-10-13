@@ -606,6 +606,7 @@ return array (
                                 <li>Click \"Yes I did\" and \"{step}\" to move to the next step.</li>",
     
     "blind-draft" => "Draft Kosong",
+    "blind-draft-alt" => "Draft Kosong",
     "blind-draft_previous" => "Draft Kosong – Penggalan Sebelumnya",
     "blind-draft_desc" => "<li><b>KEGUNAAN:</b> untuk menerjemahkan teks sumber sealami mungkin dalam bahasa tujuan.</li> <li>Tanpa melihat teks sumber, ketik terjemahan Anda dari penggalan itu sebaik yang dapat Anda ingat, secara alami, menggunakan kata-kata yang jelas dan dapat dimengerti</li><li>Jangan melihat pada teks sumber. Terjemahkan hanya apa yang Anda ingat.</li><li>Jangan khawatir tentang penandaan ayat-ayat. Akan dilakukan pada langkah terakhir</li><li>Salah satu sifat dasar dari terjemahan yang baik adalah kealamian bahasa. Draft kosong mengambil ini dan memungkinkan otak/memori jangka pendek untuk mengeluarkan teks yang paling alami dengan cepat. Tidak dimaksudkan untuk menjadi teks akurat yang sempurna (empat langkah selanjutnya akan mengerjakan itu), dimaksudkan untuk memberikan dasar kealamian, yang jika tidak ada, menyebabkan kesalahan lain dan perbaikan kesalahan mendasar yang lama.</li><li>Ambil waktu tidak lebih dari 10-12 menit pada kegiatan ini per penggalan</li>",
 
@@ -1053,6 +1054,7 @@ return array (
 
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
+    "peer-review_obs" => "Pastor Review",
 
     "peer-review_tq_desc" => "<li><b>PURPOSE:</b> to review the Questions/Answers and check accuracy while maintaining naturalness.</li>
                         <li>The reviewer will look for spelling, punctuation, flow/naturalness errors, as well as, 

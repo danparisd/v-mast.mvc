@@ -67,9 +67,9 @@ class TranslationsModel extends Model
     /**
      * Get translation work
      * @param $lang Language ID
-     * @param $bookProject book project type (ulb, udb, tn, sun, l2)
-     * @param $sourceBible source bible (ulb, ayt, odb)
-     * @param $bookCode Book slug
+     * @param $bookProject string Book project type (ulb, udb, tn, sun, l2)
+     * @param $sourceBible string Source bible (ulb, ayt, odb)
+     * @param $bookCode string Book slug
      * @return array
      */
     public function getTranslation($lang, $bookProject, $sourceBible, $bookCode = null)
@@ -79,11 +79,15 @@ class TranslationsModel extends Model
                 "translations.bookProject", "projects.sourceBible", "translations.bookCode", "book_info.name AS bookName", "book_info.sort",
                 "translations.chapter", "translations.chunk", "translations.translatedVerses", "events.state",
                 "translations.eventID", "languages.direction", "projects.sourceLangID", "projects.sourceBible",
-                "projects.projectID", "projects.resLangID")
+                "projects.projectID", "projects.resLangID", "chapters.chunks")
             ->leftJoin("languages", "translations.targetLang","=", "languages.langID")
             ->leftJoin("book_info", "translations.bookCode","=", "book_info.code")
             ->leftJoin("projects", "translations.projectID","=", "projects.projectID")
             ->leftJoin("events", "translations.eventID","=", "events.eventID")
+            ->leftJoin("chapters", function ($join) {
+                $join->on("chapters.chapter", "=", "translations.chapter")
+                    ->on("chapters.eventID", "=", "events.eventID");
+            })
             ->where("translations.targetLang", $lang)
             ->where("translations.bookProject", $bookProject)
             ->where("projects.sourceBible", $sourceBible)
@@ -365,7 +369,7 @@ class TranslationsModel extends Model
     }
 
     public function generateManifest($data) {
-        if(in_array($data->bookProject, ["tn", "tq", "tw"]))
+        if(in_array($data->bookProject, ["tn", "tq", "tw", "obs"]))
         {
             $format = "text/markdown";
         }
@@ -382,12 +386,15 @@ class TranslationsModel extends Model
         {
             $type = $data->bookProject == "tw" ? "dict" : "help";
         }
+        elseif ($data->bookProject == "obs") {
+            $type = "book";
+        }
         else
         {
             $type = "bundle";
         }
 
-        if(in_array($data->bookProject, ["tn", "tq", "tw"]))
+        if(in_array($data->bookProject, ["tn", "tq", "tw", "obs"]))
         {
             $subject = __($data->bookProject);
         }
