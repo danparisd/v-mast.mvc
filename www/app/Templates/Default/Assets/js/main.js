@@ -2842,6 +2842,13 @@ $(document).ready(function() {
             $(".cloud_otp_code_group #cloud_otp_code").val("");
         }
     });
+
+    $(".obs_img").hover(function () {
+        const src = $(this).data("img");
+        $('<img class="obs_img_floatable" src="'+src+'" />').appendTo($(this));
+    }, function () {
+        $(".obs_img_floatable").remove();
+    });
 });
 
 function exportToCloud(url) {

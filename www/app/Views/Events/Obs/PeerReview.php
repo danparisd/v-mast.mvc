@@ -52,11 +52,13 @@ if(isset($data["error"])) return;
                     <?php endif; ?>
 
                     <?php foreach($data["chunks"] as $key => $chunk) : ?>
-                        <div class="row flex_container chunk_block">
+                        <div class="row flex_container chunk_block chunk_block_divider">
                             <div class="chunk_verses flex_left" dir="<?php echo $data["event"][0]->sLangDir ?>">
                                 <div class="obs_chunk no_margin" data-chunk="<?php echo $key ?>">
-                                    <div><?php echo $data["obs"]->get($key)->title ?></div>
-                                    <!--<img src="<?php /*echo $data["obs"]->get($key)->img */?>" />-->
+                                    <div class="obs_title"><?php echo $data["obs"]->get($key)->title ?></div>
+                                    <?php if ($data["obs"]->get($key)->img): ?>
+                                        <div class="obs_img mdi mdi-image" data-img="<?php echo $data["obs"]->get($key)->img ?>"></div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="flex_middle editor_area font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->tLangDir ?>">
@@ -95,9 +97,9 @@ if(isset($data["error"])) return;
                                 </div>
                             </div>
                         </div>
-                        <div class="chunk_divider"></div>
                     <?php endforeach; ?>
                 </div>
+                <div class="clear"></div>
             </div>
 
             <div class="main_content_footer row">

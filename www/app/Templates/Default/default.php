@@ -96,7 +96,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css'),
-    template_url('css/style.css?120'),
+    template_url('css/style.css?121'),
     template_url('css/jquery-ui.min.css'),
     template_url('css/jquery-ui.structure.min.css'),
     template_url('css/jquery-ui.theme.min.css'),
@@ -112,7 +112,7 @@ Assets::js([
     template_url('js/jquery.js'),
     template_url('js/jquery.actual.min.js'),
     template_url('js/unicornFormatter.js'),
-    template_url('js/main.js?113', 'Default'),
+    template_url('js/main.js?114', 'Default'),
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
@@ -190,6 +190,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                 <a href="/events/demo-sun-l3"><li><?php echo __("vsail_l2_l3", ["level" => 3]) ?></li></a>
                                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
+                                <a href="/events/demo-obs"><li><?php echo __("obs") ?></li></a>
                             </ul>
                         </div>
                     </li>

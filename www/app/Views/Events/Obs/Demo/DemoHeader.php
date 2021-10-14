@@ -9,48 +9,34 @@ $chk = $data["isCheckerPage"] ? "_chk" : "";
 
     <ul class="steps_list">
         <li class="pray-step <?php echo $data["step"] == EventSteps::PRAY ? "active" : "" ?>">
-            <a href="/events/demo-tn/pray<?php echo $chk ?>"><span><?php echo __(EventSteps::PRAY)?></span></a>
+            <a href="/events/demo-obs/pray<?php echo $chk ?>"><span><?php echo __(EventSteps::PRAY)?></span></a>
         </li>
-
-        <li class="consume-step <?php echo $data["step"] == EventSteps::CONSUME ? "active" : "" ?>">
-            <a href="/events/demo-tn/consume<?php echo $chk ?>"><span><?php echo __(EventSteps::CONSUME . "_tn")?></span></a>
-        </li>
-
-        <?php if($data["isCheckerPage"]): ?>
-            <li class="highlight-step <?php echo $data["step"] == EventSteps::HIGHLIGHT ? "active" : "" ?>">
-                <a href="/events/demo-tn/highlight"><span><?php echo __(EventSteps::HIGHLIGHT . "_tn")?></span></a>
-            </li>
-        <?php endif; ?>
 
         <?php if(!$data["isCheckerPage"]): ?>
-            <li class="read-chunk-step <?php echo $data["step"] == EventSteps::READ_CHUNK ? "active" : "" ?>">
-                <a href="/events/demo-tn/read_chunk"><span><?php echo __(EventSteps::READ_CHUNK . "_tn")?></span></a>
-            </li>
-            <li class="blind-draft-step <?php echo $data["step"] == EventSteps::BLIND_DRAFT ? "active" : "" ?>">
-                <a href="/events/demo-tn/blind_draft"><span><?php echo __(EventSteps::BLIND_DRAFT . "_tn".$chk)?></span></a>
-            </li>
-        <?php endif; ?>
-
-        <li class="self-check-step <?php echo $data["step"] == EventSteps::SELF_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-tn/self_check<?php echo $chk ?>"><span><?php echo __(EventSteps::SELF_CHECK . "_tn".$chk)?></span></a>
+        <li class="blind-draft-step <?php echo $data["step"] == EventSteps::BLIND_DRAFT ? "active" : "" ?>">
+            <a href="/events/demo-obs/blind_draft"><span><?php echo __(EventSteps::BLIND_DRAFT)?></span></a>
         </li>
 
-        <?php if($data["isCheckerPage"]): ?>
-            <li class="keyword-check-step <?php echo $data["step"] == EventSteps::KEYWORD_CHECK ? "active" : "" ?>">
-                <a href="/events/demo-tn/highlight_chk"><span><?php echo __(EventSteps::KEYWORD_CHECK . "_tn")?></span></a>
-            </li>
+        <li class="self-check-step <?php echo $data["step"] == EventSteps::SELF_CHECK ? "active" : "" ?>">
+            <a href="/events/demo-obs/self_check"><span><?php echo __(EventSteps::SELF_CHECK)?></span></a>
+        </li>
+        <?php endif; ?>
 
-            <li class="peer-review-step <?php echo $data["step"] == EventSteps::PEER_REVIEW ? "active" : "" ?>">
-                <a href="/events/demo-tn/peer_review"><span><?php echo __(EventSteps::PEER_REVIEW . "_tn")?></span></a>
-            </li>
+        <?php if($data["isCheckerPage"]): ?>
+        <li class="keyword-check-step <?php echo $data["step"] == EventSteps::KEYWORD_CHECK ? "active" : "" ?>">
+            <a href="/events/demo-obs/keyword_check"><span><?php echo __(EventSteps::KEYWORD_CHECK)?></span></a>
+        </li>
+
+        <li class="peer-review-step <?php echo $data["step"] == EventSteps::PEER_REVIEW ? "active" : "" ?>">
+            <a href="/events/demo-obs/peer_review"><span><?php echo __(EventSteps::PEER_REVIEW . "_obs")?></span></a>
+        </li>
         <?php endif; ?>
     </ul>
 </div>
 
 <?php
 $isCheckPage = $data["step"] == EventSteps::PEER_REVIEW ||
-    $data["step"] == EventSteps::KEYWORD_CHECK ||
-    $data["step"] == EventSteps::HIGHLIGHT;
+    $data["step"] == EventSteps::KEYWORD_CHECK;
 ?>
 
 <script>
@@ -59,8 +45,8 @@ $isCheckPage = $data["step"] == EventSteps::PEER_REVIEW ||
     var chkMemberID = <?php echo $isCheckPage? "1" : "0"; ?>;
     var step = '<?php echo $data["step"]; ?>';
     var isDemo = true;
-    var myChapter = 2;
-    var tMode = "ulb";
+    var myChapter = 1;
+    var tMode = "obs";
 </script>
 
 <div style="position: fixed; right: 0;">
@@ -75,7 +61,7 @@ $isCheckPage = $data["step"] == EventSteps::PEER_REVIEW ||
         <div class="chat_tabs panel-heading">
             <div class="row">
                 <div id="chk" class="col-sm-4 chat_tab">
-                    <div>Lili J.</div>
+                    <div>Tanya E.</div>
                     <div class="missed"></div>
                 </div>
                 <div id="evnt" class="col-sm-2 chat_tab active">
@@ -102,7 +88,7 @@ $isCheckPage = $data["step"] == EventSteps::PEER_REVIEW ||
         </ul>
         <ul id="evnt_messages" class="chat_msgs">
             <li class="message msg_other" data="16">
-                <div class="msg_name">Ketut S.</div>
+                <div class="msg_name">Михаил Б.</div>
                 <div data-original-title="30.06.2016, 18:38:09" class="msg_text" data-toggle="tooltip" data-placement="top" title="">Hi, this a test event message</div>
             </li>
             <li class="message msg_my" data="7">
@@ -112,7 +98,7 @@ $isCheckPage = $data["step"] == EventSteps::PEER_REVIEW ||
         </ul>
         <ul id="proj_messages" class="chat_msgs">
             <li class="message msg_other" data="16">
-                <div class="msg_name">Ketut S.</div>
+                <div class="msg_name">Irina T.</div>
                 <div data-original-title="30.06.2016, 18:38:09" class="msg_text" data-toggle="tooltip" data-placement="top" title="">Hi, this a test project message</div>
             </li>
             <li class="message msg_my" data="7">
@@ -131,17 +117,12 @@ $isCheckPage = $data["step"] == EventSteps::PEER_REVIEW ||
     <div class="members_online panel panel-info">
         <div class="panel-heading"><?php echo __("members_online_title") ?></div>
         <ul id="online" class="panel-body">
-            <li>Ekle S.</li>
-            <li>Vio S. (<?php echo __("facilitator"); ?>)</li>
-            <li class="mine">Lili J.</li>
-            <li>Sarai E.</li>
-            <li>Ketut S.</li>
-            <li>Jesica K.</li>
-            <li>Epa H.</li>
-            <li>Maya S.</li>
-            <li>Gloria G. (<?php echo __("facilitator"); ?>)</li>
-            <li>Efelin O.</li>
-            <li>Nana S.</li>
+            <li class="mine">Антон Ш.</li>
+            <li>Михаил Б. (<?php echo __("facilitator"); ?>)</li>
+            <li>Irina T.</li>
+            <li>Aleksandr D.</li>
+            <li>Tanya E.</li>
+            <li>Mark P. (<?php echo __("facilitator"); ?>)</li>
         </ul>
     </div>
 
@@ -167,66 +148,3 @@ $isCheckPage = $data["step"] == EventSteps::PEER_REVIEW ||
 </script>
 
 <?php echo isset($page) ? $page : "" ?>
-
-
-<?php if($isCheckPage || $data["step"] == EventSteps::SELF_CHECK): ?>
-<style>
-    .buttons_spec {
-        position: absolute;
-        top: 97px;
-        left: 930px;
-        text-align: center;
-        border: 1px solid #ccc;
-        background-color: white;
-        padding: 5px 10px;
-        z-index: 102;
-    }
-    
-    .buttons_spec.unlinked {
-        position: fixed;
-        left: calc(50% + 345px);
-        top: 20px;
-    }
-</style>
-
-<!--<div class="buttons_spec">
-    <button class="spec_char" data="D̃">D̃</button>
-    <button class="spec_char" data="d̃">d̃</button>&nbsp;&nbsp;
-    <button class="spec_char" data="Õ">Õ</button>
-    <button class="spec_char" data="õ">õ</button>&nbsp;&nbsp;
-    <button class="spec_char" data="T̃">T̃</button>
-    <button class="spec_char" data="t̃">t̃</button><br>
-    <button class="spec_char" data="Ṽ">Ṽ</button>
-    <button class="spec_char" data="ṽ">ṽ</button>&nbsp;&nbsp;
-    <button class="spec_char" data="W̃">W̃</button>
-    <button class="spec_char" data="w̃">w̃</button>
-</div>-->
-
-<script>
-    $(document).ready(function () {
-        var focused;
-        
-        $("textarea").focus(function() {
-            focused = $(this);
-        });
-        
-        $(".spec_char").click(function(e) {
-            e.preventDefault();
-            var char = $(this).attr("data");
-            if(typeof focused != "undefined")
-            {
-                var caretPos = focused[0].selectionStart;
-                var textAreaTxt = focused.val();
-                focused.val(textAreaTxt.substring(0, caretPos) + char + textAreaTxt.substring(caretPos));
-            }
-        });
-        
-        $(window).scroll(function () {
-            if($(this).scrollTop() > 150)
-                $(".buttons_spec").addClass("unlinked");
-            else
-                $(".buttons_spec").removeClass("unlinked");
-        });
-    });
-</script>
-<?php endif; ?>

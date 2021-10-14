@@ -315,6 +315,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("demo-sun-l3/{page?}", "DemoController@demoSunL3");
     Router::any("demo-sun-odb/{page?}", "DemoController@demoSunOdb");
     Router::any("demo-rad/{page?}", "DemoController@demoRadio");
+    Router::any("demo-obs/{page?}", "DemoController@demoObs");
 });
 
 

@@ -25,6 +25,7 @@ use Helpers\Session;
                 <a href="/events/demo-sun-l3"><li><?php echo __("vsail_l2_l3", ["level" => 3]) ?></li></a>
                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
+                <a href="/events/demo-obs"><li><?php echo __("obs") ?></li></a>
             </ul>
         </div>
     </div>

@@ -56,13 +56,15 @@ if(empty($error) && empty($data["success"])):
                     <?php endif; ?>
 
                     <?php foreach($data["chunks"] as $chunkNo => $chunk): ?>
-                    <div class="row chunk_block no_autosize">
+                    <div class="row chunk_block chunk_block_divider">
                         <div class="flex_container">
                             <div class="chunk_verses flex_left" dir="<?php echo $data["event"][0]->resLangDir ?>">
-                                <?php
-                                $text = $data["obs"]->get($chunkNo)->title;
-                                ?>
-                                <div class="obs_chunk no_margin" data-chunk="<?php echo $chunkNo ?>"><?php echo $text ?></div>
+                                <div class="obs_chunk no_margin" data-chunk="<?php echo $chunkNo ?>">
+                                    <div class="obs_title"><?php echo $data["obs"]->get($chunkNo)->title ?></div>
+                                    <?php if ($data["obs"]->get($chunkNo)->img): ?>
+                                        <div class="obs_img mdi mdi-image" data-img="<?php echo $data["obs"]->get($chunkNo)->img ?>"></div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                             <div class="flex_middle font_<?php echo $data["event"][0]->targetLang ?>"
                                  dir="<?php echo $data["event"][0]->tLangDir ?>">
@@ -104,10 +106,10 @@ if(empty($error) && empty($data["success"])):
                                 </div>
                             </div>
                         </div>
-                        <div class="chunk_divider"></div>
                     </div>
                     <?php endforeach; ?>
                 </div>
+                <div class="clear"></div>
             </div>
 
             <div class="main_content_footer row">

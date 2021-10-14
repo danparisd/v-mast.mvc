@@ -30,10 +30,10 @@ if(isset($data["error"])) return;
                     <div id="read_chunk_content" class="my_content shown" dir="<?php echo $data["event"][0]->resLangDir ?>">
                         <div class="obs_chunk">
                             <div><?php echo $data["obs"]->title ?></div>
-                            <?php if ($data["obs"]->img): ?>
-                            <img src="<?php echo $data["obs"]->img ?>">
-                            <?php endif; ?>
                         </div>
+                        <?php if ($data["obs"]->img): ?>
+                            <img src="<?php echo $data["obs"]->img ?>">
+                        <?php endif; ?>
                     </div>
 
                     <div id="translate_chunk_content" class="my_content" dir="<?php echo $data["event"][0]->tLangDir ?>">

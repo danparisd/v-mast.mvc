@@ -1,8 +1,12 @@
+<?php
+use Helpers\Constants\EventSteps;
+?>
+
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <div class="demo_title"><?php echo __("demo") . " (".__("tn").")" ?></div>
-            <div><?php echo __("pray")?></div>
+            <div class="demo_title"><?php echo __("demo") . " (".__("obs").")" ?></div>
+            <div><?php echo __(EventSteps::PRAY)?></div>
         </div>
     </div>
 
@@ -41,7 +45,7 @@
 
     <div class="help_float">
         <div class="help_info_steps">
-            <div class="help_name_steps"><span><?php echo __("pray")?></span></div>
+            <div class="help_name_steps"><span><?php echo __(EventSteps::PRAY)?></span></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("pray_desc", ["step" => __($data["next_step"])])?></ul>
             </div>
@@ -50,7 +54,7 @@
         <div class="event_info">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/demo-tn/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-obs/information"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -62,7 +66,7 @@
         
         $("#next_step").click(function (e) {
             e.preventDefault();
-            window.location.href = '/events/demo-tn/consume';
+            window.location.href = '/events/demo-obs/blind_draft';
             return false;
         });
     });

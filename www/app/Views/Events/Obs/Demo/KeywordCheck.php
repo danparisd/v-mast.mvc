@@ -1,6 +1,5 @@
 <?php
-use Helpers\Constants\EventMembers;
-use Helpers\Parsedown;
+use Helpers\Constants\EventSteps;
 
 if(isset($data["error"])) return;
 ?>
@@ -20,7 +19,7 @@ if(isset($data["error"])) return;
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <div class="demo_title"><?php echo __("demo") . " (".__("tq").")" ?></div>
+            <div class="demo_title"><?php echo __("demo") . " (".__("obs").")" ?></div>
             <div><?php echo __("step_num", ["step_number" => 1]). ": " . __("keyword-check")?></div>
         </div>
     </div>
@@ -29,287 +28,267 @@ if(isset($data["error"])) return;
         <div class="main_content">
             <form action="" method="post" id="main_form">
                 <div class="main_content_text row" style="padding-left: 15px">
-                    <h4 dir="ltr">Русский - <?php echo __("tq") ?> - <?php echo __("new_test") ?> -
-                        <span class='book_name'>3 John 1</span></h4>
+                    <h4>Русский - <span class='book_name'><?php echo __("obs") ?> 4</span></h4>
 
-                    <div class="col-sm-12 no_padding questions_bd">
-                        <div class="parent_q questions_chunk" data-question="1" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 1) ?> </div>
-                            </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>By what title does the author John introduce himself in this letter?</h1>
-                                <p>John introduces himself as the elder. </p>
-                                <h1>What relationship does John have with Gaius, the one receiving this letter?</h1>
-                                <p>John loves Gaius in truth. </p>
-                            </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[0]" class="add_questions_editor blind_ta"><h1>Как Иоанн представляется в начале своего послания?</h1>
-                                    <p>Он представляется как пресвитер, старейшина, священник.</p>
-                                    <h1>Как Иоанн относится к Гаию, к которому обращено послание?</h1>
-                                    <p>Иоанн говорит, что любит Гаия истинной любовью.</p></textarea>
-
+                    <div class="col-sm-12 no_padding">
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="0" style="height: 90px;">
+                                    <div>4. God’s Covenant with Abraham</div>
                                 </div>
-							<div class="flex_right">
+                            </div>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="0">
+                                    <textarea name="chunks[0][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 90px; height: 90px;">4. Божий завет с Авраамом</textarea>
+                                    <input name="chunks[0][img]" type="hidden" value="">
+                                </div>
+                            </div>
+                            <div class="flex_right">
                                 <div class="comments_number tncomm hasComment"> 2 </div>
                                 <span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
 
                                 <div class="comments">
-                                    <div class="my_comment">This is the note of the translator...</div>
+                                    <div class="my_comment">This is the note of the checker...</div>
                                     <div class="other_comments">
-                                        <span>Tanya C. - L1</span> This is the note of the checker...
+                                        <span>Tanya C. - L1</span> This is the note of the translator...
                                     </div>
                                 </div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
+                            </div>
                         </div>
-                        <div class="parent_q questions_chunk" data-question="2" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 2) ?> </div>
-                            </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>For what does John pray concerning Gaius?</h1>
-                                <p>John prays that Gaius would prosper in all things and be in health, as his soul prospers. </p>
-                            </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[1]" class="add_questions_editor blind_ta"><h1>Как Иоанн молится о Гаие?</h1>
-                                    <p>Иоанн молится, чтобы Гаий преуспевал и здравствовал так же, как преуспевает его душа.</p></textarea>
-
-                                
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="1" style="height: 152px;">
+                                    <div class="obs_title">Many years after the flood, there were again many people in the world, and they still sinned against God and each other. Because they all spoke the same language, they gathered together and built a city instead of spreading out over the earth as God had commanded.</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-01.jpg"></div>
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
-                        </div>
-                        <div class="parent_q questions_chunk" data-question="4" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 4) ?> </div>
                             </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>What is John's greatest joy?</h1>
-                                <p>John's greatest joy is to hear that his children walk in the truth. </p>
-                            </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[2]" class="add_questions_editor blind_ta"><h1>Когда Иоанн радуется?</h1>
-                                    <p>Он радуется, когда слышит, что его дети ходят в истине.</p></textarea>
-
-                                
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="1">
+                                    <textarea name="chunks[1][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 152px; height: 152px;">Много лет после наводнения, в мире снова было много людей, и они все еще согрешили против Бога и друг друга. Потому что все они говорили на одном языке, они собрались вместе и построили город вместо того, чтобы распространяться над землей, когда Бог повелел.</textarea>
+                                    <input name="chunks[1][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-01.jpg">
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
-                        </div>
-                        <div class="parent_q questions_chunk" data-question="6" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 6) ?> </div>
                             </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>Who did Gaius welcome and then send out on their journey?</h1>
-                                <p>Gaius welcomed and then sent out on their journey some who were going out for the sake of the Name. </p>
-                            </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[3]" class="add_questions_editor blind_ta"><h1>Кого Гаий принял и снарядил в дорогу?</h1>
-                                    <p>Гаий принял и снарядил в дорогу человека Божьего.</p></textarea>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:1" title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                
+                                    <div class="comments">
+                                    </div>
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
+                            </div>
                         </div>
-                        <div class="parent_q questions_chunk" data-question="7" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 7) ?> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="2" style="height: 152px;">
+                                    <div class="obs_title">They were very proud, and they did not want to obey God’s commands about how they should live. They even began building a tall tower that would reach heaven. God saw that, if they all kept working together to do evil, they could do many more sinful things.</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-02.jpg"></div>
+                                </div>
                             </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>Who did Gaius welcome and then send out on their journey?</h1>
-                                <p>Gaius welcomed and then sent out on their journey some who were going out for the sake of the Name. </p>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="2">
+                                    <textarea name="chunks[2][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 152px; height: 152px;">Они были очень гордыми, и они не хотели подчиняться Божьим командам о том, как они должны жить. Они даже начали строить высокую башню, которая достигла небес. Бог увидел, что, если все они продолжали работать вместе, чтобы сделать зло, они могли бы сделать много более греховных вещей.</textarea>
+                                    <input name="chunks[2][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-02.jpg">
+                                </div>
                             </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[4]" class="add_questions_editor blind_ta"><h1>Кого Гаий принял и снарядил в дорогу?</h1>
-                                    <p>Гаий принял и снарядил в дорогу человека Божьего.</p></textarea>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:2" title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                
+                                    <div class="comments">
+                                    </div>
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
+                            </div>
                         </div>
-                        <div class="parent_q questions_chunk" data-question="8" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 8) ?> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="3" style="height: 121px;">
+                                    <div class="obs_title">So God changed their language into many different languages and spread the people out all over the world. The city they had begun to build was called Babel, which means “confused.”</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-03.jpg"></div>
+                                </div>
                             </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>Who did Gaius welcome and then send out on their journey?</h1>
-                                <p>Gaius welcomed and then sent out on their journey some who were going out for the sake of the Name. </p>
-                                <h1>Why does John say believers should welcome brothers such as these?</h1>
-                                <p>John says believers should welcome them so that they may be fellow-workers for the truth. </p>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="3">
+                                    <textarea name="chunks[3][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 121px; height: 121px;">Поэтому Бог изменил свой язык на разные языки и распространил людей по всему миру. Город, который они начали строить, назывался Бабелом, что означает «смущенный».</textarea>
+                                    <input name="chunks[3][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-03.jpg">
+                                </div>
                             </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[5]" class="add_questions_editor blind_ta"><h1>Кого Гаий принял и снарядил в дорогу?</h1>
-                                    <p>Гаий принял и снарядил в дорогу человека Божьего.</p>
-                                    <h1>Для чего верующие должны принимать Божьих служителей?</h1>
-                                    <p>Для того, чтобы быть сотрудниками в их труде.</p></textarea>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:3" title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                
+                                    <div class="comments">
+                                    </div>
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
+                            </div>
                         </div>
-                        <div class="parent_q questions_chunk" data-question="9" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 9) ?> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="4" style="height: 204px;">
+                                    <div class="obs_title">Hundreds of years later, God spoke to a man named Abram. God told him, “Leave your country and family and go to the land I will show you. I will bless you and make you a great nation. I will make your name great. I will bless those who bless you and curse those who curse you. All families on earth will be blessed because of you.”</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-04.jpg"></div>
+                                </div>
                             </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>What does Diotrephes love?</h1>
-                                <p>Diotrephes loves to be first among the congregation. </p>
-                                <h1>What is Diotrephes' attitude toward John?</h1>
-                                <p>Diotrephes does not receive John. </p>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="4">
+                                    <textarea name="chunks[4][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 183px; height: 204px;">Сотни лет спустя Бог говорил с человеком по имени Абрам. Бог сказал ему: «Оставьте свою страну и семью и пойдем на землю, которую я покажу тебе. Я благословляю тебя и сделаю тебя великой нацией. Я сделаю ваше имя великолепно. Я буду благословлять тех, кто благословит вас и проклинает тех, кто проклинает тебя. Все семьи на земле будут благословлены из-за вас.</textarea>
+                                    <input name="chunks[4][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-04.jpg">
+                                </div>
                             </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[6]" class="add_questions_editor blind_ta"><h1>Что любит Диотреф?</h1>
-                                    <p>Диотреф любит быть первым среди членов общины.</p>
-                                    <h1>Как Диотреф относится к Иоанну?</h1>
-                                    <p>Диотреф не принимает Иоанна.</p></textarea>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:4" title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                
+                                    <div class="comments">
+                                    </div>
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
+                            </div>
                         </div>
-                        <div class="parent_q questions_chunk" data-question="10" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 10) ?> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="5" style="height: 121px;">
+                                    <div class="obs_title">So Abram obeyed God. He took his wife, Sarai, together with all of his servants and everything he owned and went to the land God showed him, the land of Canaan.</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-05.jpg"></div>
+                                </div>
                             </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>What will John do if he comes to Gaius and the congregation?</h1>
-                                <p>If John comes he will remember Diotrephes' evil deeds. </p>
-                                <h1>What does Diotrephes do with the brothers going forth for the Name?</h1>
-                                <p>Diotrephes does not receive the brothers. </p>
-                                <h1>What does Diotrephes do with those who receive the brothers going <strong>forth</strong> for the Name?</h1>
-                                <p>Diotrephes forbids them from receiving the brothers, and drives them out of the congregation. </p>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="5">
+                                    <textarea name="chunks[5][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 121px; height: 121px;">Так Абрам повиновался Богу. Он взял свою жену, Сарай вместе со всеми своими слугами и всему, которое он принадлежит и пошел на землю, Бог показал ему, земля Ханаан.</textarea>
+                                    <input name="chunks[5][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-05.jpg">
+                                </div>
                             </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[7]" class="add_questions_editor blind_ta"><h1>Что намерен сделать Иоанн, когда придет к Гаию и другим членам общины?</h1>
-                                    <p>Он разоблачит Диотрефа.</p>
-                                    <h1>Как Диотреф поступает с братьями, которые служат Богу?</h1>
-                                    <p>Диотреф их не принимает.</p>
-                                    <h1>Как Диотреф поступает с теми, кто принимает Божьих служителей?</h1>
-                                    <p>Он запрещает братьям принимать Божьих служителей, а тех, кто его ослушался, выгоняет из общины.</p></textarea>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:5" title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                
+                                    <div class="comments">
+                                    </div>
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
+                            </div>
                         </div>
-                        <div class="parent_q questions_chunk" data-question="11" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 11) ?> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="6" style="height: 121px;">
+                                    <div class="obs_title">When Abram arrived in Canaan, God said, “Look all around you. I will give to you all this land, and your descendants will always possess it.” Then Abram settled in the land.</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-06.jpg"></div>
+                                </div>
                             </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>What does John tell Gaius to imitate?</h1>
-                                <p>John tells Gaius to imitate good. </p>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="6">
+                                    <textarea name="chunks[6][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 121px; height: 121px;">Когда Аврам прибыл в Ханаан, Бог сказал: «Посмотри вокруг вас. Я дам вам всю эту землю, и ваши потомки всегда будут иметь его ». Тогда Абрам поселился на земле.</textarea>
+                                    <input name="chunks[6][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-06.jpg">
+                                </div>
                             </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[8]" class="add_questions_editor blind_ta"><h1>Чему должен подражать Гаий?</h1>
-                                    <p>Гаий должен подражать добру.</p></textarea>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:6" title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                
+                                    <div class="comments">
+                                    </div>
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
+                            </div>
                         </div>
-                        <div class="parent_q questions_chunk" data-question="14" data-chapter="1" data-event="0">
-                            <div class="row">
-                                <div class="col-md-4" style="color: #00a74d; font-weight: bold;"> <?php echo __("verse_number", 14) ?> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="7" style="height: 183px;">
+                                    <div class="obs_title">There was a man named Melchizedek who was a priest of God Most High. One day, after Abram had been in a battle, he and Abram met. Melchizedek blessed Abram and said, “May God Most High who owns heaven and earth bless Abram.” Then Abram gave Melchizedek a tenth of everything he had won in the battle.</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-07.jpg"></div>
+                                </div>
                             </div>
-                            <div class="flex_container">
-							<div class="question_content flex_left" dir="ltr">
-                                <h1>What does John hope to do in the future?</h1>
-                                <p>John hopes to come and speak with Gaius face to face. </p>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="7">
+                                    <textarea name="chunks[7][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 183px; height: 183px;">Был человек по имени Мелхисерек, который был священником Бога самым высоким. Однажды после того, как Аврам был в битве, он и Аврам встретились. Мельхигенек благословил Аврам и сказал: «Пусть Бог самый высокий, кто владеет небесами и благословением земли Аврам». Тогда Абрам дал Мелхиседек на десятую часть всего, что он выиграл в битве.</textarea>
+                                    <input name="chunks[7][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-07.jpg">
+                                </div>
                             </div>
-                            <div class="col-md-6 questions_editor font_ru flex_middle" dir="ltr">
-                                <textarea name="chunks[9]" class="add_questions_editor blind_ta"><h1>Что Иоанн намерен сделать в будущем?</h1>
-                                    <p>Иоанн хочет прийти к Гаию и лично с ним поговорить.</p></textarea>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:7" title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                
+                                    <div class="comments">
+                                    </div>
                                 </div>
-							<div class="flex_right">
-								<div class="comments_number tncomm"> </div>
-								<span class="editComment mdi mdi-lead-pencil"
-                                              data="0:0"
-                                              title="<?php echo __("write_note_title", [""])?>"></span>
-								<div class="comments"></div>
-							</div>
-							</div>
-                            <div class="chunk_divider" style="margin-top: 10px"></div>
+                            </div>
                         </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="8" style="height: 152px;">
+                                    <div class="obs_title">Many years went by, but Abram and Sarai still did not have a son. God spoke to Abram and promised again that he would have a son and as many descendants as the stars in the sky. Abram believed God’s promise. God declared that Abram was righteous because he believed in God’s promise.</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-08.jpg"></div>
+                                </div>
+                            </div>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="8">
+                                    <textarea name="chunks[8][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 152px; height: 152px;">Много лет прошло, но Аврам и Сарай все еще не было сына. Бог говорил с Абрамом и снова обещал, что у него будет сын и столько потомков, как звезды в небе. Абрам считал Божьим обещанием. Бог заявил, что Аврам был праведным, потому что он верил в Божье обещание.</textarea>
+                                    <input name="chunks[8][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-08.jpg">
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:8" title="<?php echo __("write_note_title", [""])?>"></span>
+
+                                    <div class="comments">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="9" style="height: 183px;">
+                                    <div class="obs_title">Then God made a covenant with Abram. Normally, a covenant is an agreement between two parties to do things for each other. But in this case, God made a promise to Abram while Abram was in a deep sleep, but he could still hear God. God said, “I will give you a son from your own body. I give the land of Canaan to your descendants.” But Abram still did not have a son.</div>
+                                    <div class="obs_img mdi mdi-image" data-img="https://cdn.door43.org/obs/jpg/360px/obs-en-04-09.jpg"></div>
+                                </div>
+                            </div>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="9">
+                                    <textarea name="chunks[9][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 183px; height: 183px;">Тогда Бог сделал завет с Абрамом. Обычно завет - это соглашение между двумя сторонами, чтобы делать вещи друг для друга. Но в этом случае Бог дал обещание Аврам, а Аврам был глубоко сон, но он все еще мог слышать Бога. Бог сказал: «Я дам тебе сына из своего собственного тела. Я даю землю Ханаана ваших потомков ». Но Аврам все еще не было сына.</textarea>
+                                    <input name="chunks[9][img]" type="hidden" value="https://cdn.door43.org/obs/jpg/360px/obs-en-04-09.jpg">
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:9" title="<?php echo __("write_note_title", [""])?>"></span>
+
+                                    <div class="comments">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row flex_container chunk_block">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <div class="obs_chunk no_margin" data-chunk="10" style="height: 90px;">
+                                    <div class="obs_title">A Bible story from: Genesis 11-15</div>
+                                </div>
+                            </div>
+                            <div class="flex_middle editor_area font_ru" dir="ltr">
+                                <div class="vnote" data-chunk="10">
+                                    <textarea name="chunks[10][title]" class="col-sm-6 peer_verse_ta textarea" style="overflow-x: hidden; overflow-wrap: break-word; min-height: 90px; height: 90px;">Библейская история от: Бытие 11-15</textarea>
+                                    <input name="chunks[10][img]" type="hidden" value="">
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="notes_tools">
+                                    <span class="editComment mdi mdi-lead-pencil" data="4:10" title="<?php echo __("write_note_title", [""])?>"></span>
+
+                                    <div class="comments">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chunk_divider"></div>
                     </div>
-
+                    <div class="clear"></div>
                 </div>
 
                 <div class="main_content_footer row">
@@ -334,9 +313,9 @@ if(isset($data["error"])) return;
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 1])?>:</span> <?php echo __("keyword-check")?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 1])?>:</span> <?php echo __(EventSteps::KEYWORD_CHECK)?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("keyword-check_tq_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("keyword-check_obs_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -344,7 +323,7 @@ if(isset($data["error"])) return;
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/demo-tq/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-obs/information"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -358,22 +337,20 @@ if(isset($data["error"])) return;
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/keyword-check.png") ?>" width="100" height="100">
             <img src="<?php echo template_url("img/steps/big/keyword-check.png") ?>" width="280" height="280">
-            
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __("keyword-check")?></h3>
-            <ul><?php echo __("keyword-check_tq_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventSteps::KEYWORD_CHECK)?></h3>
+            <ul><?php echo __("keyword-check_obs_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
-        
         $("#next_step").click(function (e) {
             e.preventDefault();
-            if(!hasChangesOnPage) window.location.href = '/events/demo-tq/peer_review';
+            if(!hasChangesOnPage) window.location.href = '/events/demo-obs/peer_review';
             return false;
         });
     });
