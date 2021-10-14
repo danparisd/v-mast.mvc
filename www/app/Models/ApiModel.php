@@ -14,10 +14,7 @@ use Database\QueryException;
 use DB;
 use File;
 use Filesystem\FileNotFoundException;
-use Helpers\Arrays;
-use Helpers\Data;
 use Helpers\Parsedown;
-use Helpers\Spyc;
 use Helpers\Tools;
 use Helpers\UsfmParser;
 use Helpers\ZipStream\Exception;
@@ -214,7 +211,7 @@ class ApiModel extends Model
 
 
     /**
-     * Get odb book source from local file
+     * Get odb|rad book source from local file
      * @param string $bookProject
      * @param string $bookCode
      * @param string $sourceLang
@@ -261,56 +258,6 @@ class ApiModel extends Model
 
         return $source;
     }
-
-
-    /**
-     * Get radio book source from local file
-     * @param string $bookCode
-     * @param string $sourceLang
-     * @return mixed
-     */
-    public function getRadio($bookCode, $sourceLang = "en")
-    {
-        $source = [];
-        $filepath = "../app/Templates/Default/Assets/source/".$sourceLang."_rad/".strtoupper($bookCode).".json";
-
-        if(File::exists($filepath))
-        {
-            $sourceData = File::get($filepath);
-            $source = (array)json_decode($sourceData, true);
-            $chapters = [];
-
-            if(!empty($source) && isset($source["root"]))
-            {
-                foreach ($source["root"] as $i => $chapter) {
-                    $chapters[$i+1] = [];
-                    $k = 1;
-                    foreach ($chapter as $key => $section) {
-                        if(!is_array($section))
-                        {
-                            $chapters[$i+1][$k] = $section;
-                            $k++;
-                        }
-                        else
-                        {
-                            foreach ($section as $p) {
-                                $chapters[$i+1][$k] = $p;
-                                $k++;
-                            }
-                        }
-                    }
-                }
-                return ["chapters" => $chapters];
-            }
-            else
-            {
-                return [];
-            }
-        }
-
-        return $source;
-    }
-
 
     public function downloadRubricFromApi($lang = "en") {
         $folderPath = "../app/Templates/Default/Assets/source/".$lang."_rubric/";
@@ -1031,7 +978,7 @@ class ApiModel extends Model
 
 
     /**
-     * Download questions from DCS and extract them
+     * Download questions and extract them
      * @param string $lang
      * @param bool $update
      * @return bool|string
@@ -1562,6 +1509,15 @@ class ApiModel extends Model
         return $chunks;
     }
 
+    public function getObsChunks($chapter)
+    {
+        $chunks = $chapter->chunks->map(function($item, $key) {
+            return [$key];
+        });
+
+        return $chunks->toArray();
+    }
+
 
     public function testChunks($chunks, $totalVerses)
     {
@@ -1676,6 +1632,25 @@ class ApiModel extends Model
         }
 
         return $postChunks;
+    }
+
+    public function testChunkObs($chunks, $obs)
+    {
+        if(!is_array($chunks))
+            return false;
+
+        if($obs->count() != sizeof($chunks))
+            return false;
+
+        foreach ($chunks as $key => $chunk) {
+            if(trim($chunk["title"]) == "")
+                return false;
+
+            $chunks[$key]["title"] = $chunk["title"];
+            $chunks[$key]["img"] = $chunk["img"];
+        }
+
+        return $chunks;
     }
 
     public function getRanges($arr)

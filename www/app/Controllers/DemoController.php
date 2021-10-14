@@ -1217,4 +1217,110 @@ class DemoController extends Controller {
             ->shares("title", __("demo"))
             ->shares("data", $data);
     }
+
+    public function demoObs($page = null)
+    {
+        if (!isset($page))
+            Url::redirect("events/demo-obs/pray");
+
+        $notifications = [];
+
+        for ($i = 0; $i < 2; $i++) {
+            $notifObj = new stdClass();
+
+            if ($i == 0) {
+                $notifObj->currentChapter = 4;
+                $notifObj->firstName = "Антон";
+                $notifObj->lastName = "Шилов";
+                $notifObj->bookCode = "obs";
+                $notifObj->bookProject = "obs";
+                $notifObj->tLang = "Русский";
+                $notifObj->bookName = "Open Bible Stories";
+                $notifObj->step = "other";
+                $notifObj->manageMode = "obs";
+                $notifObj->sourceBible = "ulb";
+            } else {
+                $notifObj->step = EventSteps::PEER_REVIEW;
+                $notifObj->currentChapter = 4;
+                $notifObj->firstName = "Tanya";
+                $notifObj->lastName = "Enotova";
+                $notifObj->bookCode = "obs";
+                $notifObj->bookProject = "obs";
+                $notifObj->tLang = "Русский";
+                $notifObj->bookName = "Open Bible Stories";
+                $notifObj->manageMode = "obs";
+                $notifObj->sourceBible = "ulb";
+            }
+
+            $notifications[] = $notifObj;
+        }
+
+        $data["notifications"] = $notifications;
+        $data["isDemo"] = true;
+        $data["menu"] = 5;
+        $data["isCheckerPage"] = false;
+        $data["isPeerPage"] = false;
+        $data["next_step"] = EventSteps::PRAY;
+
+        $view = View::make("Events/Obs/Demo/DemoHeader");
+        $data["step"] = "";
+
+        switch ($page) {
+            case "pray":
+                $view->nest("page", "Events/Obs/Demo/Pray");
+                $data["step"] = EventSteps::PRAY;
+                $data["next_step"] = EventSteps::BLIND_DRAFT;
+                break;
+
+            case "blind_draft":
+                $view->nest("page", "Events/Obs/Demo/BlindDraft");
+                $data["step"] = EventSteps::BLIND_DRAFT;
+                $data["next_step"] = EventSteps::SELF_CHECK;
+                break;
+
+            case "self_check":
+                $view->nest("page", "Events/Obs/Demo/SelfEdit");
+                $data["step"] = EventSteps::SELF_CHECK;
+                $data["next_step"] = "continue_alt";
+                break;
+
+            case "pray_chk":
+                $view->nest("page", "Events/Obs/Demo/PrayChk");
+                $data["step"] = EventSteps::PRAY;
+                $data["next_step"] = EventSteps::KEYWORD_CHECK;
+                $data["isCheckerPage"] = true;
+                break;
+
+            case "keyword_check":
+                $view->nest("page", "Events/Obs/Demo/KeywordCheck");
+                $data["step"] = EventSteps::KEYWORD_CHECK;
+                $data["next_step"] = EventSteps::PEER_REVIEW . "_obs";
+                $data["isCheckerPage"] = true;
+                break;
+
+            case "peer_review":
+                $view->nest("page", "Events/Obs/Demo/PeerReview");
+                $data["step"] = EventSteps::PEER_REVIEW;
+                $data["next_step"] = "continue_alt";
+                $data["isCheckerPage"] = true;
+                break;
+
+            case "peer_review_checker":
+                $view->nest("page", "Events/Obs/Demo/PeerReviewChecker");
+                $data["step"] = EventSteps::PEER_REVIEW;
+                $data["next_step"] = "continue_alt";
+                $data["isCheckerPage"] = true;
+                $data["isPeerPage"] = true;
+                break;
+
+            case "information":
+                return View::make("Events/Obs/Demo/Information")
+                    ->shares("title", __("event_info"));
+                break;
+        }
+
+        return $view
+            ->shares("title", __("demo"))
+            ->shares("data", $data);
+    }
 }

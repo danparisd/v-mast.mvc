@@ -58,9 +58,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>
@@ -109,9 +110,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>
@@ -147,9 +149,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>
@@ -203,9 +206,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>
@@ -240,9 +244,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>
@@ -293,9 +298,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>
@@ -338,9 +344,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>
@@ -413,9 +420,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>
@@ -462,9 +470,10 @@
                     <div class="note_chunk l3 flex_container">
                         <div class="compare_scripture">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle"
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
                                        data-on="<?php echo __("on") ?>"
-                                       data-off="<?php echo __("off") ?>">
+                                       data-off="<?php echo __("off") ?>" />
                                 <?php echo __("compare"); ?>
                             </label>
                         </div>

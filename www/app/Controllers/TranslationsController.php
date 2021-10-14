@@ -148,7 +148,7 @@ class TranslationsController extends Controller
                     }
                     else
                     {
-                        if(in_array($chunk->bookProject, ["tn","tq","tw"]))
+                        if(in_array($chunk->bookProject, ["tn","tq","tw","obs"]))
                         {
                             $level = " - ".($chapter["l3checked"] ? "L3" : ($chapter["checked"] ? "L2" : "L1"));
                         }
@@ -164,12 +164,12 @@ class TranslationsController extends Controller
                 }
 
                 // Start of chunk
-                $data['book'] .= '<p>';
+                $data['book'] .= '<div>';
 
-                if(in_array($chunk->bookProject, ["tn","tq","tw"]))
+                if(in_array($chunk->bookProject, ["tn","tq","tw","obs"]))
                 {
                     $chunks = (array)json_decode($chapter["chunks"], true);
-                    $currChunk = isset($chunks[$chunk->chunk]) ? $chunks[$chunk->chunk] : [$chunk->chunk];
+                    $currChunk = $chunks[$chunk->chunk] ?? [$chunk->chunk];
 
                     $versesLabel = "";
                     if($chunk->bookProject != "tw")
@@ -185,22 +185,55 @@ class TranslationsController extends Controller
 
                     $data["mode"] = $chunk->bookProject;
 
-                    $parsedown = new Parsedown();
+                    if ($chunk->bookProject == "obs") {
+                        if(!empty($verses->{EventMembers::L3_CHECKER}->verses))
+                        {
+                            $obsChunk = $verses->{EventMembers::L3_CHECKER}->verses;
+                        }
+                        elseif (!empty($verses->{EventMembers::CHECKER}->verses))
+                        {
+                            $obsChunk = $verses->{EventMembers::CHECKER}->verses;
+                        }
+                        else
+                        {
+                            $obsChunk = $verses->{EventMembers::TRANSLATOR}->verses;
+                        }
 
-                    if(!empty($verses->{EventMembers::L3_CHECKER}->verses))
-                    {
-                        $text = $parsedown->text($verses->{EventMembers::L3_CHECKER}->verses);
-                    }
-                    elseif (!empty($verses->{EventMembers::CHECKER}->verses))
-                    {
-                        $text = $parsedown->text($verses->{EventMembers::CHECKER}->verses);
-                    }
-                    else
-                    {
-                        $text = $parsedown->text($verses->{EventMembers::TRANSLATOR}->verses);
-                    }
+                        $chunks = (array)json_decode($chunk->chunks, true);
 
-                    $data['book'] .= '<br><strong class="note_chunk_verses">'.$versesLabel.'</strong> '.$text." ";
+                        if ($obsChunk->img) {
+                            $data['book'] .= '<img src="'.$obsChunk->img.'" />';
+                        }
+
+                        switch ($chunk->chunk) {
+                            case 0:
+                                $data['book'] .= '<h1 class="obs_chunk">'.$obsChunk->title . '</h1>';
+                                break;
+                            case $chunks[count($chunks)-1][0]:
+                                $data['book'] .= '<div class="obs_chunk"><em>'.$obsChunk->title . '</em></div>';
+                                break;
+                            default:
+                                $data['book'] .= '<div class="obs_chunk">'.$obsChunk->title . '</div>';
+                                break;
+                        }
+                    } else {
+                        $parsedown = new Parsedown();
+
+                        if(!empty($verses->{EventMembers::L3_CHECKER}->verses))
+                        {
+                            $text = $parsedown->text($verses->{EventMembers::L3_CHECKER}->verses);
+                        }
+                        elseif (!empty($verses->{EventMembers::CHECKER}->verses))
+                        {
+                            $text = $parsedown->text($verses->{EventMembers::CHECKER}->verses);
+                        }
+                        else
+                        {
+                            $text = $parsedown->text($verses->{EventMembers::TRANSLATOR}->verses);
+                        }
+
+                        $data['book'] .= '<br/><strong class="note_chunk_verses">'.$versesLabel.'</strong> '.$text." ";
+                    }
                 }
                 else
                 {
@@ -274,7 +307,7 @@ class TranslationsController extends Controller
                 }
 
                 // End of chunk
-                $data['book'] .= '</p>';
+                $data['book'] .= '</div>';
             }
 
             // Render ODB book
@@ -445,6 +478,22 @@ class TranslationsController extends Controller
         echo "An error occurred! Contact administrator.";
     }
 
+    public function downloadMdObs($lang, $sourceBible)
+    {
+        if($lang != null)
+        {
+            $books = $this->_model->getTranslation($lang, "obs", $sourceBible, "obs");
+
+            if(!empty($books) && isset($books[0]))
+            {
+                $projectFiles = $this->getMdObsProjectFiles($books);
+                $filename = $lang . "_obs.zip";
+                $this->_model->generateZip($filename, $projectFiles, true);
+            }
+        }
+
+        echo "An error occurred! Contact administrator.";
+    }
 
     public function export($lang, $bookProject, $sourceBible, $bookCode, $server)
     {
@@ -456,15 +505,23 @@ class TranslationsController extends Controller
             $repoName = null;
             $projectFiles = [];
 
-            if(in_array($bookProject, ["tn", "tq", "tw"]))
+            if(in_array($bookProject, ["tn", "tq", "tw", "obs"]))
             {
-                $repoName = "{$lang}_{$bookCode}_{$bookProject}";
+                $repoName = $bookProject == "obs" ? "{$lang}_obs" : "{$lang}_{$bookCode}_{$bookProject}";
                 if($bookProject == "tw")
                 {
                     $books = $this->_model->getTranslation($lang, "tw", $sourceBible, $bookCode);
                     if(!empty($books) && isset($books[0]))
                     {
                         $projectFiles = $this->getMdTwProjectFiles($books, true);
+                    }
+                }
+                elseif ($bookProject == "obs")
+                {
+                    $books = $this->_model->getTranslation($lang, "obs", $sourceBible, $bookCode);
+                    if(!empty($books) && isset($books[0]))
+                    {
+                        $projectFiles = $this->getMdObsProjectFiles($books, true);
                     }
                 }
                 else
@@ -1135,6 +1192,107 @@ class TranslationsController extends Controller
 
         $yaml = Spyc::YAMLDump($manifest->output(), 4, 0);
         $projectFiles[] = ProjectFile::withContent($root."manifest.yaml", $yaml);
+
+        return $projectFiles;
+    }
+
+    private function getMdObsProjectFiles($books, $upload = false)
+    {
+        switch ($books[0]->state)
+        {
+            case EventStates::STARTED:
+                $chk_lvl = 0;
+                break;
+            case EventStates::TRANSLATING:
+                $chk_lvl = 1;
+                break;
+            case EventStates::TRANSLATED:
+            case EventStates::L3_CHECK:
+                $chk_lvl = 2;
+                break;
+            case EventStates::COMPLETE:
+                $chk_lvl = 3;
+                break;
+            default:
+                $chk_lvl = 0;
+        }
+
+        $manifest = $this->_model->generateManifest($books[0]);
+        $manifest->setCheckingLevel((string)$chk_lvl);
+
+        $manifest->setContributor(array_map(function($contributor) {
+            return $contributor["fname"] . (!empty($contributor["lname"]) ? " ".$contributor["lname"] : "");
+        }, $this->_eventModel->getProjectContributors($books[0]->projectID, false, false)));
+
+        $root = !$upload ? $books[0]->targetLang."_obs/" : "";
+
+        $projectFiles = [];
+        $lastChapter = 0;
+        $chapters = [];
+
+        foreach ($books as $chunk) {
+            $verses = json_decode($chunk->translatedVerses);
+            $chunks = (array)json_decode($chunk->chunks,true);
+
+            if($chunk->chapter != $lastChapter)
+            {
+                $lastChapter = $chunk->chapter;
+                $chapters[$lastChapter] = "";
+            }
+
+            if(!empty($verses->{EventMembers::L3_CHECKER}->verses))
+            {
+                $obs = $verses->{EventMembers::L3_CHECKER}->verses;
+            }
+            elseif (!empty($verses->{EventMembers::CHECKER}->verses))
+            {
+                $obs = $verses->{EventMembers::CHECKER}->verses;
+            }
+            else
+            {
+                $obs = $verses->{EventMembers::TRANSLATOR}->verses;
+            }
+
+            if ($obs->img) {
+                $chapters[$lastChapter] .= "![OBS Image](" . $obs->img . ")\n\n";
+            }
+
+            switch ($chunk->chunk) {
+                case 0:
+                    $chapters[$lastChapter] .= "# " . $obs->title . "\n\n";
+                    break;
+                case $chunks[count($chunks)-1][0]:
+                    $chapters[$lastChapter] .= "_" . $obs->title . "_\n\n";
+                    break;
+                default:
+                    $chapters[$lastChapter] .= $obs->title . "\n\n";
+                    break;
+            }
+
+            if(!$manifest->getProject($chunk->bookCode))
+            {
+                // Set contributor list from book contributors
+                $manifest->addProject(new Project(
+                    __("obs"),
+                    "",
+                    $chunk->bookCode,
+                    0,
+                    "./content",
+                    []
+                ));
+            }
+        }
+
+        foreach ($chapters as $chapter => $content) {
+            $format = "%02d";
+            $chapPath = sprintf($format, $chapter);
+            $filePath = $root . "content/" . $chapPath . ".md";
+
+            $projectFiles[] = ProjectFile::withContent($filePath, $content);
+        }
+
+        $yaml = Spyc::YAMLDump($manifest->output(), 4, 0);
+        $projectFiles[] = ProjectFile::withContent($root . "manifest.yaml", $yaml);
 
         return $projectFiles;
     }

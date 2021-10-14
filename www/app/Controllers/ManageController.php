@@ -920,7 +920,7 @@ class ManageController extends Controller {
                     } else {
                         $response["error"] = __("event_is_finished");
                     }
-                } elseif (in_array($event->project->bookProject, ["tn", "tq", "tw"])) {
+                } elseif (in_array($event->project->bookProject, ["tn", "tq", "tw", "obs"])) {
                     if (EventStates::enum($event->state) == EventStates::enum(EventStates::TRANSLATING)) {
                         $chapters = $this->_model->getChapters($eventID, $memberID, $chapter, "other");
                         $chap = [];
@@ -948,6 +948,7 @@ class ManageController extends Controller {
                                             $response["message"] = __("checker_removed_success");
                                         } else {
                                             $chap["otherCheck"][$chapter]["done"] -= 1;
+                                            unset($chap["peerCheck"][$chapter]);
 
                                             $response["message"] = __("moved_back_success");
 

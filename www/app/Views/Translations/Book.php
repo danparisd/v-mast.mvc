@@ -28,7 +28,7 @@
                         <?php echo __("download_json") ?>
                     </a>
                 </li>
-                <?php elseif(!in_array($data["mode"], ["tn","tq","tw"])): ?>
+                <?php elseif(!in_array($data["mode"], ["tn","tq","tw","obs"])): ?>
                 <li>
                     <a href="<?php echo $data['data']->bookCode ?>/usfm">
                         <?php echo __("download_usfm") ?>

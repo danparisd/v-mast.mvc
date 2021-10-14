@@ -10,17 +10,15 @@
 
 @font-face {
     font-family: "SUN";
-    /*src: url("../fonts/SUN.ttf") format("truetype");*/
     src: url("../fonts/SUN.woff?2") format("woff");
 }
 
 @font-face {
     font-family: "BACKSUN";
-    /*src: url("../fonts/BackSUN.ttf") format('truetype');*/
     src: url("../fonts/BackSUN.woff?2") format("woff");
 }
 
-.sun_content {
+.sun_content, .font_sgn-US-symbunot {
     font-family: SUN, serif;
     font-size: 26px;
     font-weight: bold;
@@ -82,10 +80,6 @@ html, body, .container {
     padding: 10px;
     border-radius: 10px;
 }
-
-/*.form-group {
-    position: relative;
-}*/
 
 .container {
     position: relative;
@@ -1805,6 +1799,11 @@ _::-webkit-full-page-media, _:future, :root #help_hide {
     margin: 20px 0;
 }
 
+.chunk_block_divider {
+    border-bottom: 1px solid red;
+    padding: 20px 0;
+}
+
 .chunk_divider {
     border-bottom: 1px solid #cc0005;
     margin: 0 0 10px 0;
@@ -2048,8 +2047,8 @@ mark {
 .textarea_editor {
     width: 503px;
     min-height: 100px;
-    /*font-family: SUN, Serif;*/
     font-size: 20px;
+    resize: none;
 }
 
 .other_comments_list {
@@ -2057,7 +2056,6 @@ mark {
     text-align: left;
     max-height: 300px;
     overflow-y: auto;
-    /*font-family: SUN, Serif;*/
     font-size: 20px;
 }
 
@@ -2210,10 +2208,6 @@ span.mdi.mdi-lead-pencil {
 
 .commentAltText {
     display: none;
-}
-
-.textarea_editor {
-    resize: none;
 }
 
 .commentEditorLoader {
@@ -5579,5 +5573,42 @@ button.add_verse_ta {
 
 .sun_mode {
     margin: 20px 0 30px 0;
+}
+
+.obs_chunk {
+    margin: 30px 0;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.obs_chunk.no_margin {
+    margin: 0;
+}
+
+h1.obs_chunk {
+    font-size: 30px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+}
+
+.obs_title {
+    margin: 0 10px 20px 0;
+}
+
+.obs_img {
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+.obs_img_floatable {
+    position: absolute;
+    z-index: 2;
+}
+
+.chunk_checker {
+    display: none;
 }
 

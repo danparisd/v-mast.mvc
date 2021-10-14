@@ -182,6 +182,8 @@ class TnProgress
                                 break;
                         }
                     }
+                } else {
+                    $data["chapters"][$key]["consumeChk"]["state"] = StepsStates::WAITING;
                 }
             }
 

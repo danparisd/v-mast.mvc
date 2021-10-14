@@ -16,6 +16,7 @@ use App\Repositories\GatewayLanguage\IGatewayLanguageRepository;
 use App\Repositories\Language\ILanguageRepository;
 use App\Repositories\Member\IMemberRepository;
 use App\Repositories\Project\IProjectRepository;
+use App\Repositories\Resources\IResourcesRepository;
 use App\Repositories\Source\ISourceRepository;
 use Config\Config;
 use Database\ORM\Collection;
@@ -52,6 +53,7 @@ class AdminController extends Controller {
     protected $languageRepo = null;
     protected $sourceRepo = null;
     protected $bookInfoRepo = null;
+    protected $resourcesRepo = null;
 
     private $_member;
 
@@ -62,7 +64,8 @@ class AdminController extends Controller {
         IEventRepository $eventRepo,
         ILanguageRepository $languageRepo,
         ISourceRepository $sourceRepo,
-        IBookInfoRepository $bookInfoRepo
+        IBookInfoRepository $bookInfoRepo,
+        IResourcesRepository $resourcesRepo
     ) {
         parent::__construct();
 
@@ -73,6 +76,7 @@ class AdminController extends Controller {
         $this->languageRepo = $languageRepo;
         $this->sourceRepo = $sourceRepo;
         $this->bookInfoRepo = $bookInfoRepo;
+        $this->resourcesRepo = $resourcesRepo;
 
         if(Config::get("app.isMaintenance")
             && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips")))
@@ -193,6 +197,11 @@ class AdminController extends Controller {
                 $page = 'Admin/Main/ProjectODB';
                 $category = 'odb';
             }
+            elseif ($project->bookProject == "obs")
+            {
+                $page = 'Admin/Main/ProjectOBS';
+                $category = 'obs';
+            }
 
             $otDone = 0;
             $ntDone = 0;
@@ -207,6 +216,9 @@ class AdminController extends Controller {
 
             $twDone = 0;
             $data["TWprogress"] = 0;
+
+            $obsDone = 0;
+            $data["OBSprogress"] = 0;
 
             $events = $project->events;
 
@@ -255,6 +267,13 @@ class AdminController extends Controller {
                             $radDone++;
                         }
                     }
+                    else if($bookInfo->category == "obs") // OBS books
+                    {
+                        if(EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                        {
+                            $obsDone++;
+                        }
+                    }
                 }
             }
 
@@ -273,6 +292,12 @@ class AdminController extends Controller {
                 $count = $this->bookInfoRepo->all()->where("category", "rad", false)->count();
                 if($count > 0)
                     $data["RADprogress"] = 100*$radDone/$count;
+            }
+            elseif ($project->bookProject == "obs")
+            {
+                $count = $this->bookInfoRepo->all()->where("category", "obs", false)->count();
+                if($count > 0)
+                    $data["OBSprogress"] = 100*$obsDone/$count;
             }
         }
 
@@ -965,7 +990,7 @@ class AdminController extends Controller {
 
         $_POST = Gump::xss_clean($_POST);
 
-        $projectMode = isset($_POST['projectMode']) && preg_match("/(bible|tn|tq|tw|odb|rad)/", $_POST['projectMode']) ? $_POST['projectMode'] : "bible";
+        $projectMode = isset($_POST['projectMode']) && preg_match("/(bible|tn|tq|tw|odb|rad|obs)/", $_POST['projectMode']) ? $_POST['projectMode'] : "bible";
         $subGwLangs = isset($_POST['subGwLangs']) && $_POST['subGwLangs'] != "" ? $_POST['subGwLangs'] : null;
         $targetLang = isset($_POST['targetLangs']) && $_POST['targetLangs'] != "" ? $_POST['targetLangs'] : null;
         $sourceTranslation = isset($_POST['sourceTranslation']) && $_POST['sourceTranslation'] != "" ? $_POST['sourceTranslation'] : null;
@@ -1008,7 +1033,7 @@ class AdminController extends Controller {
 
             if($projectType == null)
             {
-                if(!in_array($projectMode, ["tn","tq","tw","rad"]))
+                if(!in_array($projectMode, ["tn","tq","tw","rad","obs"]))
                     $error[] = __("choose_project_type");
 
                 if($projectMode == "rad")
@@ -1017,7 +1042,7 @@ class AdminController extends Controller {
                 }
             }
 
-            if(in_array($projectMode, ["tn","tq","tw"]) && $sourceTools == null)
+            if(in_array($projectMode, ["tn","tq","tw","obs"]) && $sourceTools == null)
             {
                 $error[] = __("choose_source_".$projectMode);
             }
@@ -1049,7 +1074,7 @@ class AdminController extends Controller {
                     return;
                 }
 
-                $projType = in_array($projectMode, ['tn','tq','tw']) ? $projectMode : $projectType;
+                $projType = in_array($projectMode, ['tn','tq','tw',"obs"]) ? $projectMode : $projectType;
 
                 $search = [
                     "gwLang" => $gwLangsPair[0],
@@ -1563,6 +1588,13 @@ class AdminController extends Controller {
                     } elseif ($bookInfo->category == "rad") {
                         $radio = $this->_apiModel->getOtherSource("rad", $bookInfo->code, $project->sourceLangID);
                         if(empty($radio)) {
+                            $error[] = __("no_source_error");
+                            echo json_encode(array("error" => Error::display($error)));
+                            return;
+                        }
+                    } elseif ($bookInfo->category == "obs") {
+                        $obs = $this->resourcesRepo->getObs($project->sourceLangID);
+                        if(!$obs || $obs->isEmpty()) {
                             $error[] = __("no_source_error");
                             echo json_encode(array("error" => Error::display($error)));
                             return;
