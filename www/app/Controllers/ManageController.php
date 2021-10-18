@@ -1219,12 +1219,7 @@ class ManageController extends Controller {
 
                             $data["chapters"][$chapter] = $postdata;
 
-                            $newChapters = $translator->chapters->filter(function($chapter) use($eventID) {
-                                return $chapter->eventID == $eventID && !$chapter->done;
-                            });
-
-                            // Change translator's step to pray when at least one chapter is assigned to him or all chapters finished
-                            if ($newChapters->count() > 0 || $translator->pivot->step == EventSteps::FINISHED) {
+                            if (in_array($translator->pivot->step, [EventSteps::FINISHED, EventSteps::NONE])) {
                                 $event->translators()->updateExistingPivot($memberID, ["step" => EventSteps::PRAY]);
                             }
 
@@ -1383,8 +1378,9 @@ class ManageController extends Controller {
                                     "chapter" => $chapter
                                 ]);
 
-                                $event->checkersL2()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
-
+                                if ($checkerL2->pivot->step == EventCheckSteps::NONE) {
+                                    $event->checkersL2()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
+                                }
                                 $response["success"] = true;
                             } else {
                                 $response["error"] = __("chapter_aready_assigned_error");
@@ -1404,8 +1400,9 @@ class ManageController extends Controller {
                                     "chapter" => $chapter
                                 ]);
 
-                                $event->checkersL3()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
-
+                                if ($checkerL3->pivot->step == EventCheckSteps::NONE) {
+                                    $event->checkersL3()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
+                                }
                                 $response["success"] = true;
                             } else {
                                 $response["error"] = __("chapter_aready_assigned_error");

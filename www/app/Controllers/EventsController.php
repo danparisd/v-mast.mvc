@@ -209,9 +209,9 @@ class EventsController extends Controller {
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -247,9 +247,9 @@ class EventsController extends Controller {
 
                     // Scripture Input Step 1
                     case EventSteps::MULTI_DRAFT:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -324,9 +324,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::CONSUME:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -357,8 +357,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::VERBALIZE:
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false) {
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -407,9 +408,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::CHUNKING:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -451,9 +452,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::READ_CHUNK:
-                        $sourceText = $this->getSourceText($data, true);
+                        $sourceText = $this->getScriptureSourceText($data, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -483,10 +484,10 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::BLIND_DRAFT:
-                        $sourceText = $this->getSourceText($data, true);
+                        $sourceText = $this->getScriptureSourceText($data, true);
                         $translationData = [];
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -583,10 +584,10 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::SELF_CHECK:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
                         $nextChapter = 0;
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                                 $data["comments"] = $this->getComments($data["event"][0]->eventID, $data["event"][0]->currentChapter);
@@ -757,9 +758,9 @@ class EventsController extends Controller {
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PEER_REVIEW:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                                 $data["comments"] = $this->getComments($data["event"][0]->eventID, $data["event"][0]->currentChapter);
@@ -819,9 +820,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::KEYWORD_CHECK:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                                 $data["comments"] = $this->getComments($data["event"][0]->eventID, $data["event"][0]->currentChapter);
@@ -881,9 +882,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::CONTENT_REVIEW:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                                 $data["comments"] = $this->getComments($data["event"][0]->eventID, $data["event"][0]->currentChapter);
@@ -943,9 +944,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::FINAL_REVIEW:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                                 $data["comments"] = $this->getComments($data["event"][0]->eventID, $data["event"][0]->currentChapter);
@@ -1130,8 +1131,9 @@ class EventsController extends Controller {
                     case EventSteps::PRAY:
 
                         // Get scripture text
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -1184,8 +1186,9 @@ class EventsController extends Controller {
 
                     case EventSteps::CONSUME: // Consume chapter
                         // Get scripture text
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -1241,8 +1244,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::READ_CHUNK:
-                        $sourceText = $this->getSourceText($data, true);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data, true);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -1279,8 +1283,9 @@ class EventsController extends Controller {
 
                     case EventSteps::BLIND_DRAFT: // Self-Check Notes
                         // Get scripture text
-                        $sourceText = $this->getSourceText($data, true);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data, true);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -1345,8 +1350,9 @@ class EventsController extends Controller {
 
                     case EventSteps::SELF_CHECK:
                         // Get scripture text
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -2059,9 +2065,9 @@ class EventsController extends Controller {
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -2098,9 +2104,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::CONSUME:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -2133,9 +2139,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::CHUNKING:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -2177,9 +2183,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::REARRANGE:
-                        $sourceText = $this->getSourceText($data, true);
+                        $sourceText = $this->getScriptureSourceText($data, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -2237,9 +2243,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::SYMBOL_DRAFT:
-                        $sourceText = $this->getSourceText($data, true);
+                        $sourceText = $this->getScriptureSourceText($data, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -2297,9 +2303,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::SELF_CHECK:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                                 $data["comments"] = $this->getComments($data["event"][0]->eventID, $data["event"][0]->currentChapter);
@@ -3403,8 +3409,9 @@ class EventsController extends Controller {
                         $data["turn"] = $this->makeTurnCredentials();
 
                         $data["comments"] = $this->getComments($data["event"][0]->eventID, $data["event"][0]->currentChapter);
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText && !array_key_exists("error", $sourceText)) {
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText)) {
                             $translationData = $this->_translationModel->getEventTranslation($data["event"][0]->trID, $data["event"][0]->currentChapter);
                             $translation = array();
 
@@ -3539,8 +3546,9 @@ class EventsController extends Controller {
                 switch ($data["event"][0]->step) {
                     case EventSteps::PRAY:
                         // Get scripture text
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -3586,8 +3594,9 @@ class EventsController extends Controller {
 
                     case EventSteps::CONSUME: // Consume chapter
                         // Get scripture text
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -3640,8 +3649,9 @@ class EventsController extends Controller {
 
                     case EventSteps::HIGHLIGHT: // Highlight chapter
                         // Get scripture text
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -3691,8 +3701,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::SELF_CHECK: // Criteria Check Notes
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -3780,8 +3791,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::KEYWORD_CHECK: // Highlight Check Notes
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -3848,8 +3860,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::PEER_REVIEW:
-                        $sourceText = $this->getSourceText($data);
-                        if ($sourceText !== false && !array_key_exists("error", $sourceText))
+                        $sourceText = $this->getScriptureSourceText($data);
+
+                        if (!empty($sourceText) && !array_key_exists("error", $sourceText))
                             $data = $sourceText;
 
                         // Get notes
@@ -4640,9 +4653,9 @@ class EventsController extends Controller {
 
                 switch ($data["event"][0]->step) {
                     case EventSteps::THEO_CHECK:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -4716,9 +4729,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::CONTENT_REVIEW:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -4775,9 +4788,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventSteps::FINAL_REVIEW:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -5665,9 +5678,9 @@ class EventsController extends Controller {
 
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::PRAY:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -5706,9 +5719,9 @@ class EventsController extends Controller {
                             ->shares("error", @$error);
 
                     case EventCheckSteps::CONSUME:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -5759,9 +5772,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventCheckSteps::FST_CHECK:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -5945,9 +5958,9 @@ class EventsController extends Controller {
 
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::SND_CHECK:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -6004,9 +6017,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventCheckSteps::KEYWORD_CHECK_L2:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -6076,9 +6089,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventCheckSteps::PEER_REVIEW_L2:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -6813,9 +6826,9 @@ class EventsController extends Controller {
 
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::PRAY:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
                             } else {
@@ -6854,9 +6867,9 @@ class EventsController extends Controller {
                             ->shares("error", @$error);
 
                     case EventCheckSteps::CONSUME:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -6907,9 +6920,9 @@ class EventsController extends Controller {
                         break;
 
                     case EventCheckSteps::FST_CHECK:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -7093,9 +7106,9 @@ class EventsController extends Controller {
 
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::SND_CHECK:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -7271,10 +7284,10 @@ class EventsController extends Controller {
                             ->shares("error", @$error);
 
                     case EventCheckSteps::PEER_REVIEW_L3:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
                         $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -7347,10 +7360,10 @@ class EventsController extends Controller {
                         break;
 
                     case EventCheckSteps::PEER_EDIT_L3:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
                         $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -7550,10 +7563,10 @@ class EventsController extends Controller {
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::PEER_REVIEW_L3:
                     case EventCheckSteps::PEER_EDIT_L3:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
                         $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -7706,10 +7719,10 @@ class EventsController extends Controller {
                             ->shares("error", @$error);
 
                     case EventCheckSteps::PEER_REVIEW_L3:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
                         $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -7782,10 +7795,10 @@ class EventsController extends Controller {
                         break;
 
                     case EventCheckSteps::PEER_EDIT_L3:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
                         $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -7985,10 +7998,10 @@ class EventsController extends Controller {
                 switch ($data["event"][0]->step) {
                     case EventCheckSteps::PEER_REVIEW_L3:
                     case EventCheckSteps::PEER_EDIT_L3:
-                        $sourceText = $this->getSourceText($data);
+                        $sourceText = $this->getScriptureSourceText($data);
                         $peerCheck = (array)json_decode($data["event"][0]->peerCheck, true);
 
-                        if ($sourceText !== false) {
+                        if (!empty($sourceText)) {
                             if (!array_key_exists("error", $sourceText)) {
                                 $data = $sourceText;
 
@@ -9539,84 +9552,57 @@ class EventsController extends Controller {
     //-------------------- Functions --------------------------//
 
     /**
-     * Get source text for chapter or chunk
+     * Get Scripture source text for chapter or chunk
      * @param $data
      * @param bool $getChunk
      * @return array
      */
-    private function getSourceText($data, $getChunk = false)
+    private function getScriptureSourceText($data, $getChunk = false)
     {
         $currentChapter = $data["event"][0]->currentChapter;
         $currentChunk = $data["event"][0]->state == EventStates::TRANSLATING
             ? $data["event"][0]->currentChunk : 0;
 
-        $usfm = $this->_apiModel->getCachedSourceBookFromApi(
+        $initChapter = $data["event"][0]->bookProject != "tn" ? 0 : -1;
+        $currentChunkText = [];
+        $chunks = json_decode($data["event"][0]->chunks, true);
+        $data["chunks"] = $chunks;
+
+        if ($currentChapter == $initChapter) {
+            $level = "l1";
+            if ($data["event"][0]->state == EventStates::L2_CHECK) {
+                $level = "l2";
+                $memberID = $data["event"][0]->memberID;
+            } elseif ($data["event"][0]->state == EventStates::L3_CHECK) {
+                $level = "l3";
+                $memberID = $data["event"][0]->memberID;
+            } else {
+                $memberID = $data["event"][0]->myMemberID;
+            }
+
+            $nextChapter = $this->_model->getNextChapter(
+                $data["event"][0]->eventID,
+                $memberID,
+                $level);
+            if (!empty($nextChapter))
+                $currentChapter = $nextChapter[0]->chapter;
+        }
+
+        if ($currentChapter <= $initChapter) [];
+
+        $usfm = $this->resourcesRepo->getScripture(
+            $data["event"][0]->sourceLangID,
             $data["event"][0]->sourceBible,
             $data["event"][0]->bookCode,
-            $data["event"][0]->sourceLangID,
-            $data["event"][0]->sort);
+            $data["event"][0]->sort,
+            $currentChapter
+        );
 
-        if ($usfm && !empty($usfm["chapters"])) {
-            $initChapter = $data["event"][0]->bookProject != "tn" ? 0 : -1;
-            $currentChunkText = [];
-            $chunks = json_decode($data["event"][0]->chunks, true);
-            $data["chunks"] = $chunks;
-
-            if ($currentChapter == $initChapter) {
-                $level = "l1";
-                if ($data["event"][0]->state == EventStates::L2_CHECK) {
-                    $level = "l2";
-                    $memberID = $data["event"][0]->memberID;
-                } elseif ($data["event"][0]->state == EventStates::L3_CHECK) {
-                    $level = "l3";
-                    $memberID = $data["event"][0]->memberID;
-                } else {
-                    $memberID = $data["event"][0]->myMemberID;
-                }
-
-                $nextChapter = $this->_model->getNextChapter(
-                    $data["event"][0]->eventID,
-                    $memberID,
-                    $level);
-                if (!empty($nextChapter))
-                    $currentChapter = $nextChapter[0]->chapter;
-            }
-
-            if ($currentChapter <= $initChapter) return false;
-
-            if (!isset($usfm["chapters"][$currentChapter])) {
-                return array("error" => __("no_source_error"));
-            }
-
-            foreach ($usfm["chapters"][$currentChapter] as $section) {
-                foreach ($section as $v => $text) {
-                    $data["text"][$v] = $text;
-                }
-            }
-
-            $arrKeys = array_keys($data["text"]);
-            $lastVerse = explode("-", end($arrKeys));
-            $lastVerse = $lastVerse[sizeof($lastVerse) - 1];
-            $data["totalVerses"] = !empty($data["text"]) ? $lastVerse : 0;
+        if (!empty($usfm)) {
+            $data["text"] = $usfm["text"];
+            $data["totalVerses"] = $usfm["totalVerses"];
             $data["currentChapter"] = $currentChapter;
             $data["currentChunk"] = $currentChunk;
-
-            // TODO write function to return chapters array
-            $data["chapters"] = [];
-            for ($i = 1; $i <= sizeof($usfm["chapters"]); $i++) {
-                $data["chapters"][$i] = [];
-            }
-
-            $chapters = $this->_model->getChapters($data["event"][0]->eventID);
-
-            foreach ($chapters as $chapter) {
-                $tmp["trID"] = $chapter["trID"];
-                $tmp["memberID"] = $chapter["memberID"];
-                $tmp["chunks"] = json_decode($chapter["chunks"], true);
-                $tmp["done"] = $chapter["done"];
-
-                $data["chapters"][$chapter["chapter"]] = $tmp;
-            }
 
             if ($getChunk) {
                 $chapData = $chunks;

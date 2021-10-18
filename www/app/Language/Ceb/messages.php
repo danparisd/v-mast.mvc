@@ -488,6 +488,7 @@ return array (
     "sail_word_exists" => "The word exists",
     "sun_font_uploader" => "SUN Fonts Uploader",
     "upload" => "Upload",
+    "update" => "Update",
     "font_uploader_tooltip" => "Upload only SUN and BACKSUN fonts, one at a time. Font files should be of WOFF (Web Open Font) format and be named as sun.woff and backsun.woff respectively",
     "saildic_uploader_tooltip" => "Upload SUN dictionary in .csv format (comma separated). In following order: symbol, comma, word. Document should be UTF-8 (Unicode) encoded",
     "sun_theo_checker" => "Theological Checker",
@@ -1331,6 +1332,7 @@ return array (
     "no_source_error" => "Wala nakita ang gigikanan nga hinubad",
     "not_enough_rights_error" => "Walay igong katungod sa pagbuhat niini",
     "not_enough_lang_rights_error" => "Not enough rights to create the source for this language.",
+    "refresh_resource_error" => "Could not update resource. Probably resource is unavailable.",
     "event_translating_error" => "Dili nimo mahimong walaon kini nga kapitulo tungod kay aduna kini hinubad nga mga bersikulo",
     "chapter_aready_assigned_error" => "Lahi nga tighubad ang nanag-iya niini nga kapitulo",
     "chapter_checker_used_error" => "Chapter was checked by this checker!",
@@ -1536,6 +1538,7 @@ return array (
     "tools_src_name" => "Source Name",
     "enter_src_name" => "Enter source name",
     "upload_source" => "Upload Source",
+    "update_source" => "Update Source",
     "tools_src" => "Source Type",
     "select_src" => "Select source type",
 );

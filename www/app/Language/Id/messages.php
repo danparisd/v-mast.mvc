@@ -488,6 +488,7 @@ return array (
     "sail_word_exists" => "The word exists",
     "sun_font_uploader" => "SUN Fonts Uploader",
     "upload" => "Upload",
+    "update" => "Update",
     "font_uploader_tooltip" => "Upload only SUN and BACKSUN fonts, one at a time. Font files should be of WOFF (Web Open Font) format and be named as sun.woff and backsun.woff respectively",
     "saildic_uploader_tooltip" => "Upload SUN dictionary in .csv format (comma separated). In following order: symbol, comma, word. Document should be UTF-8 (Unicode) encoded",
     "bible_peer_checker" => "Peer Checker",
@@ -1340,6 +1341,7 @@ return array (
     "no_source_error" => "Teks terjemahan sumber tidak ada.",
     "not_enough_rights_error" => "Tidak memiliki hak yang cukup untuk tindakan ini!",
     "not_enough_lang_rights_error" => "Not enough rights to create the source for this language.",
+    "refresh_resource_error" => "Could not update resource. Probably resource is unavailable.",
     "event_translating_error" => "Anda tidak dapat memindahkan pasal ini, karena memiliki ayat-ayat yang sudah diterjemahkan.",
     "chapter_aready_assigned_error" => "Pasal telah ditugaskan kepada penerjemah yang lain!",
     "chapter_checker_used_error" => "Chapter was checked by this checker!",
@@ -1545,6 +1547,7 @@ return array (
     "tools_src_name" => "Source Name",
     "enter_src_name" => "Enter source name",
     "upload_source" => "Upload Source",
+    "update_source" => "Update Source",
     "tools_src" => "Source Type",
     "select_src" => "Select source type",
 );

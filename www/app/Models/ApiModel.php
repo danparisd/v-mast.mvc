@@ -16,7 +16,6 @@ use File;
 use Filesystem\FileNotFoundException;
 use Helpers\Parsedown;
 use Helpers\Tools;
-use Helpers\UsfmParser;
 use Helpers\ZipStream\Exception;
 use ZipArchive;
 use SplFileObject;
@@ -31,184 +30,6 @@ class ApiModel extends Model
     {
         parent::__construct();
     }
-
-    public function downloadAndExtractSourceScripture($bookProject, $sourceLang = "en")
-    {
-        $url = "";
-        $filepath = "../app/Templates/Default/Assets/source/".$sourceLang."_".$bookProject.".zip";
-        $folderpath = "../app/Templates/Default/Assets/source/".$sourceLang."_".$bookProject;
-
-        $catalog = $this->getCachedFullCatalog();
-        if(empty($catalog)) return false;
-
-        foreach($catalog->languages as $language)
-        {
-            if($language->identifier == $sourceLang)
-            {
-                foreach($language->resources as $resource)
-                {
-                    if($resource->identifier == $bookProject)
-                    {
-                        foreach($resource->formats as $format)
-                        {
-                            $url = $format->url;
-                            break 3;
-                        }
-                    }
-                }
-            }
-        }
-
-        if($url == "") return false;
-
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, $url);
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-        $zip = curl_exec($ch);
-
-        if(curl_errno($ch))
-        {
-            return "error: " . curl_error($ch);
-        }
-
-        curl_close($ch);
-
-        File::put($filepath, $zip);
-
-        if(File::exists($filepath))
-        {
-            $zip = new ZipArchive();
-            $res = $zip->open($filepath);
-            $sourceFolder = $sourceLang."_".$bookProject;
-            $archFolder = "";
-
-            if($res)
-            {
-                $index = preg_replace("/\/$/", "", $zip->getNameIndex(0));
-                $archFolder = $index;
-            }
-
-            $zip->extractTo("../app/Templates/Default/Assets/source/");
-            $zip->close();
-
-            File::delete($filepath);
-
-            if($sourceFolder != $archFolder)
-            {
-                File::deleteDirectory("../app/Templates/Default/Assets/source/".$sourceFolder);
-                File::move("../app/Templates/Default/Assets/source/".$archFolder, "../app/Templates/Default/Assets/source/".$sourceFolder);
-            }
-        }
-
-        return $folderpath;
-    }
-
-
-    /**
-     * Get book source from unfolding word api
-     * @param string $bookProject
-     * @param string $bookCode
-     * @param string $sourceLang
-     * @param int $bookNum
-     * @return mixed
-     */
-    public function getSourceBookFromApi($bookProject, $bookCode, $sourceLang = "en", $bookNum = 0)
-    {
-        $source = "";
-        $filepath = "../app/Templates/Default/Assets/source/".$sourceLang."_".$bookProject."/".sprintf("%02d", $bookNum)."-".strtoupper($bookCode).".usfm";
-
-        if(File::exists($filepath))
-        {
-            $source = File::get($filepath);
-        }
-        else
-        {
-            $folderpath = $this->downloadAndExtractSourceScripture($bookProject, $sourceLang);
-            if(!$folderpath) return $source;
-
-            $files = File::allFiles($folderpath);
-            foreach($files as $file)
-            {
-                preg_match("/([0-9]{2,3})-(.*).usfm$/", $file, $matches);
-
-                if(!isset($matches[1]) || !isset($matches[2])) continue;
-
-                if((integer)$matches[1] == $bookNum && strtolower($matches[2]) == $bookCode)
-                {
-                    $source = File::get($file);
-                    break;
-                }
-            }
-        }
-
-        return $source;
-    }
-
-
-    public function getCachedSourceBookFromApi($bookProject, $bookCode, $sourceLang = "en", $bookNum = 0)
-    {
-        $cache_keyword = $bookCode."_".$sourceLang."_".$bookProject."_usfm";
-        $usfm = false;
-        if(Cache::has($cache_keyword))
-        {
-            $source = Cache::get($cache_keyword);
-            $usfm = json_decode($source, true);
-        }
-        else
-        {
-            $source = $this->getSourceBookFromApi($bookProject, $bookCode, $sourceLang, $bookNum);
-            if($source)
-            {
-                $usfm = UsfmParser::parse($source);
-                if(!empty($usfm))
-                    Cache::add($cache_keyword, json_encode($usfm), 60*24*365);
-            }
-        }
-
-        return $usfm;
-    }
-
-
-    /**
-     * Get source text for chapter
-     * @param $event Event data
-     * @param $chapter Chapter number
-     * @return array|null
-     */
-    public function getBookText($bookData, $chapter)
-    {
-        $usfm = $this->getCachedSourceBookFromApi(
-            $bookData["sourceBible"],
-            $bookData["bookCode"],
-            $bookData["sourceLangID"],
-            $bookData["sort"]);
-
-        if($usfm && !empty($usfm["chapters"]))
-        {
-            $data = [];
-
-            foreach ($usfm["chapters"][$chapter] as $section) {
-                foreach ($section as $v => $text) {
-                    $data["text"][$v] = $text;
-                }
-            }
-
-            $arrKeys = array_keys($data["text"]);
-            $lastVerse = explode("-", end($arrKeys));
-            $lastVerse = $lastVerse[sizeof($lastVerse)-1];
-            $data["totalVerses"] = !empty($data["text"]) ?  $lastVerse : 0;
-
-            return $data;
-        }
-
-        return null;
-    }
-
 
     /**
      * Get odb|rad book source from local file
@@ -434,6 +255,7 @@ class ApiModel extends Model
         if($reDownload)
         {
             File::delete("../app/Templates/Default/Assets/source/catalog.json");
+            File::delete("../app/Templates/Default/Assets/source/catalog_dcs.json");
         }
 
         $sourceLangs = $this->getSourceTranslations();
@@ -526,12 +348,9 @@ class ApiModel extends Model
                     foreach ($lang->resources as $resource) {
                         if(in_array($resource->identifier, [
                             "ta",
-                            "obs",
                             "obs-tn",
                             "obs-tq"
                         ])) continue;
-
-                        if(preg_match("/obs/i", $resource->title)) continue;
 
                         $res = [];
                         $res["slug"] = $resource->identifier;

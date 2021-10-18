@@ -66,7 +66,7 @@
                 <img class="src_loader" src="<?php echo template_url("img/loader.gif") ?>">
             </div>
         </div>
-        <div class="tools_right">
+        <div class="tools_middle">
             <div class="source_upload">
                 <div class="tools_title"><?php echo __("upload_source"); ?></div>
 
@@ -95,6 +95,32 @@
                 </div>
 
                 <button class="btn btn-warning src_upload"><?php echo __("upload"); ?></button>
+                <img src="<?php echo template_url("img/loader.gif") ?>">
+            </div>
+        </div>
+        <div class="tools_right">
+            <div class="source_update">
+                <div class="tools_title"><?php echo __("update_source"); ?></div>
+
+                <div class="form-group">
+                    <label for="src" class=""><?php echo __("tools_src"); ?>:</label>
+                    <select class="form-control" id="src" name="src">
+                        <option value="" class="hidden"><?php echo __('select_src'); ?></option>
+                        <?php foreach ($sources as $source): ?>
+                            <option value="<?php echo $source->langID . "|" . $source->slug ?>">
+                                <?php
+                                echo "[" . $source->langID . "_" . $source->slug . "]"
+                                    . " " . ($source->language ? $source->language->langName : "")
+                                    . ($source->language && $source->language->langName != $source->language->angName && $source->language->angName != ""
+                                        ? " ( ".$source->language->angName." )" : "")
+                                    . " - " . $source->name
+                                ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <button class="btn btn-warning src_update"><?php echo __("update"); ?></button>
                 <img src="<?php echo template_url("img/loader.gif") ?>">
             </div>
         </div>

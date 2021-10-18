@@ -512,44 +512,6 @@ $(function () {
             e.preventDefault();
     });
 
-    $("button[name=updateAllCache]").click(function (e) {
-        var $this = $(this);
-        var sourceLangID = $this.data("sourcelangid");
-        var sourceBible = $this.data("sourcebible");
-
-        $.ajax({
-            url: "/admin/rpc/update_all_cache",
-            method: "post",
-            data: {
-                sourceLangID: sourceLangID,
-                sourceBible: sourceBible
-            },
-            dataType: "json",
-            beforeSend: function() {
-                $(".cacheLoader").show();
-                $this.prop("disabled", true);
-            }
-        })
-            .done(function(data) {
-                if(data.success)
-                {
-                    renderPopup(Language.cacheUpdated + ": " + data.booksUpdated + " " + Language.books);
-                }
-                else
-                    renderPopup(Language.commonError, function () {
-                        window.location.reload();
-                    }, function () {
-                        window.location.reload();
-                    });
-            })
-            .always(function() {
-                $(".cacheLoader").hide();
-                $this.prop("disabled", false);
-            });
-
-        e.preventDefault();
-    });
-
     $("input[name=eventLevel]").change(function () {
         var level = $("input[name=eventLevel]:checked").val();
         var initialLevel = $("#initialLevel").val();
@@ -1923,8 +1885,8 @@ $(function () {
     // Upload source
     $("button.src_upload").click(function (e) {
         var formData = new FormData();
-        formData.append("file", $('#src_upload')[0].files[0]);
-        formData.append("src", $("#src").val());
+        formData.append("file", $('.source_upload #src_upload')[0].files[0]);
+        formData.append("src", $(".source_upload #src").val());
 
         $.ajax({
             url: "/admin/rpc/upload_source",
@@ -1958,6 +1920,43 @@ $(function () {
 
         e.preventDefault();
         return false;
+    });
+
+    // Upload source
+    $(".src_update").click(function () {
+        var src = $(".source_update #src").val();
+
+        if(src.trim() !== "") {
+            $.ajax({
+                url: "/admin/rpc/update_source",
+                method: "post",
+                dataType: "json",
+                data: {
+                    src: src,
+                },
+                beforeSend: function() {
+                    $(".source_update img").show();
+                }
+            })
+                .done(function(data) {
+                    if(data.success)
+                    {
+                        renderPopup(data.message);
+                        $(".source_update #src").val("").trigger("chosen:updated");
+                    }
+                    else
+                    {
+                        if(data.error != undefined) {
+                            renderPopup(data.error);
+                        }
+                    }
+                })
+                .always(function() {
+                    $(".source_update img").hide();
+                });
+        } else {
+            renderPopup("Wrong parameters");
+        }
     });
 });
 

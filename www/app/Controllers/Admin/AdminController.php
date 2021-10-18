@@ -643,6 +643,8 @@ class AdminController extends Controller {
                 return $group[0];
             });
 
+
+
         return View::make('Admin/Main/ToolsSource')
             ->shares("title", __("admin_tools_title"))
             ->shares("gwLangs", $gwLangs)
@@ -1310,82 +1312,15 @@ class AdminController extends Controller {
         if(Cache::has($cache_keyword))
             Cache::forget($cache_keyword);
 
-        $source = $this->_apiModel->getCachedSourceBookFromApi(
+        $source = $this->resourcesRepo->getScripture(
+            $sourceLangID,
             $sourceBible,
             $bookCode,
-            $sourceLangID,
-            $sort);
+            $sort
+        );
 
         if($source)
             $response["success"] = true;
-
-        echo json_encode($response);
-    }
-
-    public function updateAllBooksCache()
-    {
-        $response = ["success" => false];
-
-        if(!$this->_member->isGlAdmin() && $this->_member->isProjectAdmin()) {
-            $error[] = __("not_enough_rights_error");
-            echo json_encode(array("error" => Error::display($error)));
-            return;
-        }
-
-        $_POST = Gump::xss_clean($_POST);
-
-        $sourceLangID = $_POST["sourceLangID"] ?? null;
-        $sourceBible = $_POST["sourceBible"] ?? null;
-
-        $booksUpdated = 0;
-
-        if($sourceLangID && $sourceBible)
-        {
-            $books = $this->bookInfoRepo->all();
-
-            $renDir = "../app/Templates/Default/Assets/source/".$sourceLangID."_".$sourceBible."_tmp";
-            $origDir = "../app/Templates/Default/Assets/source/".$sourceLangID."_".$sourceBible;
-
-            //File::deleteDirectory($renDir);
-            if(File::exists($origDir))
-                File::move($origDir, $renDir);
-
-            foreach ($books as $book)
-            {
-                $bookCode = $book->code;
-                $sort = $book->sort;
-
-                // Book source
-                $cache_keyword = $bookCode."_".$sourceLangID."_".$sourceBible."_usfm";
-
-                if(Cache::has($cache_keyword))
-                    Cache::forget($cache_keyword);
-
-                $source = $this->_apiModel->getCachedSourceBookFromApi(
-                    $sourceBible,
-                    $bookCode,
-                    $sourceLangID,
-                    $sort);
-
-                if($source)
-                {
-                    $response["success"] = true;
-                    $booksUpdated++;
-                }
-            }
-
-            if($booksUpdated > 0)
-            {
-                File::deleteDirectory($renDir);
-
-            }
-            else
-            {
-                File::move($renDir, $origDir);
-            }
-        }
-
-        $response["booksUpdated"] = $booksUpdated;
 
         echo json_encode($response);
     }
@@ -1601,16 +1536,17 @@ class AdminController extends Controller {
                         }
                     } else {
                         // Book source
-                        $cache_keyword = $bookCode."_".$project->sourceLangID."_".$project->sourceBible."_usfm";
+                        $cache_keyword = $project->sourceLangID."_".$project->sourceBible."_".$bookCode;
 
                         if(!Cache::has($cache_keyword)) {
-                            $usfm = $this->_apiModel->getCachedSourceBookFromApi(
+                            $usfm = $this->resourcesRepo->getScripture(
+                                $project->sourceLangID,
                                 $project->sourceBible,
                                 $bookInfo->code,
-                                $project->sourceLangID,
-                                $bookInfo->sort);
+                                $bookInfo->sort
+                            );
 
-                            if(!$usfm || empty($usfm)) {
+                            if(empty($usfm)) {
                                 $error[] = __("no_source_error");
                                 echo json_encode(array("error" => Error::display($error)));
                                 return;
@@ -1802,55 +1738,6 @@ class AdminController extends Controller {
             echo json_encode(array("error" => Error::display($error)));
         }
     }
-
-
-    public function getSource()
-    {
-        $response = array();
-        $_POST = Gump::xss_clean($_POST);
-
-        $bookCode = isset($_POST["bookCode"]) && $_POST["bookCode"] != "" ? $_POST["bookCode"] : null;
-        $sourceLangID = isset($_POST["sourceLangID"]) && $_POST["sourceLangID"] != "" ? $_POST["sourceLangID"] : null;
-        $bookProject = isset($_POST["bookProject"]) && $_POST["bookProject"] != "" ? $_POST["bookProject"] : null;
-
-        if($bookCode && $sourceLangID && $bookProject)
-        {
-            $cache_keyword = $bookCode."_".$sourceLangID."_".$bookProject;
-
-            if(Cache::has($cache_keyword))
-            {
-                $source = Cache::get($cache_keyword);
-                $json = json_decode($source, true);
-            }
-            else
-            {
-                $source = $this->_apiModel->getSourceBookFromApi($bookCode, $sourceLangID, $bookProject);
-                $json = json_decode($source, true);
-
-                if(!empty($json))
-                    Cache::add($cache_keyword, $source, 60*24*7);
-            }
-
-            if(!empty($json))
-            {
-                $response["chaptersNum"] = sizeof($json["chapters"]);
-
-                $text = "";
-
-                foreach ($json["chapters"] as $chapter) {
-                    foreach ($chapter["frames"] as $frame) {
-                        $text .= $frame["text"];
-                    }
-                }
-
-                $text = preg_split("/<verse\D+(\d+)\D+>/", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
-                $response["versesNum"] = !empty($text) ? (sizeof($text)-1)/2 : 0;
-            }
-        }
-
-        echo json_encode($response);
-    }
-
 
     private function importScriptureToEvent($usfm, $projectID, $eventID, $bookCode, $level)
     {
@@ -2316,20 +2203,22 @@ class AdminController extends Controller {
                             if($chapter > 0)
                             {
                                 // Get related Scripture to define total verses of the chapter
-                                $relatedScripture = $this->_apiModel->getBookText([
-                                    "sourceBible" => $project->sourceBible,
-                                    "bookCode" => $event->bookCode,
-                                    "sourceLangID" => $project->sourceLangID,
-                                    "sort" => $event->bookInfo->sort
-                                ], $chapter);
+                                $relatedScripture = $this->resourcesRepo->getScripture(
+                                    $project->sourceLangID,
+                                    $project->sourceBible,
+                                    $event->bookCode,
+                                    $event->bookInfo->sort,
+                                    $chapter
+                                );
 
                                 if(empty($relatedScripture))
-                                    $relatedScripture = $this->_apiModel->getBookText([
-                                        "sourceBible" => "ulb",
-                                        "bookCode" => $event->bookCode,
-                                        "sourceLangID" => "en",
-                                        "sort" => $event->bookInfo->sort
-                                    ], $chapter);
+                                    $relatedScripture = $this->resourcesRepo->getScripture(
+                                        "en",
+                                        "ulb",
+                                        $event->bookCode,
+                                        $event->bookInfo->sort,
+                                        $chapter
+                                    );
 
                                 if(empty($relatedScripture))
                                     $response["warning"] = true;
@@ -2492,20 +2381,22 @@ class AdminController extends Controller {
                         if($chapter > 0)
                         {
                             // Get related Scripture to define total verses of the chapter
-                            $relatedScripture = $this->_apiModel->getBookText([
-                                "sourceBible" => $project->sourceBible,
-                                "bookCode" => $event->bookCode,
-                                "sourceLangID" => $project->sourceLangID,
-                                "sort" => $event->bookInfo->sort
-                            ], $chapter);
+                            $relatedScripture = $this->resourcesRepo->getScripture(
+                                $project->sourceLangID,
+                                $project->sourceBible,
+                                $event->bookCode,
+                                $event->bookInfo->sort,
+                                $chapter
+                            );
 
                             if(empty($relatedScripture))
-                                $relatedScripture = $this->_apiModel->getBookText([
-                                    "sourceBible" => "ulb",
-                                    "bookCode" => $event->bookCode,
-                                    "sourceLangID" => "en",
-                                    "sort" => $event->bookInfo->sort
-                                ], $chapter);
+                                $relatedScripture = $this->resourcesRepo->getScripture(
+                                    "en",
+                                    "ulb",
+                                    $event->bookCode,
+                                    $event->bookInfo->sort,
+                                    $chapter
+                                );
 
                             if(empty($relatedScripture))
                                 $response["warning"] = true;
@@ -2974,7 +2865,7 @@ class AdminController extends Controller {
                     $mime = $sourceZip->getMimeType();
                     if($mime == "application/zip")
                     {
-                        $format = in_array($slug, ["tn","tq","tw"]) ? "md" : "usfm";
+                        $format = in_array($slug, ["tn","tq","tw","obs"]) ? "md" : "usfm";
 
                         $path = $this->_apiModel->processSourceZipFile($sourceZip, $format);
 
@@ -2993,6 +2884,63 @@ class AdminController extends Controller {
                     {
                         $result["error"] = __("error_zip_file_required");
                     }
+                }
+                else
+                {
+                    $result["error"] = __("not_enough_lang_rights_error");
+                }
+            }
+            else
+            {
+                $result["error"] = __("wrong_parameters");
+            }
+        }
+        else
+        {
+            $result["error"] = __("wrong_parameters");
+        }
+
+        echo json_encode($result);
+        exit;
+    }
+
+    public function updateSource() {
+        $result = ["success" => false];
+
+        if(!$this->_member->isGlAdmin())
+        {
+            $result["error"] = __("not_enough_rights_error");
+            echo json_encode($result);
+            exit;
+        }
+
+        $src = Input::get("src", "");
+
+        if(trim($src) != "")
+        {
+            $srcArr = explode("|", $src);
+            if(sizeof($srcArr) == 2)
+            {
+                $lang = $srcArr[0];
+                $slug = $srcArr[1];
+
+                $allowedLanguages = new Collection();
+                foreach ($this->_member->adminGatewayLanguages as $gl) {
+                    $allowedLanguages = $allowedLanguages->merge($gl->language->targetLanguages);
+                }
+                $allowedLanguage = $allowedLanguages->filter(function($language) use ($lang) {
+                    return $language->langID == $lang;
+                })->first();
+
+                if($allowedLanguage)
+                {
+                    $updated = $this->resourcesRepo->refreshResource($lang, $slug);
+                    if (!$updated) {
+                        $result["error"] = __("refresh_resource_error");
+                    } else {
+                        $result["message"] = "Updated!";
+                    }
+                    $result["success"] = $updated;
                 }
                 else
                 {

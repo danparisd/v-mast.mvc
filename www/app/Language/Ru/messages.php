@@ -489,6 +489,7 @@ return array (
     "sail_word_exists" => "Слово существует",
     "sun_font_uploader" => "Загрузчик шрифтов SUN",
     "upload" => "Загрузить",
+    "update" => "Обновить",
     "font_uploader_tooltip" => "Загружайте только шрифты SUN и BACKSUN, по одному за раз. Файлы шрифтов должны иметь формат WOFF (Web Open Font) и называться соответственно sun.woff и backsun.woff",
     "saildic_uploader_tooltip" => "Загружайте словарь SUN в формате .csv (разделение запятой). В следующем порядке: Символ, запятая, слово. Документ должен быть сохранен, используя кодировку UTF-8 (Unicode)",
     "remove_checker" => "Remove Checker",
@@ -1338,6 +1339,7 @@ return array (
     "no_source_error" => "Текст исходного перевода не найден.",
     "not_enough_rights_error" => "Недостаточно прав для выполнения этого действия!",
     "not_enough_lang_rights_error" => "Недостаточно прав для создания исходника этого языка.",
+    "refresh_resource_error" => "Не удалось обновить исходник. Возможно исходник не доступен.",
     "event_translating_error" => "Вы не можете удалить эту главу, так как в ней уже имеются переведенные стихи.",
     "chapter_aready_assigned_error" => "Глава назначена другому переводчику!",
     "chapter_checker_used_error" => "Глава была проверена этим проверяющим!",
@@ -1544,6 +1546,7 @@ return array (
     "tools_src_name" => "Имя исходника",
     "enter_src_name" => "Введите имя исходника",
     "upload_source" => "Загрузить исходник",
+    "update_source" => "Обновить исходник",
     "tools_src" => "Тип исходника",
     "select_src" => "Выберите тип исходника",
 );

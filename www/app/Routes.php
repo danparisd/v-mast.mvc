@@ -389,11 +389,9 @@ Route::group(["prefix" => "admin", "namespace" => "App\Controllers\Admin"], func
     Router::any("rpc/get_target_languages", "AdminController@getTargetLanguagesByGwLanguage");
     Router::any("rpc/create_event", "AdminController@createEvent");
     Router::any("rpc/create_tw_event", "AdminController@createEventTw");
-    Router::any("rpc/get_source", "AdminController@getSource");
     Router::any("rpc/verify_member", "AdminController@verifyMember");
     Router::any("rpc/block_member", "AdminController@blockMember");
     Router::any("rpc/clear_cache", "AdminController@clearCache");
-    Router::any("rpc/update_all_cache", "AdminController@updateAllBooksCache");
     Router::any("rpc/update_languages", "AdminController@updateLanguages");
     Router::any("rpc/update_catalog", "AdminController@updateCatalog");
     Router::any("rpc/clear_all_cache", "AdminController@clearAllCache");
@@ -407,6 +405,7 @@ Route::group(["prefix" => "admin", "namespace" => "App\Controllers\Admin"], func
     Router::any("rpc/upload_sun_dict", "AdminController@uploadSunDict");
     Router::any("rpc/upload_image", "AdminController@uploadImage");
     Router::any("rpc/upload_source", "AdminController@uploadSource");
+    Router::any("rpc/update_source", "AdminController@updateSource");
     Router::any("rpc/create_custom_src", "AdminController@createCustomSource");
     Router::any("rpc/get_event_progress/{eventID}", "AdminController@getEventProgress")
         ->where([
