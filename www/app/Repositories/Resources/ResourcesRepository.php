@@ -8,8 +8,12 @@ use App\Data\Obs\ObsChapter;
 use App\Data\Obs\ObsMapper;
 use App\Domain\ParseObs;
 use App\Models\ORM\BookInfo;
+use App\Repositories\Event\IEventRepository;
+use DOMDocument;
 use File;
+use Helpers\Parsedown;
 use Helpers\UsfmParser;
+use SplFileObject;
 use Support\Collection;
 use Cache;
 use Support\Str;
@@ -24,9 +28,16 @@ class ResourcesRepository implements IResourcesRepository {
     private $wacsCatalogPath;
     private $dcsCatalogPath;
 
-    public function __construct() {
+    private $wordsDatabase = null;
+    private $wordsDictionary = null;
+
+    private $eventRepo;
+
+    public function __construct(IEventRepository $eventRepo) {
         $this->wacsCatalogPath = $this->rootPath . "catalog.json";
         $this->dcsCatalogPath = $this->rootPath . "catalog_dcs.json";
+
+        $this->eventRepo = $eventRepo;
     }
 
     /**
@@ -50,7 +61,7 @@ class ResourcesRepository implements IResourcesRepository {
             }
         }
 
-        if ($chapter) {
+        if ($chapter !== null) {
             $obs = $obs->filter(function($item) use ($chapter) {
                 return $item->chapter == $chapter;
             })->first();
@@ -78,8 +89,64 @@ class ResourcesRepository implements IResourcesRepository {
             }
         }
 
-        if ($chapter) {
+        if ($chapter !== null) {
             return $book[$chapter] ?? [];
+        }
+
+        return $book;
+    }
+
+    public function getMdResource($lang, $resource, $bookSlug, $chapter = null, $toHtml = false)
+    {
+        $resource_cache_key = $lang . "_" . $resource . "_" . $bookSlug . ($toHtml ? "_html" : "");
+
+        if (Cache::has($resource_cache_key)) {
+            $source = Cache::get($resource_cache_key);
+            $book = json_decode($source, true);
+        } else {
+            $book = $this->parseMdResource($lang, $resource, $bookSlug, $toHtml);
+            if (!empty($book)) {
+                Cache::add($resource_cache_key, json_encode($book), 365 * 24 * 7);
+            }
+        }
+
+        if ($chapter !== null) {
+            return $book[$chapter] ?? [];
+        }
+
+        return $book;
+    }
+
+    public function getTw($lang, $category, $eventID = null, $chapter = null, $toHtml = false) {
+        $resource_cache_key = $lang . "_tw_" . $category . ($toHtml ? "_html" : "");
+
+        if (Cache::has($resource_cache_key)) {
+            $source = Cache::get($resource_cache_key);
+            $book = json_decode($source, true);
+        } else {
+            $book = $this->parseTw($lang, $category, $toHtml);
+            if (!empty($book)) {
+                Cache::add($resource_cache_key, json_encode($book), 365 * 24 * 7);
+            }
+        }
+
+        if ($chapter !== null && $eventID !== null) {
+            $event = $this->eventRepo->get($eventID);
+            $group = $event->twGroups->filter(function($item) use ($chapter) {
+                return $item->groupID == $chapter;
+            })->first();
+
+            if ($group) {
+                $group_words = (array)json_decode($group->words, true);
+                $words = array_values(array_filter($book, function ($e) use ($group_words) {
+                    return in_array($e["word"], $group_words);
+                }));
+
+                return [
+                    "words" => $words,
+                    "group" => $group_words
+                ];
+            }
         }
 
         return $book;
@@ -135,6 +202,10 @@ class ResourcesRepository implements IResourcesRepository {
             return $book->category == $category;
         })->each(function($book) use ($lang, $resource) {
             $cacheKey = $lang . "_" . $resource . "_" . $book->code;
+            Cache::forget($cacheKey);
+            $cacheKey = $lang . "_" . $resource . "_" . $book->name;
+            Cache::forget($cacheKey);
+            $cacheKey = $lang . "_" . $resource . "_" . $book->name . "_html";
             Cache::forget($cacheKey);
         });
 
@@ -257,13 +328,13 @@ class ResourcesRepository implements IResourcesRepository {
             $usfm = UsfmParser::parse($source);
 
             if ($usfm && isset($usfm["chapters"])) {
-                $book["id"] = $usfm["id"];
-                $book["ide"] = $usfm["ide"];
-                $book["h"] = $usfm["h"];
-                $book["toc1"] = $usfm["toc1"];
-                $book["toc2"] = $usfm["toc2"];
-                $book["toc3"] = $usfm["toc3"];
-                $book["mt"] = $usfm["toc3"];
+                $book["id"] = $usfm["id"] ?? "";
+                $book["ide"] = $usfm["ide"] ?? "";
+                $book["h"] = $usfm["h"] ?? "";
+                $book["toc1"] = $usfm["toc1"] ?? "";
+                $book["toc2"] = $usfm["toc2"] ?? "";
+                $book["toc3"] = $usfm["toc3"] ?? "";
+                $book["mt"] = $usfm["toc3"] ?? "";
                 $book["chapters"] = $usfm["chapters"];
 
                 foreach ($usfm["chapters"] as $chap => $chunks) {
@@ -317,6 +388,198 @@ class ResourcesRepository implements IResourcesRepository {
         });
 
         return $collection;
+    }
+
+    public function parseMdResource($lang, $resource, $bookSlug, $toHtml = false, $folderPath = null) {
+        $book = [];
+
+        if (!$folderPath) {
+            $folderPath = $this->downloadResource($lang, $resource);
+        }
+
+        if (!$folderPath) return $book;
+
+        // Get book folder
+        $dirs = File::directories($folderPath);
+
+        $bookFolderPath = null;
+        foreach($dirs as $dir)
+        {
+            preg_match("/[1-3a-z]{3}$/i", $dir, $matches);
+            if(isset($matches[0]) && strtolower($matches[0]) == $bookSlug)
+            {
+                $bookFolderPath = $dir;
+                break;
+            }
+        }
+
+        if($bookFolderPath != null)
+            $folderpath = $bookFolderPath;
+
+        if(!$folderpath) return $book;
+
+        $files = File::allFiles($folderpath);
+        foreach($files as $file)
+        {
+            preg_match("/([0-9]{2,3}|front)\/([0-9]{2,3}|intro|index|title).(md|txt)$/i", $file, $matches);
+
+            if(!isset($matches[1]) || !isset($matches[2])) continue;
+
+            if($matches[2] == "index")
+                continue;
+
+            if($matches[1] == "front")
+                $matches[1] = 0;
+
+            if($matches[2] == "intro" || $matches[2] == "title")
+                $matches[2] = 0;
+
+            $chapter = (int)$matches[1];
+            $chunk = (int)$matches[2];
+            $ext = strtolower($matches[3]);
+
+            if(!isset($book[$chapter]))
+                $book[$chapter] = [];
+            if(isset($book[$chapter]) && !isset($book[$chapter][$chunk]))
+                $book[$chapter][$chunk] = [];
+
+            $content = File::get($file);
+
+            if($ext == "txt")
+            {
+                $content = $this->jsonToMarkdown($content);
+            }
+
+            if($toHtml)
+            {
+                $parsedown = new Parsedown();
+                $content = $parsedown->text($content);
+                $content = preg_replace("//", "", $content);
+            }
+
+            $book[$chapter][$chunk][] = $content;
+        }
+
+        ksort($book);
+        $book = array_map(function ($elm) {
+            ksort($elm);
+            return $elm;
+        }, $book);
+
+        return $book;
+    }
+
+    public function parseTw($lang, $bookSlug, $toHtml = true, $folderPath = null)
+    {
+        $book = [];
+
+        if(!$folderPath)
+            $folderPath = $this->downloadResource($lang, "tw");
+
+        if (!$folderPath) return $book;
+
+        $files = File::allFiles($folderPath);
+
+        $words = [];
+
+        foreach ($files as $file) {
+            $filename = $file->getBasename('.' . $file->getExtension());
+            if($this->getTwBookByWord($filename) == $bookSlug)
+            {
+                preg_match("/\/([0-9a-z-_]+).(md|txt)$/i", $file, $matches);
+
+                if(!isset($matches[1]) || !isset($matches[2])) continue;
+
+                $word_name = $matches[1];
+                $ext = strtolower($matches[2]);
+
+                $word = [];
+
+                $content = File::get($file);
+
+                if($ext == "txt")
+                {
+                    $content = $this->jsonToMarkdown($content);
+                }
+
+                if($toHtml)
+                {
+                    $parsedown = new Parsedown();
+                    $content = $parsedown->text($content);
+                    $content = preg_replace("//", "", $content);
+                }
+
+                $word["text"] = $content;
+                $word["word"] = $word_name;
+                $words[] = $word;
+            }
+        }
+
+        usort($words, function($a, $b) {
+            return strcmp($a["word"], $b["word"]);
+        });
+
+        return $words;
+    }
+
+    public function parseTwByBook($lang, $bookSlug, $chapter, $toHtml = false) {
+        $folderPath = $this->downloadResource($lang, "tw");
+
+        if (!$folderPath) return [];
+
+        $wordDatabase = $this->getWordsDatabase();
+        $filtered = [];
+
+        foreach ($wordDatabase as $word)
+        {
+            if($bookSlug == $word[0] && $chapter == $word[1])
+            {
+                if(!isset($filtered[$word[5]]))
+                    $filtered[$word[5]] = [];
+
+                if(!isset($filtered[$word[5]]["verses"]))
+                    $filtered[$word[5]]["verses"] = [];
+
+                if(!isset($filtered[$word[5]]["term"]))
+                {
+                    $filtered[$word[5]]["term"] = $word[3];
+                    $filtered[$word[5]]["name"] = $word[3];
+                }
+
+                $filtered[$word[5]]["verses"][] = (int)$word[2];
+            }
+        }
+
+        $files = File::allFiles($folderPath);
+
+        foreach ($filtered as $key => &$word) {
+            $word["range"] = $this->getTwRange($word["verses"]);
+
+            foreach ($files as $file) {
+                if(preg_match("/".$key.".md$/i", $file))
+                {
+                    $content = File::get($file);
+
+                    if ($toHtml) {
+                        $parsedown = new Parsedown();
+                        $dom = new DOMDocument();
+
+                        $content = $parsedown->text($this->removeUtf8Bom($content));
+                        $content = preg_replace("//", "", $content);
+                        $dom->loadHTML($content);
+
+                        $headers = $dom->getElementsByTagName("h1");
+                        if(!empty($headers))
+                        {
+                            $word["name"] = $headers[0]->nodeValue;
+                        }
+                    }
+                    $word["text"] = $content;
+                }
+            }
+        }
+
+        return $filtered;
     }
 
     /**
@@ -396,5 +659,104 @@ class ResourcesRepository implements IResourcesRepository {
         }
 
         return $url;
+    }
+
+    /**
+     * Get tW database
+     * @return SplFileObject
+     */
+    private function getWordsDatabase()
+    {
+        // Parses csv file and returns an array of words
+        // Each word array has 6 elements
+        // 0 - book code (gen)
+        // 1 - chapter
+        // 2 - verse
+        // 3 - term (ex. Heavens)
+        // 4 - category (ex. kt, other, names)
+        // 5 - reference name (ex. heaven)
+
+        if ($this->wordsDatabase == null) {
+            $words = new SplFileObject($this->rootPath . "words_db.csv");
+            $words->setFlags(SplFileObject::READ_CSV);
+            $this->wordsDatabase = $words;
+        }
+
+        return $this->wordsDatabase;
+    }
+
+    /**
+     * Get tW dictionary
+     * @return SplFileObject
+     */
+    private function getWordsDictionary()
+    {
+        // Parses csv file and returns an array of words
+        // Each word array has 2 elements
+        // 0 - reference name (ex. heaven)
+        // 1 - category (ex. kt, other, names)
+
+        if ($this->wordsDictionary == null) {
+            $words = new SplFileObject($this->rootPath . "words_dict.csv");
+            $words->setFlags(SplFileObject::READ_CSV);
+            $this->wordsDictionary = $words;
+        }
+
+        return $this->wordsDictionary;
+    }
+
+    private function getTwBookByWord($word)
+    {
+        $words = $this->getWordsDictionary();
+        foreach ($words as $w) {
+            if($w[0] == $word)
+            {
+                return $w[1];
+            }
+        }
+
+        return "unknown";
+    }
+
+    private function jsonToMarkdown($json) {
+        $data = (array)json_decode($json);
+        $md = "";
+        foreach ($data as $item) {
+            $md .= "# ".$item->title."  \n\n";
+            $md .= $item->body."  \n\n";
+        }
+        return $md;
+    }
+
+    private function getTwRange($verses)
+    {
+        if(count($verses) == 1)
+            return [$verses[0]];
+
+        $range = [];
+        for ($i = 0; $i < count($verses); $i++) {
+            $rStart = $verses[$i];
+            $rEnd = $rStart;
+
+            if(!isset($verses[$i]))
+            {
+                $range[] = $rStart == $rEnd ? $rStart : $rStart . '-' . $rEnd;
+                continue;
+            }
+
+            while (isset($verses[$i + 1]) && ($verses[$i + 1] - $verses[$i]) == 1) {
+                $rEnd = $verses[$i + 1];
+                $i++;
+            }
+            $range[] = $rStart == $rEnd ? $rStart : $rStart . '-' . $rEnd;
+        }
+        return $range;
+    }
+
+    private function removeUtf8Bom($text)
+    {
+        $bom = pack('H*','EFBBBF');
+        $text = preg_replace("/^$bom/", '', $text);
+        return $text;
     }
 }

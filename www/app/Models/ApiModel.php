@@ -14,18 +14,15 @@ use Database\QueryException;
 use DB;
 use File;
 use Filesystem\FileNotFoundException;
-use Helpers\Parsedown;
+use Helpers\Markdownify\Converter;
 use Helpers\Tools;
 use Helpers\ZipStream\Exception;
+use SplFileInfo;
 use ZipArchive;
-use SplFileObject;
 
 
 class ApiModel extends Model
 {
-    private $wordsDatabase = null;
-    private $wordsDictionary = null;
-
     public  function __construct()
     {
         parent::__construct();
@@ -303,7 +300,6 @@ class ApiModel extends Model
 
     }
 
-
     public function getCachedFullCatalog()
     {
         $filepath = "../app/Templates/Default/Assets/source/catalog.json";
@@ -365,586 +361,6 @@ class ApiModel extends Model
         }
 
         return $sls;
-    }
-
-
-    public function downloadAndExtractNotes($lang = "en", $update = false)
-    {
-        $filepath = "../app/Templates/Default/Assets/source/".$lang."_notes.zip";
-        $folderpath = "../app/Templates/Default/Assets/source/".$lang."_tn";
-
-        if(!File::exists($folderpath) || $update)
-        {
-            // Get catalog
-            $catalog = $this->getCachedFullCatalog();
-            if(empty($catalog)) return false;
-
-            $url = "";
-
-            foreach($catalog->languages as $language)
-            {
-                if($language->identifier == $lang)
-                {
-                    foreach($language->resources as $resource)
-                    {
-                        if($resource->identifier == "tn")
-                        {
-                            foreach($resource->formats as $format)
-                            {
-                                $url = $format->url;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if($url == "") return false;
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, $url);
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-            $zip = curl_exec($ch);
-
-            if(curl_errno($ch))
-            {
-                return "error: " . curl_error($ch);
-            }
-
-            curl_close($ch);
-
-            File::put($filepath, $zip);
-
-            if(File::exists($filepath))
-            {
-                $zip = new ZipArchive();
-                $res = $zip->open($filepath);
-                $zip->extractTo("../app/Templates/Default/Assets/source/");
-                $zip->close();
-
-                File::delete($filepath);
-            }
-        }
-
-        return $folderpath;
-    }
-
-
-    /**
-     * Parses .md files of specified book and returns array
-     * @param $book <p>Book code</p>
-     * @param string $lang <p>Language code</p>
-     * @param bool $parse <p>Whether to parse to html or leave it as markdown</p>
-     * @param null $folderpath <p>Path to the notes directory</p>
-     * @return array
-     */
-    public function getTranslationNotes($book, $lang ="en", $parse = true, $folderpath = null)
-    {
-        if($folderpath == null)
-            $folderpath = $this->downloadAndExtractNotes($lang);
-
-        if(!$folderpath) return [];
-
-        // Get book folder
-        $dirs = File::directories($folderpath);
-        $bookFolderPath = null;
-        foreach($dirs as $dir)
-        {
-            preg_match("/[1-3a-z]{3}$/i", $dir, $matches);
-            if(isset($matches[0]) && strtolower($matches[0]) == $book)
-            {
-                $bookFolderPath = $dir;
-                break;
-            }
-        }
-
-        if($bookFolderPath != null)
-            $folderpath = $bookFolderPath;
-
-        if(!$folderpath) return [];
-
-        $parsedown = new Parsedown();
-
-        $result = [];
-        $files = File::allFiles($folderpath);
-        foreach($files as $file)
-        {
-            preg_match("/([0-9]{2,3}|front)\/([0-9]{2,3}|intro|index|title).(md|txt)$/i", $file, $matches);
-
-            if(!isset($matches[1]) || !isset($matches[2])) continue;
-
-            if($matches[2] == "index")
-                continue;
-
-            if($matches[1] == "front")
-                $matches[1] = 0;
-
-            if($matches[2] == "intro" || $matches[2] == "title")
-                $matches[2] = 0;
-
-            $chapter = (int)$matches[1];
-            $chunk = (int)$matches[2];
-            $ext = strtolower($matches[3]);
-
-            if(!isset($result[$chapter]))
-                $result[$chapter] = [];
-            if(isset($result[$chapter]) && !isset($result[$chapter][$chunk]))
-                $result[$chapter][$chunk] = [];
-
-            $md = File::get($file);
-
-            if($ext == "txt")
-            {
-                $data = (array)json_decode($md);
-                $md = "";
-                foreach ($data as $q) {
-                    $md .= "# ".$q->title."  \n\n";
-                    $md .= $q->body."  \n\n";
-                }
-            }
-
-            $content = $md;
-
-            if($parse)
-            {
-                $content = $parsedown->text($md);
-                $content = preg_replace("//", "", $content);
-            }
-
-            $result[$chapter][$chunk][] = $content;
-        }
-
-        ksort($result);
-        $result = array_map(function ($elm) {
-            ksort($elm);
-            return $elm;
-        }, $result);
-        return $result;
-    }
-
-
-    /**
-     * Download tWords from DCS and extract them
-     * @param string $lang
-     * @param bool $update
-     * @return bool|string
-     */
-    public function downloadAndExtractWords($lang = "en", $update = false)
-    {
-        $filepath = "../app/Templates/Default/Assets/source/".$lang."_words.zip";
-        $folderpath = "../app/Templates/Default/Assets/source/".$lang."_tw";
-
-        if(!File::exists($folderpath) || $update)
-        {
-            // Get catalog
-            $catalog = $this->getCachedFullCatalog();
-            if(empty($catalog)) return false;
-
-            $url = "";
-
-            foreach($catalog->languages as $language)
-            {
-                if($language->identifier == $lang)
-                {
-                    foreach($language->resources as $resource)
-                    {
-                        if($resource->identifier == "tw")
-                        {
-                            foreach ($resource->projects as $project)
-                            {
-                                foreach($project->formats as $format)
-                                {
-                                    $url = $format->url;
-                                    if(!preg_match("/\.zip$/", $url)) continue;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if($url == "") return false;
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, $url);
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-            $zip = curl_exec($ch);
-
-            if(curl_errno($ch))
-            {
-                return "error: " . curl_error($ch);
-            }
-
-            curl_close($ch);
-
-            File::put($filepath, $zip);
-
-            if(File::exists($filepath))
-            {
-                $zip = new ZipArchive();
-                $res = $zip->open($filepath);
-                $zip->extractTo("../app/Templates/Default/Assets/source/");
-                $zip->close();
-
-                File::delete($filepath);
-            }
-        }
-
-        return $folderpath;
-    }
-
-
-    /**
-     * Parses .md files of specified book and chapter and returns array
-     * @param $book
-     * @param $chapter
-     * @param $lang
-     * @return  array
-     **/
-    public function getTranslationWords($book, $chapter, $lang = "en")
-    {
-        $folderpath = $this->downloadAndExtractWords($lang);
-
-        if(!$folderpath) return [];
-
-        $words = $this->getWordsDatabase();
-        $dom = new \DOMDocument();
-
-        $filtered = [
-            "book" => $book,
-            "chapter" => $chapter,
-            "words" => []
-        ];
-
-        foreach ($words as $word)
-        {
-            if($book == $word[0] && $chapter == $word[1])
-            {
-                if(!isset($filtered["words"][$word[5]]))
-                    $filtered["words"][$word[5]] = [];
-
-                if(!isset($filtered["words"][$word[5]]["verses"]))
-                    $filtered["words"][$word[5]]["verses"] = [];
-
-                if(!isset($filtered["words"][$word[5]]["term"]))
-                {
-                    $filtered["words"][$word[5]]["term"] = $word[3];
-                    $filtered["words"][$word[5]]["name"] = $word[3];
-                }
-
-                $filtered["words"][$word[5]]["verses"][] = (int)$word[2];
-            }
-        }
-
-        $parsedown = new Parsedown();
-        $files = File::allFiles($folderpath);
-
-        foreach ($filtered["words"] as $key => &$word) {
-            $word["range"] = $this->getRanges($word["verses"]);
-
-            foreach ($files as $file) {
-                if(preg_match("/".$key.".md$/i", $file))
-                {
-                    $md = File::get($file);
-                    $html = $parsedown->text($this->remove_utf8_bom($md));
-                    $html = preg_replace("//", "", $html);
-
-                    $dom->loadHTML($html);
-                    $headers = $dom->getElementsByTagName("h1");
-                    if(!empty($headers))
-                    {
-                        $word["name"] = $headers[0]->nodeValue;
-                    }
-
-                    $word["text"] = $html;
-                }
-            }
-        }
-
-        return $filtered;
-    }
-
-    /**
-     * Parses .md files of specified category and returns array
-     * @param $category
-     * @param $lang
-     * @param $onlyNames
-     * @param $parse
-     * @param $folderpath
-     * @return  array
-     **/
-    public function getTranslationWordsByCategory($category, $lang = "en", $onlyNames = false, $parse = true, $folderpath = null)
-    {
-        if($folderpath == null)
-            $folderpath = $this->downloadAndExtractWords($lang);
-
-        if(!$folderpath) return [];
-
-        $parsedown = new Parsedown();
-        $files = File::allFiles($folderpath);
-
-        $words = [];
-
-        foreach ($files as $file) {
-            $filename = $file->getBasename('.' . $file->getExtension());
-            if($this->getCategoryByWord($filename) == $category)
-            {
-                preg_match("/\/([0-9a-z-_]+).(md|txt)$/i", $file, $matches);
-
-                if(!isset($matches[1]) || !isset($matches[2])) continue;
-
-                $word_name = $matches[1];
-                $ext = strtolower($matches[2]);
-
-                $word = [];
-
-                if(!$onlyNames)
-                {
-                    $md = File::get($file);
-
-                    if($ext == "txt")
-                    {
-                        $data = (array)json_decode($md);
-                        $md = "";
-                        foreach ($data as $q) {
-                            $md .= "# ".$q->title."  \n\n";
-                            $md .= $q->body."  \n\n";
-                        }
-                    }
-
-                    $html = $md;
-
-                    if($parse)
-                    {
-                        $html = $parsedown->text($md);
-                        $html = preg_replace("//", "", $html);
-                    }
-                    $word["text"] = $html;
-                }
-
-
-                $word["word"] = $word_name;
-                $words[] = $word;
-            }
-        }
-
-        usort($words, function($a, $b) {
-            return strcmp($a["word"], $b["word"]);
-        });
-
-        return $words;
-    }
-
-    public function getWordsDatabase()
-    {
-        // Parses csv file and returns an array of words
-        // Each word array has 6 elements
-        // 0 - book code (gen)
-        // 1 - chapter
-        // 2 - verse
-        // 3 - term (ex. Heavens)
-        // 4 - category (ex. kt, other, names)
-        // 5 - reference name (ex. heaven)
-        if($this->wordsDatabase == null)
-        {
-            $words = new SplFileObject("../app/Templates/Default/Assets/source/words_db.csv");
-            $words->setFlags(SplFileObject::READ_CSV);
-            $this->wordsDatabase = $words;
-        }
-
-        return $this->wordsDatabase;
-    }
-
-    public function getWordsDictionary()
-    {
-        // Parses csv file and returns an array of words
-        // Each word array has 2 elements
-        // 0 - reference name (ex. heaven)
-        // 1 - category (ex. kt, other, names)
-        if($this->wordsDictionary == null)
-        {
-            $words = new SplFileObject("../app/Templates/Default/Assets/source/words_dict.csv");
-            $words->setFlags(SplFileObject::READ_CSV);
-            $this->wordsDictionary = $words;
-        }
-
-        return $this->wordsDictionary;
-    }
-
-    public function getCategoryByWord($word)
-    {
-        $words = $this->getWordsDictionary();
-        foreach ($words as $w) {
-            if($w[0] == $word)
-            {
-                return $w[1];
-            }
-        }
-
-        return "unknown";
-    }
-
-
-    /**
-     * Download questions and extract them
-     * @param string $lang
-     * @param bool $update
-     * @return bool|string
-     */
-    public function downloadAndExtractQuestions($lang = "en", $update = false)
-    {
-        $filepath = "../app/Templates/Default/Assets/source/".$lang."_questions.zip";
-        $folderpath = "../app/Templates/Default/Assets/source/".$lang."_tq";
-
-        if(!File::exists($folderpath) || $update)
-        {
-            // Get catalog
-            $catalog = $this->getCachedFullCatalog();
-            if(empty($catalog)) return false;
-
-            $url = "";
-
-            foreach($catalog->languages as $language)
-            {
-                if($language->identifier == $lang)
-                {
-                    foreach($language->resources as $resource)
-                    {
-                        if($resource->identifier == "tq")
-                        {
-                            foreach($resource->formats as $format)
-                            {
-                                $url = $format->url;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if($url == "") return false;
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, $url);
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-            $zip = curl_exec($ch);
-
-            if(curl_errno($ch))
-            {
-                return "error: " . curl_error($ch);
-            }
-
-            curl_close($ch);
-
-            File::put($filepath, $zip);
-
-            if(File::exists($filepath))
-            {
-                $zip = new ZipArchive();
-                $res = $zip->open($filepath);
-                $zip->extractTo("../app/Templates/Default/Assets/source/");
-                $zip->close();
-
-                File::delete($filepath);
-            }
-        }
-
-        return $folderpath;
-    }
-
-
-    /**
-     * Parses .md files of specified book and returns array
-     * @param $book
-     * @param $lang
-     * @param $parse
-     * @param $folderpath
-     * @return  array
-     **/
-    public function getTranslationQuestions($book, $lang ="en", $parse = true, $folderpath = null)
-    {
-        if($folderpath == null)
-            $folderpath = $this->downloadAndExtractQuestions($lang);
-
-        if(!$folderpath) return [];
-
-        // Get book folder
-        $dirs = File::directories($folderpath);
-        $bookFolderPath = null;
-        foreach($dirs as $dir)
-        {
-            preg_match("/[1-3a-z]{3}$/i", $dir, $matches);
-            if(!empty($matches) && strtolower($matches[0]) == $book)
-            {
-                $bookFolderPath = $dir;
-                break;
-            }
-        }
-
-        if($bookFolderPath != null)
-            $folderpath = $bookFolderPath;
-
-        if(!$folderpath) return [];
-
-        $parsedown = new Parsedown();
-
-        $result = [];
-        $files = File::allFiles($folderpath);
-        foreach($files as $file)
-        {
-            preg_match("/([0-9]{2,3})\/([0-9]{2,3}).(md|txt)$/i", $file, $matches);
-
-            if(!isset($matches[1]) || !isset($matches[2])) continue;
-
-            $chapter = (int)$matches[1];
-            $chunk = (int)$matches[2];
-            $ext = strtolower($matches[3]);
-
-            if(!isset($result[$chapter]))
-                $result[$chapter] = [];
-            if(isset($result[$chapter]) && !isset($result[$chapter][$chunk]))
-                $result[$chapter][$chunk] = [];
-
-            $md = File::get($file);
-            if($ext == "txt")
-            {
-                $data = (array)json_decode($md);
-                $md = "";
-                foreach ($data as $q) {
-                    $md .= "# ".$q->title."  \n\n";
-                    $md .= $q->body."  \n\n";
-                }
-            }
-
-            $html = $md;
-
-            if($parse)
-            {
-                $html = $parsedown->text($md);
-                $html = preg_replace("//", "", $html);
-            }
-
-            $result[$chapter][$chunk][] = $html;
-        }
-
-        ksort($result);
-        return $result;
     }
 
     private function downloadPredefinedChunks($book, $lang = "en", $project = "ulb")
@@ -1175,7 +591,7 @@ class ApiModel extends Model
                 $allDirs = File::directories($path, "<0");
                 foreach ($allDirs as $dirPath)
                 {
-                    $dir = new \SplFileInfo($dirPath);
+                    $dir = new SplFileInfo($dirPath);
                     if(preg_match("/^[1-3]?[a-z]{2,3}$/", $dir->getBasename()))
                     {
                         $usfm = $this->compileUSFMProject($dirPath);
@@ -1221,7 +637,7 @@ class ApiModel extends Model
 
             $allDirs = File::directories($path, "<0");
             foreach ($allDirs as $dirPath) {
-                $dir = new \SplFileInfo($dirPath);
+                $dir = new SplFileInfo($dirPath);
                 if(preg_match($regex, $dir->getBasename()))
                 {
                     $files = File::allFiles($dirPath);
@@ -1371,7 +787,7 @@ class ApiModel extends Model
         if(sizeof($chunks) != sizeof($notes))
             return false;
 
-        $converter = new \Helpers\Markdownify\Converter;
+        $converter = new Converter;
         $converter->setKeepHTML(false);
         foreach ($chunks as $key => $chunk) {
             if(trim($chunk) == "")
@@ -1395,7 +811,7 @@ class ApiModel extends Model
         if(sizeof($questions) != sizeof($chunks))
             return false;
 
-        $converter = new \Helpers\Markdownify\Converter;
+        $converter = new Converter;
         $converter->setKeepHTML(false);
         foreach ($chunks as $key => $chunk) {
             if(trim($chunk) == "")
@@ -1419,7 +835,7 @@ class ApiModel extends Model
         if(sizeof($words) != sizeof($chunks))
             return false;
 
-        $converter = new \Helpers\Markdownify\Converter;
+        $converter = new Converter;
         $converter->setKeepHTML(false);
         foreach ($chunks as $key => $chunk) {
             if(trim($chunk) == "")
@@ -1472,39 +888,7 @@ class ApiModel extends Model
         return $chunks;
     }
 
-    public function getRanges($arr)
-    {
-        if(sizeof($arr) == 1)
-            return [$arr[0]];
-
-        $ranges = [];
-        for ($i = 0; $i < sizeof($arr); $i++) {
-            $rstart = $arr[$i];
-            $rend = $rstart;
-
-            if(!isset($arr[$i]))
-            {
-                $ranges[] = $rstart == $rend ? $rstart : $rstart . '-' . $rend;
-                continue;
-            }
-
-            while (isset($arr[$i + 1]) && ($arr[$i + 1] - $arr[$i]) == 1) {
-                $rend = $arr[$i + 1];
-                $i++;
-            }
-            $ranges[] = $rstart == $rend ? $rstart : $rstart . '-' . $rend;
-        }
-        return $ranges;
-    }
-
     public function clearAllCache() {
         Cache::flush();
-    }
-
-    function remove_utf8_bom($text)
-    {
-        $bom = pack('H*','EFBBBF');
-        $text = preg_replace("/^$bom/", '', $text);
-        return $text;
     }
 }

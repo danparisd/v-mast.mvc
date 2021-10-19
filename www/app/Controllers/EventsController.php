@@ -9643,58 +9643,58 @@ class EventsController extends Controller {
         $currentChapter = $data["event"][0]->currentChapter;
         $currentChunk = $data["event"][0]->currentChunk;
 
-        $notes = $this->_apiModel->getTranslationNotes(
+        if ($currentChapter == -1) {
+            $nextChapter = $this->_model->getNextChapter($data["event"][0]->eventID, $data["event"][0]->myMemberID);
+            if (!empty($nextChapter))
+                $currentChapter = $nextChapter[0]->chapter;
+        }
+
+        if ($currentChapter <= -1) return false;
+
+        $notes = $this->resourcesRepo->getMdResource(
+            $data["event"][0]->resLangID,
+            $data["event"][0]->bookProject,
             $data["event"][0]->bookCode,
-            $data["event"][0]->resLangID);
+            $currentChapter,
+            true
+        );
 
-        if ($notes) {
-            if ($currentChapter == -1) {
-                $nextChapter = $this->_model->getNextChapter($data["event"][0]->eventID, $data["event"][0]->myMemberID);
-                if (!empty($nextChapter))
-                    $currentChapter = $nextChapter[0]->chapter;
-            }
+        if (!empty($notes)) {
+            $data["notes"] = $notes;
+            $data["currentChapter"] = $currentChapter;
+            $data["currentChunk"] = $currentChunk;
 
-            if ($currentChapter <= -1) return false;
+            $chunks = json_decode($data["event"][0]->chunks, true);
+            $data["chunks"] = $chunks;
 
-            if (isset($notes[$currentChapter])) {
-                $data["notes"] = $notes[$currentChapter];
-                $data["currentChapter"] = $currentChapter;
-                $data["currentChunk"] = $currentChunk;
-
-                $chunks = json_decode($data["event"][0]->chunks, true);
-                $data["chunks"] = $chunks;
-
-                if ($currentChapter > 0) {
-                    if (isset($data["text"]) && $data["text"] != "") {
-                        $data["nosource"] = false;
-                    } else {
-                        $data["no_chunk_source"] = true;
-                        $data["nosource"] = true;
-                    }
+            if ($currentChapter > 0) {
+                if (isset($data["text"]) && $data["text"] != "") {
+                    $data["nosource"] = false;
                 } else {
+                    $data["no_chunk_source"] = true;
                     $data["nosource"] = true;
                 }
-
-                if ($getChunk) {
-                    $data["notes"] = [];
-
-                    if (isset($data["chunk"])) {
-                        foreach ($data["chunk"] as $verse) {
-                            foreach ($notes[$currentChapter][$verse] as $note) {
-                                $data["notes"][] = $note;
-                            }
-                            break;
-                        }
-                    } else {
-                        $data["notes"] = $notes[$currentChapter][$currentChunk];
-                        $data["chunk"][0] = $currentChunk;
-                    }
-                }
-
-                return $data;
             } else {
-                return array("error" => __("no_source_error"));
+                $data["nosource"] = true;
             }
+
+            if ($getChunk) {
+                $data["notes"] = [];
+
+                if (isset($data["chunk"])) {
+                    foreach ($data["chunk"] as $verse) {
+                        foreach ($notes[$verse] as $note) {
+                            $data["notes"][] = $note;
+                        }
+                        break;
+                    }
+                } else {
+                    $data["notes"] = $notes[$currentChunk];
+                    $data["chunk"][0] = $currentChunk;
+                }
+            }
+
+            return $data;
         } else {
             return array("error" => __("no_source_error"));
         }
@@ -9705,37 +9705,36 @@ class EventsController extends Controller {
         $currentChapter = $data["event"][0]->currentChapter;
         $currentChunk = $data["event"][0]->currentChunk;
 
-        $questions = $this->_apiModel->getTranslationQuestions(
+        if ($currentChapter == 0) {
+            $nextChapter = $this->_model->getNextChapter($data["event"][0]->eventID, $data["event"][0]->myMemberID);
+            if (!empty($nextChapter))
+                $currentChapter = $nextChapter[0]->chapter;
+        }
+
+        if ($currentChapter <= 0) return false;
+
+        $questions = $this->resourcesRepo->getMdResource(
+            $data["event"][0]->resLangID,
+            $data["event"][0]->bookProject,
             $data["event"][0]->bookCode,
-            $data["event"][0]->resLangID);
+            $currentChapter,
+            true
+        );
 
-        if ($questions) {
-            if ($currentChapter == 0) {
-                $nextChapter = $this->_model->getNextChapter($data["event"][0]->eventID, $data["event"][0]->myMemberID);
-                if (!empty($nextChapter))
-                    $currentChapter = $nextChapter[0]->chapter;
-            }
+        if (!empty($questions)) {
+            $data["questions"] = $questions;
+            $data["currentChapter"] = $currentChapter;
+            $data["currentChunk"] = $currentChunk;
 
-            if ($currentChapter <= 0) return false;
+            end($data["questions"]);
+            $data["totalVerses"] = key($data["questions"]);
 
-            if (isset($questions[$currentChapter])) {
-                ksort($questions[$currentChapter]);
-                $data["questions"] = $questions[$currentChapter];
-                $data["currentChapter"] = $currentChapter;
-                $data["currentChunk"] = $currentChunk;
+            $chunks = json_decode($data["event"][0]->chunks, true);
+            $data["chunks"] = $chunks;
 
-                end($data["questions"]);
-                $data["totalVerses"] = key($data["questions"]);
+            $data["nosource"] = false;
 
-                $chunks = json_decode($data["event"][0]->chunks, true);
-                $data["chunks"] = $chunks;
-
-                $data["nosource"] = false;
-
-                return $data;
-            } else {
-                return array("error" => __("no_source_error"));
-            }
+            return $data;
         } else {
             return array("error" => __("no_source_error"));
         }
@@ -9828,49 +9827,34 @@ class EventsController extends Controller {
         $currentChapter = $data["event"][0]->currentChapter;
         $currentChunk = $data["event"][0]->currentChunk;
 
-        $words = $this->_apiModel->getTranslationWordsByCategory(
+        if ($currentChapter == 0) {
+            $nextChapter = $this->_model->getNextChapter($data["event"][0]->eventID, $data["event"][0]->myMemberID);
+            if (!empty($nextChapter))
+                $currentChapter = $nextChapter[0]->chapter;
+        }
+
+        if ($currentChapter <= 0) return false;
+
+        $words = $this->resourcesRepo->getTw(
+            $data["event"][0]->resLangID,
             $data["event"][0]->name,
-            $data["event"][0]->resLangID);
+            $data["event"][0]->eventID,
+            $currentChapter,
+            true
+        );
 
-        if ($words) {
-            if ($currentChapter == 0) {
-                $nextChapter = $this->_model->getNextChapter($data["event"][0]->eventID, $data["event"][0]->myMemberID);
-                if (!empty($nextChapter))
-                    $currentChapter = $nextChapter[0]->chapter;
-            }
+        if (!empty($words)) {
+            $data["words"] = $words["words"];
+            $data["group"] = $words["group"];
+            $data["currentChapter"] = $currentChapter;
+            $data["currentChunk"] = $currentChunk;
 
-            if ($currentChapter <= 0) return false;
+            $chunks = json_decode($data["event"][0]->chunks, true);
+            $data["chunks"] = $chunks;
 
-            $group = $this->_model->getTwGroups([
-                "eventID" => $data["event"][0]->eventID,
-                "groupID" => $currentChapter
-            ]);
+            $data["nosource"] = false;
 
-            if (!empty($group)) {
-                $group_words = (array)json_decode($group[0]->words, true);
-
-                $words = array_values(array_filter($words, function ($e) use ($group_words) {
-                    return in_array($e["word"], $group_words);
-                }));
-
-                if (!empty($words)) {
-                    $data["words"] = $words;
-                    $data["group"] = $group_words;
-                    $data["currentChapter"] = $currentChapter;
-                    $data["currentChunk"] = $currentChunk;
-
-                    $chunks = json_decode($data["event"][0]->chunks, true);
-                    $data["chunks"] = $chunks;
-
-                    $data["nosource"] = false;
-
-                    return $data;
-                } else {
-                    return array("error" => __("no_source_error"));
-                }
-            } else {
-                return array("error" => __("error_ocured", ""));
-            }
+            return $data;
         } else {
             return array("error" => __("no_source_error"));
         }
@@ -9907,13 +9891,15 @@ class EventsController extends Controller {
         return false;
     }
 
-    public function getTq($bookCode, $chapter, $lang = "en")
+    public function getTq($bookCode, $chapter, $lang)
     {
         $data = [];
-        $data["questions"] = $this->getTranslationQuestions(
+        $data["questions"] = $this->resourcesRepo->getMdResource(
+            $lang,
+            "tq",
             $bookCode,
             $chapter,
-            $lang
+            true
         );
 
         $this->layout = "dummy";
@@ -9922,37 +9908,18 @@ class EventsController extends Controller {
             ->renderContents();
     }
 
-    private function getTranslationQuestions($book, $chapter, $lang = "en")
-    {
-        $tq_cache_questions = "tq_" . $lang . "_" . $book . "_" . $chapter;
-
-        $tQuestions = [];
-
-        if (Cache::has($tq_cache_questions)) {
-            $tq_source = Cache::get($tq_cache_questions);
-            $tQuestions = json_decode($tq_source, true);
-        } else {
-            $tQuestionsBook = $this->_apiModel->getTranslationQuestions($book, $lang);
-            if (isset($tQuestionsBook[$chapter])) {
-                $tQuestions = $tQuestionsBook[$chapter];
-                ksort($tQuestions);
-            }
-
-            if (!empty($tQuestions))
-                Cache::add($tq_cache_questions, json_encode($tQuestions), 365 * 24 * 7);
-        }
-
-        return $tQuestions;
-    }
-
-    public function getTn($bookCode, $chapter, $lang = "en", $totalVerses)
+    public function getTn($bookCode, $chapter, $lang, $totalVerses)
     {
         $data = [];
-        $data["notes"] = $this->getTranslationNotes(
+
+        $data["notes"] = $this->resourcesRepo->getMdResource(
+            $lang,
+            "tn",
             $bookCode,
             $chapter,
-            $lang
+            true
         );
+
         $data["totalVerses"] = $totalVerses;
         $data["notesVerses"] = $this->_apiModel->getNotesVerses($data);
 
@@ -9962,58 +9929,21 @@ class EventsController extends Controller {
             ->renderContents();
     }
 
-    private function getTranslationNotes($book, $chapter, $lang = "en")
-    {
-        $tn_cache_notes = "tn_" . $lang . "_" . $book . "_" . $chapter;
-        $tNotes = [];
-
-        if (Cache::has($tn_cache_notes)) {
-            $tn_source = Cache::get($tn_cache_notes);
-            $tNotes = json_decode($tn_source, true);
-        } else {
-            $tNotesBook = $this->_apiModel->getTranslationNotes($book, $lang);
-            if (isset($tNotesBook[$chapter]))
-                $tNotes = $tNotesBook[$chapter];
-
-            ksort($tNotes);
-
-            if (!empty($tNotes))
-                Cache::add($tn_cache_notes, json_encode($tNotes), 365 * 24 * 7);
-        }
-
-        return $tNotes;
-    }
-
-    public function getTw($bookCode, $chapter, $lang = "en")
+    public function getTw($bookCode, $chapter, $lang)
     {
         $data = [];
-        $data["keywords"] = $this->getTranslationWords(
+
+        $data["keywords"] = $this->resourcesRepo->parseTwByBook(
+            $lang,
             $bookCode,
             $chapter,
-            $lang
+            true
         );
 
         $this->layout = "dummy";
         echo View::make("Events/Tools/Tw")
             ->shares("data", $data)
             ->renderContents();
-    }
-
-    private function getTranslationWords($book, $chapter, $lang = "en")
-    {
-        $tw_cache_words = "tw_" . $lang . "_" . $book . "_" . $chapter;
-
-        if (Cache::has($tw_cache_words)) {
-            $tw_source = Cache::get($tw_cache_words);
-            $tWords = json_decode($tw_source, true);
-        } else {
-            $tWords = $this->_apiModel->getTranslationWords($book, $chapter, $lang);
-
-            if (!empty($tWords))
-                Cache::add($tw_cache_words, json_encode($tWords), 365 * 24 * 7);
-        }
-
-        return $tWords;
     }
 
     public function getRubric($lang)

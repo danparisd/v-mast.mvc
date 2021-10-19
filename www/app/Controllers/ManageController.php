@@ -9,6 +9,7 @@ use App\Models\NewsModel;
 use App\Models\ApiModel;
 use App\Repositories\Event\IEventRepository;
 use App\Repositories\Member\IMemberRepository;
+use App\Repositories\Resources\IResourcesRepository;
 use Helpers\Arrays;
 use Support\Collection;
 use Support\Facades\View;
@@ -37,16 +38,19 @@ class ManageController extends Controller {
 
     protected $memberRepo = null;
     protected $eventRepo = null;
+    protected $resourcesRepo = null;
     private $_member;
 
     public function __construct(
         IMemberRepository $memberRepo,
-        IEventRepository $eventRepo
+        IEventRepository $eventRepo,
+        IResourcesRepository $resourcesRepo
     ) {
         parent::__construct();
 
         $this->memberRepo = $memberRepo;
         $this->eventRepo = $eventRepo;
+        $this->resourcesRepo = $resourcesRepo;
 
         if (Config::get("app.isMaintenance")
             && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips"))) {
@@ -198,10 +202,9 @@ class ManageController extends Controller {
                 $tmpChapters[$group->groupID] = [];
             }
 
-            $data["words"] = $this->getTranslationWordsByCategory(
-                $event->bookInfo->name,
+            $data["words"] = $this->resourcesRepo->getTw(
                 $event->project->resLangID,
-                true
+                $event->bookInfo->name
             );
 
             $chapters = $this->_model->getChapters($event->eventID, null, null, $event->project->bookProject);
@@ -1815,23 +1818,6 @@ class ManageController extends Controller {
                 $response["error"] = __("error_ocured", array("wrong parameters"));
             }
         }
-    }
-
-    private function getTranslationWordsByCategory($category, $lang = "en", $onlyNames = false)
-    {
-        $tw_cache_words = "tw_" . $lang . "_" . $category . ($onlyNames ? "_names" : "");
-
-        if (Cache::has($tw_cache_words)) {
-            $tw_source = Cache::get($tw_cache_words);
-            $tWords = json_decode($tw_source, true);
-        } else {
-            $tWords = $this->_apiModel->getTranslationWordsByCategory($category, $lang, $onlyNames);
-
-            if (!empty($tWords))
-                Cache::add($tw_cache_words, json_encode($tWords), 365 * 24 * 7);
-        }
-
-        return $tWords;
     }
 
     private function isAdmin($event) {

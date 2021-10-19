@@ -350,7 +350,7 @@ class AdminController extends Controller {
                             }
                             break;
                         case "tn":
-                            $tn = $this->_apiModel->getTranslationNotes($bookCode, null, false, $path);
+                            $tn = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                             if(!empty($tn))
                             {
                                 $response = $this->importResourceToEvent($tn, $projectID, $eventID, $bookCode, $importLevel);
@@ -361,7 +361,7 @@ class AdminController extends Controller {
                             }
                             break;
                         case "tq":
-                            $tq = $this->_apiModel->getTranslationQuestions($bookCode, null, false, $path);
+                            $tq = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                             if(!empty($tq))
                             {
                                 $response = $this->importResourceToEvent($tq, $projectID, $eventID, $bookCode, $importLevel);
@@ -372,8 +372,9 @@ class AdminController extends Controller {
                             }
                             break;
                         case "tw":
-                            $cat = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
-                            $tw = $this->_apiModel->getTranslationWordsByCategory($cat, null, false, false, $path);
+                            $bookSlug = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
+                            $tw = $this->resourcesRepo->parseTw("", $bookSlug, false, $path);
+
                             $tw = array_chunk($tw, 5); // make groups of 5 words each
 
                             if(!empty($tw))
@@ -420,7 +421,7 @@ class AdminController extends Controller {
                         }
                         elseif ($bookProject == "tn")
                         {
-                            $tn = $this->_apiModel->getTranslationNotes($bookCode, null, false, $path);
+                            $tn = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                             if(!empty($tn))
                             {
                                 $response = $this->importResourceToEvent($tn, $projectID, $eventID, $bookCode, $importLevel);
@@ -432,7 +433,7 @@ class AdminController extends Controller {
                         }
                         elseif ($bookProject == "tq")
                         {
-                            $tq = $this->_apiModel->getTranslationQuestions($bookCode, null, false, $path);
+                            $tq = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                             if(!empty($tq))
                             {
                                 $response = $this->importResourceToEvent($tq, $projectID, $eventID, $bookCode, $importLevel);
@@ -444,8 +445,8 @@ class AdminController extends Controller {
                         }
                         elseif ($bookProject == "tw")
                         {
-                            $cat = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
-                            $tw = $this->_apiModel->getTranslationWordsByCategory($cat, null, false, false, $path);
+                            $bookSlug = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
+                            $tw = $this->resourcesRepo->parseTw("", $bookSlug, false, $path);
                             $tw = array_chunk($tw, 5); // make groups of 5 words each
 
                             if(!empty($tw))
@@ -480,8 +481,7 @@ class AdminController extends Controller {
                                 $response["error"] = __("not_implemented");
                                 break;
                             case "tn":
-                                $tn = $this->_apiModel->getTranslationNotes($bookCode, null, false, $path);
-
+                                $tn = $this->resourcesRepo->parseMdResource("", $bookCode, false, $path);
                                 if(!empty($tn))
                                 {
                                     $response = $this->importResourceToEvent($tn, $projectID, $eventID, $bookCode, $importLevel);
@@ -492,8 +492,7 @@ class AdminController extends Controller {
                                 }
                                 break;
                             case "tq":
-                                $tq = $this->_apiModel->getTranslationQuestions($bookCode, null, false, $path);
-
+                                $tq = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                                 if(!empty($tq))
                                 {
                                     $response = $this->importResourceToEvent($tq, $projectID, $eventID, $bookCode, $importLevel);
@@ -504,8 +503,8 @@ class AdminController extends Controller {
                                 }
                                 break;
                             case "tw":
-                                $cat = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
-                                $tw = $this->_apiModel->getTranslationWordsByCategory($cat, null, false, false, $path);
+                                $bookSlug = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
+                                $tw = $this->resourcesRepo->parseTw("", $bookSlug, false, $path);
                                 $tw = array_chunk($tw, 5); // make groups of 5 words each
 
                                 if(!empty($tw))
@@ -642,8 +641,6 @@ class AdminController extends Controller {
             ->map(function($group) {
                 return $group[0];
             });
-
-
 
         return View::make('Admin/Main/ToolsSource')
             ->shares("title", __("admin_tools_title"))
