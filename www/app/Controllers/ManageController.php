@@ -9,6 +9,7 @@ use App\Models\NewsModel;
 use App\Models\ApiModel;
 use App\Repositories\Event\IEventRepository;
 use App\Repositories\Member\IMemberRepository;
+use App\Repositories\Resources\IResourcesRepository;
 use Helpers\Arrays;
 use Support\Collection;
 use Support\Facades\View;
@@ -37,16 +38,19 @@ class ManageController extends Controller {
 
     protected $memberRepo = null;
     protected $eventRepo = null;
+    protected $resourcesRepo = null;
     private $_member;
 
     public function __construct(
         IMemberRepository $memberRepo,
-        IEventRepository $eventRepo
+        IEventRepository $eventRepo,
+        IResourcesRepository $resourcesRepo
     ) {
         parent::__construct();
 
         $this->memberRepo = $memberRepo;
         $this->eventRepo = $eventRepo;
+        $this->resourcesRepo = $resourcesRepo;
 
         if (Config::get("app.isMaintenance")
             && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips"))) {
@@ -136,9 +140,17 @@ class ManageController extends Controller {
             }
 
             if ($event->project->sourceBible == "odb") {
-                $data["odb"] = $this->_apiModel->getOtherSource("odb", $event->bookCode, $event->project->sourceLangID);
+                $data["odb"] = $this->resourcesRepo->getOtherResource(
+                    $event->project->sourceLangID,
+                    "odb",
+                    $event->bookCode
+                );
             } elseif ($event->project->bookProject == "rad") {
-                $data["rad"] = $this->_apiModel->getOtherSource("rad", $event->bookCode, $event->project->sourceLangID);
+                $data["rad"] = $this->resourcesRepo->getOtherResource(
+                    $event->project->sourceLangID,
+                    "rad",
+                    $event->bookCode
+                );
             }
 
             $members = $event->translators;
@@ -198,10 +210,9 @@ class ManageController extends Controller {
                 $tmpChapters[$group->groupID] = [];
             }
 
-            $data["words"] = $this->getTranslationWordsByCategory(
-                $event->bookInfo->name,
+            $data["words"] = $this->resourcesRepo->getTw(
                 $event->project->resLangID,
-                true
+                $event->bookInfo->name
             );
 
             $chapters = $this->_model->getChapters($event->eventID, null, null, $event->project->bookProject);
@@ -1219,12 +1230,7 @@ class ManageController extends Controller {
 
                             $data["chapters"][$chapter] = $postdata;
 
-                            $newChapters = $translator->chapters->filter(function($chapter) use($eventID) {
-                                return $chapter->eventID == $eventID && !$chapter->done;
-                            });
-
-                            // Change translator's step to pray when at least one chapter is assigned to him or all chapters finished
-                            if ($newChapters->count() > 0 || $translator->pivot->step == EventSteps::FINISHED) {
+                            if (in_array($translator->pivot->step, [EventSteps::FINISHED, EventSteps::NONE])) {
                                 $event->translators()->updateExistingPivot($memberID, ["step" => EventSteps::PRAY]);
                             }
 
@@ -1383,8 +1389,9 @@ class ManageController extends Controller {
                                     "chapter" => $chapter
                                 ]);
 
-                                $event->checkersL2()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
-
+                                if ($checkerL2->pivot->step == EventCheckSteps::NONE) {
+                                    $event->checkersL2()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
+                                }
                                 $response["success"] = true;
                             } else {
                                 $response["error"] = __("chapter_aready_assigned_error");
@@ -1404,8 +1411,9 @@ class ManageController extends Controller {
                                     "chapter" => $chapter
                                 ]);
 
-                                $event->checkersL3()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
-
+                                if ($checkerL3->pivot->step == EventCheckSteps::NONE) {
+                                    $event->checkersL3()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
+                                }
                                 $response["success"] = true;
                             } else {
                                 $response["error"] = __("chapter_aready_assigned_error");
@@ -1818,23 +1826,6 @@ class ManageController extends Controller {
                 $response["error"] = __("error_ocured", array("wrong parameters"));
             }
         }
-    }
-
-    private function getTranslationWordsByCategory($category, $lang = "en", $onlyNames = false)
-    {
-        $tw_cache_words = "tw_" . $lang . "_" . $category . ($onlyNames ? "_names" : "");
-
-        if (Cache::has($tw_cache_words)) {
-            $tw_source = Cache::get($tw_cache_words);
-            $tWords = json_decode($tw_source, true);
-        } else {
-            $tWords = $this->_apiModel->getTranslationWordsByCategory($category, $lang, $onlyNames);
-
-            if (!empty($tWords))
-                Cache::add($tw_cache_words, json_encode($tWords), 365 * 24 * 7);
-        }
-
-        return $tWords;
     }
 
     private function isAdmin($event) {

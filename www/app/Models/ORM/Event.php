@@ -49,6 +49,10 @@ class Event extends Model
         return $this->hasMany(Chapter::class, "eventID", "eventID");
     }
 
+    public function twGroups() {
+        return $this->hasMany(TwGroup::class, "eventID", "eventID");
+    }
+
     public function translatorsWithChapters() {
         return $this->belongsToMany(Member::class, "chapters", "eventID", "memberID")
             ->withPivot("chapter", "chunks", "done", "checked", "l2checked", "l3checked");

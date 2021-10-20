@@ -28,13 +28,6 @@ if($project):
                     <button style="margin-top: 12px" class="btn btn-warning showAllContibutors"
                             data-projectid="<?php echo $project->projectID ?>"><?php echo __("contributors") ?></button>
                 </div>
-                <div class="add-event-btn">
-                    <img class="cacheLoader" width="24px" src="<?php echo template_url("img/loader.gif") ?>">
-                    <button style="margin-top: 12px" class="btn btn-danger"
-                            name="updateAllCache"
-                            data-sourcelangid="<?php echo $project->sourceLangID ?>"
-                            data-sourcebible="<?php echo $project->sourceBible ?>"><?php echo __("update_cache_all") ?></button>
-                </div>
             </div>
         </div>
 

@@ -5450,6 +5450,12 @@ button.add_verse_ta {
     padding: 20px;
 }
 
+.tools_middle {
+    flex: 1;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+}
+
 .tools_right {
     flex: 1;
     border-left: 1px solid #ccc;

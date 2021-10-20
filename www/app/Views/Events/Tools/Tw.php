@@ -6,7 +6,7 @@
  * Time: 5:11 PM
  */
 
-if(!empty($data["keywords"]) && !empty($data["keywords"]["words"])): ?>
+if(!empty($data["keywords"])): ?>
     <div class="ttools_panel tw_tool panel panel-default" draggable="true">
         <div class="panel-heading">
             <h1 class="panel-title"><?php echo __("tw") ?></h1>
@@ -15,22 +15,20 @@ if(!empty($data["keywords"]) && !empty($data["keywords"]["words"])): ?>
 
         <div class="ttools_content page-content panel-body">
             <div class="labels_list">
-                <?php if(isset($data["keywords"]) && isset($data["keywords"]["words"])): ?>
-                    <?php foreach ($data["keywords"]["words"] as $title => $tWord): ?>
-                        <?php if(!isset($tWord["text"])) continue; ?>
-                        <label>
-                            <ul>
-                                <li>
-                                    <div class="word_term">
-                                        <span style="font-weight: bold;"><?php echo ucfirst(isset($tWord["name"]) ? $tWord["name"] : (isset($tWord["term"]) ? isset($tWord["term"]) : $title)) ?> </span>
-                                        <span style="color: red;">(<?php echo strtolower(__("verses").": ".join(", ", $tWord["range"])); ?>)<span>
-                                    </div>
-                                    <div class="word_def"><?php echo  preg_replace('#<a.*?>(.*?)</a>#i', '<b>\1</b>', $tWord["text"]); ?></div>
-                                </li>
-                            </ul>
-                        </label>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                <?php foreach ($data["keywords"] as $title => $tWord): ?>
+                    <?php if(!isset($tWord["text"])) continue; ?>
+                    <label>
+                        <ul>
+                            <li>
+                                <div class="word_term">
+                                    <span style="font-weight: bold;"><?php echo ucfirst($tWord["name"] ?? (isset($tWord["term"]) ?: $title)) ?> </span>
+                                    <span style="color: red;">(<?php echo strtolower(__("verses").": ".join(", ", $tWord["range"])); ?>)<span>
+                                </div>
+                                <div class="word_def"><?php echo  preg_replace('#<a.*?>(.*?)</a>#i', '<b>\1</b>', $tWord["text"]); ?></div>
+                            </li>
+                        </ul>
+                    </label>
+                <?php endforeach; ?>
             </div>
             <div class="word_def_popup">
                 <div class="word_def-close glyphicon glyphicon-remove"></div>
