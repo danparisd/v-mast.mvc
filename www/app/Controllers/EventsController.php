@@ -9746,10 +9746,11 @@ class EventsController extends Controller {
         $currentChunk = $data["event"][0]->state == EventStates::TRANSLATING
             ? $data["event"][0]->currentChunk : 0;
 
-        $source = $this->_apiModel->getOtherSource(
+        $source = $this->resourcesRepo->getOtherResource(
+            $data["event"][0]->sourceLangID,
             $data["event"][0]->sourceBible,
-            $data["event"][0]->bookCode,
-            $data["event"][0]->sourceLangID);
+            $data["event"][0]->bookCode
+        );
 
         if (!empty($source)) {
             $initChapter = 0;
@@ -9949,7 +9950,7 @@ class EventsController extends Controller {
     public function getRubric($lang)
     {
         $data = [];
-        $data["rubric"] = $this->_apiModel->getCachedRubricFromApi($lang);
+        $data["rubric"] = $this->resourcesRepo->getQaGuide($lang);
 
         $this->layout = "dummy";
         echo View::make("Events/Tools/Rubric")

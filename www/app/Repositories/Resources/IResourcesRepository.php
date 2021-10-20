@@ -14,6 +14,10 @@ interface IResourcesRepository
 
     public function getTw($lang, $category, $eventID = null, $chapter = null, $toHtml = false);
 
+    public function getQaGuide($lang);
+
+    public function getOtherResource($lang, $resource, $bookSlug);
+
     public function parseTw($lang, $bookSlug, $toHtml = true, $folderPath = null);
 
     public function parseTwByBook($lang, $bookSlug, $chapter, $toHtml = false);

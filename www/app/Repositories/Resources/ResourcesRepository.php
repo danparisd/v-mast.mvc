@@ -22,11 +22,13 @@ use ZipArchive;
 class ResourcesRepository implements IResourcesRepository {
     private $rootPath = "../app/Templates/Default/Assets/source/";
 
-    private $wacsCatalog = "https://api.bibletranslationtools.org/v3/catalog.json";
-    private $dcsCatalog = "https://api.door43.org/v3/catalog.json";
+    private $wacsCatalogUrl = "https://api.bibletranslationtools.org/v3/catalog.json";
+    private $dcsCatalogUrl = "https://api.door43.org/v3/catalog.json";
 
     private $wacsCatalogPath;
     private $dcsCatalogPath;
+
+    private $qaGuideUrl = "https://v-raft.com/api/rubric/";
 
     private $wordsDatabase = null;
     private $wordsDictionary = null;
@@ -146,6 +148,38 @@ class ResourcesRepository implements IResourcesRepository {
                     "words" => $words,
                     "group" => $group_words
                 ];
+            }
+        }
+
+        return $book;
+    }
+
+    public function getQaGuide($lang) {
+        $qaguide_cache_key = $lang . "_rubric_rubric";
+
+        if (Cache::has($qaguide_cache_key)) {
+            $source = Cache::get($qaguide_cache_key);
+            $qaGuide = json_decode($source);
+        } else {
+            $qaGuide = $this->parseQaGuide($lang);
+            if ($qaGuide) {
+                Cache::add($qaguide_cache_key, json_encode($qaGuide), 365 * 24 * 7);
+            }
+        }
+
+        return $qaGuide;
+    }
+
+    public function getOtherResource($lang, $resource, $bookSlug) {
+        $resource_cache_key = $lang . "_" . $resource . "_" . $bookSlug;
+
+        if (Cache::has($resource_cache_key)) {
+            $source = Cache::get($resource_cache_key);
+            $book = json_decode($source);
+        } else {
+            $book = $this->parseOtherResource($lang, $resource, $bookSlug);
+            if ($book) {
+                Cache::add($resource_cache_key, json_encode($book), 365 * 24 * 7);
             }
         }
 
@@ -275,28 +309,43 @@ class ResourcesRepository implements IResourcesRepository {
     }
 
     /**
-     * Download resource and extract it
+     * Download resource and extract it.
+     * If url is not provided, will try to find in WACS/DCS catalogs
      * @param string $lang
+     * @param string $resource
+     * @param string $url
      * @return null|string
      */
-    private function downloadResource($lang, $resource) {
-        $filePath = $this->rootPath . $lang . "_" . $resource . ".zip";
+    private function downloadResource($lang, $resource, $url = null) {
         $folderPath = $this->rootPath . $lang . "_" . $resource;
 
         if(!File::exists($folderPath)) {
-            $zip = $this->fetchResource($lang, $resource);
+            $result = $this->fetchResource($lang, $resource, $url);
 
-            if ($zip) {
-                File::put($filePath, $zip);
+            if ($result) {
+                $extension = $result["pathinfo"]["extension"] ?? "json";
+                $content = $result["content"] ?? null;
 
-                if(File::exists($filePath))
-                {
-                    $zip = new ZipArchive();
-                    $zip->open($filePath);
-                    $zip->extractTo($this->rootPath);
-                    $zip->close();
+                if ($extension == "zip") {
+                    $filePath = $folderPath . ".zip";
+                    File::put($filePath, $content);
 
-                    File::delete($filePath);
+                    if(File::exists($filePath))
+                    {
+                        $zip = new ZipArchive();
+                        $zip->open($filePath);
+                        $zip->extractTo($this->rootPath);
+                        $zip->close();
+
+                        File::delete($filePath);
+                    }
+                } else {
+                    $filePath = $folderPath . "/" . $resource . "." . $extension;
+                    if (File::makeDirectory($folderPath, 0755, true)) {
+                        File::put($filePath, $content);
+                    } else {
+                        $folderPath = null;
+                    }
                 }
             } else {
                 $folderPath = null;
@@ -582,23 +631,83 @@ class ResourcesRepository implements IResourcesRepository {
         return $filtered;
     }
 
+    private function parseQaGuide($lang) {
+        $qaGuide = [];
+        $url = $this->qaGuideUrl . $lang;
+
+        $folderPath = $this->downloadResource($lang, "rubric", $url);
+        if (!$folderPath) return $qaGuide;
+
+        $filePath = $folderPath . "/rubric.json";
+
+        $source = File::get($filePath);
+
+        return json_decode($source);
+
+    }
+
+    /**
+     * Parse odb|rad book sources from local file
+     * @param $lang
+     * @param $resource
+     * @param $bookSlug
+     * @return array
+     */
+    private function parseOtherResource($lang, $resource, $bookSlug) {
+        $book = [];
+
+        $filePath = $this->rootPath . $lang . "_".$resource . "/" . strtoupper($bookSlug) . ".json";
+
+        if(File::exists($filePath)) {
+            $sourceData = File::get($filePath);
+            $source = (array)json_decode($sourceData, true);
+            $chapters = [];
+
+            if(!empty($source) && isset($source["root"]))
+            {
+                foreach ($source["root"] as $i => $chapter) {
+                    $chapters[$i+1] = [];
+                    $k = 1;
+                    foreach ($chapter as $section) {
+                        if(!is_array($section))
+                        {
+                            $chapters[$i+1][$k] = $section;
+                            $k++;
+                        }
+                        else
+                        {
+                            foreach ($section as $p) {
+                                $chapters[$i+1][$k] = $p;
+                                $k++;
+                            }
+                        }
+                    }
+                }
+                $book["chapters"] = $chapters;
+            }
+        }
+
+        return $book;
+    }
+
     /**
      * Fetch resource from remote url
+     * If url is not provided, will try to find in WACS/DCS catalogs
      * @param string $lang
-     * @param string $type
-     * @param string $catalog
-     * @return string|null
+     * @param string $resource
+     * @param string $url
+     * @return array|null
      */
-    private function fetchResource($lang, $resource) {
-        $url = "";
-
-        // Find resource on WACS first, if not there find in DCS
-        $catalog = $this->getCatalog($this->wacsCatalogPath, $this->wacsCatalog);
-        $url = $this->getResourceUrl($catalog, $lang, $resource);
-
-        if ($url == "") {
-            $catalog = $this->getCatalog($this->dcsCatalogPath, $this->dcsCatalog);
+    private function fetchResource($lang, $resource, $url = null) {
+        if (!$url) {
+            // Find resource on WACS first, if not there find in DCS
+            $catalog = $this->getCatalog($this->wacsCatalogPath, $this->wacsCatalogUrl);
             $url = $this->getResourceUrl($catalog, $lang, $resource);
+
+            if ($url == "") {
+                $catalog = $this->getCatalog($this->dcsCatalogPath, $this->dcsCatalogUrl);
+                $url = $this->getResourceUrl($catalog, $lang, $resource);
+            }
         }
 
         if($url == "") return null;
@@ -619,7 +728,10 @@ class ResourcesRepository implements IResourcesRepository {
 
         curl_close($ch);
 
-        return $resource;
+        return [
+            "content" => $resource,
+            "pathinfo" => pathinfo($url)
+        ];
     }
 
     private function getResourceUrl($catalog, $lang, $res) {

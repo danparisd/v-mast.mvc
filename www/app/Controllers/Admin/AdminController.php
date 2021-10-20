@@ -1511,14 +1511,14 @@ class AdminController extends Controller {
                     $postdata["bookCode"] = $bookCode;
 
                     if($bookInfo->category == "odb") {
-                        $odb = $this->_apiModel->getOtherSource("odb", $bookInfo->code, $project->sourceLangID);
+                        $odb = $this->resourcesRepo->getOtherResource($project->sourceLangID, "odb", $bookInfo->code);
                         if(empty($odb)) {
                             $error[] = __("no_source_error");
                             echo json_encode(array("error" => Error::display($error)));
                             return;
                         }
                     } elseif ($bookInfo->category == "rad") {
-                        $radio = $this->_apiModel->getOtherSource("rad", $bookInfo->code, $project->sourceLangID);
+                        $radio = $this->resourcesRepo->getOtherResource($project->sourceLangID, "rad", $bookInfo->code);
                         if(empty($radio)) {
                             $error[] = __("no_source_error");
                             echo json_encode(array("error" => Error::display($error)));

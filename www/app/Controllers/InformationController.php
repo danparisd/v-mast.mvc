@@ -21,6 +21,7 @@ use App\Models\ApiModel;
 use App\Models\SailDictionaryModel;
 use App\Repositories\Event\IEventRepository;
 use App\Repositories\Member\IMemberRepository;
+use App\Repositories\Resources\IResourcesRepository;
 use Helpers\Arrays;
 use Support\Facades\View;
 use Config\Config;
@@ -43,16 +44,19 @@ class InformationController extends Controller {
 
     protected $memberRepo = null;
     protected $eventRepo = null;
+    protected $resourcesRepo = null;
     private $_member;
 
     public function __construct(
         IMemberRepository $memberRepo,
-        IEventRepository $eventRepo
+        IEventRepository $eventRepo,
+        IResourcesRepository $resourcesRepo
     ) {
         parent::__construct();
 
         $this->memberRepo = $memberRepo;
         $this->eventRepo = $eventRepo;
+        $this->resourcesRepo = $resourcesRepo;
 
         if (Config::get("app.isMaintenance")
             && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips"))) {
@@ -1085,10 +1089,10 @@ class InformationController extends Controller {
             $data["admins"] = $admins;
             $data["members"] = $members;
 
-            $data["odb"] = $this->_apiModel->getOtherSource(
+            $data["odb"] = $this->resourcesRepo->getOtherResource(
+                $event->project->sourceLangID,
                 "odb",
-                $event->bookCode,
-                $event->project->sourceLangID
+                $event->bookCode
             );
         }
 
@@ -1191,10 +1195,10 @@ class InformationController extends Controller {
             $data["admins"] = $admins;
             $data["members"] = $members;
 
-            $data["rad"] = $this->_apiModel->getOtherSource(
+            $data["rad"] = $this->resourcesRepo->getOtherResource(
+                $event->project->sourceLangID,
                 "rad",
-                $event->bookCode,
-                $event->project->sourceLangID
+                $event->bookCode
             );
         }
 

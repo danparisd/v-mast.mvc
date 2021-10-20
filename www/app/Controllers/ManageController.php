@@ -140,9 +140,17 @@ class ManageController extends Controller {
             }
 
             if ($event->project->sourceBible == "odb") {
-                $data["odb"] = $this->_apiModel->getOtherSource("odb", $event->bookCode, $event->project->sourceLangID);
+                $data["odb"] = $this->resourcesRepo->getOtherResource(
+                    $event->project->sourceLangID,
+                    "odb",
+                    $event->bookCode
+                );
             } elseif ($event->project->bookProject == "rad") {
-                $data["rad"] = $this->_apiModel->getOtherSource("rad", $event->bookCode, $event->project->sourceLangID);
+                $data["rad"] = $this->resourcesRepo->getOtherResource(
+                    $event->project->sourceLangID,
+                    "rad",
+                    $event->bookCode
+                );
             }
 
             $members = $event->translators;
