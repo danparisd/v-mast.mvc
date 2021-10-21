@@ -1547,22 +1547,6 @@ _::-webkit-full-page-media, _:future, :root #help_hide {
     background: url("/templates/default/assets/img/steps/first-check-active.png") no-repeat;
 }
 
-.snd-check {background-color: #4596cc;}
-.snd-check-step {
-    background: url("/templates/default/assets/img/steps/second-check-inactive.png") no-repeat;
-}
-.snd-check-step.active {
-    background: url("/templates/default/assets/img/steps/second-check-active.png") no-repeat;
-}
-
-.keyword-check-l2 {background-color: #4596cc;}
-.keyword-check-l2-step {
-    background: url("/templates/default/assets/img/steps/keyword-check-inactive.png") no-repeat;
-}
-.keyword-check-l2-step.active {
-    background: url("/templates/default/assets/img/steps/keyword-check-active.png") no-repeat;
-}
-
 .peer-review-l2, .peer-review-l3 {background-color: #4596cc;}
 .peer-review-l2-step, .peer-review-l3-step {
     background: url("/templates/default/assets/img/steps/peer-edit-inactive.png") no-repeat;

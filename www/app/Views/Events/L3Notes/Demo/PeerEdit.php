@@ -50,7 +50,7 @@
                                   data="0:0"
                                   title="<?php echo __("write_note_title", [""])?>"></span>
                             <div class="comments">
-                                <div class="other_comments"> <span>James S. - L2:</span> A note from level 2 checker</div>
+                                <div class="other_comments"> <span>James S. - L2:</span> A note from revision checker</div>
                                 <div class="my_comment">A note from level 3 checker</div>
                             </div>
                         </div>

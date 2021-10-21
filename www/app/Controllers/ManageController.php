@@ -87,7 +87,7 @@ class ManageController extends Controller {
 
             $this->_notifications = $this->_model->getNotifications();
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsOther());
-            $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsL2());
+            $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsRevision());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsL3());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsSun());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsRadio());
@@ -259,7 +259,7 @@ class ManageController extends Controller {
             ->shares("error", @$error);
     }
 
-    public function manageL2($eventID)
+    public function manageRevision($eventID)
     {
         $event = $this->eventRepo->get($eventID);
 
@@ -292,9 +292,9 @@ class ManageController extends Controller {
                 $tmp["l2memberID"] = $chapter["l2memberID"];
                 $tmp["chunks"] = json_decode($chapter["chunks"], true);
                 $tmp["l2checked"] = $chapter["l2checked"];
-                $tmp["sndCheck"] = (array)json_decode($chapter["sndCheck"], true);
-                $tmp["peer1Check"] = (array)json_decode($chapter["peer1Check"], true);
-                $tmp["peer2Check"] = (array)json_decode($chapter["peer2Check"], true);
+                $tmp["peerCheck"] = (array)json_decode($chapter["peerCheck"], true);
+                $tmp["kwCheck"] = (array)json_decode($chapter["kwCheck"], true);
+                $tmp["crCheck"] = (array)json_decode($chapter["crCheck"], true);
 
                 $tmpChapters[$chapter["chapter"]] = $tmp;
             }
@@ -304,12 +304,10 @@ class ManageController extends Controller {
             if (isset($_POST) && !empty($_POST)) {
                 if (!empty(array_filter($tmpChapters))) {
                     $updated = $this->_model->updateEvent(
-                        array(
-                            "state" => EventStates::L2_CHECK,
-                            /*"dateFrom" => date("Y-m-d H:i:s", time())*/),
-                        array("eventID" => $eventID));
+                        ["state" => EventStates::L2_CHECK],
+                        ["eventID" => $eventID]);
                     if ($updated)
-                        Url::redirect("events/manage-l2/" . $eventID);
+                        Url::redirect("events/manage-revision/" . $eventID);
                 } else {
                     $error[] = __("event_chapters_error");
                 }
@@ -318,7 +316,7 @@ class ManageController extends Controller {
             $error[] = __("empty_or_not_permitted_event_error");
         }
 
-        return View::make('Events/ManageL2')
+        return View::make('Events/ManageRevision')
             ->shares("title", __("manage_event"))
             ->shares("data", $data)
             ->shares("event", $event)
@@ -1244,7 +1242,7 @@ class ManageController extends Controller {
                             // Check if chapter has translations
                             $hasTranslations = !empty($translations);
 
-                            // Check if chapter has L2 translations
+                            // Check if chapter has revision translations
                             if ($manageMode == "l2") {
                                 $trVerses = (array)json_decode($translations[0]->translatedVerses);
                                 $l2Verses = $trVerses[EventMembers::L2_CHECKER];
@@ -1389,7 +1387,7 @@ class ManageController extends Controller {
                                     "chapter" => $chapter
                                 ]);
 
-                                if ($checkerL2->pivot->step == EventCheckSteps::NONE) {
+                                if ($checkerL2->step == EventCheckSteps::NONE) {
                                     $event->checkersL2()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
                                 }
                                 $response["success"] = true;
@@ -1411,7 +1409,7 @@ class ManageController extends Controller {
                                     "chapter" => $chapter
                                 ]);
 
-                                if ($checkerL3->pivot->step == EventCheckSteps::NONE) {
+                                if ($checkerL3->step == EventCheckSteps::NONE) {
                                     $event->checkersL3()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
                                 }
                                 $response["success"] = true;

@@ -140,7 +140,7 @@ if($project):
 
                     <hr>
                     <div class="event_links_l2">
-                        <li class="option_group"><?php echo __("l2_3_events", ["level" => 2]) ?></li>
+                        <li class="option_group"><?php echo __("revision_events") ?></li>
                         <li class="event_progress"><a href="#"><?php echo __("progress"); ?></a></li>
                         <li class="event_manage"><a href="#"><?php echo __("manage"); ?></a></li>
                     </div>

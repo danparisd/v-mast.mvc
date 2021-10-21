@@ -7,7 +7,7 @@ use Helpers\Constants\StepsStates;
     <?php if(isset($_SERVER["HTTP_REFERER"])): ?>
         <a href="<?php echo $_SERVER["HTTP_REFERER"] ?>"><?php echo __("go_back") ?></a>
     <?php endif; ?>
-    <div class="demo_title"><?php echo __("demo") . " (".__("l2_3_events", ["level" => 2]).")" ?></div>
+    <div class="demo_title"><?php echo __("demo") . " (".__("revision_events").")" ?></div>
 </div>
 
 <div>
@@ -60,7 +60,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/fst-check.png")?>" width="40"></div>
-                            <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK); ?></div>
+                            <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK); ?></div>
                         </div>
                         <div class="section_step chk"> </div>
                         <!-- Second Check Step -->
@@ -68,14 +68,14 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/snd-check.png")?>" width="40"></div>
-                            <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK); ?></div>
+                            <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW); ?></div>
                         </div>
                         <!-- Keywords Check Step -->
                         <div class="section_step chk finished">
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/keyword-check-l2.png")?>" width="40"></div>
-                            <div class="step_name">4. <?php echo __(EventCheckSteps::KEYWORD_CHECK_L2); ?></div>
+                            <div class="step_name">4. <?php echo __(EventCheckSteps::KEYWORD_CHECK); ?></div>
                         </div>
                         <!-- Checking stage -->
                         <div class="section_step chk"> </div>
@@ -84,7 +84,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::IN_PROGRESS) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/peer-review-l2.png")?>" width="40"></div>
-                            <div class="step_name">5. <?php echo __(EventCheckSteps::PEER_REVIEW_L2); ?></div>
+                            <div class="step_name">5. <?php echo __(EventCheckSteps::CONTENT_REVIEW); ?></div>
                             <div class="step_checker">
                                 <img src="<?php echo template_url("img/avatars/f9.png")?>" width="50">
                                 <div>Marge S.</div>
@@ -129,7 +129,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/fst-check.png")?>" width="40"></div>
-                            <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK); ?></div>
+                            <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK); ?></div>
                         </div>
                         <div class="section_step chk">
                         </div>
@@ -138,7 +138,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::WAITING) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/snd-check.png")?>" width="40"></div>
-                            <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK); ?></div>
+                            <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW); ?></div>
                             <img class="img_waiting" src="<?php echo template_url("img/waiting.png")?>">
                         </div>
                         <!-- Keywords Check Step -->
@@ -146,7 +146,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/keyword-check-l2.png")?>" width="40"></div>
-                            <div class="step_name">4. <?php echo __(EventCheckSteps::KEYWORD_CHECK_L2); ?></div>
+                            <div class="step_name">4. <?php echo __(EventCheckSteps::KEYWORD_CHECK); ?></div>
                         </div>
                         <!-- Checking stage -->
                         <div class="section_step chk">
@@ -156,7 +156,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/peer-review-l2.png")?>" width="40"></div>
-                            <div class="step_name">5. <?php echo __(EventCheckSteps::PEER_REVIEW_L2); ?></div>
+                            <div class="step_name">5. <?php echo __(EventCheckSteps::CONTENT_REVIEW); ?></div>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -197,7 +197,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/fst-check.png")?>" width="40"></div>
-                            <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK); ?></div>
+                            <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK); ?></div>
                         </div>
                         <div class="section_step chk"> </div>
                         <!-- Second Check Step -->
@@ -205,14 +205,14 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/snd-check.png")?>" width="40"></div>
-                            <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK); ?></div>
+                            <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW); ?></div>
                         </div>
                         <!-- Keywords Check Step -->
                         <div class="section_step chk finished">
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/keyword-check-l2.png")?>" width="40"></div>
-                            <div class="step_name">4. <?php echo __(EventCheckSteps::KEYWORD_CHECK_L2); ?></div>
+                            <div class="step_name">4. <?php echo __(EventCheckSteps::KEYWORD_CHECK); ?></div>
                         </div>
                         <!-- Checking stage -->
                         <div class="section_step chk"> </div>
@@ -221,7 +221,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/peer-review-l2.png")?>" width="40"></div>
-                            <div class="step_name">5. <?php echo __(EventCheckSteps::PEER_REVIEW_L2); ?></div>
+                            <div class="step_name">5. <?php echo __(EventCheckSteps::CONTENT_REVIEW); ?></div>
                             <div class="step_checker">
                                 <img src="<?php echo template_url("img/avatars/f9.png")?>" width="50">
                                 <div>Marge S.</div>
@@ -268,7 +268,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/fst-check.png")?>" width="40"></div>
-                            <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK); ?></div>
+                            <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK); ?></div>
                         </div>
                         <div class="section_step chk">
                         </div>
@@ -277,14 +277,14 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/snd-check.png")?>" width="40"></div>
-                            <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK); ?></div>
+                            <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW); ?></div>
                         </div>
                         <!-- Keywords Check Step -->
                         <div class="section_step chk not_started">
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/keyword-check-l2.png")?>" width="40"></div>
-                            <div class="step_name">4. <?php echo __(EventCheckSteps::KEYWORD_CHECK_L2); ?></div>
+                            <div class="step_name">4. <?php echo __(EventCheckSteps::KEYWORD_CHECK); ?></div>
                         </div>
                         <!-- Checking stage -->
                         <div class="section_step chk">
@@ -294,7 +294,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/peer-review-l2.png")?>" width="40"></div>
-                            <div class="step_name">5. <?php echo __(EventCheckSteps::PEER_REVIEW_L2); ?></div>
+                            <div class="step_name">5. <?php echo __(EventCheckSteps::CONTENT_REVIEW); ?></div>
                         </div>
                         <div class="clear"></div>
                     </div>

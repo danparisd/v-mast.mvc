@@ -23,13 +23,8 @@ use Helpers\Constants\EventMembers;
     <div class="footnote_window">
         <div class="fn_preview"></div>
         <div class="fn_buttons" dir="<?php echo $data["event"][0]->sLangDir ?>">
-            <!--<button class="btn btn-default" data-fn="fr" title="footnote text">fr</button>-->
             <button class="btn btn-default" data-fn="ft" title="footnote text">ft</button>
-            <!--<button class="btn btn-default" data-fn="fq" title="footnote translation quotation">fq</button>-->
             <button class="btn btn-default" data-fn="fqa" title="footnote alternate translation">fqa</button>
-            <!--<button class="btn btn-default" data-fn="fk" title="footnote keyword">fk</button>-->
-            <!--<button class="btn btn-default" data-fn="fl" title="footnote label text">fl</button>-->
-            <!--<button class="btn btn-link" data-fn="link">Footnotes Specification</button>-->
         </div>
         <div class="fn_builder"></div>
     </div>
@@ -144,9 +139,16 @@ use Helpers\Constants\EventMembers;
                     </div>
 
                     <input type="hidden" name="level" value="l2">
-                    <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
+                    <button id="next_step" type="submit" name="submitStep" value="1" class="btn btn-primary" disabled>
                         <?php echo __($data["next_step"])?>
                     </button>
+                    <?php if ($data["nextChapter"] > 0): ?>
+                        &nbsp;
+                        &nbsp;
+                        <button id="next_chapter" type="submit" name="submitChapter" value="1" class="btn btn-success" disabled>
+                            <?php echo __("next_chapter")?>
+                        </button>
+                    <?php endif; ?>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
@@ -170,7 +172,7 @@ use Helpers\Constants\EventMembers;
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/information-l2/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
+                    <a href="/events/information-revision/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>

@@ -456,7 +456,7 @@ class MembersController extends Controller
             }
         }
 
-        // Level 2 checking (ulb, udb)
+        // Revision checking (ulb, udb)
         if ($l2_check_activities) {
             foreach ($l2_check_activities as $checking_activity) {
                 $chapters = $checking_activity->chapters;
@@ -470,7 +470,7 @@ class MembersController extends Controller
                 }
 
                 // Second checker
-                $checking = $this->_eventModel->getMemberEventsForCheckerL2(null, $checking_activity->eventID);
+                $checking = $this->_eventModel->getMemberEventsForRevisionChecker(null, $checking_activity->eventID);
                 foreach ($checking as $check) {
                     $sndCheck = (array)json_decode($check->sndCheck, true);
                     $peer1Check = (array)json_decode($check->peer1Check, true);
@@ -985,7 +985,7 @@ class MembersController extends Controller
                             $projects = __("8steps_vmast");
                             break;
                         case "l2":
-                            $projects = __("l2_3_events", ["level" => 2]);
+                            $projects = __("revision_events");
                             break;
                         case "l3":
                             $projects = __("l2_3_events", ["level" => 3]);

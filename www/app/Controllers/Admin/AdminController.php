@@ -1985,7 +1985,7 @@ class AdminController extends Controller {
 
                         if($event->state == EventStates::TRANSLATED && $level == 2)
                         {
-                            // Create new level 2 checker
+                            // Create new revision checker
                             $sndCheckData = [];
                             $peerCheckData = [];
                             for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
@@ -2010,7 +2010,7 @@ class AdminController extends Controller {
                             $checkerL2 = $member->checkersL2->where("eventID", $eventID, false)->first();
                             $l2chID = $checkerL2->l2chID;
 
-                            // Assign chapters to new level 2 checker
+                            // Assign chapters to new revision checker
                             foreach ($chapters as $chapter) {
                                 $this->_eventsModel->updateChapter([
                                     "l2memberID" => $member->memberID,

@@ -7,33 +7,33 @@ use Helpers\Constants\EventCheckSteps;
 
     <ul class="steps_list">
         <li class="pray-step <?php echo $data["step"] == EventCheckSteps::PRAY ? "active" : "" ?>">
-            <a href="/events/demo-l2/pray"><span><?php echo __(EventCheckSteps::PRAY)?></span></a>
+            <a href="/events/demo-revision/pray"><span><?php echo __(EventCheckSteps::PRAY)?></span></a>
         </li>
 
         <li class="consume-step <?php echo $data["step"] == EventCheckSteps::CONSUME ? "active" : "" ?>">
-            <a href="/events/demo-l2/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
+            <a href="/events/demo-revision/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
         </li>
 
-        <li class="fst-check-step <?php echo $data["step"] == EventCheckSteps::FST_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-l2/fst_check"><span><?php echo __(EventCheckSteps::FST_CHECK)?></span></a>
+        <li class="fst-check-step <?php echo $data["step"] == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
+            <a href="/events/demo-revision/fst_check"><span><?php echo __(EventCheckSteps::SELF_CHECK)?></span></a>
         </li>
 
-        <li class="snd-check-step <?php echo $data["step"] == EventCheckSteps::SND_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-l2/snd_check"><span><?php echo __(EventCheckSteps::SND_CHECK)?></span></a>
+        <li class="snd-check-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
+            <a href="/events/demo-revision/snd_check"><span><?php echo __(EventCheckSteps::PEER_REVIEW)?></span></a>
         </li>
 
-        <li class="keyword-check-l2-step <?php echo $data["step"] == EventCheckSteps::KEYWORD_CHECK_L2 ? "active" : "" ?>">
-            <a href="/events/demo-l2/keyword_check_l2"><span><?php echo __(EventCheckSteps::KEYWORD_CHECK_L2)?></span></a>
+        <li class="keyword-check-l2-step <?php echo $data["step"] == EventCheckSteps::KEYWORD_CHECK ? "active" : "" ?>">
+            <a href="/events/demo-revision/keyword_check_l2"><span><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></span></a>
         </li>
 
-        <li class="peer-review-l2-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW_L2 ? "active" : "" ?>">
-            <a href="/events/demo-l2/peer_review_l2"><span><?php echo __(EventCheckSteps::PEER_REVIEW_L2)?></span></a>
+        <li class="peer-review-l2-step <?php echo $data["step"] == EventCheckSteps::CONTENT_REVIEW ? "active" : "" ?>">
+            <a href="/events/demo-revision/peer_review_l2"><span><?php echo __(EventCheckSteps::CONTENT_REVIEW)?></span></a>
         </li>
     </ul>
 </div>
 
 <?php
-$isCheckPage = $data["step"] == EventCheckSteps::PEER_REVIEW_L2;
+$isCheckPage = $data["step"] == EventCheckSteps::CONTENT_REVIEW;
 ?>
 
 <script>

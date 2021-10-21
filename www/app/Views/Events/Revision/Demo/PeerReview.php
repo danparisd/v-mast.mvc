@@ -9,210 +9,455 @@
     <img src="<?php echo template_url("img/loader.gif") ?>" class="commentEditorLoader">
 </div>
 
+<div class="footnote_editor panel panel-default">
+    <div class="panel-heading">
+        <h1 class="panel-title"><?php echo __("write_footnote_title")?></h1>
+        <span class="footnote-editor-close btn btn-success"><?php echo __("save") ?></span>
+        <span class="xbtnf glyphicon glyphicon-remove"></span>
+    </div>
+    <div class="footnote_window">
+        <div class="fn_preview"></div>
+        <div class="fn_buttons" dir="ltr">
+            <button class="btn btn-default" data-fn="ft" title="footnote text">ft</button>
+            <button class="btn btn-default" data-fn="fqa" title="footnote alternate translation">fqa</button>
+        </div>
+        <div class="fn_builder"></div>
+    </div>
+</div>
+
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <div class="demo_title"><?php echo __("demo") . " (".__("l2_3_events", ["level" => 2]).")" ?></div>
-            <div><?php echo __("step_num", ["step_number" => 2]) . ": " . __("keyword-check-l2_full")?></div>
+            <div class="demo_title"><?php echo __("demo") . " (".__("revision_events").")" ?></div>
+            <div><?php echo __("step_num", ["step_number" => 3]) . ": " . __("peer-review")?></div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="">
         <div class="main_content">
             <div class="main_content_text">
                 <h4>Papuan Malay - <?php echo __("ulb") ?> - <?php echo __("new_test") ?> - <span class="book_name">2 Timothy 2:1-26</span></h4>
 
-                <div class="no_padding">
-                    <div class="row chunk_block flex_container">
-                        <div class="chunk_verses flex_left" dir="ltr">
-                            <div class="verse_text" data-verse="1" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>1</sup> </strong> <div class="kwverse_2_0_1">You therefore, my <b data="0">child</b>, be strengthened in the grace that is in <b data="0">Christ Jesus</b>.</div></div>
-                            <div class="verse_text" data-verse="2" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>2</sup> </strong> <div class="kwverse_2_0_2">And the things you heard from me among many witnesses, entrust them to <b data="0">faithful</b> people who will be able to teach others also.</div></div>
-                            <div class="verse_text" data-verse="3" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>3</sup> </strong> <div class="kwverse_2_0_3">Suffer hardship with me, as a good soldier of <b data="0">Christ Jesus</b>.</div></div>
-                        </div>
-                        <div class="editor_area flex_middle" dir="ltr">
-                            <div class="vnote">
-                                <div class="verse_block" data-verse="1" style="margin-bottom: 10px;"><p><strong><sup>1</sup></strong>Jadi begitu, anakku kuat sudah dengan anugerah di dalam Kristus Yesus.</p> </div>
-                                <div class="verse_block" data-verse="2" style="margin-bottom: 10px;"><p><strong><sup>2</sup></strong>Dan banyak hal yang ko dengar dari sa deng saksi yang banyak itu, beri percaya itu sama orang-orang yang setia, supaya dong dapat mengajar dong yang lain juga.</p></div>
-                                <div class="verse_block" data-verse="3" style="margin-bottom: 10px;"><p><strong><sup>3</sup></strong>Mari, tong sama sa dalam penderitaan jadi prajurit Kristus Yesus yang baik.</p></div>
+                <ul class="nav nav-tabs">
+                    <li role="presentation" id="target_scripture" class="my_tab">
+                        <a href="#"><?php echo __("target_text") ?></a>
+                    </li>
+                    <li role="presentation" id="source_scripture" class="my_tab">
+                        <a href="#"><?php echo __("source_text") ?></a>
+                    </li>
+                </ul>
+
+                <div id="target_scripture_content" class="my_content shown">
+                    <div class="no_padding">
+                        <div class="row chunk_block no_autosize flex_container">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <p class="verse_text" data-verse="1"> <strong class="ltr"> <sup>1</sup> </strong> <span class="orig_text" data-orig-verse="1">Jadi begitu, anakku kuat sudah dengan anugerah di dalam Kristus Yesus.</span></p>
+                                <p class="verse_text" data-verse="2"> <strong class="ltr"> <sup>2</sup> </strong><span class="orig_text" data-orig-verse="2">Dan banyak hal yang ko dengar dari sa deng saksi yang banyak itu, beri percaya itu sama orang-orang yang setia, supaya dong dapat mengajar dong yang lain juga.</span></p>
+                                <p class="verse_text" data-verse="3"> <strong class="ltr"> <sup>3</sup> </strong><span class="orig_text" data-orig-verse="3">Mari, tong sama sa dalam penderitaan jadi prajurit Kristus Yesus yang baik.</span></p>
                             </div>
-                        </div>
-                        <div class="flex_right">
-                            <div class="comments_number hasComment">2 </div>
-                            <span class="editComment mdi mdi-lead-pencil"
-                                  data="0:0"
-                                  title="<?php echo __("write_note_title", [""])?>"></span>
-                            <div class="comments">
-                                <div class="other_comments">
-                                    <div><span>Anna S. - L1:</span> This is comment from Level 1 Event</div>
-                                    <div><span>Genry M. - L2:</span> This is comment of previous checker from Level 2 Event</div>
+                            <div class="editor_area flex_middle" dir="ltr">
+                                <div class="vnote">
+                                    <div class="verse_block flex_chunk" data-verse="1">
+										<span class="verse_number_l2">1</span>
+ 										<textarea data-orig-verse="1" name="chunks[0][1]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Jadi begitu, The text that was added will be marked green. anakku kuat sudah dengan anugerah di dalam Kristus Yesus.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="2">
+										<span class="verse_number_l2">2</span>
+ 										<textarea data-orig-verse="2" name="chunks[0][2]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 80px;">Dan banyak hal yang ko dengar dari sa deng saksi yang banyak itu, beri percaya itu sama orang-orang yang setia, supaya dong dapat mengajar dong yang lain juga.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="3">
+										<span class="verse_number_l2">3</span>
+ 										<textarea data-orig-verse="3" name="chunks[0][3]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Mari, tong sama sa dalam penderitaan jadi (This is an example of replaced text) Kristus Yesus yang baik.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="comments_number hasComment">2 </div>
+                                <span class="editComment mdi mdi-lead-pencil"
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                <div class="comments">
+                                    <div class="other_comments">
+                                        <div><span>Anna S. - L1:</span> This is comment from Level 1 Event</div>
+                                        <div><span>Genry M. - L2:</span> This is comment of previous checker from Level 2 Event</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="chunk_divider"></div>
-                    <div class="row chunk_block flex_container">
-                        <div class="chunk_verses flex_left" dir="ltr">
-                            <div class="verse_text" data-verse="4" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>4</sup> </strong> <div class="kwverse_2_0_4">No <b data="0">soldier</b> serves while entangled in the affairs of this life, so that he may please his superior officer.</div></div>
-                            <div class="verse_text" data-verse="5" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>5</sup> </strong> <div class="kwverse_2_0_5">Also, if someone competes as an <b data="0">athlete</b>, he is not crowned unless he competes by the rules.</div></div>
-                            <div class="verse_text" data-verse="6" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>6</sup> </strong> <div class="kwverse_2_0_6">It is necessary that the hardworking farmer receive his share of the crops first.</div></div>
-                            <div class="verse_text" data-verse="7" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>7</sup> </strong> <div class="kwverse_2_0_7">Think about what <b data="0">I</b> am saying, for the <b data="0">Lord</b> will give you understanding in everything.</div></div>
-                        </div>
-                        <div class="editor_area flex_middle" dir="ltr">
-                            <div class="vnote">
-                                <div class="verse_block" data-verse="4" style="margin-bottom: 10px;"><p><strong><sup>4</sup></strong>Trada satu orang tentara yang kerja sambil sibuk dengan de pu urusan hidup supaya de bisa buat de pu komandan senang.</p> </div>
-                                <div class="verse_block" data-verse="5" style="margin-bottom: 10px;"><p><strong><sup>5</sup></strong>Begitu juga dengan atlit , tra akan terima mahkota kalo tra ikut aturan dalam lomba.</p> </div>
-                                <div class="verse_block" data-verse="6" style="margin-bottom: 10px;"><p><strong><sup>6</sup></strong>Petani dong yang kerja keras akan terima hasil yang pertama,</p> </div>
-                                <div class="verse_block" data-verse="7" style="margin-bottom: 10px;"><p><strong><sup>7</sup></strong>Ingat apa yang sa bilang, karena Tuhan akan kasi ko pengertian untuk mengerti semua ini,</p> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row chunk_block no_autosize flex_container">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <p class="verse_text" data-verse="4"> <strong class="ltr"> <sup>4</sup> </strong><span class="orig_text" data-orig-verse="4">Trada satu orang tentara yang kerja sambil sibuk dengan de pu urusan hidup supaya de bisa buat de pu komandan senang.</span></p>
+                                <p class="verse_text" data-verse="5"> <strong class="ltr"> <sup>5</sup> </strong><span class="orig_text" data-orig-verse="5">Begitu juga dengan atlit , tra akan terima mahkota kalo tra ikut aturan dalam lomba.</span></p>
+                                <p class="verse_text" data-verse="6"> <strong class="ltr"> <sup>6</sup> </strong><span class="orig_text" data-orig-verse="6">Petani dong yang kerja keras akan (Deleted text will be marked red) terima hasil yang pertama,</span></p>
+                                <p class="verse_text" data-verse="7"> <strong class="ltr"> <sup>7</sup> </strong><span class="orig_text" data-orig-verse="7">Ingat apa yang sa bilang, karena Tuhan akan kasi ko pengertian untuk mengerti semua ini,</span></p>
                             </div>
-                        </div>
-                        <div class="flex_right">
-                            <div class="comments_number hasComment">2 </div>
-                            <span class="editComment mdi mdi-lead-pencil"
-                                  data="0:0"
-                                  title="<?php echo __("write_note_title", [""])?>"></span>
-                            <div class="comments">
-                                <div class="other_comments">
-                                    <div><span>Genry M. - L2:</span> This is another comment of previous checker from Level 2 Event</div>
-                                    <div><span>Mark P. - L2:</span> This is another comment of previous checker from Level 2 Event</div>
+                            <div class="editor_area flex_middle" dir="ltr">
+                                <div class="vnote">
+                                    <div class="verse_block flex_chunk" data-verse="4">
+										<span class="verse_number_l2">4</span>
+ 										<textarea data-orig-verse="4" name="chunks[0][4]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Trada satu orang tentara yang kerja sambil sibuk dengan de pu urusan hidup supaya de bisa buat de pu komandan senang.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="5">
+										<span class="verse_number_l2">5</span>
+ 										<textarea data-orig-verse="5" name="chunks[0][5]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 80px;">Begitu juga dengan atlit , tra akan terima mahkota kalo tra ikut aturan dalam lomba.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="6">
+										<span class="verse_number_l2">6</span>
+ 										<textarea data-orig-verse="6" name="chunks[0][6]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Petani dong yang kerja keras akan terima hasil yang pertama,</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="7">
+										<span class="verse_number_l2">7</span>
+ 										<textarea data-orig-verse="7" name="chunks[0][7]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Ingat apa yang sa bilang, karena Tuhan akan kasi ko pengertian untuk mengerti semua ini,</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="comments_number hasComment">3 </div>
+                                <span class="editComment mdi mdi-lead-pencil"
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                <div class="comments">
+                                    <div class="my_comment">This is my comment as a Revision checker</div>
+                                    <div class="other_comments">
+                                        <div><span>Genry M. - L2:</span> This is another comment of previous checker from Level 2 Event</div>
+                                        <div><span>Mark P. - L2:</span> This is another comment of previous checker from Level 2 Event</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="chunk_divider"></div>
-                    <div class="row chunk_block flex_container">
-                        <div class="chunk_verses flex_left" dir="ltr">
-                            <div class="verse_text" data-verse="8" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>8</sup> </strong> <div class="kwverse_2_0_8">Remember Jesus Christ, from David's seed, who was raised from the dead ones. This is according to my gospel message,</div></div>
-                            <div class="verse_text" data-verse="9" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>9</sup> </strong> <div class="kwverse_2_0_9">for which I am suffering to the point of being chained as a criminal. But the word of God is not chained.</div></div>
-                            <div class="verse_text" data-verse="10" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>10</sup> </strong> <div class="kwverse_2_0_10">Therefore I endure all things for those who are chosen, so that they also may obtain the salvation that is in Christ Jesus, with eternal glory.</div></div>
-                        </div>
-                        <div class="editor_area flex_middle" dir="ltr">
-                            <div class="vnote">
-                                <div class="verse_block" data-verse="8" style="margin-bottom: 10px;"><p><strong><sup>8</sup></strong>Ingat: Yesus Kristus, keturunan Daud, su bangkit dari kematian. ini su sesuai dengan pesan Injil yang sa percaya.</p> </div>
-                                <div class="verse_block" data-verse="9" style="margin-bottom: 10px;"><p><strong><sup>9</sup></strong>Sampe pada titik penderitaan karna diikat rantai seperti kriminal. tapi firman Allah tra diikat deng rantai.</p> </div>
-                                <div class="verse_block" data-verse="10" style="margin-bottom: 10px;"><p><strong><sup>10</sup></strong>Jadi sa bertahan untuk orang-orang yang Tuhan pilih, supaya dong dapat keselamatan yang kekal dalam Kristus Yesus, deng kemuliaan yang abadi..</p> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row chunk_block no_autosize flex_container">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <p class="verse_text" data-verse="8"> <strong class="ltr"> <sup>8</sup> </strong><span class="orig_text" data-orig-verse="8">Ingat: Yesus Kristus, keturunan Daud, su bangkit dari kematian. ini su sesuai dengan pesan Injil yang sa percaya.</span></p>
+                                <p class="verse_text" data-verse="9"> <strong class="ltr"> <sup>9</sup> </strong><span class="orig_text" data-orig-verse="9">Sampe pada titik penderitaan karna diikat rantai seperti kriminal. tapi firman Allah tra diikat deng rantai.</span></p>
+                                <p class="verse_text" data-verse="10"> <strong class="ltr"> <sup>10</sup> </strong><span class="orig_text" data-orig-verse="10">Jadi sa bertahan untuk orang-orang yang Tuhan pilih, supaya dong dapat keselamatan yang kekal dalam Kristus Yesus, deng kemuliaan yang abadi.</span></p>
+                            </div>
+                            <div class="editor_area flex_middle" dir="ltr">
+                                <div class="vnote">
+                                    <div class="verse_block flex_chunk" data-verse="8">
+										<span class="verse_number_l2">8</span>
+ 										<textarea data-orig-verse="8" name="chunks[0][8]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Ingat: Yesus Kristus, keturunan Daud, su bangkit dari kematian. ini su sesuai dengan pesan Injil yang sa percaya.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="9">
+										<span class="verse_number_l2">9</span>
+ 										<textarea data-orig-verse="9" name="chunks[0][9]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 80px;">Sampe pada titik penderitaan karna diikat rantai seperti kriminal. tapi firman Allah tra diikat deng rantai.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="10">
+										<span class="verse_number_l2">10</span>
+ 										<textarea data-orig-verse="10" name="chunks[0][10]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Jadi sa bertahan untuk orang-orang yang Tuhan pilih, supaya dong dapat keselamatan yang kekal dalam Kristus Yesus, deng kemuliaan yang abadi..</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="comments_number"></div>
+                                <span class="editComment mdi mdi-lead-pencil"
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                <div class="comments"></div>
                             </div>
                         </div>
-                        <div class="flex_right">
-                            <div class="comments_number"></div>
-                            <span class="editComment mdi mdi-lead-pencil"
-                                  data="0:0"
-                                  title="<?php echo __("write_note_title", [""])?>"></span>
-                            <div class="comments"> </div>
-                        </div>
-                    </div>
-                    <div class="chunk_divider"></div>
-                    <div class="row chunk_block flex_container">
-                        <div class="chunk_verses flex_left" dir="ltr">
-                            <div class="verse_text" data-verse="11" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>11</sup> </strong> <div class="kwverse_2_0_11">This saying is trustworthy: "If we have died with him, we will also live with him.</div></div>
-                            <div class="verse_text" data-verse="12" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>12</sup> </strong> <div class="kwverse_2_0_12">If we endure, we will also reign with him. If we deny him, he also will deny us.</div></div>
-                            <div class="verse_text" data-verse="13" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>13</sup> </strong> <div class="kwverse_2_0_13">if we are unfaithful, he remains faithful, for he cannot deny himself."</div></div>
-                            <div class="verse_text" data-verse="14" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>14</sup> </strong> <div class="kwverse_2_0_14">Keep reminding them of these things. Warn them before God not to quarrel about words. Because of this there is nothing useful. Because of this there is destruction for those who listen.</div></div>
-                        </div>
-                        <div class="editor_area flex_middle" dir="ltr">
-                            <div class="vnote">
-                                <div class="verse_block" data-verse="11" style="margin-bottom: 10px;"><p><strong><sup>11</sup></strong>Apa yang sa bilang ini, bisa dipercaya: kalo tong mau mati untuk Dia, torang juga akan hidup bersama deng Dia.</p> </div>
-                                <div class="verse_block" data-verse="12" style="margin-bottom: 10px;"><p><strong><sup>12</sup></strong>Apalagi kalo tong bertahan , tong juga akan ditinggikan deng Dia. Klo tong menyangkal Dia, Dia juga akan menyangkal ketong,</p> </div>
-                                <div class="verse_block" data-verse="13" style="margin-bottom: 10px;"><p><strong><sup>13</sup></strong>Klo tong tra setia, De tetap setia karena De tra bisa menyangkal diri.</p> </div>
-                                <div class="verse_block" data-verse="14" style="margin-bottom: 10px;"><p><strong><sup>14</sup></strong>Selalu kasi ingat dong di hadapan Allah, supaya dong jangan berdebat tentang Firman karena itu akan bikin kacau orang yang dengar,</p> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row chunk_block no_autosize flex_container">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <p class="verse_text" data-verse="11"> <strong class="ltr"> <sup>11</sup> </strong><span class="orig_text" data-orig-verse="11">Apa yang sa bilang ini, bisa dipercaya: kalo tong mau mati untuk Dia, torang juga akan hidup bersama deng Dia.</span></p>
+                                <p class="verse_text" data-verse="12"> <strong class="ltr"> <sup>12</sup> </strong><span class="orig_text" data-orig-verse="12">Apalagi kalo tong bertahan , tong juga akan ditinggikan deng Dia. Klo tong menyangkal Dia, Dia juga akan menyangkal ketong,</span></p>
+                                <p class="verse_text" data-verse="13"> <strong class="ltr"> <sup>13</sup> </strong><span class="orig_text" data-orig-verse="13">Klo tong tra setia, De tetap setia karena De tra bisa menyangkal diri.</span></p>
+                                <p class="verse_text" data-verse="14"> <strong class="ltr"> <sup>14</sup> </strong><span class="orig_text" data-orig-verse="14">Selalu kasi ingat dong di hadapan Allah, supaya dong jangan berdebat tentang Firman karena itu akan bikin kacau orang yang dengar,</span></p>
+                            </div>
+                            <div class="editor_area flex_middle" dir="ltr">
+                                <div class="vnote">
+                                    <div class="verse_block flex_chunk" data-verse="11">
+										<span class="verse_number_l2">11</span>
+ 										<textarea data-orig-verse="11" name="chunks[0][11]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Apa yang sa bilang ini, bisa dipercaya: kalo tong mau mati untuk Dia, torang juga akan hidup bersama deng Dia.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="12">
+										<span class="verse_number_l2">12</span>
+ 										<textarea data-orig-verse="12" name="chunks[0][12]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 80px;">Apalagi kalo tong bertahan , tong juga akan ditinggikan deng Dia. Klo tong menyangkal Dia, Dia juga akan menyangkal ketong,</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="13">
+										<span class="verse_number_l2">13</span>
+ 										<textarea data-orig-verse="13" name="chunks[0][13]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Klo tong tra setia, De tetap setia karena De tra bisa menyangkal diri.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="14">
+										<span class="verse_number_l2">14</span>
+ 										<textarea data-orig-verse="14" name="chunks[0][14]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Selalu kasi ingat dong di hadapan Allah, supaya dong jangan berdebat tentang Firman karena itu akan bikin kacau orang yang dengar,</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="comments_number"></div>
+                                <span class="editComment mdi mdi-lead-pencil"
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                <div class="comments"></div>
                             </div>
                         </div>
-                        <div class="flex_right">
-                            <div class="comments_number"></div>
-                            <span class="editComment mdi mdi-lead-pencil"
-                                  data="0:0"
-                                  title="<?php echo __("write_note_title", [""])?>"></span>
-                            <div class="comments"> </div>
-                        </div>
-                    </div>
-                    <div class="chunk_divider"></div>
-                    <div class="row chunk_block flex_container">
-                        <div class="chunk_verses flex_left" dir="ltr">
-                            <div class="verse_text" data-verse="15" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>15</sup> </strong> <div class="kwverse_2_0_15">Do your best to present yourself to God as one approved, a worker who has no reason to be ashamed, who accurately teaches the word of truth.</div></div>
-                            <div class="verse_text" data-verse="16" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>16</sup> </strong> <div class="kwverse_2_0_16">Avoid profane talk, which leads to more and more godlessness.</div></div>
-                            <div class="verse_text" data-verse="17" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>17</sup> </strong> <div class="kwverse_2_0_17">Their talk will spread like gangrene. Among whom are Hymenaeus and Philetus.</div></div>
-                        </div>
-                        <div class="editor_area flex_middle" dir="ltr">
-                            <div class="vnote">
-                                <div class="verse_block" data-verse="15" style="margin-bottom: 10px;"><p><strong><sup>15</sup></strong>Lakukan yang paling baik itu adalah persembahan yang Tuhan terima, jadi pekerja trada alasan untuk dapat kasi malu, yang ajar kebeneran Firman dengan pas.</p> </div>
-                                <div class="verse_block" data-verse="16" style="margin-bottom: 10px;"><p><strong><sup>16</sup></strong>Hindari omong kosong dan tra bersih yang nanti jadi tra baik.</p> </div>
-                                <div class="verse_block" data-verse="17" style="margin-bottom: 10px;"><p><strong><sup>17</sup></strong>Perkataan dong akan menyebar seperti kangker. Diantara dong itu ada Himeneus dan Filetus.</p> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row chunk_block no_autosize flex_container">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <p class="verse_text" data-verse="15"> <strong class="ltr"> <sup>15</sup> </strong><span class="orig_text" data-orig-verse="15">Lakukan yang paling baik itu adalah persembahan yang Tuhan terima, jadi pekerja trada alasan untuk dapat kasi malu, yang ajar kebeneran Firman dengan pas.</span></p>
+                                <p class="verse_text" data-verse="16"> <strong class="ltr"> <sup>16</sup> </strong><span class="orig_text" data-orig-verse="16">Hindari omong kosong dan tra bersih yang nanti jadi tra baik.</span></p>
+                                <p class="verse_text" data-verse="17"> <strong class="ltr"> <sup>17</sup> </strong><span class="orig_text" data-orig-verse="17">Perkataan dong akan menyebar seperti kangker. Diantara dong itu ada Himeneus dan Filetus.</span></p>
+                            </div>
+                            <div class="editor_area flex_middle" dir="ltr">
+                                <div class="vnote">
+                                    <div class="verse_block flex_chunk" data-verse="15">
+										<span class="verse_number_l2">15</span>
+ 										<textarea data-orig-verse="15" name="chunks[0][15]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Lakukan yang paling baik itu adalah persembahan yang Tuhan terima, jadi pekerja trada alasan untuk dapat kasi malu, yang ajar kebeneran Firman dengan pas.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="16">
+										<span class="verse_number_l2">16</span>
+ 										<textarea data-orig-verse="16" name="chunks[0][16]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 80px;">Hindari omong kosong dan tra bersih yang nanti jadi tra baik.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="17">
+										<span class="verse_number_l2">17</span>
+ 										<textarea data-orig-verse="17" name="chunks[0][17]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Perkataan dong akan menyebar seperti kangker. Diantara dong itu ada Himeneus dan Filetus.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="comments_number"></div>
+                                <span class="editComment mdi mdi-lead-pencil"
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                <div class="comments"></div>
                             </div>
                         </div>
-                        <div class="flex_right">
-                            <div class="comments_number"></div>
-                            <span class="editComment mdi mdi-lead-pencil"
-                                  data="0:0"
-                                  title="<?php echo __("write_note_title", [""])?>"></span>
-                            <div class="comments"> </div>
-                        </div>
-                    </div>
-                    <div class="chunk_divider"></div>
-                    <div class="row chunk_block flex_container">
-                        <div class="chunk_verses flex_left" dir="ltr">
-                            <div class="verse_text" data-verse="18" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>18</sup> </strong> <div class="kwverse_2_0_18">These are men who have missed the truth. They say that the resurrection has already happened. They overturn the faith of some.</div></div>
-                            <div class="verse_text" data-verse="19" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>19</sup> </strong> <div class="kwverse_2_0_19">However, the firm foundation of God stands. It has this inscription: "The Lord knows those who are his" and "Everyone who names the name of the Lord must depart from unrighteousness."</div></div>
-                            <div class="verse_text" data-verse="20" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>20</sup> </strong> <div class="kwverse_2_0_20">In a wealthy home, there are not only containers of gold and silver. There are also containers of wood and clay. Some of these are for honorable use, and some for dishonorable.</div></div>
-                        </div>
-                        <div class="editor_area flex_middle" dir="ltr">
-                            <div class="vnote">
-                                <div class="verse_block" data-verse="18" style="margin-bottom: 10px;"><p><strong><sup>18</sup></strong>Dong adalah orang-orang yang sudah tidak benar. dong katakan kebangkitan sudah terjadi, dong putar balik iman dari berapa orang tu.</p> </div>
-                                <div class="verse_block" data-verse="19" style="margin-bottom: 10px;"><p><strong><sup>19</sup></strong>Biar begitu, Allah pu fondasi kuat tetap berdiri. ada piagam dengan tulisan yang bilang" Tuhan kenal dong Dia pu milik." . dan orang yang percaya Tuhan harus kasi tinggal yang tra benar.</p></div>
-                                <div class="verse_block" data-verse="20" style="margin-bottom: 10px;"><p><strong><sup>20</sup></strong>Dalam rumah kaya bukan saja ada emas dan perak tapi juga ada kotak-kotak kayu sama tanah liat. barang itu di pake untuk hal-hal yang terhormat, dan ada juga untuk hal-hal tra terhormat.</p> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row chunk_block no_autosize flex_container">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <p class="verse_text" data-verse="18"> <strong class="ltr"> <sup>18</sup> </strong><span class="orig_text" data-orig-verse="18">Dong adalah orang-orang yang sudah tidak benar. dong katakan kebangkitan sudah terjadi, dong putar balik iman dari berapa orang tu.</span></p>
+                                <p class="verse_text" data-verse="19"> <strong class="ltr"> <sup>19</sup> </strong><span class="orig_text" data-orig-verse="19">Biar begitu, Allah pu fondasi kuat tetap berdiri. ada piagam dengan tulisan yang bilang" Tuhan kenal dong Dia pu milik." . dan orang yang percaya Tuhan harus kasi tinggal yang tra benar.</span></p>
+                                <p class="verse_text" data-verse="20"> <strong class="ltr"> <sup>20</sup> </strong><span class="orig_text" data-orig-verse="20">Dalam rumah kaya bukan saja ada emas dan perak tapi juga ada kotak-kotak kayu sama tanah liat. barang itu di pake untuk hal-hal yang terhormat, dan ada juga untuk hal-hal tra terhormat.</span></p>
+                            </div>
+                            <div class="editor_area flex_middle" dir="ltr">
+                                <div class="vnote">
+                                    <div class="verse_block flex_chunk" data-verse="18">
+										<span class="verse_number_l2">18</span>
+ 										<textarea data-orig-verse="18" name="chunks[0][18]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Dong adalah orang-orang yang sudah tidak benar. dong katakan kebangkitan sudah terjadi, dong putar balik iman dari berapa orang tu.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="19">
+										<span class="verse_number_l2">19</span>
+ 										<textarea data-orig-verse="19" name="chunks[0][19]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 80px;">Biar begitu, Allah pu fondasi kuat tetap berdiri. ada piagam dengan tulisan yang bilang" Tuhan kenal dong Dia pu milik." . dan orang yang percaya Tuhan harus kasi tinggal yang tra benar.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="20">
+										<span class="verse_number_l2">20</span>
+ 										<textarea data-orig-verse="20" name="chunks[0][20]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Dalam rumah kaya bukan saja ada emas dan perak tapi juga ada kotak-kotak kayu sama tanah liat. barang itu di pake untuk hal-hal yang terhormat, dan ada juga untuk hal-hal tra terhormat.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="comments_number"></div>
+                                <span class="editComment mdi mdi-lead-pencil"
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                <div class="comments"></div>
                             </div>
                         </div>
-                        <div class="flex_right">
-                            <div class="comments_number"></div>
-                            <span class="editComment mdi mdi-lead-pencil"
-                                  data="0:0"
-                                  title="<?php echo __("write_note_title", [""])?>"></span>
-                            <div class="comments"> </div>
-                        </div>
-                    </div>
-                    <div class="chunk_divider"></div>
-                    <div class="row chunk_block flex_container">
-                        <div class="chunk_verses flex_left" dir="ltr">
-                            <div class="verse_text" data-verse="21" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>21</sup> </strong> <div class="kwverse_2_0_21">If someone cleans himself from dishonorable use, he is an honorable container. He is set apart, useful to the Master, and prepared for every good work.</div></div>
-                            <div class="verse_text" data-verse="22" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>22</sup> </strong> <div class="kwverse_2_0_22">Flee youthful lusts. Pursue righteousness, faith, love, and peace with those who call on the Lord out of a clean heart.</div></div>
-                            <div class="verse_text" data-verse="23" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>23</sup> </strong> <div class="kwverse_2_0_23">But refuse foolish and ignorant questions. You know that they give birth to arguments.</div></div>
-                        </div>
-                        <div class="editor_area flex_middle" dir="ltr">
-                            <div class="vnote">
-                                <div class="verse_block" data-verse="21" style="margin-bottom: 10px;"><p><strong><sup>21</sup></strong>Jika satu orang kasi bersih de pu diri dari yang tra terhormat, de itu bejana yang terhormat. de dipilih , dipake untuk tuannya, dan de disiapkan untuk semua perbuatan yang baik.</p> </div>
-                                <div class="verse_block" data-verse="22" style="margin-bottom: 10px;"><p><strong><sup>22</sup></strong>Jauhi sudah dari nafsu anak-anak muda, kejar itu kebenaran, iman, kasih, dan damai, sama-sama deng dong yang panggil Tuhan dengan hati yang bersih.</p> </div>
-                                <div class="verse_block" data-verse="23" style="margin-bottom: 10px;"><p><strong><sup>23</sup></strong>Tapi tolak sudah pertanyaan-pertanyaan bodok. Kam tahu itu semua nanti jadi sebab baku tengkar.</p> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row chunk_block no_autosize flex_container">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <p class="verse_text" data-verse="21"> <strong class="ltr"> <sup>21</sup> </strong><span class="orig_text" data-orig-verse="21">Jika satu orang kasi bersih de pu diri dari yang tra terhormat, de itu bejana yang terhormat. de dipilih , dipake untuk tuannya, dan de disiapkan untuk semua perbuatan yang baik.</span></p>
+                                <p class="verse_text" data-verse="22"> <strong class="ltr"> <sup>22</sup> </strong><span class="orig_text" data-orig-verse="22">Jauhi sudah dari nafsu anak-anak muda, kejar itu kebenaran, iman, kasih, dan damai, sama-sama deng dong yang panggil Tuhan dengan hati yang bersih.</span></p>
+                                <p class="verse_text" data-verse="23"> <strong class="ltr"> <sup>23</sup> </strong><span class="orig_text" data-orig-verse="23">Tapi tolak sudah pertanyaan-pertanyaan bodok. Kam tahu itu semua nanti jadi sebab baku tengkar.</span></p>
+                            </div>
+                            <div class="editor_area flex_middle" dir="ltr">
+                                <div class="vnote">
+                                    <div class="verse_block flex_chunk" data-verse="21">
+										<span class="verse_number_l2">21</span>
+ 										<textarea data-orig-verse="21" name="chunks[0][21]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Jika satu orang kasi bersih de pu diri dari yang tra terhormat, de itu bejana yang terhormat. de dipilih , dipake untuk tuannya, dan de disiapkan untuk semua perbuatan yang baik.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="22">
+										<span class="verse_number_l2">22</span>
+ 										<textarea data-orig-verse="22" name="chunks[0][22]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 80px;">Jauhi sudah dari nafsu anak-anak muda, kejar itu kebenaran, iman, kasih, dan damai, sama-sama deng dong yang panggil Tuhan dengan hati yang bersih.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="23">
+										<span class="verse_number_l2">23</span>
+ 										<textarea data-orig-verse="23" name="chunks[0][23]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Tapi tolak sudah pertanyaan-pertanyaan bodok. Kam tahu itu semua nanti jadi sebab baku tengkar.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="comments_number"></div>
+                                <span class="editComment mdi mdi-lead-pencil"
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                <div class="comments"></div>
                             </div>
                         </div>
-                        <div class="flex_right">
-                            <div class="comments_number"></div>
-                            <span class="editComment mdi mdi-lead-pencil"
-                                  data="0:0"
-                                  title="<?php echo __("write_note_title", [""])?>"></span>
-                            <div class="comments"> </div>
-                        </div>
-                    </div>
-                    <div class="chunk_divider"></div>
-                    <div class="row chunk_block flex_container">
-                        <div class="chunk_verses flex_left" dir="ltr">
-                            <div class="verse_text" data-verse="24" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>24</sup> </strong> <div class="kwverse_2_0_24">The Lord's servant must not quarrel. Instead he must be gentle toward all, able to teach, and patient.</div></div>
-                            <div class="verse_text" data-verse="25" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>25</sup> </strong> <div class="kwverse_2_0_25">He must in meekness educate those who oppose him. God may perhaps give them repentance for the knowledge of the truth.</div></div>
-                            <div class="verse_text" data-verse="26" style="margin-bottom: 10px;"> <strong class="ltr"> <sup>26</sup> </strong> <div class="kwverse_2_0_26">They may become sober again and leave the devil's trap, after they have been captured by him for his will.</div></div>
-                        </div>
-                        <div class="editor_area flex_middle" dir="ltr">
-                            <div class="vnote">
-                                <div class="verse_block" data-verse="24" style="margin-bottom: 10px;"><p><strong><sup>24</sup></strong>Orang yang melayani Tuhan tra boleh bertengkar tapi harus lemah lembut pada semua dong, Dong harus pintar mengajar, sabar</p> </div>
-                                <div class="verse_block" data-verse="25" style="margin-bottom: 10px;"><p><strong><sup>25</sup></strong>de kasi ajaran deng lemah lembut sama dong yang melawan dia. mungkin Allah kasi kesempatan untuk dong bertobat pada pengetahuan akan kebenaran.</p></div>
-                                <div class="verse_block" data-verse="26" style="margin-bottom: 10px;"><p><strong><sup>26</sup></strong>mungkin dong sadar kembali dan kasi tinggal jerat iblis setelah selama ini dong ditawan untuk ikut perintahnya.</p> </div>
+                        <div class="chunk_divider"></div>
+                        <div class="row chunk_block no_autosize flex_container">
+                            <div class="chunk_verses flex_left" dir="ltr">
+                                <p class="verse_text" data-verse="24"> <strong class="ltr"> <sup>24</sup> </strong><span class="orig_text" data-orig-verse="24">Orang yang melayani Tuhan tra boleh bertengkar tapi harus lemah lembut pada semua dong, Dong harus pintar mengajar, sabar</span></p>
+                                <p class="verse_text" data-verse="25"> <strong class="ltr"> <sup>25</sup> </strong><span class="orig_text" data-orig-verse="25">de kasi ajaran deng lemah lembut sama dong yang melawan dia. mungkin Allah kasi kesempatan untuk dong bertobat pada pengetahuan akan kebenaran.</span></p>
+                                <p class="verse_text" data-verse="26"> <strong class="ltr"> <sup>26</sup> </strong><span class="orig_text" data-orig-verse="26">mungkin dong sadar kembali dan kasi tinggal jerat iblis setelah selama ini dong ditawan untuk ikut perintahnya.</span></p>
+                            </div>
+                            <div class="editor_area flex_middle" dir="ltr">
+                                <div class="vnote">
+                                    <div class="verse_block flex_chunk" data-verse="24">
+										<span class="verse_number_l2">24</span>
+ 										<textarea data-orig-verse="24" name="chunks[0][24]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">Orang yang melayani Tuhan tra boleh bertengkar tapi harus lemah lembut pada semua dong, Dong harus pintar mengajar, sabar</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="25">
+										<span class="verse_number_l2">25</span>
+ 										<textarea data-orig-verse="25" name="chunks[0][25]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 80px;">de kasi ajaran deng lemah lembut sama dong yang melawan dia. mungkin Allah kasi kesempatan untuk dong bertobat pada pengetahuan akan kebenaran.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                    <div class="verse_block flex_chunk" data-verse="26">
+										<span class="verse_number_l2">26</span>
+ 										<textarea data-orig-verse="26" name="chunks[0][26]" class="peer_verse_ta textarea" style="overflow: hidden; min-width: 400px; overflow-wrap: break-word; height: 111px;">mungkin dong sadar kembali dan kasi tinggal jerat iblis setelah selama ini dong ditawan untuk ikut perintahnya.</textarea>
+                                        <span class="editFootNote mdi mdi-bookmark"
+                                              style="margin-top: -5px"
+                                              title="<?php echo __("write_footnote_title") ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex_right">
+                                <div class="comments_number"></div>
+                                <span class="editComment mdi mdi-lead-pencil"
+                                      data="0:0"
+                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                <div class="comments"></div>
                             </div>
                         </div>
-                        <div class="flex_right">
-                            <div class="comments_number"></div>
-                            <span class="editComment mdi mdi-lead-pencil"
-                                  data="0:0"
-                                  title="<?php echo __("write_note_title", [""])?>"></span>
-                            <div class="comments"> </div>
+                        <div class="chunk_divider"></div>
+                    </div>
+                </div>
+
+                <div id="source_scripture_content" class="my_content">
+                    <div class="chunk_block">
+                        <div class="chunk_verses" dir="ltr">
+                            <div> <strong class="ltr"> <sup>1</sup> </strong> <div class="kwverse_2_0_1">You therefore, my <b data="0">child</b>, be strengthened in the grace that is in Christ Jesus.</div></div>
+                            <div> <strong class="ltr"> <sup>2</sup> </strong> <div class="kwverse_2_0_2">And the things you heard from me among many witnesses, entrust them to faithful people who will be able to teach others also.</div></div>
+                            <div> <strong class="ltr"> <sup>3</sup> </strong> <div class="kwverse_2_0_3">Suffer hardship with me, as a good soldier of Christ Jesus.</div></div>
                         </div>
                     </div>
-                    <div class="chunk_divider"></div>
+                    <div class="chunk_block">
+                        <div class="chunk_verses" dir="ltr">
+                            <div> <strong class="ltr"> <sup>4</sup> </strong> <div class="kwverse_2_0_4">No soldier serves while entangled in the affairs of this life, so that he may please his superior officer.</div></div>
+                            <div> <strong class="ltr"> <sup>5</sup> </strong> <div class="kwverse_2_0_5">Also, if someone competes as an athlete, he is not crowned unless he competes by the rules.</div></div>
+                            <div> <strong class="ltr"> <sup>6</sup> </strong> <div class="kwverse_2_0_6">It is necessary that the hardworking farmer receive his share of the crops first.</div></div>
+                            <div> <strong class="ltr"> <sup>7</sup> </strong> <div class="kwverse_2_0_7">Think about what I am saying, for the <b data="0">Lord</b> will give you understanding in everything.</div></div>
+                        </div>
+                    </div>
+                    <div class="chunk_block">
+                        <div class="chunk_verses" dir="ltr">
+                            <div> <strong class="ltr"> <sup>8</sup> </strong> <div class="kwverse_2_0_8">Remember Jesus Christ, from David's seed, who was raised from the dead ones. This is according to my gospel message,</div></div>
+                            <div> <strong class="ltr"> <sup>9</sup> </strong> <div class="kwverse_2_0_9">for which I am suffering to the point of being chained as a criminal. But the word of God is not chained.</div></div>
+                            <div> <strong class="ltr"> <sup>10</sup> </strong> <div class="kwverse_2_0_10">Therefore I endure all things for those who are chosen, so that they also may obtain the salvation that is in Christ Jesus, with eternal glory.</div></div>
+                        </div>
+                    </div>
+                    <div class="chunk_block">
+                        <div class="chunk_verses" dir="ltr">
+                            <div> <strong class="ltr"> <sup>11</sup> </strong> <div class="kwverse_2_0_11">This saying is trustworthy: "If we have died with him, we will also live with him.</div></div>
+                            <div> <strong class="ltr"> <sup>12</sup> </strong> <div class="kwverse_2_0_12">If we endure, we will also reign with him. If we deny him, he also will deny us.</div></div>
+                            <div> <strong class="ltr"> <sup>13</sup> </strong> <div class="kwverse_2_0_13">if we are unfaithful, he remains faithful, for he cannot deny himself."</div></div>
+                            <div> <strong class="ltr"> <sup>14</sup> </strong> <div class="kwverse_2_0_14">Keep reminding them of these things. Warn them before God not to quarrel about words. Because of this there is nothing useful. Because of this there is destruction for those who listen.</div></div>
+                        </div>
+                    </div>
+                    <div class="chunk_block">
+                        <div class="chunk_verses" dir="ltr">
+                            <div> <strong class="ltr"> <sup>15</sup> </strong> <div class="kwverse_2_0_15">Do your best to present yourself to God as one approved, a worker who has no reason to be ashamed, who accurately teaches the word of truth.</div></div>
+                            <div> <strong class="ltr"> <sup>16</sup> </strong> <div class="kwverse_2_0_16">Avoid profane talk, which leads to more and more godlessness.</div></div>
+                            <div> <strong class="ltr"> <sup>17</sup> </strong> <div class="kwverse_2_0_17">Their talk will spread like gangrene. Among whom are Hymenaeus and Philetus.</div></div>
+                        </div>
+                    </div>
+                    <div class="chunk_block">
+                        <div class="chunk_verses" dir="ltr">
+                            <div> <strong class="ltr"> <sup>18</sup> </strong> <div class="kwverse_2_0_18">These are men who have missed the truth. They say that the resurrection has already happened. They overturn the faith of some.</div></div>
+                            <div> <strong class="ltr"> <sup>19</sup> </strong> <div class="kwverse_2_0_19">However, the firm foundation of God stands. It has this inscription: "The Lord knows those who are his" and "Everyone who names the name of the Lord must depart from unrighteousness."</div></div>
+                            <div> <strong class="ltr"> <sup>20</sup> </strong> <div class="kwverse_2_0_20">In a wealthy home, there are not only containers of gold and silver. There are also containers of wood and clay. Some of these are for honorable use, and some for dishonorable.</div></div>
+                        </div>
+                    </div>
+                    <div class="chunk_block">
+                        <div class="chunk_verses" dir="ltr">
+                            <div> <strong class="ltr"> <sup>21</sup> </strong> <div class="kwverse_2_0_21">If someone cleans himself from dishonorable use, he is an honorable container. He is set apart, useful to the Master, and prepared for every good work.</div></div>
+                            <div> <strong class="ltr"> <sup>22</sup> </strong> <div class="kwverse_2_0_22">Flee youthful lusts. Pursue righteousness, faith, love, and peace with those who call on the Lord out of a clean heart.</div></div>
+                            <div> <strong class="ltr"> <sup>23</sup> </strong> <div class="kwverse_2_0_23">But refuse foolish and ignorant questions. You know that they give birth to arguments.</div></div>
+                        </div>
+                    </div>
+                    <div class="chunk_block">
+                        <div class="chunk_verses" dir="ltr">
+                            <div> <strong class="ltr"> <sup>24</sup> </strong> <div class="kwverse_2_0_24">The Lord's servant must not quarrel. Instead he must be gentle toward all, able to teach, and patient.</div></div>
+                            <div> <strong class="ltr"> <sup>25</sup> </strong> <div class="kwverse_2_0_25">He must in meekness educate those who oppose him. God may perhaps give them repentance for the knowledge of the truth.</div></div>
+                            <div> <strong class="ltr"> <sup>26</sup> </strong> <div class="kwverse_2_0_26">They may become sober again and leave the devil's trap, after they have been captured by him for his will.</div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -226,8 +471,9 @@
                     <button id="next_step" class="btn btn-primary" disabled="disabled">
                         <?php echo __($data["next_step"])?>
                     </button>
+                    <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </form>
-                <div class="step_right"><?php echo __("step_num", ["step_number" => 2])?></div>
+                <div class="step_right"></div>
             </div>
         </div>
     </div>
@@ -238,24 +484,618 @@
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 2])?>:</span> <?php echo __("keyword-check-l2")?></div>
+            <div class="help_name_steps"><span><?php echo __("peer-review-l2")?></span> </div>
             <div class="help_descr_steps">
-                <ul><?php echo __("keyword-check-l2_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
 
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
+                <div class="participant_name">
+                    <span><?php echo __("your_checker") ?>:</span>
+                    <span class="checker_name_span">
+                                Marge S.
+                            </span>
+                </div>
                 <div class="additional_info">
-                    <a href="/events/demo-l2/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-revision/information"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
 
         <div class="tr_tools">
+            <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
+            <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
             <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
             <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+        </div>
+
+        <div class="checker_view">
+            <a href="/events/demo-revision/peer_review_l2_checker"><?php echo __("checker_other_view", [2]) ?></a>
+        </div>
+    </div>
+</div>
+
+<div class="ttools_panel tn_tool panel panel-default" draggable="true">
+    <div class="panel-heading">
+        <h1 class="panel-title"><?php echo __("tn") ?></h1>
+        <span class="panel-close glyphicon glyphicon-remove" data-tool="tn"></span>
+    </div>
+
+    <div class="ttools_content page-content panel-body">
+        <div class="labels_list">
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("intro") ?></span> </div>
+                        <div class="word_def">
+                            <h1>2 Timothy 02 General Notes</h1>
+                            <h4>Structure and formatting</h4>
+                            <p>Some translations set words farther to the right on the page than the rest of the text. The ULB does this with verses 11-13. Paul may be quoting a poem or hymn in these verses.</p>
+                            <h4>Special concepts in this chapter</h4>
+                            <h5>We will reign with him</h5>
+                            <p>Faithful Christians will reign with Christ in the future. (See: [[rc://en/tw/dict/bible/kt/faithful]])</p>
+                            <h4>Important figures of speech in this chapter</h4>
+                            <h5>Analogies</h5>
+                            <p>In this chapter, Paul makes several analogies to teach about living as a Christian. He uses analogies of soldiers, athletes, and farmers. Later in the chapter, he uses the analogy of different kinds of containers in a house.</p>
+                            <h2>Links:</h2>
+                            <ul>
+                                <li><strong><b>2 Timothy 02:01 Notes</b></strong></li>
+                            </ul>
+                            <p><strong><b>&lt;&lt;</b> | <b>&gt;&gt;</b></strong></p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 1) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>Connecting Statement:</h1>
+                            <p>Paul pictures Timothy's Christian life as a soldier's life, as a farmer's life, and as an athlete's life.</p>
+                            <h1>my child</h1>
+                            <p>Here "child" is a term of great love and approval. It is also likely that Timothy was converted to Christ by Paul, and so this is why Paul considered him like his own child. Alternate translation: "who is like my child" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>be strengthened in the grace that is in Christ Jesus</h1>
+                            <p>Paul speaks about the motivation and determination that God's grace allows believers to have. Alternate translation: "let God use the grace he gave you through your relationship to Christ Jesus to make you strong" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 2) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>among many witnesses</h1>
+                            <p>"with many witnesses there to agree that what I said is true"</p>
+                            <h1>entrust them to faithful people</h1>
+                            <p>Paul speaks of his instructions to Timothy as if they were objects that Timothy could give to other people and trust them to use correctly. Alternate translation: "commit them" or "teach them" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 3) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>Suffer hardship with me</h1>
+                            <p>Possible meanings are 1) "Endure suffering as I do" or 2) "Share in my suffering"</p>
+                            <h1>as a good soldier of Christ Jesus</h1>
+                            <p>Paul compares suffering for Christ Jesus to the suffering that a good soldier endures. (See: [[rc://en/ta/man/translate/figs-simile]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 4) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>No soldier serves while entangled in the affairs of this life</h1>
+                            <p>"No soldier serves when he is involved in the everyday business of this life" or "When soldiers are serving, they do not get distracted by the ordinary things that people do." Christ's servants should not allow everyday life to keep them from working for Christ.</p>
+                            <h1>while entangled</h1>
+                            <p>Paul speaks of this distraction as if it were a net that tripped people up as they were walking. (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>his superior officer</h1>
+                            <p>"his leader" or "the one who commands him"</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 5) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>as an athlete, he is not crowned unless he competes by the rules</h1>
+                            <p>Paul is implicitly speaking of Christ's servants as if they were athletes. (See: [[rc://en/ta/man/translate/figs-explicit]] and [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>he is not crowned unless he competes by the rules</h1>
+                            <p>This can be stated in active form. Alternate translation: "they will crown him as winner only if he competes by the rules" (See: [[rc://en/ta/man/translate/figs-activepassive]])</p>
+                            <h1>he is not crowned</h1>
+                            <p>"he does not win the prize." Athletes in Paul's time were crowned with wreaths made from the leaves of plants when they won competitions.</p>
+                            <h1>competes by the rules</h1>
+                            <p>"competes according to the rules" or "strictly obeys the rules"</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 6) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>It is necessary that the hardworking farmer receive his share of the crops first</h1>
+                            <p>This is the third metaphor Paul gives Timothy about working. The reader should understand that Christ's servants need to work hard. (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 7) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>Think about what I am saying</h1>
+                            <p>Paul gave Timothy word pictures, but he did not completely explain their meanings. He expected Timothy to figure out what he was saying about Christ's servants.</p>
+                            <h1>in everything</h1>
+                            <p>"about everything"</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 8) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>Connecting Statement:</h1>
+                            <p>Paul gives Timothy instructions on how to live for Christ, how to suffer for Christ, and how to teach others to live for Christ.</p>
+                            <h1>from David's seed</h1>
+                            <p>This is a metaphor that means Jesus descended from David. Alternate translation: "who is a descendant of David" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>who was raised from the dead</h1>
+                            <p>Here to raise up is an idiom for causing someone who has died to become alive again. This can be stated in active form. Alternate translation: "whom God caused to live again" or "whom God raised from the dead" (See: [[rc://en/ta/man/translate/figs-activepassive]] and [[rc://en/ta/man/translate/figs-idiom]])</p>
+                            <h1>according to my gospel message</h1>
+                            <p>Paul speaks of the gospel message as if it were especially his. He means that this is the gospel message that he proclaims. Alternate translation: "according to the gospel message that I preach" (See: [[rc://en/ta/man/translate/figs-metonymy]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 9) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>to the point of being bound with chains as a criminal</h1>
+                            <p>Here "being chained" represents being a prisoner. This can be stated in active form. Alternate translation: "to the point of wearing chains as a criminal in prison" (See: [[rc://en/ta/man/translate/figs-metonymy]] and [[rc://en/ta/man/translate/figs-activepassive]])</p>
+                            <h1>the word of God is not bound</h1>
+                            <p>Here "bound" speaks of what happens to a prisoner, and the phrase is a metaphor that means no one can stop God's message. This can be translated in active form. Alternate translation: "no one can put the word of God in prison" or "no one can stop the word of God" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 10) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>for those who are chosen</h1>
+                            <p>This can be stated in active form. Alternate translation: "for the people whom God has chosen" (See: [[rc://en/ta/man/translate/figs-activepassive]])</p>
+                            <h1>may obtain the salvation that is in Christ Jesus</h1>
+                            <p>Paul speaks of salvation as if it were an object that could be physically grasped. Alternate translation: "will receive salvation from Christ Jesus" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>with eternal glory</h1>
+                            <p>"and that they will be forever with him in the glorious place where he is"</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 11) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>This is a trustworthy saying</h1>
+                            <p>"These are words you can trust"</p>
+                            <h1>If we have died with him, we will also live with him</h1>
+                            <p>This is most likely the beginning of a song or poem that Paul is quoting. If your language has a way of indicating that this is poetry, you could use it here. If not, you could translate this as regular prose rather than poetry. (See: [[rc://en/ta/man/translate/writing-poetry]])</p>
+                            <h1>died with him</h1>
+                            <p>Paul uses this expression to mean that people share in Christ's death when they trust in him, deny their own wants, and obey him.</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 12) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>General Information:</h1>
+                            <p>This page has intentionally been left blank.</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 13) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>if we are unfaithful ... he cannot deny himself</h1>
+                            <p>This is most likely the end of a song or poem that Paul is quoting. If your language has a way of indicating that this is poetry you could use it here. If not, you could translate this as regular prose rather than poetry. (See: [[rc://en/ta/man/translate/writing-poetry]])</p>
+                            <h1>if we are unfaithful</h1>
+                            <p>"even if we fail God" or "even if we do not do what we believe God wants us to do"</p>
+                            <h1>he cannot deny himself</h1>
+                            <p>"he must always act according to his character" or "he cannot act in ways that are the opposite of his real character"</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 14) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>General Information:</h1>
+                            <p>The word "them" may refer to "the teachers" or "the people of the church"</p>
+                            <h1>before God</h1>
+                            <p>Paul speaks of God's awareness of Paul as if he is in God's physical presence. This implies that God will be Timothy's witness. Alternate translation: "in God's presence" or "with God as your witness" (See: [[rc://en/ta/man/translate/figs-metaphor]] and [[rc://en/ta/man/translate/figs-explicit]])</p>
+                            <h1>against quarreling about words</h1>
+                            <p>Possible meanings are 1) "not to argue about foolish things that people say" or 2) "not to quarrel about what words mean"</p>
+                            <h1>it is of no value</h1>
+                            <p>"this does not benefit anyone"</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 15) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>to present yourself to God as one approved, a worker who has no reason to be ashamed</h1>
+                            <p>"to present yourself to God as a person who has proven to be worthy and with no cause for shame"</p>
+                            <h1>a worker</h1>
+                            <p>Paul presents the idea of Timothy correctly explaining God's word as if he were a skilled workman. Alternate translation: "like a workman" or "like a worker" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>accurately teaches the word of truth</h1>
+                            <p>Possible meanings are 1) "explains the message about the truth correctly" or 2) "explains the true message correctly."</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 16) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>which leads to more and more godlessness</h1>
+                            <p>Paul speaks of this kind of talk as if it were something that could physically move to another location, and he speaks of godlessness as if it were that new location. Alternate translation: "which causes people to become more and more ungodly" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 17) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>Their talk will spread like cancer</h1>
+                            <p>Cancer quickly spreads in a person's body and destroys it. This is a metaphor that means what those people were saying would spread from person to person and harm the faith of those who heard it. Alternate translation: "What they say will spread like an infectious disease" or "Their talk will spread quickly and cause destruction like cancer" (See: [[rc://en/ta/man/translate/figs-simile]])</p>
+                            <h1>Hymenaeus and Philetus</h1>
+                            <p>These are names of men. (See: [[rc://en/ta/man/translate/translate-names]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 18) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>who have gone astray from the truth</h1>
+                            <p>Here "gone astray from the truth" is a metaphor for no longer believing or teaching what is true. Alternate translation: "who have started saying things that are not true" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>the resurrection has already happened</h1>
+                            <p>"God has already raised dead believers to eternal life"</p>
+                            <h1>they destroy the faith of some</h1>
+                            <p>"they cause some people to stop believing"</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 19) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>General Information:</h1>
+                            <p>Just as precious and common containers can be used for honorable ways in a wealthy house, any person who turns to God can be used by God in honorable ways in doing good works. (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>the firm foundation of God stands</h1>
+                            <p>Possible meanings are 1) "God's truth is like a firm foundation" or 2) "God has established his people like a building on a firm foundation" or 3) "God's faithfulness is like a firm foundation." In any case, Paul speaks of this idea as if it were a building's foundation laid in the ground. (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>who names the name of the Lord</h1>
+                            <p>"who calls on the name of the Lord." Here "name of the Lord" refers to the Lord himself. Alternate translation: "who calls on the Lord" or "who says he is a believer in Christ" (See: [[rc://en/ta/man/translate/figs-metonymy]])</p>
+                            <h1>depart from unrighteousness</h1>
+                            <p>Paul speaks of unrighteousness as if it were a place from which one could leave. Alternate translation: "stop being evil" or "stop doing wrong things" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 20) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>containers of gold and silver ... containers of wood and clay</h1>
+                            <p>Here "containers" is a general word for bowls, plates, and pots, which people put food or drink into or on. If your language does not have a general word, use the word for "bowls" or "pots." Paul is using this as a metaphor to describe different types of people. (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>honorable use ... dishonorable</h1>
+                            <p>Possible meanings are 1) "special occasions ... ordinary times" or 2) "the kinds of activities people do in public ... the kinds of activities people do in private."</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 21) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>cleans himself from dishonorable use</h1>
+                            <p>Possible meanings are 1) "separates himself from dishonorable people" or 2) "makes himself pure." In any case, Paul speaks of this process as if it were a person washing himself. (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>he is an honorable container</h1>
+                            <p>Paul speaks about this person as if he were an honorable container. Alternate translation: "he is like the container that is useful for special occasions" or "he is like the container that is useful for activities good people do in public" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>He is set apart, useful to the Master, and prepared for every good work</h1>
+                            <p>This can be stated in active form. Alternate translation: "The Master sets him apart, and he is ready for the Master to use him for every good work" (See: [[rc://en/ta/man/translate/figs-activepassive]])</p>
+                            <h1>He is set apart</h1>
+                            <p>He is not set apart physically or in the sense of location, but instead to fulfill a purpose. Some versions translate this "sanctified," but the text signals the essential idea of being set apart. (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 22) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>Flee youthful lusts</h1>
+                            <p>Paul speaks about youthful lusts as if they are a dangerous person or animal that Timothy should run away from. Alternate translation: "Completely avoid youthful lusts" or "Absolutely refuse to do the wrong things that young people strongly desire to do" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>Pursue righteousness</h1>
+                            <p>Here "Pursue" means the opposite of "Flee." Paul speaks of righteousness as if it is an object that Timothy should run towards because it will do him good. Alternate translation: "Try your best to obtain righteousness" or "Seek after righteousness" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>with those</h1>
+                            <p>Possible meanings are 1) Paul wants Timothy to join with other believers in pursuing righteousness, faith, love, and peace, or 2) Paul wants Timothy to be at peace and not argue with other believers.</p>
+                            <h1>those who call on the Lord</h1>
+                            <p>Here "call on the Lord" is an idiom that means to trust and worship the Lord. Alternate translation: "those who worship the Lord" (See: [[rc://en/ta/man/translate/figs-idiom]])</p>
+                            <h1>out of a clean heart</h1>
+                            <p>Here "clean" is a metaphor for something pure or sincere. And, "heart" here is a metonym for "thoughts" or "emotions." Alternate translation: "with a sincere mind" or "with sincerity" (See: [[rc://en/ta/man/translate/figs-metaphor]] and [[rc://en/ta/man/translate/figs-metonymy]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 23) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>refuse foolish and ignorant questions</h1>
+                            <p>"refuse to answer foolish and ignorant questions." Paul means that the people who ask such questions are foolish and ignorant. Alternate translation: "refuse to answer the questions that foolish people who do not want to know the truth ask" (See: [[rc://en/ta/man/translate/figs-metonymy]])</p>
+                            <h1>they give birth to arguments</h1>
+                            <p>Paul speaks of ignorant questions as if they were women giving birth to children. Alternate translation: "they cause arguments" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 24) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>General Information:</h1>
+                            <p>This page has intentionally been left blank.</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 25) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>in meekness</h1>
+                            <p>"meekly" or "gently"</p>
+                            <h1>educate those</h1>
+                            <p>"teach those" or "correct those"</p>
+                            <h1>God may perhaps give them repentance</h1>
+                            <p>Paul speaks of repentance as if it were an object that God could give people. Alternate translation: "God may give them the opportunity to repent" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>for the knowledge of the truth</h1>
+                            <p>"so that they will know the truth"</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"> <?php echo __("verse_number", 26) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>They may become sober again</h1>
+                            <p>Paul speaks of sinners learning to think correctly about God as if they were drunk people becoming sober again. Alternate translation: "They may think correctly again" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>leave the devil's trap</h1>
+                            <p>Paul speaks of the devil's ability to convince Christians to sin as if it were a trap. Alternate translation: "stop doing what the devil wants" (See: [[rc://en/ta/man/translate/figs-metaphor]])</p>
+                            <h1>after they have been captured by him for his will</h1>
+                            <p>Convincing Christians to sin is spoken of as if the devil had physically captured them and made them his slaves. This can be stated in active form. Alternate translation: "after he has deceived them into obeying his will" (See: [[rc://en/ta/man/translate/figs-metaphor]] and [[rc://en/ta/man/translate/figs-activepassive]])</p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+        </div>
+        <div class="word_def_popup">
+            <div class="word_def-close glyphicon glyphicon-remove"></div>
+
+            <div class="word_def_title"></div>
+            <div class="word_def_content"></div>
+        </div>
+    </div>
+</div>
+
+<div class="ttools_panel tq_tool panel panel-default" draggable="true">
+    <div class="panel-heading">
+        <h1 class="panel-title"><?php echo __("tq") ?></h1>
+        <span class="panel-close glyphicon glyphicon-remove" data-tool="tq"></span>
+    </div>
+
+    <div class="ttools_content page-content panel-body">
+        <div class="labels_list">
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 1) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>What is the relationship between Paul and Timothy?</h1>
+                            <p>Timothy is Paul's spiritual son. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 2) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>To whom is Timothy to entrust the message Paul has taught him?</h1>
+                            <p>Timothy is to entrust the message to faithful people who will be able to teach others also. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 4) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>As an illustration for Timothy, Paul says a good soldier does not entangle himself in what?</h1>
+                            <p>A good soldier does not entangle himself in the affairs of this life. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 9) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>As he writes to Timothy, in what condition is Paul suffering for his preaching the word of God?</h1>
+                            <p>Paul is suffering by being chained like a criminal. </p>
+                            <h1>What does Paul say is not chained?</h1>
+                            <p>The word of God is not chained. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 10) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>Why does Paul endure all these things?</h1>
+                            <p>Paul endures all things for those chosen by God, that they may obtain the salvation that is in Christ Jesus. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 12) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>What is Christ's promise to those who endure?</h1>
+                            <p>Those who endure will reign with Christ. </p>
+                            <h1>What is Christ's warning to those who deny him?</h1>
+                            <p>Those who deny Christ, Christ will deny. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 14) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>About what should Timothy warn the people not to quarrel?</h1>
+                            <p>Timothy should warn the people not to quarrel about words, which profits nothing. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 18) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>Two men have wandered from the truth, teaching what false doctrine?</h1>
+                            <p>They were teaching that the resurrection had already happened. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 21) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>How are the believers to prepare themselves for every good work?</h1>
+                            <p>The believers are to clean themselves from dishonorable use, consecrating themselves for every good work. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 22) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>From what is Timothy to flee?</h1>
+                            <p>Timothy is to flee youthful lusts. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 24) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>What kind of character must a servant of the Lord have?</h1>
+                            <p>A servant of the Lord must be gentle, able to teach, patient, in meekness educating those who oppose him. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 25) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>What kind of character must a servant of the Lord have?</h1>
+                            <p>A servant of the Lord must be gentle, able to teach, patient, in meekness educating those who oppose him. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+            <label>
+                <ul>
+                    <li>
+                        <div class="word_term"> <span style="font-weight: bold;"><?php echo __("verse_number", 26) ?> </span> </div>
+                        <div class="word_def">
+                            <h1>What has the devil done with unbelievers?</h1>
+                            <p>The devil has trapped and captured the unbelievers for his will. </p>
+                        </div>
+                    </li>
+                </ul>
+            </label>
+        </div>
+        <div class="word_def_popup">
+            <div class="word_def-close glyphicon glyphicon-remove"></div>
+
+            <div class="word_def_title"></div>
+            <div class="word_def_content"></div>
         </div>
     </div>
 </div>
@@ -3243,28 +4083,33 @@
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/keyword-check.png") ?>" height="100px" width="100px">
-            <img src="<?php echo template_url("img/steps/big/keyword-check.png") ?>" height="280px" width="280px">
+            <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" height="100px" width="100px">
+            <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" height="280px" width="280px">
             
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __("keyword-check-l2_full")?></h3>
-            <ul><?php echo __("keyword-check-l2_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __("peer-review")?></h3>
+            <ul><?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
 
+<script type="text/javascript" src="<?php echo template_url("js/diff_match_patch.js?2")?>"></script>
+<script type="text/javascript" src="<?php echo template_url("js/diff.js?7")?>"></script>
 <script>
     isChecker = true;
     isLevel2 = true;
     $(document).ready(function () {
-        $("#next_step").click(function (e) {
-            e.preventDefault();
-
-            
-            window.location.href = '/events/demo-l2/peer_review_l2';
-
+        $(".my_tab").click(function () {
+            var inter = setInterval(function() {
+                if($("#target_scripture_content").is(":visible"))
+                {
+                    if(typeof autosize == "function")
+                        autosize.update($('textarea'));
+                    clearInterval(inter);
+                }
+            }, 10);
             return false;
         });
 
@@ -3272,18 +4117,44 @@
             equal_verses_height();
         }, 3000);
 
+        $(".peer_verse_ta").blur(function() {
+            equal_verses_height();
+        });
+
         function equal_verses_height() {
             $(".verse_text").each(function() {
                 var verse = $(this).data("verse");
                 var p_height = $(this).outerHeight();
-                var p = $(".verse_block[data-verse="+verse+"]");
+                var ta = $(".verse_block[data-verse="+verse+"] textarea");
 
-                if(p.length > 0) {
-                    var t_height = p.outerHeight();
-                    p.outerHeight(Math.max(p_height, t_height));
+                if(ta.length > 0) {
+                    var t_height = ta.outerHeight();
+                    ta.outerHeight(Math.max(p_height, t_height));
                     $(this).outerHeight(Math.max(p_height, t_height));
                 }
             });
         }
+
+        $(".peer_verse_ta").highlightWithinTextarea({
+            highlight: /\\f\s[+-]\s(.*?)\\f\*/gi
+        });
+
+        $(".orig_text").each(function() {
+            var verse = $(this).data("orig-verse");
+            var chkVersion = $("textarea[data-orig-verse='"+verse+"']");
+
+            diff_plain($(this).text(), chkVersion.val(), $(this));
+        });
+
+        $("#next_step").click(function (e) {
+            e.preventDefault();
+            if(!hasChangesOnPage) window.location.href = '/events/demo-revision/information';
+            return false;
+        });
+
+        $(".ttools_panel .word_def").each(function() {
+            let html = convertRcLinks($(this).html());
+            $(this).html(html);
+        });
     });
 </script>

@@ -13,10 +13,10 @@ class EventCheckSteps
     const NONE                  = "none";
     const PRAY                  = "pray";
     const CONSUME               = "consume";
-    const FST_CHECK             = "fst-check";
-    const SND_CHECK             = "snd-check";
-    const KEYWORD_CHECK_L2      = "keyword-check-l2";
-    const PEER_REVIEW_L2        = "peer-review-l2";
+    const SELF_CHECK            = "self-check";
+    const PEER_REVIEW           = "peer-review";
+    const KEYWORD_CHECK         = "keyword-check";
+    const CONTENT_REVIEW        = "content-review";
     const PEER_REVIEW_L3        = "peer-review-l3";
     const PEER_EDIT_L3          = "peer-edit-l3";
 
@@ -24,10 +24,10 @@ class EventCheckSteps
         "none" => 0,
         "pray" => 1,
         "consume" => 2,
-        "fst-check" => 3,
-        "snd-check" => 4,
-        "keyword-check-l2" => 5,
-        "peer-review-l2" => 6
+        "self-check" => 3,
+        "peer-review" => 4,
+        "keyword-check" => 5,
+        "content-review" => 6
         ];
 
     private static $enumL3 = [

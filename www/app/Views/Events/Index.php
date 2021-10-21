@@ -14,14 +14,14 @@ use Helpers\Session;
             <ul>
                 <a href="/events/demo"><li><?php echo __("8steps_vmast") ?></li></a>
                 <a href="/events/demo-scripture-input"><li><?php echo __("lang_input") ?></li></a>
-                <a href="/events/demo-l2"><li><?php echo __("l2_l3_vmast", ["level" => 2]); ?></li></a>
+                <a href="/events/demo-revision"><li><?php echo __("revision_vmast"); ?></li></a>
                 <a href="/events/demo-l3"><li><?php echo __("l2_l3_vmast", ["level" => 3]); ?></li></a>
                 <a href="/events/demo-tn"><li><?php echo __("tn") ?></li></a>
                 <a href="/events/demo-tn-l3"><li><?php echo __("tn") . " " . __("l2_3_events", ["level" => 3]); ?></li></a>
                 <a href="/events/demo-tq"><li><?php echo __("tq") ?></li></a>
                 <a href="/events/demo-tw"><li><?php echo __("tw") ?></li></a>
                 <a href="/events/demo-sun"><li><?php echo __("vsail") ?></li></a>
-                <a href="/events/demo-sun-l2"><li><?php echo __("vsail_l2_l3", ["level" => 2]) ?></li></a>
+                <a href="/events/demo-sun-revision"><li><?php echo __("vsail_revision") ?></li></a>
                 <a href="/events/demo-sun-l3"><li><?php echo __("vsail_l2_l3", ["level" => 3]) ?></li></a>
                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
@@ -68,15 +68,15 @@ use Helpers\Session;
                 case EventStates::L2_RECRUIT:
                 case EventStates::L2_CHECK:
                 case EventStates::L2_CHECKED:
-                    $eventType = __("l2_3_events", ["level" => 2]);
+                    $eventType = __("revision_events");
                     $mode = $event->project->bookProject;
                     $eventImg = template_url("img/steps/big/l2_check.png");
                     $logoBorderClass = "checkingl2";
                     $bgColor = "purple-marked";
                     $currentMembers = $event->checkersL2->count();
                     $members = __("checkers");
-                    $manageLink = "/events/manage-l2/".$event->eventID;
-                    $progressLink = "/events/information".(!in_array($event->project->bookProject, ["ulb","udb"]) ? "-".$event->project->bookProject : "")."-l2/".$event->eventID;
+                    $manageLink = "/events/manage-revision/".$event->eventID;
+                    $progressLink = "/events/information".(!in_array($event->project->bookProject, ["ulb","udb"]) ? "-".$event->project->bookProject : "")."-revision/".$event->eventID;
                     break;
 
                 case EventStates::L3_RECRUIT:
@@ -188,15 +188,15 @@ use Helpers\Session;
                 case EventStates::L2_RECRUIT:
                 case EventStates::L2_CHECK:
                 case EventStates::L2_CHECKED:
-                    $eventType = __("l2_3_events", ["level" => 2]);
+                    $eventType = __("revision_events");
                     $mode = $event->project->bookProject;
                     $eventImg = template_url("img/steps/big/l2_check.png");
                     $logoBorderClass = "checkingl2";
                     $bgColor = "purple-marked";
                     $currentMembers = $event->checkersL2->count();
                     $members = __("checkers");
-                    $manageLink = "/events/manage-l2/".$event->eventID;
-                    $progressLink = "/events/information".(!in_array($event->project->bookProject, ["ulb","udb"]) ? "-".$event->project->bookProject : "")."-l2/".$event->eventID;
+                    $manageLink = "/events/manage-revision/".$event->eventID;
+                    $progressLink = "/events/information".(!in_array($event->project->bookProject, ["ulb","udb"]) ? "-".$event->project->bookProject : "")."-revision/".$event->eventID;
                     break;
 
                 case EventStates::L3_RECRUIT:
@@ -531,15 +531,25 @@ use Helpers\Session;
     <?php foreach($data["myCheckerL2Events"] as $key => $event): ?>
         <?php
         $mode = $event->bookProject;
+        $memberLink = $event->memberID != Session::get("memberID") ? "/" . $event->memberID : "";
+        $chapterLink = in_array($event->step, [
+            EventCheckSteps::PEER_REVIEW,
+            EventCheckSteps::KEYWORD_CHECK,
+            EventCheckSteps::CONTENT_REVIEW
+        ])
+        && $event->currentChapter > 0
+            ? "/" . $event->currentChapter : "";
+
         $link = "/events/checker"
             .(!in_array($mode, ["ulb","udb"]) ? "-".$mode : "")
-            ."-l2/"
+            ."-revision/"
             . $event->eventID
-            .(isset($event->isContinue) ? "/".$event->l2memberID."/".$event->currentChapter : "");
+            .$memberLink
+            .$chapterLink;
         ?>
         <div class="event_block <?php echo $key%2 == 0 ? "lemon-marked" : "" ?>">
             <div class="event_logo checkingl2">
-                <div class="event_type"><?php echo __("l2_3_events", ["level" => 2]) ?></div>
+                <div class="event_type"><?php echo __("revision_events") ?></div>
                 <div class="event_mode <?php echo $event->bookProject ?>"><?php echo __($event->bookProject) ?></div>
                 <div class="event_img">
                     <img width="146" src="<?php echo template_url("img/steps/big/l2_check.png") ?>">
@@ -574,7 +584,7 @@ use Helpers\Session;
                                 <?php
                                 $add = "";
                                 if ($event->bookProject == "sun"
-                                    && in_array($event->step, [EventCheckSteps::FST_CHECK, EventCheckSteps::SND_CHECK])) {
+                                    && in_array($event->step, [EventCheckSteps::SELF_CHECK, EventCheckSteps::PEER_REVIEW])) {
                                     $add = "_sun";
                                 }
                                 ?>

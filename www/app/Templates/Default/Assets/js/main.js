@@ -350,7 +350,7 @@ $(document).ready(function() {
             step == EventSteps.PEER_REVIEW || step == EventSteps.KEYWORD_CHECK ||
             step == EventSteps.CONTENT_REVIEW || step == EventSteps.MULTI_DRAFT ||
             step == EventSteps.SYMBOL_DRAFT || step == EventSteps.REARRANGE || step == EventSteps.THEO_CHECK || // For SUN
-            step == EventCheckSteps.FST_CHECK || step == EventCheckSteps.SND_CHECK || // For Level 2 Check
+            step == EventCheckSteps.FST_CHECK || step == EventCheckSteps.SND_CHECK || // For Revision
             step == EventCheckSteps.PEER_REVIEW_L2 ||
             step == EventCheckSteps.PEER_EDIT_L3)
         {
@@ -472,7 +472,7 @@ $(document).ready(function() {
 
             if(typeof isOdb != "undefined") tm = "-odb" + tm;
 
-            var mm = typeof manageMode != "undefined" ? "-"+manageMode : "";
+            var mm = typeof manageMode != "undefined" ? (manageMode != "l2" ? "-"+manageMode : "-revision") : "";
 
             $.ajax({
                 url: "/events/information" + tm + mm + "/" + eventID,

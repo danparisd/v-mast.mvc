@@ -28,7 +28,7 @@
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <div class="demo_title"><?php echo __("demo") . " (".__("l2_3_events", ["level" => 2]).")" ?></div>
+            <div class="demo_title"><?php echo __("demo") . " (".__("revision_events").")" ?></div>
             <div><?php echo __("step_num", ["step_number" => 1]) . ": " . __("snd-check_full")?></div>
         </div>
     </div>
@@ -139,7 +139,7 @@
                                       data="0:0"
                                       title="<?php echo __("write_note_title", [""])?>"></span>
                                 <div class="comments">
-                                    <div class="my_comment">This is my comment as a Level 2 checker</div>
+                                    <div class="my_comment">This is my comment as a Revision checker</div>
                                     <div class="other_comments">
                                         <div><span>Genry M. - L2:</span> This is another comment of previous checker from Level 2 Event</div>
                                     </div>
@@ -461,7 +461,7 @@
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/demo-l2/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-revision/information"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -4103,10 +4103,7 @@
 
         $("#next_step").click(function (e) {
             e.preventDefault();
-
-            
-            if(!hasChangesOnPage) window.location.href = '/events/demo-l2/keyword_check_l2';
-
+            if(!hasChangesOnPage) window.location.href = '/events/demo-revision/keyword_check_l2';
             return false;
         });
 

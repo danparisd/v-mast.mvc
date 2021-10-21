@@ -7,19 +7,19 @@ use Helpers\Constants\EventCheckSteps;
 
     <ul class="steps_list">
         <li class="pray-step <?php echo $data["step"] == EventCheckSteps::PRAY ? "active" : "" ?>">
-            <a href="/events/demo-sun-l2/pray"><span><?php echo __(EventCheckSteps::PRAY)?></span></a>
+            <a href="/events/demo-sun-revision/pray"><span><?php echo __(EventCheckSteps::PRAY)?></span></a>
         </li>
 
         <li class="consume-step <?php echo $data["step"] == EventCheckSteps::CONSUME ? "active" : "" ?>">
-            <a href="/events/demo-sun-l2/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
+            <a href="/events/demo-sun-revision/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
         </li>
 
-        <li class="fst-check-step <?php echo $data["step"] == EventCheckSteps::FST_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-sun-l2/fst_check"><span><?php echo __(EventCheckSteps::FST_CHECK . "_sun")?></span></a>
+        <li class="fst-check-step <?php echo $data["step"] == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
+            <a href="/events/demo-sun-revision/fst_check"><span><?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></span></a>
         </li>
 
-        <li class="snd-check-step <?php echo $data["step"] == EventCheckSteps::SND_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-sun-l2/snd_check"><span><?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></span></a>
+        <li class="snd-check-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
+            <a href="/events/demo-sun-revision/snd_check"><span><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></span></a>
         </li>
     </ul>
 </div>

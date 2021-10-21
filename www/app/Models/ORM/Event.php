@@ -37,7 +37,7 @@ class Event extends Model
 
     public function checkersL2() {
         return $this->belongsToMany(Member::class, "checkers_l2", "eventID", "memberID")
-            ->withPivot("step", "currentChapter", "sndCheck", "peer1Check", "peer2Check");
+            ->withPivot("step", "currentChapter", "peerCheck", "kwCheck", "crCheck");
     }
 
     public function checkersL3() {

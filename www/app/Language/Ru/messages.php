@@ -271,10 +271,11 @@ return array (
     "obs" => "Открытые Библейские Истории",
     "vsail" => "vSUN",
     "vsail_l2_l3" => "vSUN L{level} Check",
+    "vsail_revision" => "vSUN Revision Check",
     "old_test" => "Ветхий Завет",
     "new_test" => "Новый Завет",
-    "checker_apply" => "<b>{name}</b> готов(а) для проверки <b>{step}</b> книги <b>{book}</b>, главы <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",
-    "checker_apply_tw" => "<b>{name}</b> готов(а) для проверки <b>{step}</b> категории <b>{book}</b>, группы <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",
+    "checker_apply" => "<b>{name}</b> готов(а) для проверки <b>{step}</b> книги <b>{book}</b>, главы <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b> {level}",
+    "checker_apply_tw" => "<b>{name}</b> готов(а) для проверки <b>{step}</b> категории <b>{book}</b>, группы <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b> {level}",
     "apply_to_check" => "Начать проверку",
     "notifications" => "Уведомления",
     "see_all" => "Смотреть все",
@@ -354,6 +355,7 @@ return array (
     "draft1" => "Черновик 1",
     "state" => "Стадия",
     "level2_3_check" => "Проверка {level}-го уровня",
+    "revision_check" => "Revision",
     "translators" => "Переводчики",
     "max_translators" => "Максимальное количество переводчиков",
     "checkers" => "Проверяющие",
@@ -364,8 +366,10 @@ return array (
     "state_started" => "Ожидание переводчиков",
     "state_translating" => "Переводится",
     "state_translated" => "Переведено",
-    "state_l2_recruit" => "Ожидание проверки ур.2",
+    "state_l2_recruit" => "Waiting for revision checkers",
     "state_l2_check" => "Проверка ур.2",
+    "l2" => "Revision",
+    "l3" => "Проверка ур.3",
     "state_l2_checked" => "Проверка ур.2 завершена",
     "state_l3_recruit" => "Ожидание проверки ур.3",
     "state_l3_check" => "Проверка ур.3",
@@ -901,7 +905,6 @@ return array (
                             <li>When all highlighted words have been checked, click \"Yes I did\" and \"{step}\".</li>",
 
     "peer-review-l2" => "Несоответствия",
-    "peer-review-l2_full" => "Обсуждение несоответствий",
     "peer-review-l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with a peer checker.</li>
                         <li><b>This is the final check, so all changes should be made before you complete this step.</b></li>
                         <li>After you have looked over the text, contact the peer-checker to discuss discrepancies via: 
