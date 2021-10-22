@@ -33,7 +33,7 @@ use Helpers\Constants\EventMembers;
 
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
-        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW)?></div>
+        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 4]) . ": " . __(EventCheckSteps::KEYWORD_CHECK)?></div>
     </div>
 
     <div class="" style="position: relative">
@@ -184,7 +184,7 @@ use Helpers\Constants\EventMembers;
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
-            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 3])?></div>
+            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 4])?></div>
         </div>
     </div>
 </div>
@@ -195,11 +195,11 @@ use Helpers\Constants\EventMembers;
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help isPeer">
             <div class="help_name_steps">
-                <?php echo __("step_num", ["step_number" => 3])?>: <span><?php echo __(EventCheckSteps::PEER_REVIEW)?></span>
+                <?php echo __("step_num", ["step_number" => 4])?>: <span><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></span>
             </div>
             <div class="help_descr_steps">
                 <ul>
-                    <?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?>
+                    <?php echo __("keyword-check-l2_chk_desc", ["step" => __($data["next_step"])])?>
                 </ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
@@ -243,14 +243,14 @@ use Helpers\Constants\EventMembers;
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" width="100px" height="100px">
-            <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" width="280px" height="280px">
+            <img src="<?php echo template_url("img/steps/icons/keyword-check.png") ?>" width="100px" height="100px">
+            <img src="<?php echo template_url("img/steps/big/keyword-check.png") ?>" width="280px" height="280px">
         </div>
 
         <div class="tutorial_content is_checker_page_help">
-            <h3><?php echo __(EventCheckSteps::PEER_REVIEW)?></h3>
+            <h3><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></h3>
             <ul>
-                <?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?>
+                <?php echo __("keyword-check-l2_chk_desc", ["step" => __($data["next_step"])])?>
             </ul>
         </div>
     </div>
@@ -332,9 +332,7 @@ use Helpers\Constants\EventMembers;
     })();
 
     isLevel2 = true;
-
     isChecker = true;
-    disableHighlight = true;
 
     $("#next_step").click(function (e) {
         renderConfirmPopup(Language.checkerConfirmTitle, Language.checkerConfirm,

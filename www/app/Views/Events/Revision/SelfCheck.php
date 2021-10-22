@@ -1,9 +1,10 @@
 <?php
 if(isset($data["error"])) return;
 
+use Helpers\Constants\EventCheckSteps;
 use Helpers\Constants\EventMembers;
 ?>
-<div class="comment_div panel panel-default">
+<div class="comment_div panel panel-default font_sun">
     <div class="panel-heading">
         <h1 class="panel-title"><?php echo __("write_note_title")?></h1>
         <span class="editor-close btn btn-success" data-level="2"><?php echo __("save") ?></span>
@@ -32,7 +33,7 @@ use Helpers\Constants\EventMembers;
 
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
-        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 2]) . ": " . __("fst-check_full")?></div>
+        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 2]) . ": " . __(EventCheckSteps::SELF_CHECK)?></div>
     </div>
 
     <div class="" style="position: relative">
@@ -45,6 +46,18 @@ use Helpers\Constants\EventMembers;
                         ."<span class='book_name'>".$data["event"][0]->name." ".$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
 
                     <div class="no_padding">
+                        <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                            <div class="sun_mode">
+                                <label>
+                                    <input type="checkbox" autocomplete="off" checked
+                                           data-toggle="toggle"
+                                           data-width="100"
+                                           data-on="SUN"
+                                           data-off="BACKSUN" />
+                                </label>
+                            </div>
+                        <?php endif; ?>
+
                         <?php foreach($data["chunks"] as $key => $chunk) : ?>
                             <div class="row chunk_block no_autosize">
                                 <div class="flex_container">
@@ -75,7 +88,7 @@ use Helpers\Constants\EventMembers;
                                             </p>
                                         <?php endforeach; ?>
                                     </div>
-                                    <div class="flex_middle editor_area" dir="<?php echo $data["event"][0]->tLangDir ?>">
+                                    <div class="flex_middle editor_area font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->tLangDir ?>">
                                         <?php
                                         if(!empty($data["translation"][$key][EventMembers::L2_CHECKER]["verses"]))
                                             $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
@@ -85,7 +98,6 @@ use Helpers\Constants\EventMembers;
                                         <div class="vnote">
                                             <?php foreach($verses as $verse => $text): ?>
                                                 <div class="verse_block flex_chunk" data-verse="<?php echo $verse ?>">
-                                                    <span class="verse_number_l2"><?php echo $verse?></span>
                                                     <textarea name="chunks[<?php echo $key ?>][<?php echo $verse ?>]"
                                                               class="peer_verse_ta textarea" style="min-width: 400px"><?php echo $text; ?></textarea>
 
@@ -162,9 +174,9 @@ use Helpers\Constants\EventMembers;
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 2])?>: </span><?php echo __("fst-check")?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 2])?>: </span><?php echo __(EventCheckSteps::SELF_CHECK)?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("fst-check_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("self-check_l2_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -181,7 +193,11 @@ use Helpers\Constants\EventMembers;
             <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
             <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
             <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
-            <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
+            <?php else: ?>
+                <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -205,8 +221,8 @@ use Helpers\Constants\EventMembers;
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __("fst-check_full")?></h3>
-            <ul><?php echo __("fst-check_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventCheckSteps::SELF_CHECK)?></h3>
+            <ul><?php echo __("self-check_l2_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -237,6 +253,24 @@ use Helpers\Constants\EventMembers;
 
         $(".peer_verse_ta").highlightWithinTextarea({
             highlight: /\\f\s[+-]\s(.*?)\\f\*/gi
+        });
+
+        $(".sun_mode input").change(function () {
+            var active = $(this).prop('checked');
+
+            if (active) {
+                $(".flex_middle").removeClass("font_backsun");
+                $(".flex_middle").addClass("font_sgn-US-symbunot");
+            } else {
+                $(".flex_middle").removeClass("font_sgn-US-symbunot");
+                $(".flex_middle").addClass("font_backsun");
+            }
+
+            $(".verse_text").css("height", "initial");
+            setTimeout(function () {
+                autosize.update($(".vnote textarea"));
+            }, 500);
+            equal_verses_height();
         });
     });
 </script>

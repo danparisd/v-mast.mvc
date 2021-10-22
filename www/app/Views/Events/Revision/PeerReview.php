@@ -2,8 +2,9 @@
 if(isset($data["error"])) return;
 
 use Helpers\Constants\EventMembers;
+use Helpers\Constants\EventCheckSteps;
 ?>
-<div class="comment_div panel panel-default">
+<div class="comment_div panel panel-default font_sun">
     <div class="panel-heading">
         <h1 class="panel-title"><?php echo __("write_note_title")?></h1>
         <span class="editor-close btn btn-success" data-level="2"><?php echo __("save") ?></span>
@@ -33,7 +34,7 @@ use Helpers\Constants\EventMembers;
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <?php echo __("step_num", ["step_number" => 3]) . ": " . __("peer-review")?>
+            <?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW)?>
         </div>
     </div>
 
@@ -60,10 +61,21 @@ use Helpers\Constants\EventMembers;
 
                     <div id="target_scripture_content" class="my_content shown">
                         <div class="no_padding">
+                            <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                                <div class="sun_mode">
+                                    <label>
+                                        <input type="checkbox" autocomplete="off" checked
+                                               data-toggle="toggle"
+                                               data-width="100"
+                                               data-on="SUN"
+                                               data-off="BACKSUN" />
+                                    </label>
+                                </div>
+                            <?php endif; ?>
                             <?php foreach($data["chunks"] as $key => $chunk) : ?>
                                 <div class="row chunk_block no_autosize">
                                     <div class="flex_container">
-                                        <div class="chunk_verses flex_left" dir="<?php echo $data["event"][0]->sLangDir ?>">
+                                        <div class="chunk_verses flex_left font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->sLangDir ?>">
                                             <?php $verses = $data["translation"][$key][EventMembers::TRANSLATOR]["verses"]; ?>
                                             <?php foreach ($verses as $verse => $text): ?>
                                                 <p class="verse_text" data-verse="<?php echo $verse; ?>">
@@ -74,14 +86,13 @@ use Helpers\Constants\EventMembers;
                                                 </p>
                                             <?php endforeach; ?>
                                         </div>
-                                        <div class="flex_middle editor_area" dir="<?php echo $data["event"][0]->tLangDir ?>">
+                                        <div class="flex_middle editor_area font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->tLangDir ?>">
                                             <?php
                                             $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
                                             ?>
                                             <div class="vnote">
                                                 <?php foreach($verses as $verse => $text): ?>
                                                     <div class="verse_block flex_chunk" data-verse="<?php echo $verse; ?>">
-                                                        <span class="verse_number_l2"><?php echo $verse?></span>
                                                         <textarea style="min-width: 400px;" name="chunks[<?php echo $key ?>][<?php echo $verse ?>]"
                                                                   class="peer_verse_ta textarea"
                                                                   data-orig-verse="<?php echo $verse ?>"><?php echo $text; ?></textarea>
@@ -183,7 +194,7 @@ use Helpers\Constants\EventMembers;
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
-            <div class="step_right alt"></div>
+            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 3])?></div>
         </div>
     </div>
 </div>
@@ -194,7 +205,7 @@ use Helpers\Constants\EventMembers;
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps">
-                <span><?php echo __("peer-review-l2")?></span>
+                <?php echo __("step_num", ["step_number" => 3])?>: <span><?php echo __(EventCheckSteps::PEER_REVIEW)?></span>
             </div>
             <div class="help_descr_steps">
                 <ul>
@@ -225,7 +236,11 @@ use Helpers\Constants\EventMembers;
             <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
             <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
             <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
-            <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
+            <?php else: ?>
+                <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -248,7 +263,7 @@ use Helpers\Constants\EventMembers;
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __("peer-review")?></h3>
+            <h3><?php echo __(EventCheckSteps::PEER_REVIEW)?></h3>
             <ul>
                 <?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?>
             </ul>
@@ -295,7 +310,26 @@ use Helpers\Constants\EventMembers;
         $(".peer_verse_ta").highlightWithinTextarea({
             highlight: /\\f\s[+-]\s(.*?)\\f\*/gi
         });
+
+        $(".sun_mode input").change(function () {
+            var active = $(this).prop('checked');
+
+            if (active) {
+                $(".flex_left, .flex_middle").removeClass("font_backsun");
+                $(".flex_left, .flex_middle").addClass("font_sgn-US-symbunot");
+            } else {
+                $(".flex_left, .flex_middle").removeClass("font_sgn-US-symbunot");
+                $(".flex_left, .flex_middle").addClass("font_backsun");
+            }
+
+            $(".verse_text").css("height", "initial");
+            setTimeout(function () {
+                autosize.update($(".vnote textarea"));
+            }, 500);
+            equal_verses_height();
+        });
     })();
 
+    disableHighlight = true;
     isLevel2 = true;
 </script>

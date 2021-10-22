@@ -1340,11 +1340,11 @@ class EventsModel extends Model
             ->get();
     }
 
-    public function getMembersForL2Event($eventID)
+    public function getMembersForRevisionEvent($eventID)
     {
         $this->db->setFetchMode(PDO::FETCH_ASSOC);
         $builder = $this->db->table("checkers_l2")
-            ->select("checkers_l2.*", "members.userName", "members.firstName", "members.lastName", "checkers_l2.peer2Check")
+            ->select("checkers_l2.*", "members.userName", "members.firstName", "members.lastName")
             ->leftJoin("members", "checkers_l2.memberID", "=", "members.memberID")
             ->where("checkers_l2.eventID", $eventID);
 

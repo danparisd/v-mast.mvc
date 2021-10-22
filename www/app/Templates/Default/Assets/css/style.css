@@ -49,6 +49,10 @@
     line-height: 25px;
 }
 
+.font_backsun p {
+    margin-top: 20px;
+}
+
 .backsun_content {
     font-family: BACKSUN, serif;
     font-size: 40px;
@@ -1201,7 +1205,7 @@ div.ui-datepicker {
 
 .content_help {
     position: fixed;
-    right: -275px;
+    right: -375px;
     bottom: 0;
     padding: 0 5px 5px 5px;
     border-radius: 5px 0 5px 5px;
@@ -1213,7 +1217,7 @@ div.ui-datepicker {
 
 .help_float {
     /*position: fixed;*/
-    width: 260px;
+    width: 360px;
 }
 
 #help_hide {

@@ -759,6 +759,7 @@ return array (
                                 <li>When all changes have been made click \"Yes, I did\" and \"{step}\" to complete the check.</li>",
 
     "keyword-check" => "Pagsusi sa mga Mahinungdanon nga Pulong",
+    "keyword-check_sun" => "Pagsusi sa mga Mahinungdanon nga Pulong",
     "keyword-check_desc" => "<li><b>KATUYOUAN:</b> Aron masiguro nga ang importante nga mga pulong anaa gayod sa gihubad nga teksto ug sakto ang pagkagamit. </li><li>Ang gigikanan lang nga teksto ang makita sa tigsusi. </li><li>Ipaklaro sa tigsusi ang mga mahinungdanon nga mga pulong sa gigikanan nga teksto. Makita usab sa imong gigikanan nga teksto ang gipaklaro nga mahinungdanon nga mga pulong. </li><li>Ang mahinungdanon nga mga pulong mao ang mga: ngalan, puli sa ngalan(pronouns), numero, ug uban pa. </li><li>Kontaka ang imong pares sa Skype, Hangout, V-MAST chat, telepono ug uban pa. </li><li>ILantawon sa tigsusi ang matag bersikulo kung anaa ba ang tanan nga mahinungdanon nga mga pulong. Motubag r aka og \"Naa\" o \"Wala\". Pangutan-on usab ka sa tigsusi kung giunsa nimo paghubad ang matag pulong. </li><li>IUsaba ang kinahanglan nga usabon sa imong teksto. </li><li>I Siguroha nga ang mga pulong magtugma sa gipili nga ang-ang. </li><li>Kinahanglan dili kamo molapas sa 30 minuto niini nga lakang. Ayaw na pag-usik og oras sa mga dili panag-uyon sa ideya. Kung aduna may mahitabo nga sama niini, biyai ang teksto ug isulat ang pahinumdom sa bahin ug padayon.</li>",
 
     "keyword-check_checker_desc" => "<li><b>KATUYOUAN:</b> Aron masiguro nga ang importante nga mga pulong anaa gayod sa gihubad nga teksto ug sakto ang pagkagamit. </li><li> Isip tigsusi, orange ang imong makita nga giya. </li><li>Kung modawat ka sa bulohaton sa pagsusi sa gihubad sa uban, ang gigikanan lang nga teksto ang imong makita. </li><li>Imong ipaklaro ang mga mahinungdanon nga mga pulong sa gigikanan nga teksto pinaagi sa pagpindot niini kaduha o gamiton nimo ang imong ‘mouse’. Makita usab sa tighubad ang mga gipaklaro nga mga pulong sa gigikanan nga teksto.</li><li>Ang mahinungdanon nga mga pulong mao ang mga: ngalan, puli sa ngalan(pronouns), numero, ug uban pa. </li><li>Kontaka ang imong pares sa Skype, Hangout, V-MAST chat, telepono ug uban pa. </li><li>Lantawon nimo ang matag bersikulo uban sa tighubad ang tanan nga mahinungdanon nga mga pulong. Motubag ra ang tighubad og \"Naa\" o \"Wala.\" Pangutan-on usab nimo ang tighubad kung giunsa niya paghubad ang matag pulong. Tan-awa ang dagko nga mga sayop ug importanteng butang nga mahimong nawala.</li><li>IUsaba ang bisan unsa nga pahinumdom nga anaa sa matag bersikulo ug salayi ninyo pagsulbad ang ubang mahinungdanon nga mga pulong nga gikalibogan. Isip tigsusi, orange ang imong makita nga giya. </li><li>Ayaw palabii og komento ang matag tksto apan hatagi lang og pagtagad ang mga pulong nga adunay mahinungdanon nga mga kahulogan. </li><li>Kinahanglan dili kamo molapas sa 30 minuto niini nga lakang. Ayaw na pag-usik og oras sa mga dili panag-uyon sa ideya. Kung aduna may mahitabo nga sama niini, biyai ang teksto ug isulat ang pahinumdom sa bahin ug padayon.</li>",
@@ -776,6 +777,7 @@ return array (
                                 <li>When all changes and notes have been made, click \"Yes I did\" and \"{step}.\"</li>",
 
     "content-review" => "Verse-by-Verse Check",
+    "content-review_sun" => "Verse-by-Verse Check",
     "content-review_odb" => "SUN Check",
     "content-review_desc" => "<li><b>KATUYOUAN:</b> aron masiguro nga ang matag bahin ug kapitulo haom ang mensahe ngadto sa hinubad nga teksto. </li><li>Kontaka ang imong pares sa Skype, Hangout, V-MAST chat, telepono, ug uban pa. </li><li>Ang pagsusi mahimong buhaton sa duha ka pamaagi: </li><li>Kung ang nahibaloan sa tigsusi mao lamang ang gigikanan nga teksto, kinahanglan nga buhaton kini pinaagi sa paghubad balik sa gigikanan nga teksto (back translation). Imong basahon ang nahubad na nga teksto, dayon ang lahi nga tawo hubaron kini sa gigikanan nga teksto, ikumpara sa tigsusi ang iyang nadungog ngadto sa iyang gibasa. Kung kahibalo ang tigsusi sa du ha ka pinulongan, mahimo silang mopili asa nga pamaagi ang ilang buhaton. Sa bisan asa nga pamaagi, ang tigsusi mangutana sa tighubad sa mga butang nga wala niya nasabtan. Buhata ang kinahanglan nga mga kausaban. Kinahanglan nga ang mga pulong mohaom sa gipili nga ang-ang. Kinahanglan dili kamo molapas sa 30 minuto niini nga lakang. Ayaw na pag-usik og oras sa mga dili panag-uyon sa ideya. Kung aduna may mahitabo nga sama niini, biyai ang teksto ug isulat ang pahinumdom sa bahin ug padayon.</li>",
 
@@ -810,10 +812,12 @@ return array (
                 <li>This step should take about 10 minutes.</li>
                 <li>Click \"Yes I did\" and \"{step}\" to move to the next step.</li>",
 
-    "fst-check" => "Check Text",
-    "fst-check_full" => "Check Target Text (Checker 1)",
-    "fst-check_sun" => "Peer Check",
-    "fst-check_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language.</li>
+    "self-check_l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
+                            language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
+                            used when referring to God the Father and Jesus Christ.</b></li>
+                        <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
+                        <li>While checking, keep in mind the difference between accuracy and preference.</li>
+                        <li>The primary purpose is to check the accuracy of the translation in detail.</li>
                         <li>The column on the left is the source text and the right is editable target text.</li>
                         <li>Any changes made on this step by the checker will be reflected in the next checking steps:
                             <ol>
@@ -821,27 +825,39 @@ return array (
                                 <li>Deleted text will show in red.</li>
                             </ol>
                         </li>
-                        <li><b>While checking, keep in mind the difference between accuracy and preference.</b></li>
-                        <li>The primary purpose is to check the accuracy of the translation in detail.</li>
-                        <li>If you see errors in spelling, punctuation, flow/naturalness, please correct it.</li>
+                        <li>Correct errors in spelling, punctuation, and flow/naturalness.</li>
                         <li>Check notes for each chunk to see what questions or corrections were made from the translation process (Level 1).
                             <ol>
-                                <li>If there is a note, there will be a number next to the (<span class='mdi mdi-lead-pencil'></span>) icon.</li>
-                                <li>Notes are viewed per \"chunk\" because notes are carried from the translation process 
-                                    where they translated chunks instead of verses. </li>
-                                <li>If you have questions or thoughts for the next checkers, you can leave a note for the chunk.</li>
+                                <li>Notes are marked by a number next to the (<span class='mdi mdi-lead-pencil'></span>) icon.</li>
+                                <li>Notes are viewed per \"chunk\", because they are carried from the translation process, 
+                                    which is done in chunks rather than verses. </li>
+                                <li>If you have questions or thoughts for the next checkers, leave a note for the chunk.</li>
                             </ol>
                         </li>
                         <li>Any resources can be used for checking.</li>
-                        <li>Spend about 30 minutes on this step. </li>
-                        <li>When all changes and notes have been made click, \"Yes I did\" and \"{step}\". </li>",
-    "fst-check_sun_desc" => "Temporary unavailable",
+                        <li>To add or edit a footnote for this chapter:
+                            <ol>
+                                <li>To add a footnote, click in the translated text where you want to add the footnote.</li>
+                                <li>Click the footnote icon ( <i class='mdi mdi-bookmark'></i> ) on the right side of the translated text.</li>
+                                <li>Click on \"ft\" to add footnote text.</li>
+                                <li>To add an alternate text, click \"ft\" to add the text that explains the footnote, 
+                                    then click \"fqa\" to add the alternate text.</li>
+                                <li>Click \"Save\" when text is added.</li>
+                                <li>You will see your added footnote in blue highlight inserted in the translated text.</li>
+                                <li>To edit the footnote, click on the footnote you want to edit and click the footnote 
+                                    icon and it will pop up the window for you edit the footnote.</li>
+                                <li>To delete a footnote, click the \"x\" next to it. Click \"Save\" to save your changes.</li>
+                            </ol>
+                        </li>
+                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
+    "self-check_l2_sun_desc" => "Temporary unavailable",
 
-    "snd-check" => "Peer Check",
-    "snd-check_full" => "Peer-Check Target Text (Checker 2)",
-    "snd-check_sun" => "Theological Check",
-    "snd-check_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the language.</li>
-                    <li>This is the second check on this chapter of target text.</li>
+    "peer-review-l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
+                        language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
+                        used when referring to God the Father and Jesus Christ.</b></li>
+                    <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
+                    <li>While checking, keep in mind the difference between accuracy and preference.</li>
+                    <li>The primary purpose is to check the accuracy of the translation in detail.</li>
                     <li>There are two tabs: The Source text tab is the source text for checker to review before checking.
                         <ol>
                             <li>The LEFT column is the source text. There will be green and red highlights in the text. 
@@ -856,30 +872,89 @@ return array (
                             </li>
                         </ol>
                     </li>
-                    <li><b>While checking, keep in mind the difference between accuracy and preference.</b></li>
-                    <li>The primary purpose is to check the accuracy of the translation in detail.</li>
                     <li>If you see errors in spelling, punctuation, flow/naturalness, please correct it.</li>
                     <li>Check notes for each chunk to see what questions or corrections were made from the translation process (Level 1).
                         <ol>
-                            <li>If there is a note, there will be a number next to the (<span class='mdi mdi-lead-pencil'></span>) icon.</li>
-                            <li>Notes are viewed per “chunk” because notes are carried from the translation process where they translated chunks instead of verses.</li>
+                            <li>Notes are marked by a number next to the (<span class='mdi mdi-lead-pencil'></span>) icon.</li>
+                            <li>Notes are viewed per \"chunk\", because they are carried from the translation process, which is done in chunks rather than verses.</li>
                             <li>If you have questions or thoughts for the next checkers, you can leave a note for the chunk.</li>
                         </ol>
                     </li>
                     <li>Any resources can be used for checking.</li>
-                    <li>Spend about 30 minutes on this step. </li>
-                    <li>When all changes and notes have been made click, \"Yes I did\" and \"{step}\".</li>",
-    "snd-check_sun_desc" => "Temporary unavailable",
+                    <li>To add or edit a footnote for this chapter:
+                        <ol>
+                            <li>To add a footnote, click in the translated text where you want to add the footnote.</li>
+                            <li>Click the footnote icon ( <i class='mdi mdi-bookmark'></i> ) on the right side of the translated text.</li>
+                            <li>Click on \"ft\" to add footnote text.</li>
+                            <li>To add an alternate text, click \"ft\" to add the text that explains the footnote, 
+                                then click \"fqa\" to add the alternate text.</li>
+                            <li>Click \"Save\" when text is added.</li>
+                            <li>You will see your added footnote in blue highlight inserted in the translated text.</li>
+                            <li>To edit the footnote, click on the footnote you want to edit and click the footnote 
+                                icon and it will pop up the window for you edit the footnote.</li>
+                            <li>To delete a footnote, click the \"x\" next to it. Click \"Save\" to save your changes.</li>
+                        </ol>
+                    </li>
+                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
-    "keyword-check-l2" => "Keyword Check",
-    "keyword-check-l2_full" => "Keyword Check (Checker 2)",
-    "keyword-check-l2_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated text and accurately expressed.</li>
-                            <li><b>This step will be faster if you use a mouse instead of touchpad.</b></li>
+    "peer-review-l2_chk_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
+                        language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
+                        used when referring to God the Father and Jesus Christ.</b></li>
+                    <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
+                    <li>While checking, keep in mind the difference between accuracy and preference.</li>
+                    <li>The primary purpose is to check the accuracy of the translation in detail.</li>
+                    <li>There are two tabs: The Source text tab is the source text for checker to review before checking.
+                        <ol>
+                            <li>The LEFT column is the source text. There will be green and red highlights in the text. 
+                                Green is text added by the 1st checker. Red is text deleted by the 1st checker. 
+                                If there are no green or red highlights the 1st checker did not make changes to the text.</li>
+                            <li>The RIGHT column is editable target text. Any changes made on this step by the checker will 
+                                be reflected in the next checking steps:
+                                <ul>
+                                    <li>Added text will show in green.</li>
+                                    <li>Deleted text will show in red.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </li>
+                    <li>If you see errors in spelling, punctuation, flow/naturalness, please correct it.</li>
+                    <li>Check notes for each chunk to see what questions or corrections were made from the translation process (Level 1).
+                        <ol>
+                            <li>Notes are marked by a number next to the (<span class='mdi mdi-lead-pencil'></span>) icon.</li>
+                            <li>Notes are viewed per \"chunk\", because they are carried from the translation process, which is done in chunks rather than verses.</li>
+                            <li>If you have questions or thoughts for the next checkers, you can leave a note for the chunk.</li>
+                        </ol>
+                    </li>
+                    <li>Any resources can be used for checking.</li>
+                    <li>To add or edit a footnote for this chapter:
+                        <ol>
+                            <li>To add a footnote, click in the translated text where you want to add the footnote.</li>
+                            <li>Click the footnote icon ( <i class='mdi mdi-bookmark'></i> ) on the right side of the translated text.</li>
+                            <li>Click on \"ft\" to add footnote text.</li>
+                            <li>To add an alternate text, click \"ft\" to add the text that explains the footnote, 
+                                then click \"fqa\" to add the alternate text.</li>
+                            <li>Click \"Save\" when text is added.</li>
+                            <li>You will see your added footnote in blue highlight inserted in the translated text.</li>
+                            <li>To edit the footnote, click on the footnote you want to edit and click the footnote 
+                                icon and it will pop up the window for you edit the footnote.</li>
+                            <li>To delete a footnote, click the \"x\" next to it. Click \"Save\" to save your changes.</li>
+                        </ol>
+                    </li>
+                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
+    "peer-review-l2_sun_desc" => "Temporary unavailable",
+
+    "keyword-check-l2_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated text and accurately 
+                                expressed, as well as <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
+                                are used when referring to God the Father and Jesus Christ.</b></li>
+                            <li><b>LENGTH:</b> Spend about 10 minutes on this step.</li>
+                            <li><b>The point is not word for word translation, it is to see if the word/meaning is 
+                                represented in the text in a way that is grammatically and culturally appropriate in the target language.</b></li>
+                            <li>This step will be faster if you use a mouse instead of a touchpad.</li>
                             <li>The LEFT column is the source text with yellow highlighted words.
                                 <ol>
                                     <li>The checker should click on each yellow highlighted word.</li>
                                     <li>A message will pop up that says, \"Click 'Yes' if this keyword is in target text 
-                                        and accurate. Otherwise click 'No'. The keyword is: _____\"</li>
+                                        and accurate. Otherwise click 'No'. The keyword is: _____.</li>
                                     <li>If the keyword is represented correctly click 'YES' and the highlighting will disappear.</li>
                                     <li>If the keyword is not represented correctly click 'No' and the highlighting will stay. 
                                         Click the note icon (<span class='mdi mdi-lead-pencil'></span>) next 
@@ -890,24 +965,50 @@ return array (
                                 be added to the notes by clicking the note icon 
                                 (<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add a note.</li>
                             <li>Any resources can be used.	</li>
-                            <li><b>The point is not word for word translation, it is to see if the word/meaning is 
-                                represented in the text in a way that is grammatically and culturally appropriate in the target language.</b></li>
-                            <li>Spend about 10 minutes on this step.</li>
                             <li>If there are additional thoughts or questions about the translation, click the note 
                                 icon (<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add the note and click save.</li>
-                            <li>When all highlighted words have been checked, click \"Yes I did\" and \"{step}\".</li>",
+                            <li>When all highlighted words have been checked, click \"Yes, I did\" and \"{step}\".</li>",
 
-    "peer-review-l2" => "Discrepancies",
-    "peer-review-l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with a peer checker.</li>
-                        <li><b>This is the final check, so all changes should be made before you complete this step.</b></li>
+    "keyword-check-l2_chk_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated text and accurately 
+                                expressed, as well as <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
+                                are used when referring to God the Father and Jesus Christ.</b></li>
+                            <li><b>LENGTH:</b> Spend about 10 minutes on this step.</li>
+                            <li><b>The point is not word for word translation, it is to see if the word/meaning is 
+                                represented in the text in a way that is grammatically and culturally appropriate in the target language.</b></li>
+                            <li>This step will be faster if you use a mouse instead of a touchpad.</li>
+                            <li>The LEFT column is the source text with yellow highlighted words.
+                                <ol>
+                                    <li>The checker should click on each yellow highlighted word.</li>
+                                    <li>A message will pop up that says, \"Click 'Yes' if this keyword is in target text 
+                                        and accurate. Otherwise click 'No'. The keyword is: _____.</li>
+                                    <li>If the keyword is represented correctly click 'YES' and the highlighting will disappear.</li>
+                                    <li>If the keyword is not represented correctly click 'No' and the highlighting will stay. 
+                                        Click the note icon (<span class='mdi mdi-lead-pencil'></span>) next 
+                                        to the chunk and add a note regarding the incorrect word and click save.</li>
+                                </ol>
+                            </li>
+                            <li>The RIGHT column is target text and cannot be edited. Any changes to keywords should 
+                                be added to the notes by clicking the note icon 
+                                (<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add a note.</li>
+                            <li>Any resources can be used.	</li>
+                            <li>If there are additional thoughts or questions about the translation, click the note 
+                                icon (<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add the note and click save.</li>
+                            <li>When all highlighted words have been checked, click \"Yes, I did\" and \"{step}\".</li>",
+
+    "content-review-l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with a peer 
+                            checker while <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
+                            are used when referring to God the Father and Jesus Christ.</b></li>
+                        <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
+                        <li><b>This is the final check; all changes should be made before you complete this step.</b></li>
+                        <li>While checking, keep in mind the difference between accuracy and preference.</li>
                         <li>After you have looked over the text, contact the peer-checker to discuss discrepancies via: 
-                            Skype, Messenger, WhatsApp, phone, etc…</li>
+                            Skype, Messenger, WhatsApp, phone, etc.</li>
                         <li>The Source text tab has text with yellow highlighted words.
                             <ol>
                                 <li>Click on each yellow highlighted word that is remaining and discuss with the 
                                     peer-checker if the word in the target text is accurate.</li>
                                 <li>A message will pop up that says, \"Click 'Yes' if this keyword is in target text 
-                                    and accurate. Otherwise click 'No'. The keyword is: _____\"</li>
+                                    and accurate. Otherwise click 'No'. The keyword is: _____.</li>
                                 <li>If the keyword is represented correctly click 'YES' and the highlighting will disappear.</li>
                                 <li>If the keyword is not represented correctly, make appropriate changes to the target text. 
                                     Do not forget to check the notes from previous translators and checkers for discussion on this chunk.</li>
@@ -924,16 +1025,28 @@ return array (
                                     all changes made as they are made by refreshing their screen).</li>
                             </ol>
                         </li>
-                        <li><b>While checking, keep in mind the difference between accuracy and preference.</b></li>
                         <li>You and the peer-checker should discuss any changes you think should be made. 
                             If you agree to the changes, you should make the changes right away. If you do not agree, 
                             contact your facilitator to discuss the disagreement. DO NOT complete this step until 
                             discrepancies are resolved and changed.</li>
                         <li>Any resources can be used for checking.</li>
-                        <li>Spend about 30 minutes on this step.</li>
-                        <li>When all changes and notes have been made click, \"Yes I did\" and \"{step}.\"</li>",
+                        <li>To add or edit a footnote for this chapter:
+                            <ol>
+                                <li>To add a footnote, click in the translated text where you want to add the footnote.</li>
+                                <li>Click the footnote icon ( <i class='mdi mdi-bookmark'></i> ) on the right side of the translated text.</li>
+                                <li>Click on \"ft\" to add footnote text.</li>
+                                <li>To add an alternate text, click \"ft\" to add the text that explains the footnote, 
+                                    then click \"fqa\" to add the alternate text.</li>
+                                <li>Click \"Save\" when text is added.</li>
+                                <li>You will see your added footnote in blue highlight inserted in the translated text.</li>
+                                <li>To edit the footnote, click on the footnote you want to edit and click the footnote 
+                                    icon and it will pop up the window for you edit the footnote.</li>
+                                <li>To delete a footnote, click the \"x\" next to it. Click \"Save\" to save your changes.</li>
+                            </ol>
+                        </li>
+                        <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
-    "peer-review-l2_chk_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with 
+    "content-review-l2_chk_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with 
                                 a peer checker while <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
                                 are used when referring to God the Father and Jesus Christ.</b></li>
                             <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
@@ -1047,6 +1160,7 @@ return array (
                         <li>When all changes and notes have been made click, \"Yes I did\" and \"{step}.\" 
                             Do not simply close the page by clicking the \"x\" or the translator will not be able to continue to the next step.</li>",
 
+    "peer-review_sun" => "Peer Review",
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
     "peer-review_obs" => "Pastor Review",

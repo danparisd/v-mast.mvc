@@ -12,10 +12,10 @@ if(isset($data["error"])) return;
                 <div class="pray_left">
                     <img src="<?php echo template_url("img/steps/icons/pray.png") ?>" width="80">
                     <br><br>
-                    <img src="<?php echo template_url("img/steps/big/pray.png") ?>" width="300">
+                    <img src="<?php echo template_url("img/steps/big/".(!$data["event"][0]->justStarted ? "guys" : "pray").".png") ?>" width="300">
                 </div>
                 <div class="pray_right">
-                    <?php echo __("pray_text")?>
+                    <?php echo __((!$data["event"][0]->justStarted ? "prep_" : "")."pray_text")?>
                 </div>
                 <div class="clear"></div>
             </div>

@@ -1669,7 +1669,7 @@ $(document).ready(function() {
             $this.css("z-index", 102);
             $this.removeClass("open")
                 .addClass("closed");
-            $this.animate({right: -275}, 500, function() {
+            $this.animate({right: -375}, 500, function() {
                 $("#help_hide").removeClass("glyphicon-chevron-right")
                     .addClass("glyphicon-chevron-left");
             });

@@ -626,10 +626,6 @@ class InformationController extends Controller {
         $data["isAdmin"] = false;
 
         if ($event) {
-            if (!in_array($event->project->bookProject, ["ulb", "udb"])) {
-                Url::redirect("events/");
-            }
-
             if (!$this->canViewInfo($event)) {
                 if (!$isXhr)
                     $error[] = __("empty_or_not_permitted_event_error");

@@ -726,45 +726,46 @@ class ManageController extends Controller {
                         $chap["l2memberID"] = $chapters[0]["l2memberID"];
                         $chap["chunks"] = json_decode($chapters[0]["chunks"], true);
                         $chap["l2checked"] = $chapters[0]["l2checked"];
-                        $chap["sndCheck"] = (array)json_decode($chapters[0]["sndCheck"], true);
-                        $chap["peer1Check"] = (array)json_decode($chapters[0]["peer1Check"], true);
-                        $chap["peer2Check"] = (array)json_decode($chapters[0]["peer2Check"], true);
+                        $chap["peerCheck"] = (array)json_decode($chapters[0]["peerCheck"], true);
+                        $chap["kwCheck"] = (array)json_decode($chapters[0]["kwCheck"], true);
+                        $chap["crCheck"] = (array)json_decode($chapters[0]["crCheck"], true);
 
-                        $p1 = !empty($chap["peer1Check"])
-                            && array_key_exists($chapter, $chap["peer1Check"])
-                            && $chap["peer1Check"][$chapter]["memberID"] > 0;
-                        $p2 = !empty($chap["peer2Check"])
-                            && array_key_exists($chapter, $chap["peer2Check"])
-                            && $chap["peer2Check"][$chapter]["memberID"] > 0;
+                        $peer = !empty($chap["peerCheck"])
+                            && array_key_exists($chapter, $chap["peerCheck"])
+                            && $chap["peerCheck"][$chapter]["memberID"] > 0;
+                        $kw = !empty($chap["kwCheck"])
+                            && array_key_exists($chapter, $chap["kwCheck"])
+                            && $chap["kwCheck"][$chapter]["memberID"] > 0;
+                        $cr = !empty($chap["crCheck"])
+                            && array_key_exists($chapter, $chap["crCheck"])
+                            && $chap["crCheck"][$chapter]["memberID"] > 0;
 
                         switch ($mode) {
-                            case "snd_checker":
-                                if (!$p1) {
-                                    $chap["sndCheck"][$chapter]["memberID"] = 0;
-                                    $chap["sndCheck"][$chapter]["done"] = 0;
-                                    unset($chap["peer1Check"][$chapter]);
-                                    unset($chap["peer2Check"][$chapter]);
+                            case "peer_checker":
+                                if (!$kw) {
+                                    $chap["peerCheck"][$chapter]["memberID"] = 0;
+                                    $chap["peerCheck"][$chapter]["done"] = 0;
+                                    unset($chap["kwCheck"][$chapter]);
+                                    unset($chap["crCheck"][$chapter]);
                                 } else {
                                     $response["error"] = __("wrong_parameters");
                                 }
                                 break;
 
-                            case "p1_checker":
-                                if (!$p2) {
-                                    $chap["peer1Check"][$chapter]["memberID"] = 0;
-                                    $chap["peer1Check"][$chapter]["done"] = 0;
-                                    $chap["peer2Check"][$chapter]["memberID"] = 0;
-                                    $chap["peer2Check"][$chapter]["done"] = 0;
+                            case "kw_checker":
+                                if (!$cr) {
+                                    $chap["kwCheck"][$chapter]["memberID"] = 0;
+                                    $chap["kwCheck"][$chapter]["done"] = 0;
+                                    unset($chap["crCheck"][$chapter]);
                                 } else {
                                     $response["error"] = __("wrong_parameters");
                                 }
                                 break;
 
-                            case "p2_checker":
-                                if ($p2) {
-                                    $chap["peer1Check"][$chapter]["done"] = 0;
-                                    $chap["peer2Check"][$chapter]["memberID"] = 0;
-                                    $chap["peer2Check"][$chapter]["done"] = 0;
+                            case "cr_checker":
+                                if ($cr) {
+                                    $chap["crCheck"][$chapter]["done"] = 0;
+                                    $chap["crCheck"][$chapter]["memberID"] = 0;
                                 } else {
                                     $response["error"] = __("wrong_parameters");
                                 }
@@ -777,9 +778,9 @@ class ManageController extends Controller {
 
                         if (!isset($response["error"])) {
                             $postData = [
-                                "sndCheck" => json_encode($chap["sndCheck"]),
-                                "peer1Check" => json_encode($chap["peer1Check"]),
-                                "peer2Check" => json_encode($chap["peer2Check"]),
+                                "peerCheck" => json_encode($chap["peerCheck"]),
+                                "kwCheck" => json_encode($chap["kwCheck"]),
+                                "crCheck" => json_encode($chap["crCheck"]),
                             ];
 
                             $event->checkersL2()->updateExistingPivot($memberID, $postData);
