@@ -15,7 +15,7 @@
     <div class="row main_content_header">
         <div class="main_content_title">
             <div class="demo_title"><?php echo __("demo") . " (".__("revision_events").")" ?></div>
-            <div><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW)?></div>
+            <div><?php echo __("step_num", ["step_number" => 5]) . ": " . __(EventCheckSteps::CONTENT_REVIEW)?></div>
         </div>
     </div>
 
@@ -232,9 +232,9 @@
                 <div id="source_scripture_content" class="my_content">
                     <div class="chunk_block">
                         <div class="chunk_verses" dir="ltr">
-                            <div> <strong class="ltr"> <sup>1</sup> </strong> <div class="kwverse_2_0_1"><b data="0">You</b> therefore, my child, be <b data="0">strengthened</b> in the <b data="0">grace</b> that is in <b data="0">Christ Jesus</b>.</div></div>
+                            <div> <strong class="ltr"> <sup>1</sup> </strong> <div class="kwverse_2_0_1">You therefore, my child, be strengthened in the grace that is in Christ Jesus.</div></div>
                             <div> <strong class="ltr"> <sup>2</sup> </strong> <div class="kwverse_2_0_2">And the things you heard from me among many witnesses, entrust them to faithful people who will be able to teach others also.</div></div>
-                            <div> <strong class="ltr"> <sup>3</sup> </strong> <div class="kwverse_2_0_3"><b data="0">Suffer</b> hardship with me, as a good soldier of Christ Jesus.</div></div>
+                            <div> <strong class="ltr"> <sup>3</sup> </strong> <div class="kwverse_2_0_3">Suffer hardship with me, as a good soldier of Christ Jesus.</div></div>
                         </div>
                     </div>
                     <div class="chunk_block">
@@ -242,7 +242,7 @@
                             <div> <strong class="ltr"> <sup>4</sup> </strong> <div class="kwverse_2_0_4">No soldier serves while entangled in the affairs of this life, so that he may please his superior officer.</div></div>
                             <div> <strong class="ltr"> <sup>5</sup> </strong> <div class="kwverse_2_0_5">Also, if someone competes as an athlete, he is not crowned unless he competes by the rules.</div></div>
                             <div> <strong class="ltr"> <sup>6</sup> </strong> <div class="kwverse_2_0_6">It is necessary that the hardworking farmer receive his share of the crops first.</div></div>
-                            <div> <strong class="ltr"> <sup>7</sup> </strong> <div class="kwverse_2_0_7">Think about what I am saying, for the <b data="0">Lord</b> will give you understanding in everything.</div></div>
+                            <div> <strong class="ltr"> <sup>7</sup> </strong> <div class="kwverse_2_0_7">Think about what I am saying, for the Lord will give you understanding in everything.</div></div>
                         </div>
                     </div>
                     <div class="chunk_block">
@@ -302,7 +302,7 @@
                         <?php echo __($data["next_step"])?>
                     </button>
                 </form>
-                <div class="step_right"></div>
+                <div class="step_right alt"><?php echo __("step_num", ["step_number" => 5])?></div>
             </div>
         </div>
     </div>
@@ -313,7 +313,7 @@
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help isPeer">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>:</span> <?php echo __(EventCheckSteps::PEER_REVIEW)?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 5])?>:</span> <?php echo __(EventCheckSteps::CONTENT_REVIEW)?></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
@@ -342,7 +342,7 @@
         </div>
 
         <div class="checker_view">
-            <a href="/events/demo-revision/peer_review"><?php echo __("checker_other_view", [1]) ?></a>
+            <a href="/events/demo-revision/content_review"><?php echo __("checker_other_view", [1]) ?></a>
         </div>
     </div>
 </div>
@@ -351,13 +351,13 @@
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" height="100px" width="100px">
-            <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" height="280px" width="280px">
+            <img src="<?php echo template_url("img/steps/icons/content-review.png") ?>" height="100px" width="100px">
+            <img src="<?php echo template_url("img/steps/big/content-review.png") ?>" height="280px" width="280px">
         </div>
 
         <div class="tutorial_content is_checker_page_help">
-            <h3><?php echo __(EventCheckSteps::PEER_REVIEW)?></h3>
-            <ul><?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventCheckSteps::CONTENT_REVIEW)?></h3>
+            <ul><?php echo __("content-review-l2_chk_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -376,6 +376,7 @@
 <script>
     isChecker = true;
     disableHighlight = true;
+
     $(document).ready(function () {
         setTimeout(function() {
             equal_verses_height();
@@ -411,7 +412,7 @@
         $("#next_step").click(function (e) {
             renderConfirmPopup(Language.checkerConfirmTitle, Language.checkerConfirm,
                 function () {
-                    window.location.href = '/events/demo-revision/keyword_check';
+                    window.location.href = '/events/demo-revision/pray';
                 },
                 function () {
                     $("#confirm_step").prop("checked", false);

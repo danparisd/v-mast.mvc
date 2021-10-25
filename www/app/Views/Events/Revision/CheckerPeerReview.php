@@ -260,18 +260,6 @@ use Helpers\Constants\EventMembers;
 <script type="text/javascript" src="<?php echo template_url("js/diff.js?7")?>"></script>
 <script>
     (function() {
-        $(".my_tab").click(function () {
-            var inter = setInterval(function() {
-                if($("#target_scripture_content").is(":visible"))
-                {
-                    if(typeof autosize == "function")
-                        autosize.update($('textarea'));
-                    clearInterval(inter);
-                }
-            }, 10);
-            return false;
-        });
-
         setTimeout(function() {
             equal_verses_height();
         }, 500);

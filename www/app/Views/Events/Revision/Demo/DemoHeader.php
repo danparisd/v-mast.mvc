@@ -14,20 +14,20 @@ use Helpers\Constants\EventCheckSteps;
             <a href="/events/demo-revision/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
         </li>
 
-        <li class="fst-check-step <?php echo $data["step"] == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-revision/fst_check"><span><?php echo __(EventCheckSteps::SELF_CHECK)?></span></a>
+        <li class="self-check-step <?php echo $data["step"] == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
+            <a href="/events/demo-revision/self_check"><span><?php echo __(EventCheckSteps::SELF_CHECK)?></span></a>
         </li>
 
-        <li class="snd-check-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
-            <a href="/events/demo-revision/snd_check"><span><?php echo __(EventCheckSteps::PEER_REVIEW)?></span></a>
+        <li class="peer-review-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
+            <a href="/events/demo-revision/peer_review"><span><?php echo __(EventCheckSteps::PEER_REVIEW)?></span></a>
         </li>
 
-        <li class="keyword-check-l2-step <?php echo $data["step"] == EventCheckSteps::KEYWORD_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-revision/keyword_check_l2"><span><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></span></a>
+        <li class="keyword-check-step <?php echo $data["step"] == EventCheckSteps::KEYWORD_CHECK ? "active" : "" ?>">
+            <a href="/events/demo-revision/keyword_check"><span><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></span></a>
         </li>
 
-        <li class="peer-review-l2-step <?php echo $data["step"] == EventCheckSteps::CONTENT_REVIEW ? "active" : "" ?>">
-            <a href="/events/demo-revision/peer_review_l2"><span><?php echo __(EventCheckSteps::CONTENT_REVIEW)?></span></a>
+        <li class="content-review-step <?php echo $data["step"] == EventCheckSteps::CONTENT_REVIEW ? "active" : "" ?>">
+            <a href="/events/demo-revision/content_review"><span><?php echo __(EventCheckSteps::CONTENT_REVIEW)?></span></a>
         </li>
     </ul>
 </div>
@@ -85,7 +85,7 @@ $isCheckPage = $data["step"] == EventCheckSteps::CONTENT_REVIEW;
         </ul>
         <ul id="evnt_messages" class="chat_msgs">
             <li class="message msg_other" data="16">
-                <div class="msg_name">Marge S.</div>
+                <div class="msg_name">Dan S.</div>
                 <div data-original-title="30.06.2016, 18:38:09" class="msg_text" data-toggle="tooltip" data-placement="top" title="">Hi, this a test event message</div>
             </li>
             <li class="message msg_my" data="7">
@@ -95,7 +95,7 @@ $isCheckPage = $data["step"] == EventCheckSteps::CONTENT_REVIEW;
         </ul>
         <ul id="proj_messages" class="chat_msgs">
             <li class="message msg_other" data="16">
-                <div class="msg_name">Marge S.</div>
+                <div class="msg_name">Dan S.</div>
                 <div data-original-title="30.06.2016, 18:38:09" class="msg_text" data-toggle="tooltip" data-placement="top" title="">Hi, this a test project message</div>
             </li>
             <li class="message msg_my" data="7">
@@ -142,66 +142,3 @@ $isCheckPage = $data["step"] == EventCheckSteps::CONTENT_REVIEW;
 </script>
 
 <?php echo isset($page) ? $page : "" ?>
-
-
-<?php if($isCheckPage): ?>
-<style>
-    .buttons_spec {
-        position: absolute;
-        top: 97px;
-        left: 930px;
-        text-align: center;
-        border: 1px solid #ccc;
-        background-color: white;
-        padding: 5px 10px;
-        z-index: 102;
-    }
-    
-    .buttons_spec.unlinked {
-        position: fixed;
-        left: calc(50% + 345px);
-        top: 20px;
-    }
-</style>
-
-<!--<div class="buttons_spec">
-    <button class="spec_char" data="D̃">D̃</button>
-    <button class="spec_char" data="d̃">d̃</button>&nbsp;&nbsp;
-    <button class="spec_char" data="Õ">Õ</button>
-    <button class="spec_char" data="õ">õ</button>&nbsp;&nbsp;
-    <button class="spec_char" data="T̃">T̃</button>
-    <button class="spec_char" data="t̃">t̃</button><br>
-    <button class="spec_char" data="Ṽ">Ṽ</button>
-    <button class="spec_char" data="ṽ">ṽ</button>&nbsp;&nbsp;
-    <button class="spec_char" data="W̃">W̃</button>
-    <button class="spec_char" data="w̃">w̃</button>
-</div>-->
-
-<script>
-    $(document).ready(function () {
-        var focused;
-        
-        $("textarea").focus(function() {
-            focused = $(this);
-        });
-        
-        $(".spec_char").click(function(e) {
-            e.preventDefault();
-            var char = $(this).attr("data");
-            if(typeof focused != "undefined")
-            {
-                var caretPos = focused[0].selectionStart;
-                var textAreaTxt = focused.val();
-                focused.val(textAreaTxt.substring(0, caretPos) + char + textAreaTxt.substring(caretPos));
-            }
-        });
-        
-        $(window).scroll(function () {
-            if($(this).scrollTop() > 150)
-                $(".buttons_spec").addClass("unlinked");
-            else
-                $(".buttons_spec").removeClass("unlinked");
-        });
-    });
-</script>
-<?php endif; ?>

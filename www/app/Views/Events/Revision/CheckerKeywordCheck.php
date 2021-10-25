@@ -218,8 +218,6 @@ use Helpers\Constants\EventMembers;
         </div>
 
         <div class="tr_tools">
-            <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
             <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
             <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
                 <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
@@ -260,18 +258,6 @@ use Helpers\Constants\EventMembers;
 <script type="text/javascript" src="<?php echo template_url("js/diff.js?7")?>"></script>
 <script>
     (function() {
-        $(".my_tab").click(function () {
-            var inter = setInterval(function() {
-                if($("#target_scripture_content").is(":visible"))
-                {
-                    if(typeof autosize == "function")
-                        autosize.update($('textarea'));
-                    clearInterval(inter);
-                }
-            }, 10);
-            return false;
-        });
-
         setTimeout(function() {
             equal_verses_height();
         }, 500);

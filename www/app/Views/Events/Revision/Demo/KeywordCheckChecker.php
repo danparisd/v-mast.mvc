@@ -15,7 +15,7 @@
     <div class="row main_content_header">
         <div class="main_content_title">
             <div class="demo_title"><?php echo __("demo") . " (".__("revision_events").")" ?></div>
-            <div><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW)?></div>
+            <div><?php echo __("step_num", ["step_number" => 4]) . ": " . __(EventCheckSteps::KEYWORD_CHECK)?></div>
         </div>
     </div>
 
@@ -313,7 +313,7 @@
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help isPeer">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>:</span> <?php echo __(EventCheckSteps::PEER_REVIEW)?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 4])?>:</span> <?php echo __(EventCheckSteps::KEYWORD_CHECK)?></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
@@ -335,14 +335,12 @@
         </div>
 
         <div class="tr_tools">
-            <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
             <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
             <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
         </div>
 
         <div class="checker_view">
-            <a href="/events/demo-revision/peer_review"><?php echo __("checker_other_view", [1]) ?></a>
+            <a href="/events/demo-revision/keyword_check"><?php echo __("checker_other_view", [1]) ?></a>
         </div>
     </div>
 </div>
@@ -351,13 +349,13 @@
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" height="100px" width="100px">
-            <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" height="280px" width="280px">
+            <img src="<?php echo template_url("img/steps/icons/keyword-check.png") ?>" height="100px" width="100px">
+            <img src="<?php echo template_url("img/steps/big/keyword-check.png") ?>" height="280px" width="280px">
         </div>
 
         <div class="tutorial_content is_checker_page_help">
-            <h3><?php echo __(EventCheckSteps::PEER_REVIEW)?></h3>
-            <ul><?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></h3>
+            <ul><?php echo __("keyword-check-l2_chk_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -365,8 +363,6 @@
 <!-- Data for tools -->
 <input type="hidden" id="bookCode" value="2ti">
 <input type="hidden" id="chapter" value="2">
-<input type="hidden" id="tn_lang" value="en">
-<input type="hidden" id="tq_lang" value="en">
 <input type="hidden" id="tw_lang" value="en">
 <input type="hidden" id="totalVerses" value="26">
 <input type="hidden" id="targetLang" value="en">
@@ -374,8 +370,9 @@
 <script type="text/javascript" src="<?php echo template_url("js/diff_match_patch.js?2")?>"></script>
 <script type="text/javascript" src="<?php echo template_url("js/diff.js?7")?>"></script>
 <script>
+    isLevel2 = true;
     isChecker = true;
-    disableHighlight = true;
+
     $(document).ready(function () {
         setTimeout(function() {
             equal_verses_height();
@@ -411,7 +408,7 @@
         $("#next_step").click(function (e) {
             renderConfirmPopup(Language.checkerConfirmTitle, Language.checkerConfirm,
                 function () {
-                    window.location.href = '/events/demo-revision/keyword_check';
+                    window.location.href = '/events/demo-revision/content_review';
                 },
                 function () {
                     $("#confirm_step").prop("checked", false);

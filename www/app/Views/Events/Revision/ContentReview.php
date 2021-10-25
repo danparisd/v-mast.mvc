@@ -50,131 +50,102 @@ use Helpers\Constants\EventMembers;
                         .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
                         ."<span class='book_name'>".$data["event"][0]->name." ".$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
 
-                    <ul class="nav nav-tabs">
-                        <li role="presentation" id="target_scripture" class="my_tab">
-                            <a href="#"><?php echo __("target_text") ?></a>
-                        </li>
-                        <li role="presentation" id="source_scripture" class="my_tab">
-                            <a href="#"><?php echo __("source_text") ?></a>
-                        </li>
-                    </ul>
+                    <div class="no_padding">
+                        <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                            <div class="sun_mode">
+                                <label>
+                                    <input type="checkbox" autocomplete="off" checked
+                                           data-toggle="toggle"
+                                           data-width="100"
+                                           data-on="SUN"
+                                           data-off="BACKSUN" />
+                                </label>
+                            </div>
+                        <?php endif; ?>
 
-                    <div id="target_scripture_content" class="my_content shown">
-                        <div class="no_padding">
-                            <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
-                                <div class="sun_mode">
-                                    <label>
-                                        <input type="checkbox" autocomplete="off" checked
-                                               data-toggle="toggle"
-                                               data-width="100"
-                                               data-on="SUN"
-                                               data-off="BACKSUN" />
-                                    </label>
-                                </div>
-                            <?php endif; ?>
-                            <?php foreach($data["chunks"] as $key => $chunk) : ?>
-                                <div class="row chunk_block no_autosize">
-                                    <div class="flex_container">
-                                        <div class="chunk_verses flex_left font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->sLangDir ?>">
-                                            <?php $verses = $data["translation"][$key][EventMembers::TRANSLATOR]["verses"]; ?>
-                                            <?php foreach ($verses as $verse => $text): ?>
-                                                <p class="verse_text" data-verse="<?php echo $verse; ?>">
-                                                    <strong class="<?php echo $data["event"][0]->sLangDir ?>">
-                                                        <sup><?php echo $verse; ?></sup>
-                                                    </strong>
-                                                    <span class="orig_text" data-orig-verse="<?php echo $verse ?>"><?php echo $text; ?></span>
-                                                </p>
+                        <?php foreach($data["chunks"] as $key => $chunk) : ?>
+                            <div class="row chunk_block no_autosize">
+                                <div class="flex_container">
+                                    <div class="chunk_verses flex_left" dir="<?php echo $data["event"][0]->sLangDir ?>">
+                                        <?php $firstVerse = 0; ?>
+                                        <?php foreach ($chunk as $verse): ?>
+                                            <?php
+                                            // process combined verses
+                                            if (!isset($data["text"][$verse]))
+                                            {
+                                                if($firstVerse == 0)
+                                                {
+                                                    $firstVerse = $verse;
+                                                    continue;
+                                                }
+                                                $combinedVerse = $firstVerse . "-" . $verse;
+
+                                                if(!isset($data["text"][$combinedVerse]))
+                                                    continue;
+                                                $verse = $combinedVerse;
+                                            }
+                                            ?>
+                                            <p class="verse_text <?php echo "kwverse_".$data["currentChapter"]."_".$key."_".$verse ?>"
+                                               data-verse="<?php echo $verse ?>">
+                                                <strong class="<?php echo $data["event"][0]->sLangDir ?>">
+                                                    <sup><?php echo $verse; ?></sup>
+                                                </strong>
+                                                <?php echo $data["text"][$verse]; ?>
+                                            </p>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="flex_middle editor_area font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->tLangDir ?>">
+                                        <?php
+                                        if(!empty($data["translation"][$key][EventMembers::L2_CHECKER]["verses"]))
+                                            $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
+                                        else
+                                            $verses = $data["translation"][$key][EventMembers::TRANSLATOR]["verses"];
+                                        ?>
+                                        <div class="vnote">
+                                            <?php foreach($verses as $verse => $text): ?>
+                                                <div class="verse_block flex_chunk" data-verse="<?php echo $verse ?>">
+                                                    <textarea name="chunks[<?php echo $key ?>][<?php echo $verse ?>]"
+                                                              class="peer_verse_ta textarea" style="min-width: 400px"><?php echo $text; ?></textarea>
+
+                                                    <span class="editFootNote mdi mdi-bookmark"
+                                                          style="margin-top: -5px"
+                                                          title="<?php echo __("write_footnote_title") ?>"></span>
+                                                </div>
                                             <?php endforeach; ?>
                                         </div>
-                                        <div class="flex_middle editor_area font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->tLangDir ?>">
-                                            <?php
-                                            $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
-                                            ?>
-                                            <div class="vnote">
-                                                <?php foreach($verses as $verse => $text): ?>
-                                                    <div class="verse_block flex_chunk" data-verse="<?php echo $verse; ?>">
-                                                        <textarea style="min-width: 400px;" name="chunks[<?php echo $key ?>][<?php echo $verse ?>]"
-                                                                  class="peer_verse_ta textarea"
-                                                                  data-orig-verse="<?php echo $verse ?>"><?php echo $text; ?></textarea>
-
-                                                        <span class="editFootNote mdi mdi-bookmark"
-                                                              style="margin-top: -5px"
-                                                              title="<?php echo __("write_footnote_title") ?>"></span>
-                                                    </div>
-                                                <?php endforeach; ?>
+                                    </div>
+                                    <div class="flex_right">
+                                        <div class="notes_tools">
+                                            <?php $hasComments = array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]]); ?>
+                                            <div class="comments_number flex_commn_number <?php echo $hasComments ? "hasComment" : "" ?>">
+                                                <?php echo $hasComments ? sizeof($data["comments"][$data["currentChapter"]][$key]) : ""?>
                                             </div>
-                                        </div>
-                                        <div class="flex_right">
-                                            <div class="notes_tools">
-                                                <?php $hasComments = array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]]); ?>
-                                                <div class="comments_number flex_commn_number <?php echo $hasComments ? "hasComment" : "" ?>">
-                                                    <?php echo $hasComments ? sizeof($data["comments"][$data["currentChapter"]][$key]) : ""?>
-                                                </div>
-                                                <span class="editComment mdi mdi-lead-pencil"
-                                                      data="<?php echo $data["currentChapter"].":".$key ?>"
-                                                      title="<?php echo __("write_note_title", [""])?>"></span>
+                                            <span class="editComment mdi mdi-lead-pencil"
+                                                  data="<?php echo $data["currentChapter"].":".$key ?>"
+                                                  title="<?php echo __("write_note_title", [""])?>"></span>
 
-                                                <div class="comments">
-                                                    <?php if(array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]])): ?>
-                                                        <?php foreach($data["comments"][$data["currentChapter"]][$key] as $comment): ?>
-                                                            <?php if($comment->memberID == $data["event"][0]->myMemberID
-                                                                && $comment->level == 2): ?>
-                                                                <div class="my_comment"><?php echo $comment->text; ?></div>
-                                                            <?php else: ?>
-                                                                <div class="other_comments">
-                                                                    <?php echo
-                                                                        "<span>".$comment->firstName." ".mb_substr($comment->lastName, 0, 1).". 
+                                            <div class="comments">
+                                                <?php if(array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]])): ?>
+                                                    <?php foreach($data["comments"][$data["currentChapter"]][$key] as $comment): ?>
+                                                        <?php if($comment->memberID == $data["event"][0]->memberID
+                                                            && $comment->level == 2): ?>
+                                                            <div class="my_comment"><?php echo $comment->text; ?></div>
+                                                        <?php else: ?>
+                                                            <div class="other_comments">
+                                                                <?php echo
+                                                                    "<span>".$comment->firstName." ".mb_substr($comment->lastName, 0, 1).". 
                                                                     - L".$comment->level.":</span> 
                                                                 ".$comment->text; ?>
-                                                                </div>
-                                                            <?php endif; ?>
-                                                        <?php endforeach; ?>
-                                                    <?php endif; ?>
-                                                </div>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="chunk_divider"></div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <div id="source_scripture_content" class="my_content">
-                        <?php foreach($data["chunks"] as $key => $chunk) : ?>
-                            <div class="chunk_block">
-                                <div class="chunk_verses" dir="<?php echo $data["event"][0]->sLangDir ?>">
-                                    <?php $firstVerse = 0; ?>
-                                    <?php foreach ($chunk as $verse): ?>
-                                        <?php
-                                        // process combined verses
-                                        if (!isset($data["text"][$verse]))
-                                        {
-                                            if($firstVerse == 0)
-                                            {
-                                                $firstVerse = $verse;
-                                                continue;
-                                            }
-                                            $combinedVerse = $firstVerse . "-" . $verse;
-
-                                            if(!isset($data["text"][$combinedVerse]))
-                                                continue;
-                                            $verse = $combinedVerse;
-                                        }
-                                        ?>
-                                        <div>
-                                            <strong dir="<?php echo $data["event"][0]->sLangDir ?>"
-                                                    class="<?php echo $data["event"][0]->sLangDir ?>">
-                                                <sup><?php echo $verse; ?></sup>
-                                            </strong>
-                                            <div class="<?php echo "kwverse_".$data["currentChapter"]."_".$key."_".$verse ?>"
-                                                 dir="<?php echo $data["event"][0]->sLangDir ?>">
-                                                <?php echo $data["text"][$verse]; ?>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
                             </div>
+                            <div class="chunk_divider"></div>
                         <?php endforeach; ?>
                     </div>
                 </div>
@@ -273,18 +244,6 @@ use Helpers\Constants\EventMembers;
 
 <script>
     (function() {
-        $(".my_tab").click(function () {
-            var inter = setInterval(function() {
-                if($("#target_scripture_content").is(":visible"))
-                {
-                    if(typeof autosize == "function")
-                        autosize.update($('textarea'));
-                    clearInterval(inter);
-                }
-            }, 10);
-            return false;
-        });
-
         setTimeout(function() {
             equal_verses_height();
         }, 500);

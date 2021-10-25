@@ -379,10 +379,7 @@
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-
-            
-            window.location.href = '/events/demo-revision/fst_check';
-
+            window.location.href = '/events/demo-revision/self_check';
             return false;
         });
     });

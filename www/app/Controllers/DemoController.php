@@ -566,13 +566,20 @@ class DemoController extends Controller {
         if (!isset($page))
             Url::redirect("events/demo-revision/pray");
 
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $notifObj = new stdClass();
 
-            if ($i == 0)
-                $notifObj->step = EventCheckSteps::PEER_REVIEW;
-            else
-                $notifObj->step = EventCheckSteps::CONTENT_REVIEW;
+            switch ($i) {
+                case 0:
+                    $notifObj->step = EventCheckSteps::PEER_REVIEW;
+                    break;
+                case 1:
+                    $notifObj->step = EventCheckSteps::KEYWORD_CHECK;
+                    break;
+                case 2:
+                    $notifObj->step = EventCheckSteps::CONTENT_REVIEW;
+                    break;
+            }
 
             $notifObj->currentChapter = 2;
             $notifObj->firstName = "Mark";
@@ -609,32 +616,46 @@ class DemoController extends Controller {
                 $data["next_step"] = EventCheckSteps::SELF_CHECK;
                 break;
 
-            case "fst_check":
-                $view->nest("page", "Events/Revision/Demo/FstCheck");
+            case "self_check":
+                $view->nest("page", "Events/Revision/Demo/SelfCheck");
                 $data["step"] = EventCheckSteps::SELF_CHECK;
-                $data["next_step"] = "continue_alt";
+                $data["next_step"] = EventCheckSteps::PEER_REVIEW;
                 break;
 
-            case "snd_check":
-                $view->nest("page", "Events/Revision/Demo/SndCheck");
+            case "peer_review":
+                $view->nest("page", "Events/Revision/Demo/PeerReview");
                 $data["step"] = EventCheckSteps::PEER_REVIEW;
                 $data["next_step"] = EventCheckSteps::KEYWORD_CHECK;
                 break;
 
-            case "keyword_check_l2":
-                $view->nest("page", "Events/Revision/Demo/KeywordCheck");
-                $data["step"] = EventCheckSteps::KEYWORD_CHECK;
-                $data["next_step"] = "continue_alt";;
+            case "peer_review_checker":
+                $view->nest("page", "Events/Revision/Demo/PeerReviewChecker");
+                $data["step"] = EventCheckSteps::PEER_REVIEW;
+                $data["next_step"] = "continue_alt";
+                unset($data["isCheckerPage"]);
                 break;
 
-            case "peer_review_l2":
-                $view->nest("page", "Events/Revision/Demo/PeerReview");
+            case "keyword_check":
+                $view->nest("page", "Events/Revision/Demo/KeywordCheck");
+                $data["step"] = EventCheckSteps::KEYWORD_CHECK;
+                $data["next_step"] = EventCheckSteps::CONTENT_REVIEW;
+                break;
+
+            case "keyword_check_checker":
+                $view->nest("page", "Events/Revision/Demo/KeywordCheckChecker");
+                $data["step"] = EventCheckSteps::KEYWORD_CHECK;
+                $data["next_step"] = "continue_alt";
+                unset($data["isCheckerPage"]);
+                break;
+
+            case "content_review":
+                $view->nest("page", "Events/Revision/Demo/ContentReview");
                 $data["step"] = EventCheckSteps::CONTENT_REVIEW;
                 $data["next_step"] = "continue_alt";
                 break;
 
-            case "peer_review_l2_checker":
-                $view->nest("page", "Events/Revision/Demo/PeerReviewChecker");
+            case "content_review_checker":
+                $view->nest("page", "Events/Revision/Demo/ContentReviewChecker");
                 $data["step"] = EventCheckSteps::CONTENT_REVIEW;
                 $data["next_step"] = "continue_alt";
                 unset($data["isCheckerPage"]);
@@ -643,7 +664,6 @@ class DemoController extends Controller {
             case "information":
                 return View::make("Events/Revision/Demo/Information")
                     ->shares("title", __("event_info"));
-                break;
         }
 
         return $view
