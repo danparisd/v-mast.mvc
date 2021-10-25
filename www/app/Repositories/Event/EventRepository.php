@@ -5,10 +5,10 @@ namespace App\Repositories\Event;
 
 
 use App\Domain\ObsProgress;
-use App\Domain\ScriptureL2Progress;
+use App\Domain\ScriptureRevisionProgress;
 use App\Domain\AnyL3Progress;
 use App\Domain\ScriptureProgress;
-use App\Domain\SunL2Progress;
+use App\Domain\SunRevisionProgress;
 use App\Domain\SunProgress;
 use App\Domain\TnProgress;
 use App\Domain\TqProgress;
@@ -55,7 +55,7 @@ class EventRepository implements IEventRepository
             if ($level == "l1") {
                 $progress = ScriptureProgress::calculateEventProgress($event, true);
             } else {
-                $progress = ScriptureL2Progress::calculateEventProgress($event, true);
+                $progress = ScriptureRevisionProgress::calculateEventProgress($event, true);
             }
             return $progress;
         } elseif ($event->project->bookProject == "tn") {
@@ -72,7 +72,7 @@ class EventRepository implements IEventRepository
             if ($level == "l1") {
                 $progress = SunProgress::calculateEventProgress($event, true);
             } else {
-                $progress = SunL2Progress::calculateEventProgress($event, true);
+                $progress = SunRevisionProgress::calculateEventProgress($event, true);
             }
             return $progress;
         } elseif ($event->project->bookProject == "obs") {

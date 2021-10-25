@@ -7,7 +7,7 @@ use Helpers\Constants\StepsStates;
     <?php if(isset($_SERVER["HTTP_REFERER"])): ?>
         <a href="<?php echo $_SERVER["HTTP_REFERER"] ?>"><?php echo __("go_back") ?></a>
     <?php endif; ?>
-    <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l2_l3", ["level" => 2]).")" ?></div>
+    <div class="demo_title"><?php echo __("demo") . " (".__("vsail_revision").")" ?></div>
 </div>
 
 <div>
@@ -58,7 +58,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::IN_PROGRESS) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/fst-check.png")?>" width="40"></div>
-                            <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK . "_sun"); ?></div>
+                            <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK . "_sun"); ?></div>
                         </div>
                         <div class="section_step chk"> </div>
                         <!-- Theological Check Step -->
@@ -66,7 +66,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/snd-check.png")?>" width="40"></div>
-                            <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK . "_sun"); ?></div>
+                            <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun"); ?></div>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -106,7 +106,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/fst-check.png")?>" width="40"></div>
-                            <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK . "_sun"); ?></div>
+                            <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK . "_sun"); ?></div>
                         </div>
                         <div class="section_step chk">
                         </div>
@@ -115,7 +115,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::WAITING) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/snd-check.png")?>" width="40"></div>
-                            <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK . "_sun"); ?></div>
+                            <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun"); ?></div>
                             <img class="img_waiting" src="<?php echo template_url("img/waiting.png")?>">
                         </div>
                         <div class="clear"></div>
@@ -156,7 +156,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/fst-check.png")?>" width="40"></div>
-                            <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK . "_sun"); ?></div>
+                            <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK . "_sun"); ?></div>
                         </div>
                         <div class="section_step chk"> </div>
                         <!-- Theological Check Step -->
@@ -164,7 +164,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/snd-check.png")?>" width="40"></div>
-                            <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK . "_sun"); ?></div>
+                            <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun"); ?></div>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -206,7 +206,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/fst-check.png")?>" width="40"></div>
-                            <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK . "_sun"); ?></div>
+                            <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK . "_sun"); ?></div>
                         </div>
                         <div class="section_step chk">
                         </div>
@@ -215,7 +215,7 @@ use Helpers\Constants\StepsStates;
                             <div class="step_status"><?php echo __("step_status_".StepsStates::NOT_STARTED) ?></div>
                             <div class="step_light"></div>
                             <div class="step_icon"><img src="<?php echo template_url("img/steps/icons/snd-check.png")?>" width="40"></div>
-                            <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK . "_sun"); ?></div>
+                            <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun"); ?></div>
                         </div>
                         <div class="clear"></div>
                     </div>

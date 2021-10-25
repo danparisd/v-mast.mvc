@@ -78,7 +78,7 @@ $numValues = [
                     return __("8steps_vmast");
                     break;
                 case "l2":
-                    return __("l2_3_events", ["level" => 2]);
+                    return __("revision_events");
                     break;
                 case "l3":
                     return __("l2_3_events", ["level" => 3]);

@@ -99,7 +99,7 @@ use Shared\Legacy\Error;
                 <option <?php echo isset($_POST["projects"]) && "odb" == $_POST["projects"] ? "selected" : "" ?>
                         value="odb"><?php echo __("odb") ?></option>
                 <option <?php echo isset($_POST["projects"]) && "l2" == $_POST["projects"] ? "selected" : "" ?>
-                        value="l2"><?php echo __("l2_3_events", ["level" => 2]) ?></option>
+                        value="l2"><?php echo __("revision_events") ?></option>
                 <option <?php echo isset($_POST["projects"]) && "l3" == $_POST["projects"] ? "selected" : "" ?>
                         value="l3"><?php echo __("l2_3_events", ["level" => 3]) ?></option>
                 <option <?php echo isset($_POST["projects"]) && "tn" == $_POST["projects"] ? "selected" : "" ?>

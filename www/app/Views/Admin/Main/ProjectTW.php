@@ -140,7 +140,7 @@ if($project):
 
                     <hr>
                     <div class="event_links_l2">
-                        <li class="option_group"><?php echo __("l2_3_events", ["level" => 2]) ?></li>
+                        <li class="option_group"><?php echo __("revision_events") ?></li>
                         <li class="event_progress"><a href="#"><?php echo __("progress"); ?></a></li>
                         <li class="event_manage"><a href="#"><?php echo __("manage"); ?></a></li>
                     </div>
@@ -178,7 +178,7 @@ if($project):
                             <label style="width: 100%; display: block"><?php echo __('choose_event_level'); ?></label>
                             <label>
                                 <input type="radio" name="eventLevel" value="2" class="event_l_2" checked>
-                                <?php echo __("level2_3_check", ["level" => 2]) ?>
+                                <?php echo __("revision_check") ?>
                             </label>&nbsp;&nbsp;
                             <label>
                                 <input type="radio" name="eventLevel" value="3" class="event_l_3">

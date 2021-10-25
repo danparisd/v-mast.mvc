@@ -99,10 +99,16 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
         ->where(["eventID" => "[0-9]+"]);
     Router::any("translator-obs/{eventID}", "EventsController@translatorObs")
         ->where(["eventID" => "[0-9]+"]);
-    Router::any("checker-l2/{eventID}", "EventsController@checkerL2")
+    Router::any("checker-revision/{eventID}", "EventsController@checkerRevision")
         ->where(["eventID" => "[0-9]+"]);
-    Router::any("checker-sun-l2/{eventID}", "EventsController@checkerSunL2")
-        ->where(["eventID" => "[0-9]+"]);
+    Router::any("checker-revision/{eventID}/{chapter}", "EventsController@checkerRevisionContinue")
+        ->where(["eventID" => "[0-9]+", "chapter" => "[0-9]+"]);
+    Router::any("checker-revision/{eventID}/{memberID}/{chapter}", "EventsController@checkerRevisionApprover")
+        ->where([
+            "eventID" => "[0-9]+",
+            "memberID" => "[0-9]+",
+            "chapter" => "[0-9]+"
+        ]);
     Router::any("checker-l3/{eventID}", "EventsController@checkerL3")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("checker-l3/{eventID}/{memberID}/{chapter}", "EventsController@checkerL3Peer")
@@ -142,18 +148,6 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
             "eventID" => "[0-9]+",
             "memberID" => "[0-9]+"
             ]);
-    Router::any("checker-l2/{eventID}/{memberID}/{chapter}", "EventsController@checkerL2Continue")
-        ->where([
-            "eventID" => "[0-9]+",
-            "memberID" => "[0-9]+",
-            "chapter" => "[0-9]+"
-        ]);
-    Router::any("checker-sun-l2/{eventID}/{memberID}/{chapter}", "EventsController@checkerSunL2Continue")
-        ->where([
-            "eventID" => "[0-9]+",
-            "memberID" => "[0-9]+",
-            "chapter" => "[0-9]+"
-        ]);
     Router::any("checker-sun/{eventID}/{memberID}/{chapter}", "EventsController@checkerSun")
         ->where([
             "eventID" => "[0-9]+",
@@ -258,9 +252,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
         ->where(["eventID" => "[0-9]+"]);
     Router::any("information-tw/{eventID}", "InformationController@informationWords")
         ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-l2/{eventID}", "InformationController@informationL2")
-        ->where(["eventID" => "[0-9]+"]);
-    Router::any("information-sun-l2/{eventID}", "InformationController@informationSunL2")
+    Router::any("information-revision/{eventID}", "InformationController@informationRevision")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("information-tn-l3/{eventID}", "InformationController@informationL3")
         ->where(["eventID" => "[0-9]+"]);
@@ -284,7 +276,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
         ->where(["eventID" => "[0-9]+"]);
     Router::any("manage-tw/{eventID}", "ManageController@manageTw")
         ->where(["eventID" => "[0-9]+"]);
-    Router::any("manage-l2/{eventID}", "ManageController@manageL2")
+    Router::any("manage-revision/{eventID}", "ManageController@manageRevision")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("manage-l3/{eventID}", "ManageController@manageL3")
         ->where(["eventID" => "[0-9]+"]);
@@ -304,14 +296,13 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
 Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function() {
     Router::any("demo/{page?}", "DemoController@demo");
     Router::any("demo-scripture-input/{page?}", "DemoController@demoLangInput");
-    Router::any("demo-l2/{page?}", "DemoController@demoL2");
+    Router::any("demo-revision/{page?}", "DemoController@demoRevision");
     Router::any("demo-l3/{page?}", "DemoController@demoL3");
     Router::any("demo-tn-l3/{page?}", "DemoController@demoL3Notes");
     Router::any("demo-tn/{page?}", "DemoController@demoTn");
     Router::any("demo-tq/{page?}", "DemoController@demoTq");
     Router::any("demo-tw/{page?}", "DemoController@demoTw");
     Router::any("demo-sun/{page?}", "DemoController@demoSun");
-    Router::any("demo-sun-l2/{page?}", "DemoController@demoSunL2");
     Router::any("demo-sun-l3/{page?}", "DemoController@demoSunL3");
     Router::any("demo-sun-odb/{page?}", "DemoController@demoSunOdb");
     Router::any("demo-rad/{page?}", "DemoController@demoRadio");

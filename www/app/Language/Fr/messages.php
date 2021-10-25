@@ -271,10 +271,11 @@ return array (
     "obs" => "Open Bible Stories",
     "vsail" => "vSUN",
     "vsail_l2_l3" => "vSUN L{level} Check",
+    "vsail_revision" => "vSUN Revision Check",
     "old_test" => "Ancien Testament",
     "new_test" => "Nouveau Testament",
-    "checker_apply" => "<b>{name}</b> est prêt à vérifier <b>{step}</b> le livre de <b>{book}</b>, chapitre <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",
-    "checker_apply_tw" => "<b>{name}</b> est prêt à vérifier <b>{step}</b> la catégorie des <b>{book}</b>, groupe <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b>",
+    "checker_apply" => "<b>{name}</b> est prêt à vérifier <b>{step}</b> le livre de <b>{book}</b>, chapitre <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b> {level}",
+    "checker_apply_tw" => "<b>{name}</b> est prêt à vérifier <b>{step}</b> la catégorie des <b>{book}</b>, groupe <b>{chapter}</b> - <b>{language}</b> - <b>{project}</b> {level}",
     "apply_to_check" => "S’appliquer pour vérifier",
     "notifications" => "Notifications",
     "see_all" => "Voit tout",
@@ -353,6 +354,7 @@ return array (
     "draft1" => "Brouillon 1",
     "state" => "Phase",
     "level2_3_check" => "Niveau {level} Vérification",
+    "revision_check" => "Revision",
     "translators" => "Traducteurs",
     "max_translators" => "Nombre maximal de traducteurs",
     "checkers" => "Vérificateurs",
@@ -363,8 +365,10 @@ return array (
     "state_started" => "En attente pour les traducteurs",
     "state_translating" => "Traduction",
     "state_translated" => "Traduit",
-    "state_l2_recruit" => "Waiting for L2 checkers",
-    "state_l2_check" => "Level 2 check",
+    "state_l2_recruit" => "Waiting for revision checkers",
+    "state_l2_check" => "Revision",
+    "l2" => "Revision",
+    "l3" => "Level 3 Check",
     "state_l2_checked" => "Level 2 Complete",
     "state_l3_recruit" => "Waiting for L3 checkers",
     "state_l3_check" => "Level 3 check",
@@ -383,7 +387,7 @@ return array (
     "start_translation" => "Commencer la traduction",
     "start_checking" => "Commencer la vérification",
     "checkers_l2" => "Vérificateurs niveau 2",
-    "max_checkers_l2" => "The number of Level 2 checkers",
+    "max_checkers_l2" => "The number of Revision checkers",
     "checkers_l3" => "Vérificateurs niveau 3",
     "max_checkers_l3" => "The number of Level 3 checkers",
     "level" => "Niveau {0}",
@@ -974,6 +978,7 @@ return array (
                                 <li>When all changes have been made click \"Yes, I did\" and \"{step}\" to complete the check.</li>",
 
     "keyword-check" => "Vérification des Mots Clés",
+    "keyword-check_sun" => "Vérification des Mots Clés",
     "keyword-check_desc" => "<li><b>BUT:</b> S’assurer que les mots-clés sont présents dans le texte traduit et traduits avec précision.</li>
                             <li><b>DURÉE:</b> Le vérificateur prendra 5-10 minutes pour souligner les mots-clés dans tout le chapître.</li>
                             <li><b>Être sûr que des termes de langage commun précis et littéraux pour “Père” et “Fils” sont employés quand on se réfère à Dieu le Père et  Jésus Christ.</b></li>
@@ -1077,6 +1082,7 @@ return array (
                                 <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "content-review" => "Vérification Verset par Verset",
+    "content-review_sun" => "Vérification Verset par Verset",
     "content-review_odb" => "SUN Check",
     "content-review_desc" => "<li><b>BUT:</b> assurer que la traduction donne correctement le même message que le texte de départ</li>
                                 <li><b>DURÉE:</b> Le vérificateur doit prendre autours de 30 minutes pour réviser le texte. 
@@ -1307,10 +1313,7 @@ return array (
                     It is a translator’s note for that verse.</li>
                 <li>Click \"Yes, I did\" and \"{step}\" to move to the next step.</li>",
 
-    "fst-check" => "Check Text",
-    "fst-check_full" => "Check Target Text (Checker 1)",
-    "fst-check_sun" => "Peer Check",
-    "fst-check_desc" => "<li><b>BUT:</b> to check the target text for accuracy while maintaining the naturalness of the 
+    "self-check_l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
                             language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
                             used when referring to God the Father and Jesus Christ.</b></li>
                         <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
@@ -1348,12 +1351,9 @@ return array (
                             </ol>
                         </li>
                         <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
-    "fst-check_sun_desc" => "Temporary unavailable",
+    "self-check_l2_sun_desc" => "Temporary unavailable",
 
-    "snd-check" => "Peer Check",
-    "snd-check_full" => "Peer-Check Target Text (Checker 2)",
-    "snd-check_sun" => "Theological Check",
-    "snd-check_desc" => "<li><b>BUT:</b> to check the target text for accuracy while maintaining the naturalness of the 
+    "peer-review-l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
                         language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
                         used when referring to God the Father and Jesus Christ.</b></li>
                     <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
@@ -1397,10 +1397,53 @@ return array (
                         </ol>
                     </li>
                     <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
-    "snd-check_sun_desc" => "Temporary unavailable",
 
-    "keyword-check-l2" => "Keyword Check",
-    "keyword-check-l2_full" => "Keyword Check (Checker 2)",
+    "peer-review-l2_chk_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
+                        language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
+                        used when referring to God the Father and Jesus Christ.</b></li>
+                    <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
+                    <li>While checking, keep in mind the difference between accuracy and preference.</li>
+                    <li>The primary purpose is to check the accuracy of the translation in detail.</li>
+                    <li>There are two tabs: The Source text tab is the source text for checker to review before checking.
+                        <ol>
+                            <li>The LEFT column is the source text. There will be green and red highlights in the text. 
+                                Green is text added by the 1st checker. Red is text deleted by the 1st checker. 
+                                If there are no green or red highlights the 1st checker did not make changes to the text.</li>
+                            <li>The RIGHT column is editable target text. Any changes made on this step by the checker will 
+                                be reflected in the next checking steps:
+                                <ul>
+                                    <li>Added text will show in green.</li>
+                                    <li>Deleted text will show in red.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </li>
+                    <li>If you see errors in spelling, punctuation, flow/naturalness, please correct it.</li>
+                    <li>Check notes for each chunk to see what questions or corrections were made from the translation process (Level 1).
+                        <ol>
+                            <li>Notes are marked by a number next to the (<span class='mdi mdi-lead-pencil'></span>) icon.</li>
+                            <li>Notes are viewed per \"chunk\", because they are carried from the translation process, which is done in chunks rather than verses.</li>
+                            <li>If you have questions or thoughts for the next checkers, you can leave a note for the chunk.</li>
+                        </ol>
+                    </li>
+                    <li>Any resources can be used for checking.</li>
+                    <li>To add or edit a footnote for this chapter:
+                        <ol>
+                            <li>To add a footnote, click in the translated text where you want to add the footnote.</li>
+                            <li>Click the footnote icon ( <i class='mdi mdi-bookmark'></i> ) on the right side of the translated text.</li>
+                            <li>Click on \"ft\" to add footnote text.</li>
+                            <li>To add an alternate text, click \"ft\" to add the text that explains the footnote, 
+                                then click \"fqa\" to add the alternate text.</li>
+                            <li>Click \"Save\" when text is added.</li>
+                            <li>You will see your added footnote in blue highlight inserted in the translated text.</li>
+                            <li>To edit the footnote, click on the footnote you want to edit and click the footnote 
+                                icon and it will pop up the window for you edit the footnote.</li>
+                            <li>To delete a footnote, click the \"x\" next to it. Click \"Save\" to save your changes.</li>
+                        </ol>
+                    </li>
+                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
+    "peer-review-l2_sun_desc" => "Temporary unavailable",
+
     "keyword-check-l2_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated text and accurately 
                                 expressed, as well as <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
                                 are used when referring to God the Father and Jesus Christ.</b></li>
@@ -1427,9 +1470,33 @@ return array (
                                 icon (<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add the note and click save.</li>
                             <li>When all highlighted words have been checked, click \"Yes, I did\" and \"{step}\".</li>",
 
-    "peer-review-l2" => "Discrepancies",
-    "peer-review-l2_full" => "Discussion of Discrepancies",
-    "peer-review-l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with a peer 
+    "keyword-check-l2_chk_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated text and accurately 
+                                expressed, as well as <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
+                                are used when referring to God the Father and Jesus Christ.</b></li>
+                            <li><b>LENGTH:</b> Spend about 10 minutes on this step.</li>
+                            <li><b>The point is not word for word translation, it is to see if the word/meaning is 
+                                represented in the text in a way that is grammatically and culturally appropriate in the target language.</b></li>
+                            <li>This step will be faster if you use a mouse instead of a touchpad.</li>
+                            <li>The LEFT column is the source text with yellow highlighted words.
+                                <ol>
+                                    <li>The checker should click on each yellow highlighted word.</li>
+                                    <li>A message will pop up that says, \"Click 'Yes' if this keyword is in target text 
+                                        and accurate. Otherwise click 'No'. The keyword is: _____.</li>
+                                    <li>If the keyword is represented correctly click 'YES' and the highlighting will disappear.</li>
+                                    <li>If the keyword is not represented correctly click 'No' and the highlighting will stay. 
+                                        Click the note icon (<span class='mdi mdi-lead-pencil'></span>) next 
+                                        to the chunk and add a note regarding the incorrect word and click save.</li>
+                                </ol>
+                            </li>
+                            <li>The RIGHT column is target text and cannot be edited. Any changes to keywords should 
+                                be added to the notes by clicking the note icon 
+                                (<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add a note.</li>
+                            <li>Any resources can be used.	</li>
+                            <li>If there are additional thoughts or questions about the translation, click the note 
+                                icon (<span class='mdi mdi-lead-pencil'></span>) next to the chunk and add the note and click save.</li>
+                            <li>When all highlighted words have been checked, click \"Yes, I did\" and \"{step}\".</li>",
+
+    "content-review-l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with a peer 
                             checker while <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
                             are used when referring to God the Father and Jesus Christ.</b></li>
                         <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
@@ -1468,7 +1535,7 @@ return array (
                             <ol>
                                 <li>To add a footnote, click in the translated text where you want to add the footnote.</li>
                                 <li>Click the footnote icon ( <i class='mdi mdi-bookmark'></i> ) on the right side of the translated text.</li>
-                                <li>Click on “ft\" to add footnote text.</li>
+                                <li>Click on \"ft\" to add footnote text.</li>
                                 <li>To add an alternate text, click \"ft\" to add the text that explains the footnote, 
                                     then click \"fqa\" to add the alternate text.</li>
                                 <li>Click \"Save\" when text is added.</li>
@@ -1480,7 +1547,7 @@ return array (
                         </li>
                         <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
-    "peer-review-l2_chk_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with 
+    "content-review-l2_chk_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy and discuss discrepancies with 
                                 a peer checker while <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
                                 are used when referring to God the Father and Jesus Christ.</b></li>
                             <li><b>LENGTH:</b> Spend about 30 minutes on this step.</li>
@@ -1596,6 +1663,7 @@ return array (
                             a note on the chunk noting the disagreement. It will be resolved in the next step.</li>
                         <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
+    "peer-review_sun" => "Peer Review",
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
     "peer-review_obs" => "Pastor Review",

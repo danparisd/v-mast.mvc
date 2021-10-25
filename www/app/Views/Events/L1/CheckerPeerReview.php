@@ -104,7 +104,6 @@ if(empty($error) && empty($data["success"])):
                 </div>
             </div>
 
-            <?php //if(empty($error)):?>
             <div class="main_content_footer row">
                 <form action="" method="post" id="checker_submit">
                     <div class="form-group">
@@ -118,7 +117,6 @@ if(empty($error) && empty($data["success"])):
                 </form>
                 <div class="step_right chk"><?php echo __("step_num", ["step_number" => 6])?></div>
             </div>
-            <?php //endif; ?>
         </div>
     </div>
 </div>
@@ -170,7 +168,6 @@ if(empty($error) && empty($data["success"])):
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" width="100" height="100">
             <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" width="280" height="280">
-            
         </div>
 
         <div class="tutorial_content is_checker_page_help">

@@ -64,67 +64,61 @@ if(!isset($error)):
                         <div class="manage_chapters_buttons" data-chapter="<?php echo $chapter ?>"
                                 data-member="<?php echo !empty($chapData) ? $chapData["l2memberID"] : "" ?>">
                             <?php
-                            $snd = !empty($chapData["sndCheck"])
-                                && array_key_exists($chapter, $chapData["sndCheck"])
-                                && $chapData["sndCheck"][$chapter]["memberID"] > 0;
-                            $p1 = !empty($chapData["peer1Check"])
-                                && array_key_exists($chapter, $chapData["peer1Check"])
-                                && $chapData["peer1Check"][$chapter]["memberID"] > 0;
-                            $p2 = !empty($chapData["peer2Check"])
-                                && array_key_exists($chapter, $chapData["peer2Check"])
-                                && $chapData["peer2Check"][$chapter]["memberID"] > 0;
+                            $peer = !empty($chapData["peerCheck"])
+                                && array_key_exists($chapter, $chapData["peerCheck"])
+                                && $chapData["peerCheck"][$chapter]["memberID"] > 0;
+                            $kw = !empty($chapData["kwCheck"])
+                                && array_key_exists($chapter, $chapData["kwCheck"])
+                                && $chapData["kwCheck"][$chapter]["memberID"] > 0;
+                            $cr = !empty($chapData["crCheck"])
+                                && array_key_exists($chapter, $chapData["crCheck"])
+                                && $chapData["crCheck"][$chapter]["memberID"] > 0;
 
-                            $sndName = "unknown";
-                            $p1Name = "unknown";
-                            $p2Name = "unknown";
+                            $peerName = "unknown";
+                            $kwName = "unknown";
+                            $crName = "unknown";
 
-                            if ($snd) {
-                                $member = $members->find($chapData["sndCheck"][$chapter]["memberID"]);
-                                $sndName = $member
+                            if ($peer) {
+                                $member = $members->find($chapData["peerCheck"][$chapter]["memberID"]);
+                                $peerName = $member
                                     ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
-                                    : $chapData["sndCheck"][$chapter]["memberID"];
+                                    : $chapData["peerCheck"][$chapter]["memberID"];
                             }
-                            if ($p1) {
-                                $member = $members->find($chapData["peer1Check"][$chapter]["memberID"]);
-                                $p1Name = $member
+                            if ($kw) {
+                                $member = $members->find($chapData["kwCheck"][$chapter]["memberID"]);
+                                $kwName = $member
                                     ? $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
-                                    : $chapData["peer1Check"][$chapter]["memberID"];
+                                    : $chapData["kwCheck"][$chapter]["memberID"];
                             }
-                            if ($p2) {
-                                $member = $members->find($chapData["peer2Check"][$chapter]["memberID"]);
-                                $p2Name = $member ?
+                            if ($cr) {
+                                $member = $members->find($chapData["crCheck"][$chapter]["memberID"]);
+                                $crName = $member ?
                                     $member->firstName . " " . mb_substr($member->lastName, 0, 1)."."
-                                    : $chapData["peer2Check"][$chapter]["memberID"];
+                                    : $chapData["crCheck"][$chapter]["memberID"];
                             }
                             ?>
-                            <?php if($snd): ?>
+                            <?php if($peer): ?>
                                 <div class="glyphicon glyphicon-menu-hamburger checker_remove_button"
                                      data-chapter="<?php echo $chapter?>"
                                      data-shown="0"></div>
                                 <div class="checker_remove_menu" data-chapter="<?php echo $chapter?>">
                                     <div class="remove_menu_title"><?php echo __("remove_checker") ?></div>
-                                    <button class="btn btn-danger remove_checker_alt" id="snd_checker"
-                                            data-name="<?php echo $sndName ?>"
-                                            data-level="<?php echo $chapData["sndCheck"][$chapter]["done"] ?>"
-                                            <?php echo $p1 ? "disabled" : "" ?>>
-                                        <?php
-                                        if ($event->project->bookProject == "sun") {
-                                            echo __("l2_sun_snd_checker");
-                                        } else {
-                                            echo __("l2_snd_checker");
-                                        }
-                                        ?>
+                                    <button class="btn btn-danger remove_checker_alt" id="peer_checker"
+                                            data-name="<?php echo $peerName ?>"
+                                            data-level="<?php echo $chapData["peerCheck"][$chapter]["done"] ?>"
+                                            <?php echo $kw ? "disabled" : "" ?>>
+                                        <?php echo __("bible_peer_checker"); ?>
                                     </button>
-                                    <?php if($p1): ?>
-                                        <button class="btn btn-danger remove_checker_alt" id="p1_checker"
-                                                data-name="<?php echo $p1Name ?>"
-                                                <?php echo $p2 ? "disabled" : "" ?>>
-                                            <?php echo __("l2_p1_checker") ?>
+                                    <?php if($kw): ?>
+                                        <button class="btn btn-danger remove_checker_alt" id="kw_checker"
+                                                data-name="<?php echo $kwName ?>"
+                                                <?php echo $cr ? "disabled" : "" ?>>
+                                            <?php echo __("bible_keyword_checker") ?>
                                         </button>
-                                        <?php if($p2): ?>
-                                            <button class="btn btn-danger remove_checker_alt" id="p2_checker"
-                                                    data-name="<?php echo $p2Name ?>">
-                                                <?php echo __("l2_p2_checker") ?>
+                                        <?php if($cr): ?>
+                                            <button class="btn btn-danger remove_checker_alt" id="cr_checker"
+                                                    data-name="<?php echo $crName ?>">
+                                                <?php echo __("bible_vbv_checker") ?>
                                             </button>
                                         <?php endif; ?>
                                     <?php endif; ?>
@@ -187,10 +181,9 @@ if(!isset($error)):
                                         <?php
                                         // Skip None step
                                         if($step == EventCheckSteps::NONE) continue;
-                                        if(EventCheckSteps::enum($step, $mode) > 3) continue;
 
                                         $add = "";
-                                        if ($step == EventCheckSteps::FST_CHECK && $event->project->bookProject == "sun") {
+                                        if ($step == EventCheckSteps::SELF_CHECK && $event->project->bookProject == "sun") {
                                             $add = "_sun";
                                         }
 
@@ -208,7 +201,7 @@ if(!isset($error)):
                             <div class="col-sm-6">
                                 <?php
                                 $showButton = false;
-                                if($member->pivot->step == EventCheckSteps::PEER_REVIEW_L2)
+                                if($member->pivot->step == EventCheckSteps::CONTENT_REVIEW)
                                 {
                                     if($member["checkerID"] > 0)
                                         $showButton = true;

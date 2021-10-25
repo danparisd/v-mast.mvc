@@ -165,8 +165,6 @@ if(isset($data["error"])) return;
 
                 if(ta.length > 0) {
                     var t_height = ta.outerHeight();
-                    console.log(p_height);
-                    console.log(t_height);
                     ta.outerHeight(Math.max(p_height, t_height));
                     $(this).outerHeight(Math.max(p_height, t_height));
                 }
@@ -185,7 +183,9 @@ if(isset($data["error"])) return;
             }
 
             $(".obs_chunk").css("height", "initial");
-            autosize.update($(".vnote textarea"));
+            setTimeout(function () {
+                autosize.update($(".vnote textarea"));
+            }, 500);
             equal_verses_height();
         });
     });

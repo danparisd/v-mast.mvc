@@ -1,9 +1,10 @@
 <?php
 if(isset($data["error"])) return;
 
+use Helpers\Constants\EventCheckSteps;
 use Helpers\Constants\EventMembers;
 ?>
-<div class="comment_div panel panel-default">
+<div class="comment_div panel panel-default font_sun">
     <div class="panel-heading">
         <h1 class="panel-title"><?php echo __("write_note_title")?></h1>
         <span class="editor-close btn btn-success" data-level="2"><?php echo __("save") ?></span>
@@ -23,13 +24,8 @@ use Helpers\Constants\EventMembers;
     <div class="footnote_window">
         <div class="fn_preview"></div>
         <div class="fn_buttons" dir="<?php echo $data["event"][0]->sLangDir ?>">
-            <!--<button class="btn btn-default" data-fn="fr" title="footnote text">fr</button>-->
             <button class="btn btn-default" data-fn="ft" title="footnote text">ft</button>
-            <!--<button class="btn btn-default" data-fn="fq" title="footnote translation quotation">fq</button>-->
             <button class="btn btn-default" data-fn="fqa" title="footnote alternate translation">fqa</button>
-            <!--<button class="btn btn-default" data-fn="fk" title="footnote keyword">fk</button>-->
-            <!--<button class="btn btn-default" data-fn="fl" title="footnote label text">fl</button>-->
-            <!--<button class="btn btn-link" data-fn="link">Footnotes Specification</button>-->
         </div>
         <div class="fn_builder"></div>
     </div>
@@ -37,15 +33,12 @@ use Helpers\Constants\EventMembers;
 
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
-        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 3]) . ": " . __("peer-review-l2_full")?></div>
+        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW)?></div>
     </div>
 
     <div class="" style="position: relative">
         <div class="main_content">
-            <?php if($data["event"][0]->peer == 1 && $data["event"][0]->checkerID == 0): ?>
-                <div class="alert alert-success check_request"><?php echo __("check_request_sent_success") ?></div>
-            <?php endif; ?>
-            <form action="" id="<?php echo $data["event"][0]->peer == 1 ? "main_form" : "checker_submit" ?>" method="post" >
+            <form action="" id="checker_submit" method="post" >
                 <div class="main_content_text" dir="<?php echo $data["event"][0]->sLangDir ?>">
                     <h4><?php echo $data["event"][0]->tLang." - "
                             .__($data["event"][0]->bookProject)." - "
@@ -63,10 +56,21 @@ use Helpers\Constants\EventMembers;
 
                     <div id="target_scripture_content" class="my_content shown">
                         <div class="no_padding">
+                            <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                                <div class="sun_mode">
+                                    <label>
+                                        <input type="checkbox" autocomplete="off" checked
+                                               data-toggle="toggle"
+                                               data-width="100"
+                                               data-on="SUN"
+                                               data-off="BACKSUN" />
+                                    </label>
+                                </div>
+                            <?php endif; ?>
                             <?php foreach($data["chunks"] as $key => $chunk) : ?>
                                 <div class="row chunk_block no_autosize">
                                     <div class="flex_container">
-                                        <div class="chunk_verses flex_left" dir="<?php echo $data["event"][0]->sLangDir ?>">
+                                        <div class="chunk_verses flex_left font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->sLangDir ?>">
                                             <?php $verses = $data["translation"][$key][EventMembers::TRANSLATOR]["verses"]; ?>
                                             <?php foreach ($verses as $verse => $text): ?>
                                                 <p class="verse_text" data-verse="<?php echo $verse; ?>">
@@ -77,29 +81,17 @@ use Helpers\Constants\EventMembers;
                                                 </p>
                                             <?php endforeach; ?>
                                         </div>
-                                        <div class="flex_middle editor_area" dir="<?php echo $data["event"][0]->tLangDir ?>">
+                                        <div class="flex_middle editor_area font_<?php echo $data["event"][0]->targetLang ?>" dir="<?php echo $data["event"][0]->tLangDir ?>">
                                             <?php
                                             $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
                                             ?>
                                             <div class="vnote">
                                                 <?php foreach($verses as $verse => $text): ?>
                                                     <div class="verse_block flex_chunk" data-verse="<?php echo $verse; ?>"
-                                                         style="<?php if($data["event"][0]->peer == 2) echo "margin-bottom: 10px;" ?>">
-                                                        <?php if($data["event"][0]->peer == 1): ?>
-                                                            <span class="verse_number_l2"><?php echo $verse?></span>
-                                                            <textarea style="min-width: 400px;" name="chunks[<?php echo $key ?>][<?php echo $verse ?>]"
-                                                                      class="peer_verse_ta textarea"
-                                                                      data-orig-verse="<?php echo $verse ?>"><?php echo $text; ?></textarea>
-
-                                                            <span class="editFootNote mdi mdi-bookmark"
-                                                                  style="margin-top: -5px"
-                                                                  title="<?php echo __("write_footnote_title") ?>"></span>
-                                                        <?php else: ?>
-                                                            <p>
-                                                                <strong><sup><?php echo $verse?></sup></strong>
-                                                                <span class="targetVerse" data-orig-verse="<?php echo $verse ?>"><?php echo preg_replace("/(\\\\f(?:.*?)\\\\f\\*)/", "<span class='footnote'>$1</span>", $text); ?></span>
-                                                            </p>
-                                                        <?php endif; ?>
+                                                         style="margin-bottom: 10px;">
+                                                        <p>
+                                                            <span class="targetVerse" data-orig-verse="<?php echo $verse ?>"><?php echo preg_replace("/(\\\\f(?:.*?)\\\\f\\*)/", "<span class='footnote'>$1</span>", $text); ?></span>
+                                                        </p>
                                                     </div>
                                                 <?php endforeach; ?>
                                             </div>
@@ -117,7 +109,7 @@ use Helpers\Constants\EventMembers;
                                                 <div class="comments">
                                                     <?php if(array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]])): ?>
                                                         <?php foreach($data["comments"][$data["currentChapter"]][$key] as $comment): ?>
-                                                            <?php if($comment->memberID == $data["event"][0]->myChkMemberID
+                                                            <?php if($comment->memberID == $data["event"][0]->checkerID
                                                                 && $comment->level == 2): ?>
                                                                 <div class="my_comment"><?php echo $comment->text; ?></div>
                                                             <?php else: ?>
@@ -185,17 +177,14 @@ use Helpers\Constants\EventMembers;
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <input type="hidden" name="level" value="l2continue">
-                    <input type="hidden" name="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
-                    <input type="hidden" name="memberID" value="<?php echo $data["event"][0]->l2memberID ?>">
-                    <input type="hidden" name="skip_kw" value="0">
+                    <input type="hidden" name="level" value="l2">
                     <button id="next_step" type="submit" name="submit_chk" class="btn btn-primary" disabled>
                         <?php echo __($data["next_step"])?>
                     </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
-            <div class="step_right alt"></div>
+            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 3])?></div>
         </div>
     </div>
 </div>
@@ -204,35 +193,26 @@ use Helpers\Constants\EventMembers;
     <div id="help_hide" class="glyphicon glyphicon-chevron-left"> <?php echo __("help") ?></div>
 
     <div class="help_float">
-        <div class="help_info_steps is_checker_page_help <?php echo $data["event"][0]->peer == 2 ? "isPeer" : "" ?>">
+        <div class="help_info_steps is_checker_page_help isPeer">
             <div class="help_name_steps">
-                <span><?php echo __("peer-review-l2")?></span>
+                <?php echo __("step_num", ["step_number" => 3])?>: <span><?php echo __(EventCheckSteps::PEER_REVIEW)?></span>
             </div>
             <div class="help_descr_steps">
                 <ul>
-                    <?php if ($data["event"][0]->peer == 1): ?>
-                        <?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?>
-                    <?php else: ?>
-                        <?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?>
-                    <?php endif; ?>
+                    <?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?>
                 </ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
 
-        <div class="event_info is_checker_page_help <?php echo $data["event"][0]->peer == 2 ? "isPeer" : "" ?>">
+        <div class="event_info is_checker_page_help isPeer">
             <div class="participant_info">
                 <div class="participant_name">
                     <span><?php echo __("your_checker") ?>:</span>
-                    <span class="checker_name_span">
-                            <?php echo $data["event"][0]->checkerFName !== null
-                                ? $data["event"][0]->checkerFName . " "
-                                . mb_substr($data["event"][0]->checkerLName, 0, 1)."."
-                                : __("not_available") ?>
-                        </span>
+                    <span><?php echo $data["event"][0]->firstName . " " . mb_substr($data["event"][0]->lastName, 0, 1)."." ?></span>
                 </div>
                 <div class="additional_info">
-                    <a href="/events/information-l2/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
+                    <a href="/events/information-revision/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -241,7 +221,11 @@ use Helpers\Constants\EventMembers;
             <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
             <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
             <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
-            <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
+            <?php else: ?>
+                <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -263,14 +247,10 @@ use Helpers\Constants\EventMembers;
             <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" width="280px" height="280px">
         </div>
 
-        <div class="tutorial_content <?php echo $data["event"][0]->peer == 2 ? "is_checker_page_help" : "" ?>">
-            <h3><?php echo __("peer-review-l2_full")?></h3>
+        <div class="tutorial_content is_checker_page_help">
+            <h3><?php echo __(EventCheckSteps::PEER_REVIEW)?></h3>
             <ul>
-                <?php if ($data["event"][0]->peer == 1): ?>
-                    <?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?>
-                <?php else: ?>
-                    <?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?>
-                <?php endif; ?>
+                <?php echo __("peer-review-l2_chk_desc", ["step" => __($data["next_step"])])?>
             </ul>
         </div>
     </div>
@@ -280,18 +260,6 @@ use Helpers\Constants\EventMembers;
 <script type="text/javascript" src="<?php echo template_url("js/diff.js?7")?>"></script>
 <script>
     (function() {
-        $(".my_tab").click(function () {
-            var inter = setInterval(function() {
-                if($("#target_scripture_content").is(":visible"))
-                {
-                    if(typeof autosize == "function")
-                        autosize.update($('textarea'));
-                    clearInterval(inter);
-                }
-            }, 10);
-            return false;
-        });
-
         setTimeout(function() {
             equal_verses_height();
         }, 500);
@@ -304,15 +272,6 @@ use Helpers\Constants\EventMembers;
             $(".verse_text").each(function() {
                 var verse = $(this).data("verse");
                 var p_height = $(this).outerHeight();
-                var ta = $(".verse_block[data-verse="+verse+"] textarea");
-
-                <?php if($data["event"][0]->peer == 1): ?>
-                if(ta.length > 0) {
-                    var t_height = ta.outerHeight();
-                    ta.outerHeight(Math.max(p_height, t_height));
-                    $(this).outerHeight(Math.max(p_height, t_height));
-                }
-                <?php else: ?>
                 var p = $(".verse_block[data-verse="+verse+"]");
 
                 if(p.length > 0) {
@@ -320,7 +279,6 @@ use Helpers\Constants\EventMembers;
                     p.outerHeight(Math.max(p_height, t_height));
                     $(this).outerHeight(Math.max(p_height, t_height));
                 }
-                <?php endif; ?>
             });
         }
 
@@ -344,14 +302,28 @@ use Helpers\Constants\EventMembers;
 
             diff_plain($(this).text(), unEscapeStr(chkText), $(this));
         });
+
+        $(".sun_mode input").change(function () {
+            var active = $(this).prop('checked');
+
+            if (active) {
+                $(".flex_left, .flex_middle").removeClass("font_backsun");
+                $(".flex_left, .flex_middle").addClass("font_sgn-US-symbunot");
+            } else {
+                $(".flex_left, .flex_middle").removeClass("font_sgn-US-symbunot");
+                $(".flex_left, .flex_middle").addClass("font_backsun");
+            }
+
+            $(".verse_text").css("height", "initial");
+            equal_verses_height();
+        });
     })();
 
     isLevel2 = true;
-</script>
-<?php if($data["event"][0]->peer == 2): ?>
-<script>
+
     isChecker = true;
     disableHighlight = true;
+
     $("#next_step").click(function (e) {
         renderConfirmPopup(Language.checkerConfirmTitle, Language.checkerConfirm,
             function () {
@@ -369,7 +341,6 @@ use Helpers\Constants\EventMembers;
                 $( this ).dialog("close");
             });
 
-            e.preventDefault();
+        e.preventDefault();
     });
 </script>
-<?php endif; ?>

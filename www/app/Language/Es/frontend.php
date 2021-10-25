@@ -105,7 +105,7 @@ return array(
     "skip_keywords_message" => "It seems like there some keywords left in this chapter. Make sure that the chapter is clear. When you are ready to approve this step, click \"Yes\"",
     "resource_not_found" => "The resource is not found.",
     "vmast" => "8 Steps VMAST",
-    "l2" => "Level 2 Check",
+    "l2" => "Revision",
     "l3" => "Level 3 Check",
     "tn" => "Translation Notes",
     "tq" => "Translation Questions",

@@ -87,7 +87,7 @@ class ManageController extends Controller {
 
             $this->_notifications = $this->_model->getNotifications();
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsOther());
-            $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsL2());
+            $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsRevision());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsL3());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsSun());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsRadio());
@@ -259,7 +259,7 @@ class ManageController extends Controller {
             ->shares("error", @$error);
     }
 
-    public function manageL2($eventID)
+    public function manageRevision($eventID)
     {
         $event = $this->eventRepo->get($eventID);
 
@@ -292,9 +292,9 @@ class ManageController extends Controller {
                 $tmp["l2memberID"] = $chapter["l2memberID"];
                 $tmp["chunks"] = json_decode($chapter["chunks"], true);
                 $tmp["l2checked"] = $chapter["l2checked"];
-                $tmp["sndCheck"] = (array)json_decode($chapter["sndCheck"], true);
-                $tmp["peer1Check"] = (array)json_decode($chapter["peer1Check"], true);
-                $tmp["peer2Check"] = (array)json_decode($chapter["peer2Check"], true);
+                $tmp["peerCheck"] = (array)json_decode($chapter["peerCheck"], true);
+                $tmp["kwCheck"] = (array)json_decode($chapter["kwCheck"], true);
+                $tmp["crCheck"] = (array)json_decode($chapter["crCheck"], true);
 
                 $tmpChapters[$chapter["chapter"]] = $tmp;
             }
@@ -304,12 +304,10 @@ class ManageController extends Controller {
             if (isset($_POST) && !empty($_POST)) {
                 if (!empty(array_filter($tmpChapters))) {
                     $updated = $this->_model->updateEvent(
-                        array(
-                            "state" => EventStates::L2_CHECK,
-                            /*"dateFrom" => date("Y-m-d H:i:s", time())*/),
-                        array("eventID" => $eventID));
+                        ["state" => EventStates::L2_CHECK],
+                        ["eventID" => $eventID]);
                     if ($updated)
-                        Url::redirect("events/manage-l2/" . $eventID);
+                        Url::redirect("events/manage-revision/" . $eventID);
                 } else {
                     $error[] = __("event_chapters_error");
                 }
@@ -318,7 +316,7 @@ class ManageController extends Controller {
             $error[] = __("empty_or_not_permitted_event_error");
         }
 
-        return View::make('Events/ManageL2')
+        return View::make('Events/ManageRevision')
             ->shares("title", __("manage_event"))
             ->shares("data", $data)
             ->shares("event", $event)
@@ -728,45 +726,46 @@ class ManageController extends Controller {
                         $chap["l2memberID"] = $chapters[0]["l2memberID"];
                         $chap["chunks"] = json_decode($chapters[0]["chunks"], true);
                         $chap["l2checked"] = $chapters[0]["l2checked"];
-                        $chap["sndCheck"] = (array)json_decode($chapters[0]["sndCheck"], true);
-                        $chap["peer1Check"] = (array)json_decode($chapters[0]["peer1Check"], true);
-                        $chap["peer2Check"] = (array)json_decode($chapters[0]["peer2Check"], true);
+                        $chap["peerCheck"] = (array)json_decode($chapters[0]["peerCheck"], true);
+                        $chap["kwCheck"] = (array)json_decode($chapters[0]["kwCheck"], true);
+                        $chap["crCheck"] = (array)json_decode($chapters[0]["crCheck"], true);
 
-                        $p1 = !empty($chap["peer1Check"])
-                            && array_key_exists($chapter, $chap["peer1Check"])
-                            && $chap["peer1Check"][$chapter]["memberID"] > 0;
-                        $p2 = !empty($chap["peer2Check"])
-                            && array_key_exists($chapter, $chap["peer2Check"])
-                            && $chap["peer2Check"][$chapter]["memberID"] > 0;
+                        $peer = !empty($chap["peerCheck"])
+                            && array_key_exists($chapter, $chap["peerCheck"])
+                            && $chap["peerCheck"][$chapter]["memberID"] > 0;
+                        $kw = !empty($chap["kwCheck"])
+                            && array_key_exists($chapter, $chap["kwCheck"])
+                            && $chap["kwCheck"][$chapter]["memberID"] > 0;
+                        $cr = !empty($chap["crCheck"])
+                            && array_key_exists($chapter, $chap["crCheck"])
+                            && $chap["crCheck"][$chapter]["memberID"] > 0;
 
                         switch ($mode) {
-                            case "snd_checker":
-                                if (!$p1) {
-                                    $chap["sndCheck"][$chapter]["memberID"] = 0;
-                                    $chap["sndCheck"][$chapter]["done"] = 0;
-                                    unset($chap["peer1Check"][$chapter]);
-                                    unset($chap["peer2Check"][$chapter]);
+                            case "peer_checker":
+                                if (!$kw) {
+                                    $chap["peerCheck"][$chapter]["memberID"] = 0;
+                                    $chap["peerCheck"][$chapter]["done"] = 0;
+                                    unset($chap["kwCheck"][$chapter]);
+                                    unset($chap["crCheck"][$chapter]);
                                 } else {
                                     $response["error"] = __("wrong_parameters");
                                 }
                                 break;
 
-                            case "p1_checker":
-                                if (!$p2) {
-                                    $chap["peer1Check"][$chapter]["memberID"] = 0;
-                                    $chap["peer1Check"][$chapter]["done"] = 0;
-                                    $chap["peer2Check"][$chapter]["memberID"] = 0;
-                                    $chap["peer2Check"][$chapter]["done"] = 0;
+                            case "kw_checker":
+                                if (!$cr) {
+                                    $chap["kwCheck"][$chapter]["memberID"] = 0;
+                                    $chap["kwCheck"][$chapter]["done"] = 0;
+                                    unset($chap["crCheck"][$chapter]);
                                 } else {
                                     $response["error"] = __("wrong_parameters");
                                 }
                                 break;
 
-                            case "p2_checker":
-                                if ($p2) {
-                                    $chap["peer1Check"][$chapter]["done"] = 0;
-                                    $chap["peer2Check"][$chapter]["memberID"] = 0;
-                                    $chap["peer2Check"][$chapter]["done"] = 0;
+                            case "cr_checker":
+                                if ($cr) {
+                                    $chap["crCheck"][$chapter]["done"] = 0;
+                                    $chap["crCheck"][$chapter]["memberID"] = 0;
                                 } else {
                                     $response["error"] = __("wrong_parameters");
                                 }
@@ -779,9 +778,9 @@ class ManageController extends Controller {
 
                         if (!isset($response["error"])) {
                             $postData = [
-                                "sndCheck" => json_encode($chap["sndCheck"]),
-                                "peer1Check" => json_encode($chap["peer1Check"]),
-                                "peer2Check" => json_encode($chap["peer2Check"]),
+                                "peerCheck" => json_encode($chap["peerCheck"]),
+                                "kwCheck" => json_encode($chap["kwCheck"]),
+                                "crCheck" => json_encode($chap["crCheck"]),
                             ];
 
                             $event->checkersL2()->updateExistingPivot($memberID, $postData);
@@ -1244,7 +1243,7 @@ class ManageController extends Controller {
                             // Check if chapter has translations
                             $hasTranslations = !empty($translations);
 
-                            // Check if chapter has L2 translations
+                            // Check if chapter has revision translations
                             if ($manageMode == "l2") {
                                 $trVerses = (array)json_decode($translations[0]->translatedVerses);
                                 $l2Verses = $trVerses[EventMembers::L2_CHECKER];
@@ -1389,7 +1388,7 @@ class ManageController extends Controller {
                                     "chapter" => $chapter
                                 ]);
 
-                                if ($checkerL2->pivot->step == EventCheckSteps::NONE) {
+                                if ($checkerL2->step == EventCheckSteps::NONE) {
                                     $event->checkersL2()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
                                 }
                                 $response["success"] = true;
@@ -1411,7 +1410,7 @@ class ManageController extends Controller {
                                     "chapter" => $chapter
                                 ]);
 
-                                if ($checkerL3->pivot->step == EventCheckSteps::NONE) {
+                                if ($checkerL3->step == EventCheckSteps::NONE) {
                                     $event->checkersL3()->updateExistingPivot($memberID, ["step" => EventCheckSteps::PRAY]);
                                 }
                                 $response["success"] = true;

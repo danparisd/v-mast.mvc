@@ -26,9 +26,21 @@ use Helpers\Constants\EventMembers;
                 </ul>
 
                 <div id="target_scripture_content" class="my_content shown">
+                    <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                        <div class="sun_mode">
+                            <label>
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
+                                       data-width="100"
+                                       data-on="SUN"
+                                       data-off="BACKSUN" />
+                            </label>
+                        </div>
+                    <?php endif; ?>
+
                     <?php foreach ($data["translation"] as $translation): ?>
                         <?php foreach ($translation[EventMembers::TRANSLATOR]["verses"] as $verse => $text): ?>
-                            <p><?php echo "<strong><sup>".$verse."</sup></strong> ".preg_replace("/(\\\\f(?:.*?)\\\\f\\*)/", "<span class='footnote'>$1</span>", $text); ?></p>
+                            <p class="target_content font_<?php echo $data["event"][0]->targetLang ?>"><?php echo "<strong><sup>".$verse."</sup></strong> ".preg_replace("/(\\\\f(?:.*?)\\\\f\\*)/", "<span class='footnote'>$1</span>", $text); ?></p>
                         <?php endforeach; ?>
                     <?php endforeach; ?>
                 </div>
@@ -72,13 +84,18 @@ use Helpers\Constants\EventMembers;
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/information-l2/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
+                    <a href="/events/information-revision/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
 
         <div class="tr_tools">
-            <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+
+            <?php if (str_contains($data["event"][0]->targetLang, "sgn")): ?>
+                <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
+            <?php else: ?>
+                <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -101,3 +118,19 @@ use Helpers\Constants\EventMembers;
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $(".sun_mode input").change(function () {
+            var active = $(this).prop('checked');
+
+            if (active) {
+                $(".target_content").removeClass("font_backsun");
+                $(".target_content").addClass("font_sgn-US-symbunot");
+            } else {
+                $(".target_content").removeClass("font_sgn-US-symbunot");
+                $(".target_content").addClass("font_backsun");
+            }
+        });
+    });
+</script>

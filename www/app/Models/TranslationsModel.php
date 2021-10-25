@@ -182,38 +182,6 @@ class TranslationsModel extends Model
         return $builder->get();
     }
 
-    public function getLastEventTranslation($trID)
-    {
-        $builder = $this->db->table("translations")
-            ->where("trID", $trID)
-            ->orderBy("tID", "desc")
-            ->limit(1);
-
-        return $builder->get();
-    }
-
-    /** Get all translations with event
-     * @return array|static[]
-     */
-    public function getAllTranslations()
-    {
-        return $this->db->table("events")
-            ->select([
-                "events.eventID",
-                "events.chapters",
-                "translations.translateDone",
-                "translations.sort",
-                "translations.chapter",
-                "translations.chunk",
-                "events.state"])
-            ->leftJoin("translations", "translations.eventID", "=", "events.eventID")
-            ->orderBy("events.eventID")
-            ->orderBy("translations.sort")
-            ->orderBy("translations.chapter")
-            ->orderBy("translations.chunk")
-            ->get();
-    }
-
     public function getSources() {
         return $this->db->table("sources")
             ->leftJoin("languages", "languages.langID", "=", "sources.langID")

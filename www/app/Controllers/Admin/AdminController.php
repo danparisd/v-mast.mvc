@@ -1848,24 +1848,18 @@ class AdminController extends Controller {
                     $l2chID = 0;
                     if($level == 2) {
                         // Create new checker
-                        $sndCheckData = [];
-                        $peerCheckData = [];
+                        $checkData = [];
                         for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                         {
-                            if ($project->bookProject == "sun") {
-                                $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
-                            } else {
-                                $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
-                                $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
-                            }
+                            $checkData[$i] = ["memberID" => $member->memberID, "done" => 2];
                         }
 
                         $l2chData = array(
                             "step" => EventSteps::NONE,
                             "currentChapter" => 0,
-                            "sndCheck" => json_encode($sndCheckData),
-                            "peer1Check" => json_encode($peerCheckData),
-                            "peer2Check" => json_encode($peerCheckData)
+                            "peerCheck" => json_encode($checkData),
+                            "kwCheck" => json_encode($checkData),
+                            "crCheck" => json_encode($checkData)
                         );
                         $event->checkersL2()->attach($member, $l2chData);
                         $checkerL2 = $member->checkersL2->where("eventID", $eventID, false)->first();
@@ -1883,10 +1877,10 @@ class AdminController extends Controller {
                                     "verses" => $chunk
                                 ],
                                 EventMembers::L2_CHECKER => [
-                                    "verses" => $level == 2 ? $chunk : array()
+                                    "verses" => $level == 2 ? $chunk : []
                                 ],
                                 EventMembers::L3_CHECKER => [
-                                    "verses" => array()
+                                    "verses" => []
                                 ],
                             ];
 
@@ -1985,32 +1979,26 @@ class AdminController extends Controller {
 
                         if($event->state == EventStates::TRANSLATED && $level == 2)
                         {
-                            // Create new level 2 checker
-                            $sndCheckData = [];
-                            $peerCheckData = [];
+                            // Create new revision checker
+                            $checkData = [];
                             for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                             {
-                                if ($project->bookProject == "sun") {
-                                    $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
-                                } else {
-                                    $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
-                                    $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
-                                }
+                                $checkData[$i] = ["memberID" => $member->memberID, "done" => 2];
                             }
 
                             $l2chData = array(
                                 "step" => EventSteps::NONE,
                                 "currentChapter" => 0,
-                                "sndCheck" => json_encode($sndCheckData),
-                                "peer1Check" => json_encode($peerCheckData),
-                                "peer2Check" => json_encode($peerCheckData)
+                                "peerCheck" => json_encode($checkData),
+                                "kwCheck" => json_encode($checkData),
+                                "crCheck" => json_encode($checkData)
                             );
 
                             $event->checkersL2()->attach($member, $l2chData);
                             $checkerL2 = $member->checkersL2->where("eventID", $eventID, false)->first();
                             $l2chID = $checkerL2->l2chID;
 
-                            // Assign chapters to new level 2 checker
+                            // Assign chapters to new revision checker
                             foreach ($chapters as $chapter) {
                                 $this->_eventsModel->updateChapter([
                                     "l2memberID" => $member->memberID,

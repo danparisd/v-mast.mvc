@@ -2167,18 +2167,27 @@ function setEventMenuLinks(event, level) {
                 $(".event_links_l2").hide();
                 $(".event_links_l3").hide();
 
-                if(level > 1)
-                {
-                    for(var i=2;i<=level;i++) {
-                        $(".event_links_l" + i).show();
-                        $(".event_links_l" + i + " .event_progress a")
+                switch (level) {
+                    case 2:
+                        $(".event_links_l2").show();
+                        $(".event_links_l2 .event_progress a")
                             .attr(
                                 "href",
-                                "/events/information" + (mode === "sun" ? "-sun" : "") + "-l" + i + "/" + event.eventID
+                                "/events/information" + (mode === "sun" ? "-sun" : "") + "-revision/" + event.eventID
                             );
-                        $(".event_links_l" + i + " .event_manage a")
-                            .attr("href", "/events/manage-l" + i + "/" + event.eventID);
-                    }
+                        $(".event_links_l2 .event_manage a")
+                            .attr("href", "/events/manage-revision/" + event.eventID);
+                        break;
+                    case 3:
+                        $(".event_links_l3").show();
+                        $(".event_links_l3 .event_progress a")
+                            .attr(
+                                "href",
+                                "/events/information" + (mode === "sun" ? "-sun" : "") + "-l3/" + event.eventID
+                            );
+                        $(".event_links_l3 .event_manage a")
+                            .attr("href", "/events/manage-l3/" + event.eventID);
+                        break;
                 }
             }
             break;

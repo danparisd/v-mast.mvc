@@ -561,18 +561,25 @@ class DemoController extends Controller {
             ->shares("data", $data);
     }
 
-    public function demoL2($page = null)
+    public function demoRevision($page = null)
     {
         if (!isset($page))
-            Url::redirect("events/demo-l2/pray");
+            Url::redirect("events/demo-revision/pray");
 
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $notifObj = new stdClass();
 
-            if ($i == 0)
-                $notifObj->step = EventCheckSteps::SND_CHECK;
-            else
-                $notifObj->step = EventCheckSteps::PEER_REVIEW_L2;
+            switch ($i) {
+                case 0:
+                    $notifObj->step = EventCheckSteps::PEER_REVIEW;
+                    break;
+                case 1:
+                    $notifObj->step = EventCheckSteps::KEYWORD_CHECK;
+                    break;
+                case 2:
+                    $notifObj->step = EventCheckSteps::CONTENT_REVIEW;
+                    break;
+            }
 
             $notifObj->currentChapter = 2;
             $notifObj->firstName = "Mark";
@@ -593,57 +600,70 @@ class DemoController extends Controller {
         $data["isCheckerPage"] = true;
         $data["next_step"] = EventCheckSteps::PRAY;
 
-        $view = View::make("Events/L2/Demo/DemoHeader");
+        $view = View::make("Events/Revision/Demo/DemoHeader");
         $data["step"] = "";
 
         switch ($page) {
             case "pray":
-                $view->nest("page", "Events/L2/Demo/Pray");
+                $view->nest("page", "Events/Revision/Demo/Pray");
                 $data["step"] = EventCheckSteps::PRAY;
                 $data["next_step"] = EventCheckSteps::CONSUME;
                 break;
 
             case "consume":
-                $view->nest("page", "Events/L2/Demo/Consume");
+                $view->nest("page", "Events/Revision/Demo/Consume");
                 $data["step"] = EventCheckSteps::CONSUME;
-                $data["next_step"] = EventCheckSteps::FST_CHECK;
+                $data["next_step"] = EventCheckSteps::SELF_CHECK;
                 break;
 
-            case "fst_check":
-                $view->nest("page", "Events/L2/Demo/FstCheck");
-                $data["step"] = EventCheckSteps::FST_CHECK;
+            case "self_check":
+                $view->nest("page", "Events/Revision/Demo/SelfCheck");
+                $data["step"] = EventCheckSteps::SELF_CHECK;
+                $data["next_step"] = EventCheckSteps::PEER_REVIEW;
+                break;
+
+            case "peer_review":
+                $view->nest("page", "Events/Revision/Demo/PeerReview");
+                $data["step"] = EventCheckSteps::PEER_REVIEW;
+                $data["next_step"] = EventCheckSteps::KEYWORD_CHECK;
+                break;
+
+            case "peer_review_checker":
+                $view->nest("page", "Events/Revision/Demo/PeerReviewChecker");
+                $data["step"] = EventCheckSteps::PEER_REVIEW;
+                $data["next_step"] = "continue_alt";
+                unset($data["isCheckerPage"]);
+                break;
+
+            case "keyword_check":
+                $view->nest("page", "Events/Revision/Demo/KeywordCheck");
+                $data["step"] = EventCheckSteps::KEYWORD_CHECK;
+                $data["next_step"] = EventCheckSteps::CONTENT_REVIEW;
+                break;
+
+            case "keyword_check_checker":
+                $view->nest("page", "Events/Revision/Demo/KeywordCheckChecker");
+                $data["step"] = EventCheckSteps::KEYWORD_CHECK;
+                $data["next_step"] = "continue_alt";
+                unset($data["isCheckerPage"]);
+                break;
+
+            case "content_review":
+                $view->nest("page", "Events/Revision/Demo/ContentReview");
+                $data["step"] = EventCheckSteps::CONTENT_REVIEW;
                 $data["next_step"] = "continue_alt";
                 break;
 
-            case "snd_check":
-                $view->nest("page", "Events/L2/Demo/SndCheck");
-                $data["step"] = EventCheckSteps::SND_CHECK;
-                $data["next_step"] = EventCheckSteps::KEYWORD_CHECK_L2;
-                break;
-
-            case "keyword_check_l2":
-                $view->nest("page", "Events/L2/Demo/KeywordCheck");
-                $data["step"] = EventCheckSteps::KEYWORD_CHECK_L2;
-                $data["next_step"] = "continue_alt";;
-                break;
-
-            case "peer_review_l2":
-                $view->nest("page", "Events/L2/Demo/PeerReview");
-                $data["step"] = EventCheckSteps::PEER_REVIEW_L2;
-                $data["next_step"] = "continue_alt";
-                break;
-
-            case "peer_review_l2_checker":
-                $view->nest("page", "Events/L2/Demo/PeerReviewChecker");
-                $data["step"] = EventCheckSteps::PEER_REVIEW_L2;
+            case "content_review_checker":
+                $view->nest("page", "Events/Revision/Demo/ContentReviewChecker");
+                $data["step"] = EventCheckSteps::CONTENT_REVIEW;
                 $data["next_step"] = "continue_alt";
                 unset($data["isCheckerPage"]);
                 break;
 
             case "information":
-                return View::make("Events/L2/Demo/Information")
+                return View::make("Events/Revision/Demo/Information")
                     ->shares("title", __("event_info"));
-                break;
         }
 
         return $view
@@ -903,13 +923,13 @@ class DemoController extends Controller {
             ->shares("data", $data);
     }
 
-    public function demoSunL2($page = null)
+    public function demoSunRevision($page = null)
     {
         if (!isset($page))
-            Url::redirect("events/demo-sun-l2/pray");
+            Url::redirect("events/demo-sun-revision/pray");
 
         $notifObj = new stdClass();
-        $notifObj->step = EventCheckSteps::SND_CHECK . "_sun";
+        $notifObj->step = EventCheckSteps::PEER_REVIEW . "_sun";
         $notifObj->currentChapter = 2;
         $notifObj->firstName = "Mark";
         $notifObj->lastName = "Patton";
@@ -935,36 +955,36 @@ class DemoController extends Controller {
         $data["totalVerses"] = 26;
         $data["targetLang"] = "en";
 
-        $view = View::make("Events/L2Sun/Demo/DemoHeader");
+        $view = View::make("Events/RevisionSun/Demo/DemoHeader");
         $data["step"] = "";
 
         switch ($page) {
             case "pray":
-                $view->nest("page", "Events/L2Sun/Demo/Pray");
+                $view->nest("page", "Events/RevisionSun/Demo/Pray");
                 $data["step"] = EventCheckSteps::PRAY;
                 $data["next_step"] = EventCheckSteps::CONSUME;
                 break;
 
             case "consume":
-                $view->nest("page", "Events/L2Sun/Demo/Consume");
+                $view->nest("page", "Events/RevisionSun/Demo/Consume");
                 $data["step"] = EventCheckSteps::CONSUME;
-                $data["next_step"] = EventCheckSteps::FST_CHECK . "_sun";
+                $data["next_step"] = EventCheckSteps::SELF_CHECK . "_sun";
                 break;
 
             case "fst_check":
-                $view->nest("page", "Events/L2Sun/Demo/FstCheck");
-                $data["step"] = EventCheckSteps::FST_CHECK;
+                $view->nest("page", "Events/RevisionSun/Demo/FstCheck");
+                $data["step"] = EventCheckSteps::SELF_CHECK;
                 $data["next_step"] = "continue_alt";
                 break;
 
             case "snd_check":
-                $view->nest("page", "Events/L2Sun/Demo/SndCheck");
-                $data["step"] = EventCheckSteps::SND_CHECK;
+                $view->nest("page", "Events/RevisionSun/Demo/SndCheck");
+                $data["step"] = EventCheckSteps::PEER_REVIEW;
                 $data["next_step"] = "continue_alt";
                 break;
 
             case "information":
-                return View::make("Events/L2Sun/Demo/Information")
+                return View::make("Events/RevisionSun/Demo/Information")
                     ->shares("title", __("event_info"));
                 break;
         }

@@ -93,8 +93,8 @@ if(!isset($error)):
                                 <div class="section_step <?php echo $chapter["fstChk"]["state"] ?>">
                                     <div class="step_status"><?php echo __("step_status_" . $chapter["fstChk"]["state"]) ?></div>
                                     <div class="step_light"></div>
-                                    <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventCheckSteps::FST_CHECK.".png") ?>"></div>
-                                    <div class="step_name">2. <?php echo __(EventCheckSteps::FST_CHECK . "_sun"); ?></div>
+                                    <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventCheckSteps::SELF_CHECK.".png") ?>"></div>
+                                    <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK . "_sun"); ?></div>
                                 </div>
 
                                 <div class="section_step chk">
@@ -104,8 +104,8 @@ if(!isset($error)):
                                 <div class="section_step chk <?php echo $chapter["sndChk"]["state"] ?>">
                                     <div class="step_status"><?php echo __("step_status_" . $chapter["sndChk"]["state"]) ?></div>
                                     <div class="step_light"></div>
-                                    <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventCheckSteps::SND_CHECK.".png") ?>"></div>
-                                    <div class="step_name">3. <?php echo __(EventCheckSteps::SND_CHECK . "_sun"); ?></div>
+                                    <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventCheckSteps::PEER_REVIEW.".png") ?>"></div>
+                                    <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun"); ?></div>
                                     <?php if($chapter["sndChk"]["state"] == StepsStates::WAITING): ?>
                                         <img class="img_waiting" src="<?php echo template_url("img/waiting.png") ?>">
                                     <?php endif; ?>

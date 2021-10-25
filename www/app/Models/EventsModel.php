@@ -116,10 +116,13 @@ class EventsModel extends Model
 
         $events = $this->db->select($sql, $prepare);
         $filtered = [];
+        $eventAdmins = [];
 
         foreach ($events as $event) {
-            $eventObj = Event::find($event->eventID);
-            $event->admins = $eventObj->admins;
+            if (empty($eventAdmins)) {
+                $eventAdmins = $this->eventRepo->get($event->eventID)->admins;
+            }
+            $event->admins = $eventAdmins;
 
             $checkingSteps = [
                 EventSteps::PEER_REVIEW,
@@ -197,7 +200,7 @@ class EventsModel extends Model
         return $filtered;
     }
 
-    private function modifiedCheckerEvent($event, $chapter, $data, $step) {
+    private function modifiedCheckerEvent($event, $chapter, $data, $step, $manageMode = "l1") {
         $ev = clone $event;
 
         $checkerFName = null;
@@ -225,7 +228,7 @@ class EventsModel extends Model
         $ev->checkerFName = $checkerFName;
         $ev->checkerLName = $checkerLName;
 
-        $chapters = $this->getChapters($event->eventID, $event->myMemberID, $chapter); // Should be one
+        $chapters = $this->getChapters($event->eventID, $event->myMemberID, $chapter, $manageMode); // Should be one
         $chunks = !empty($chapters) ? $chapters[0]["chunks"] : "";
         $ev->chunks = $chunks;
 
@@ -277,8 +280,11 @@ class EventsModel extends Model
         $eventAdmins = [];
 
         foreach ($events as $event) {
-            if (empty($eventAdmins)) $eventAdmins = $this->eventRepo->get($event->eventID)->admins;
+            if (empty($eventAdmins)) {
+                $eventAdmins = $this->eventRepo->get($event->eventID)->admins;
+            }
             $event->admins = $eventAdmins;
+
             $peerCheck = (array)json_decode($event->peerCheck, true);
             $kwCheck = (array)json_decode($event->kwCheck, true);
             $crCheck = (array)json_decode($event->crCheck, true);
@@ -739,15 +745,14 @@ class EventsModel extends Model
 
 
     /**
-     * Get all events of a L2 checker or specific event
+     * Get all events of a revision checker or specific event
      * @param $memberID
      * @param null $eventID
      * @return array
      */
-    public function getCheckerL2Events($memberID, $eventID = null)
+    public function getCheckerRevisionEvents($memberID, $eventID = null)
     {
-        $sql = "SELECT checkers.l2chID, checkers.memberID, checkers.step, " .
-            "checkers.currentChapter, checkers.sndCheck, checkers.peer1Check, checkers.peer2Check, " .
+        $sql = "SELECT checkers.*, " .
             "(SELECT COUNT(*) FROM ".PREFIX."checkers_l2 AS all_chkrs WHERE all_chkrs.eventID = checkers.eventID ) AS currChkrs, " .
             "evnt.eventID, evnt.state, evnt.bookCode, evnt.dateFrom, evnt.langInput, " .
             "evnt.dateTo, " .
@@ -784,14 +789,120 @@ class EventsModel extends Model
 
 
     /**
-     * Get L2 checker event/s
-     * @param $memberID 2nd Checker member ID
+     * Get all events of a member or specific event
+     * @param $memberID
+     * @param null $eventID
+     * @param null $chapter
+     * @param bool $includeCheckers
+     * @param bool $includeFinished
+     * @param bool $includeNone
+     * @return array
+     */
+    public function getRevisionMemberEvents(
+        $memberID,
+        $eventID = null,
+        $chapter = null,
+        $includeCheckers = false,
+        $includeNone = true
+    ) {
+        $sql = "SELECT chks.*, chks.memberID AS myMemberID, members.userName, members.firstName, " .
+            "members.lastName, evnt.bookCode, evnt.state, " .
+            "evnt.dateFrom, evnt.dateTo, " .
+            "t_lang.langName AS tLang, s_lang.langName AS sLang, " .
+            "book_info.name AS name, book_info.sort, " .
+            "projects.sourceLangID, projects.bookProject, " .
+            "projects.tnLangID, projects.tqLangID, projects.twLangID, " .
+            "projects.sourceBible, projects.gwLang, " .
+            "projects.targetLang, projects.resLangID, " .
+            "t_lang.direction as tLangDir, s_lang.direction as sLangDir, " .
+            "book_info.chaptersNum, projects.projectID, " .
+            "chapters.chunks " .
+            "FROM " . PREFIX . "checkers_l2 AS chks " .
+            "LEFT JOIN " . PREFIX . "chapters AS chapters ON chks.eventID = chapters.eventID AND chks.currentChapter = chapters.chapter ".
+            "LEFT JOIN " . PREFIX . "members AS members ON chks.memberID = members.memberID " .
+            "LEFT JOIN " . PREFIX . "events AS evnt ON evnt.eventID = chks.eventID " .
+            "LEFT JOIN " . PREFIX . "projects AS projects ON projects.projectID = evnt.projectID " .
+            "LEFT JOIN " . PREFIX . "languages AS t_lang ON projects.targetLang = t_lang.langID " .
+            "LEFT JOIN " . PREFIX . "languages AS s_lang ON projects.sourceLangID = s_lang.langID " .
+            "LEFT JOIN " . PREFIX . "book_info AS book_info ON evnt.bookCode = book_info.code " .
+            "WHERE chks.l2chID != 0 " .
+            ($memberID ? " AND chks.memberID = :memberID " : " ") .
+            ($eventID ? "AND chks.eventID = :eventID " : " ") .
+            "ORDER BY tLang, book_info.sort";
+
+        $prepare = array();
+        if (!is_null($memberID))
+            $prepare[":memberID"] = $memberID;
+
+        if (!is_null($eventID))
+            $prepare[":eventID"] = $eventID;
+
+        $events = $this->db->select($sql, $prepare);
+        $filtered = [];
+        $eventAdmins = [];
+
+        foreach ($events as $event) {
+            if (empty($eventAdmins)) {
+                $eventAdmins = $this->eventRepo->get($event->eventID)->admins;
+            }
+            $event->admins = $eventAdmins;
+
+            $checkingSteps = [
+                EventCheckSteps::PEER_REVIEW,
+                EventCheckSteps::KEYWORD_CHECK,
+                EventCheckSteps::CONTENT_REVIEW
+            ];
+            $excludedSteps = [];
+            if (!$includeNone) {
+                $excludedSteps[] = EventCheckSteps::NONE;
+            }
+            $checkingSteps = array_merge($checkingSteps, $excludedSteps);
+            $inChecking = !in_array($event->step, $checkingSteps);
+
+            if ($inChecking && !isset($chapter)) {
+                $event->checkerID = 0;
+                $filtered[] = $event;
+            }
+
+            $peerCheck = (array)json_decode($event->peerCheck, true);
+            $kwCheck = (array)json_decode($event->kwCheck, true);
+            $crCheck = (array)json_decode($event->crCheck, true);
+
+            foreach ($peerCheck as $chap => $data) {
+                if ($data["done"] < 2 && $includeCheckers && (!isset($chapter) || $chapter == $chap)) {
+                    $ev = $this->modifiedCheckerEvent($event, $chap, $data, EventCheckSteps::PEER_REVIEW, "l2");
+                    $filtered[] = $ev;
+                }
+            }
+
+            foreach ($kwCheck as $chap => $data) {
+                if ($data["done"] < 2 && $includeCheckers && (!isset($chapter) || $chapter == $chap)) {
+                    $ev = $this->modifiedCheckerEvent($event, $chap, $data, EventCheckSteps::KEYWORD_CHECK, "l2");
+                    $filtered[] = $ev;
+                }
+            }
+
+            foreach ($crCheck as $chap => $data) {
+                if ($data["done"] < 2 && $includeCheckers && (!isset($chapter) || $chapter == $chap)) {
+                    $ev = $this->modifiedCheckerEvent($event, $chap, $data, EventCheckSteps::CONTENT_REVIEW, "l2");
+                    $filtered[] = $ev;
+                }
+            }
+        }
+
+        return $filtered;
+    }
+
+
+    /**
+     * Get approving revision checker event/s
+     * @param int $memberID Approver Checker member ID
      * @param null $eventID
      * @param null $chkMemberID 1st Checker member ID
      * @param null $chapter
      * @return array
      */
-    public function getMemberEventsForCheckerL2($memberID, $eventID = null, $chkMemberID = null, $chapter = null)
+    public function getMemberEventsForRevisionChecker($memberID, $eventID = null, $chkMemberID = null, $chapter = null)
     {
         $prepare = [];
         if ($eventID)
@@ -829,110 +940,73 @@ class EventsModel extends Model
         $eventAdmins = [];
 
         foreach ($events as $event) {
-            // First Check events
-            if (empty($eventAdmins)) $eventAdmins = $this->eventRepo->get($event->eventID)->admins;
-            $event->admins = $eventAdmins;
-            if ($event->memberID == $memberID
-                && $event->step != EventCheckSteps::NONE
-                && ($chapter == null || $chapter == $event->currentChapter)) {
-                $filtered[] = $event;
+            if (empty($eventAdmins[$event->eventID])) {
+                $eventAdmins[$event->eventID] = $this->eventRepo->get($event->eventID)->admins;
+            }
+            $event->admins = $eventAdmins[$event->eventID];
+
+            $peerCheck = (array)json_decode($event->peerCheck, true);
+            foreach ($peerCheck as $chap => $data) {
+                // Exclude finished events
+                if ($data["done"] > 0) continue;
+                // Exclude other checkers events
+                if ($data["memberID"] != $memberID) continue;
+                // Filter to specific chapter
+                if ($chapter && $chapter != $chap) continue;
+
+                $chapters = $this->getChapters($event->eventID, $event->memberID, $chapter); // Should be one
+                $chunks = !empty($chapters) ? $chapters[0]["chunks"] : "";
+
+                $ev = clone $event;
+                $ev->step = EventCheckSteps::PEER_REVIEW;
+                $ev->currentChapter = $chap;
+                $ev->checkerID = $data["memberID"];
+                $ev->chunks = $chunks;
+                $filtered[] = $ev;
             }
 
-            // Second Check events
-            $sndCheck = (array)json_decode($event->sndCheck, true);
-            foreach ($sndCheck as $chap => $data) {
-                if (!isset($chapter) || $chapter == $chap) {
-                    $done = in_array($event->bookProject, ["ulb","udb"]) ? 2 : 1;
+            $kwCheck = (array)json_decode($event->kwCheck, true);
+            foreach ($kwCheck as $chap => $data) {
+                // Exclude translator's events
+                if ($event->memberID == $memberID) continue;
+                // Exclude finished events
+                if ($data["done"] > 0) continue;
+                // Exclude other checkers events
+                if ($data["memberID"] != $memberID) continue;
+                // Filter to secific chapter
+                if ($chapter && $chapter != $chap) continue;
 
-                    if ($data["memberID"] == $memberID && $data["done"] != $done) {
-                        $ev = clone $event;
+                $chapters = $this->getChapters($event->eventID, $event->memberID, $chapter); // Should be one
+                $chunks = !empty($chapters) ? $chapters[0]["chunks"] : "";
 
-                        $ev->step = $data["done"] == 0 ?
-                            EventCheckSteps::SND_CHECK :
-                            EventCheckSteps::KEYWORD_CHECK_L2;
-                        $ev->currentChapter = $chap;
-                        $ev->l2memberID = $ev->memberID;
-                        $ev->myMemberID = 0;
-                        $ev->myChkMemberID = $memberID;
-                        $ev->isContinue = true; // Means not owner of chapter
-                        $filtered[] = $ev;
-                    }
-                }
+                $ev = clone $event;
+                $ev->step = EventSteps::KEYWORD_CHECK;
+                $ev->currentChapter = $chap;
+                $ev->checkerID = $data["memberID"];
+                $ev->chunks = $chunks;
+                $filtered[] = $ev;
             }
 
-            // Peer Check events
-            $peer1Check = (array)json_decode($event->peer1Check, true);
-            $peer2Check = (array)json_decode($event->peer2Check, true);
-            foreach ($peer1Check as $chap => $data) {
-                if (!isset($chapter) || $chapter == $chap) {
-                    if ($data["memberID"] == $memberID && $data["done"] == 0) {
-                        $ev = clone $event;
-                        $checkerFName = null;
-                        $checkerLName = null;
-                        $checkerID = 0;
+            $crCheck = (array)json_decode($event->crCheck, true);
+            foreach ($crCheck as $chap => $data) {
+                // Exclude translator's events
+                if ($event->memberID == $memberID) continue;
+                // Exclude finished events
+                if ($data["done"] > 0) continue;
+                // Exclude other checkers events
+                if ($data["memberID"] != $memberID) continue;
+                // Filter to secific chapter
+                if ($chapter && $chapter != $chap) continue;
 
-                        if ($peer2Check[$chap]["memberID"] != 0) {
-                            $memberModel = new MembersModel();
-                            $member = $memberModel->getMember([
-                                "firstName",
-                                "lastName"
-                            ], ["memberID", $peer2Check[$chap]["memberID"]]);
-                            if (!empty($member)) {
-                                $checkerFName = $member[0]->firstName;
-                                $checkerLName = $member[0]->lastName;
-                                $checkerID = $peer2Check[$chap]["memberID"];
-                            }
-                        }
+                $chapters = $this->getChapters($event->eventID, $event->memberID, $chapter); // Should be one
+                $chunks = !empty($chapters) ? $chapters[0]["chunks"] : "";
 
-                        $ev->step = EventCheckSteps::PEER_REVIEW_L2;
-                        $ev->currentChapter = $chap;
-                        $ev->peer = 1;
-                        $ev->l2memberID = $ev->memberID;
-                        $ev->memberID = $memberID;
-                        $ev->myMemberID = $peer1Check[$chap]["memberID"];
-                        $ev->myChkMemberID = $memberID;
-                        $ev->checkerFName = $checkerFName;
-                        $ev->checkerLName = $checkerLName;
-                        $ev->checkerID = $checkerID;
-                        $ev->isContinue = true;
-                        $filtered[] = $ev;
-                    }
-                }
-            }
-
-            foreach ($peer2Check as $chap => $data) {
-                if (!isset($chapter) || $chapter == $chap) {
-                    if ($data["memberID"] == $memberID && $data["done"] == 0) {
-                        $ev = clone $event;
-                        $checkerFName = null;
-                        $checkerLName = null;
-                        $checkerID = 0;
-
-                        $memberModel = new MembersModel();
-                        $member = $memberModel->getMember([
-                            "firstName",
-                            "lastName"
-                        ], ["memberID", $peer1Check[$chap]["memberID"]]);
-                        if (!empty($member)) {
-                            $checkerFName = $member[0]->firstName;
-                            $checkerLName = $member[0]->lastName;
-                            $checkerID = $peer1Check[$chap]["memberID"];
-                        }
-
-                        $ev->step = EventCheckSteps::PEER_REVIEW_L2;
-                        $ev->currentChapter = $chap;
-                        $ev->peer = 2;
-                        $ev->l2memberID = $ev->memberID;
-                        $ev->memberID = $peer1Check[$chap]["memberID"];
-                        $ev->myMemberID = $memberID;
-                        $ev->myChkMemberID = $memberID;
-                        $ev->checkerFName = $checkerFName;
-                        $ev->checkerLName = $checkerLName;
-                        $ev->checkerID = $checkerID;
-                        $ev->isContinue = true;
-                        $filtered[] = $ev;
-                    }
-                }
+                $ev = clone $event;
+                $ev->step = EventSteps::CONTENT_REVIEW;
+                $ev->currentChapter = $chap;
+                $ev->checkerID = $data["memberID"];
+                $ev->chunks = $chunks;
+                $filtered[] = $ev;
             }
         }
 
@@ -1266,11 +1340,11 @@ class EventsModel extends Model
             ->get();
     }
 
-    public function getMembersForL2Event($eventID)
+    public function getMembersForRevisionEvent($eventID)
     {
         $this->db->setFetchMode(PDO::FETCH_ASSOC);
         $builder = $this->db->table("checkers_l2")
-            ->select("checkers_l2.*", "members.userName", "members.firstName", "members.lastName", "checkers_l2.peer2Check")
+            ->select("checkers_l2.*", "members.userName", "members.firstName", "members.lastName")
             ->leftJoin("members", "checkers_l2.memberID", "=", "members.memberID")
             ->where("checkers_l2.eventID", $eventID);
 
@@ -1431,7 +1505,7 @@ class EventsModel extends Model
                     return $elm->memberID;
                 }, $peer3Check)));
 
-                // Translators/L2 checkers/L3 checkers
+                // Translators/Revision checkers/L3 checkers
                 if ($lastEventID != $participant->eventID) {
                     $chapters = $this->getChapters($participant->eventID, null, null, null);
 
@@ -1716,10 +1790,10 @@ class EventsModel extends Model
     }
 
     /**
-     * Get notifications for Level 2 events
+     * Get notifications for revision events
      * @return array
      */
-    public function getNotificationsL2()
+    public function getNotificationsRevision()
     {
         $sql = "SELECT chks.*, " .
             PREFIX . "members.userName, " . PREFIX . "members.firstName, " . PREFIX . "members.lastName, " .
@@ -1743,40 +1817,45 @@ class EventsModel extends Model
         $notifs = [];
 
         foreach ($notifications as $notification) {
-            // Second check notifications
             if ($notification->memberID != Session::get("memberID")) {
-                $sndCheck = (array)json_decode($notification->sndCheck, true);
-                foreach ($sndCheck as $chapter => $data) {
+                $notification->manageMode = "l2";
+
+                $peerCheck = (array)json_decode($notification->peerCheck, true);
+                $kwCheck = (array)json_decode($notification->kwCheck, true);
+                $crCheck = (array)json_decode($notification->crCheck, true);
+
+                foreach ($peerCheck as $chapter => $data) {
                     // Exclude taken chapters
                     if ($data["memberID"] > 0) continue;
 
-                    $notif = clone $notification;
-                    $notif->step = EventCheckSteps::SND_CHECK;
-                    $notif->currentChapter = $chapter;
-                    $notif->manageMode = "l2";
-                    $notifs[] = $notif;
-                }
-            }
-
-            // Peer check notifications
-            $peer1Check = (array)json_decode($notification->peer1Check, true);
-            $peer2Check = (array)json_decode($notification->peer2Check, true);
-            foreach ($peer1Check as $chapter => $data) {
-                // Exclude taken chapters
-                if ($data["memberID"] > 0) {
-                    if (array_key_exists($chapter, $peer2Check)) {
-                        $p2 = $peer2Check[$chapter];
-                        if ($p2["memberID"] > 0
-                            || $data["memberID"] == Session::get("memberID"))
-                            continue;
-                    }
+                    $note = clone $notification;
+                    $note->currentChapter = $chapter;
+                    $note->step = EventCheckSteps::PEER_REVIEW;
+                    $note->checkerID = 0;
+                    $notifs[] = $note;
                 }
 
-                $notif = clone $notification;
-                $notif->step = EventCheckSteps::PEER_REVIEW_L2;
-                $notif->currentChapter = $chapter;
-                $notif->manageMode = "l2";
-                $notifs[] = $notif;
+                foreach ($kwCheck as $chapter => $data) {
+                    // Exclude taken chapters
+                    if ($data["memberID"] > 0) continue;
+
+                    $note = clone $notification;
+                    $note->currentChapter = $chapter;
+                    $note->step = EventCheckSteps::KEYWORD_CHECK;
+                    $note->checkerID = 0;
+                    $notifs[] = $note;
+                }
+
+                foreach ($crCheck as $chapter => $data) {
+                    // Exclude taken chapters
+                    if ($data["memberID"] > 0) continue;
+
+                    $note = clone $notification;
+                    $note->currentChapter = $chapter;
+                    $note->step = EventCheckSteps::CONTENT_REVIEW;
+                    $note->checkerID = 0;
+                    $notifs[] = $note;
+                }
             }
         }
 
@@ -2083,7 +2162,7 @@ class EventsModel extends Model
     }
 
     /**
-     * Add member as new Level 2 checker for event
+     * Add member as new Revision checker for event
      * @param array $data
      * @return string
      */
@@ -2143,7 +2222,7 @@ class EventsModel extends Model
     }
 
     /**
-     * Update L2 Checker
+     * Update Revision Checker
      * @param array $data
      * @param array $where
      * @return int

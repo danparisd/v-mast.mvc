@@ -9,9 +9,9 @@ use App\Domain\AnyL3Progress;
 use App\Domain\ObsProgress;
 use App\Domain\OdbSunProgress;
 use App\Domain\RadioProgress;
-use App\Domain\ScriptureL2Progress;
+use App\Domain\ScriptureRevisionProgress;
 use App\Domain\ScriptureProgress;
-use App\Domain\SunL2Progress;
+use App\Domain\SunRevisionProgress;
 use App\Domain\SunProgress;
 use App\Domain\TnProgress;
 use App\Domain\TqProgress;
@@ -95,7 +95,7 @@ class InformationController extends Controller {
 
             $this->_notifications = $this->_model->getNotifications();
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsOther());
-            $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsL2());
+            $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsRevision());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsL3());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsSun());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsRadio());
@@ -611,7 +611,7 @@ class InformationController extends Controller {
         }
     }
 
-    public function informationL2($eventID)
+    public function informationRevision($eventID)
     {
         $isXhr = false;
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
@@ -626,10 +626,6 @@ class InformationController extends Controller {
         $data["isAdmin"] = false;
 
         if ($event) {
-            if (!in_array($event->project->bookProject, ["ulb", "udb"])) {
-                Url::redirect("events/");
-            }
-
             if (!$this->canViewInfo($event)) {
                 if (!$isXhr)
                     $error[] = __("empty_or_not_permitted_event_error");
@@ -652,7 +648,7 @@ class InformationController extends Controller {
         }
 
         if (!isset($error)) {
-            $data = array_merge($data, ScriptureL2Progress::calculateEventProgress($event));
+            $data = array_merge($data, ScriptureRevisionProgress::calculateEventProgress($event));
             $members = $data["members"];
 
             $admins = array_keys($event->admins->getDictionary());
@@ -694,7 +690,7 @@ class InformationController extends Controller {
         $data["newNewsCount"] = $this->_newNewsCount;
 
         if (!$isXhr) {
-            return View::make('Events/L2/Information')
+            return View::make('Events/Revision/Information')
                 ->shares("title", __("event_info"))
                 ->shares("data", $data)
                 ->shares("event", $event)
@@ -705,7 +701,7 @@ class InformationController extends Controller {
             $response["progress"] = $data["overall_progress"];
             $response["admins"] = $data["admins"];
             $response["members"] = $data["members"];
-            $response["html"] = View::make("Events/L2/GetInfo")
+            $response["html"] = View::make("Events/Revision/GetInfo")
                 ->shares("data", $data)
                 ->renderContents();
 
@@ -911,7 +907,7 @@ class InformationController extends Controller {
         }
     }
 
-    public function informationSunL2($eventID)
+    public function informationSunRevision($eventID)
     {
         $isXhr = false;
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
@@ -952,7 +948,7 @@ class InformationController extends Controller {
         }
 
         if (!isset($error)) {
-            $data = array_merge($data, SunL2Progress::calculateEventProgress($event));
+            $data = array_merge($data, SunRevisionProgress::calculateEventProgress($event));
             $members = $data["members"];
 
             $admins = array_keys($event->admins->getDictionary());
@@ -994,7 +990,7 @@ class InformationController extends Controller {
         $data["newNewsCount"] = $this->_newNewsCount;
 
         if (!$isXhr) {
-            return View::make('Events/L2Sun/Information')
+            return View::make('Events/RevisionSun/Information')
                 ->shares("title", __("event_info"))
                 ->shares("data", $data)
                 ->shares("event", $event)
@@ -1005,7 +1001,7 @@ class InformationController extends Controller {
             $response["progress"] = $data["overall_progress"];
             $response["admins"] = $data["admins"];
             $response["members"] = $data["members"];
-            $response["html"] = View::make("Events/L2Sun/GetInfo")
+            $response["html"] = View::make("Events/RevisionSun/GetInfo")
                 ->shares("data", $data)
                 ->renderContents();
 
