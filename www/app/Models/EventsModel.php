@@ -85,11 +85,8 @@ class EventsModel extends Model
             "(SELECT COUNT(*) FROM " . PREFIX . "translators AS all_trs WHERE all_trs.eventID = translators.eventID ) AS currTrs, " .
             "evnt.eventID, evnt.state, evnt.bookCode, evnt.dateFrom, evnt.langInput, " .
             "evnt.dateTo, " .
-            "projects.projectID, projects.bookProject, " .
-            "projects.sourceLangID, projects.gwLang, " .
-            "projects.tnLangID, projects.tqLangID, projects.twLangID, " .
-            "projects.targetLang, projects.glID, " .
-            "projects.sourceBible, t_lang.langName as tLang, chapters.chunks, " .
+            "projects.*, " .
+            "t_lang.langName as tLang, chapters.chunks, " .
             "t_lang.direction as tLangDir, projects.resLangID, res_lang.direction as resLangDir, " .
             "s_lang.langName as sLang, s_lang.direction as sLangDir, " .
             "book_info.name, book_info.sort, book_info.chaptersNum  " .
@@ -251,10 +248,7 @@ class EventsModel extends Model
             "members.lastName, evnt.bookCode, evnt.state, " .
             "t_lang.langName AS tLang, s_lang.langName AS sLang, " .
             "book_info.name AS bookName, book_info.sort, " .
-            "projects.sourceLangID, projects.bookProject, " .
-            "projects.tnLangID, projects.tqLangID, projects.twLangID, " .
-            "projects.sourceBible, projects.gwLang, " .
-            "projects.targetLang, projects.resLangID, " .
+            "projects.*, " .
             "t_lang.direction as tLangDir, s_lang.direction as sLangDir, evnt.langInput, " .
             "chapters.chunks, projects.projectID " .
             "FROM " . PREFIX . "translators AS trs " .
