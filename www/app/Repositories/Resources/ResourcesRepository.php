@@ -29,6 +29,7 @@ class ResourcesRepository implements IResourcesRepository {
     private $dcsCatalogPath;
 
     private $qaGuideUrl = "https://v-raft.com/api/rubric/";
+    private $bcUrl = "https://content.bibletranslationtools.org/WycliffeAssociates/en_bc/archive/master.zip";
 
     private $wordsDatabase = null;
     private $wordsDictionary = null;
@@ -115,6 +116,29 @@ class ResourcesRepository implements IResourcesRepository {
         if ($chapter !== null) {
             return $book[$chapter] ?? [];
         }
+
+        return $book;
+    }
+
+    public function getBc($lang, $bookSlug, $chapter = null, $toHtml = false)
+    {
+        $resource_cache_key = $lang . "_bc_" . $bookSlug . ($toHtml ? "_html" : "");
+
+        if (Cache::has($resource_cache_key)) {
+            $source = Cache::get($resource_cache_key);
+            $book = json_decode($source, true);
+        } else {
+            $book = $this->parseBc($lang, $bookSlug, $toHtml);
+            if (!empty($book)) {
+                Cache::add($resource_cache_key, json_encode($book), 365 * 24 * 7);
+            }
+        }
+
+        if ($chapter != null) {
+            return $book[$chapter] ?? [];
+        }
+
+        pr($book, true);
 
         return $book;
     }
@@ -463,11 +487,11 @@ class ResourcesRepository implements IResourcesRepository {
         }
 
         if($bookFolderPath != null)
-            $folderpath = $bookFolderPath;
+            $folderPath = $bookFolderPath;
 
-        if(!$folderpath) return $book;
+        if(!$folderPath) return $book;
 
-        $files = File::allFiles($folderpath);
+        $files = File::allFiles($folderPath);
         foreach($files as $file)
         {
             preg_match("/([0-9]{2,3}|front)\/([0-9]{2,3}|intro|index|title).(md|txt)$/i", $file, $matches);
@@ -514,6 +538,65 @@ class ResourcesRepository implements IResourcesRepository {
             ksort($elm);
             return $elm;
         }, $book);
+
+        return $book;
+    }
+
+    private function parseBc($lang, $bookslug, $toHtml = false)
+    {
+        $book = [];
+        $folderPath = $this->downloadResource($lang, "bc", $this->bcUrl);
+
+        if (!$folderPath) return $book;
+
+        $dirs = File::directories($folderPath);
+
+        $bookFolderPath = null;
+        foreach ($dirs as $dir) {
+            preg_match("/\d+-([1-3a-z]{3})$/i", $dir, $matches);
+            if (isset($matches[1]) && $matches[1] == $bookslug) {
+                $bookFolderPath = $dir;
+                break;
+            }
+        }
+
+        if ($bookFolderPath != null) {
+            $folderPath = $bookFolderPath;
+        }
+
+        if (!$folderPath) return $book;
+
+        $files = File::allFiles($folderPath);
+        foreach ($files as $file)
+        {
+            preg_match("/([0-9]{2,3}|intro).(md|txt)$/i", $file, $matches);
+
+            if (!isset($matches[1])) continue;
+
+            if ($matches[1] == "intro") $matches[1] = 0;
+
+            $chapter = (int)$matches[1];
+            $ext = strtolower($matches[2]);
+
+            if (!isset($book[$chapter]))
+                $book[$chapter] = [];
+
+            $content = File::get($file);
+
+            if ($ext == "txt") {
+                $content = $this->jsonToMarkdown($content);
+            }
+
+            if ($toHtml) {
+                $parsedown = new Parsedown();
+                $content = $parsedown->text($content);
+                $content = preg_replace("//", "", $content);
+            }
+
+            $book[$chapter] = $content;
+        }
+
+        ksort($book);
 
         return $book;
     }
