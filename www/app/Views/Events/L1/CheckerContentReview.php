@@ -129,7 +129,7 @@ if(empty($error) && empty($data["success"])):
     <div id="help_hide" class="glyphicon glyphicon-chevron-left"> <?php echo __("help") ?></div>
 
     <div class="help_float">
-        <div class="help_info_steps is_checker_page_help>
+        <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 8])?>: </span> <?php echo __("content-review")?></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("content-review_checker_desc", ["step" => __($data["next_step"])])?></ul>
@@ -150,10 +150,21 @@ if(empty($error) && empty($data["success"])):
         </div>
 
         <div class="tr_tools">
-            <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
-            <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <div style="width: 50%; display: flex" >
+                <div>
+                    <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
+                    <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
+                    <button class="btn btn-primary ttools" data-tool="bc"><?php echo __("show_bible_commentaries") ?></button>
+                </div>
+            </div>
+
+            <div style="width: 50%; margin-block: auto">
+                <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            </div>
         </div>
     </div>
 </div>
@@ -180,6 +191,7 @@ if(empty($error) && empty($data["success"])):
 <input type="hidden" id="tn_lang" value="<?php echo $data["event"][0]->tnLangID ?>">
 <input type="hidden" id="tq_lang" value="<?php echo $data["event"][0]->tqLangID ?>">
 <input type="hidden" id="tw_lang" value="<?php echo $data["event"][0]->twLangID ?>">
+<input type="hidden" id="bc_lang" value="<?php echo $data["event"][0]->bcLangID ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["event"][0]->targetLang ?>">
 
