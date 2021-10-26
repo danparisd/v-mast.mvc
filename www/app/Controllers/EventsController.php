@@ -9947,6 +9947,23 @@ class EventsController extends Controller {
             ->renderContents();
     }
 
+    public function getBc($bookCode, $chapter, $lang)
+    {
+        $data = [];
+
+        $data["commentaries"] = $this->resourcesRepo->getBc(
+            $lang,
+            $bookCode,
+            $chapter,
+            true
+        );
+
+        $this->layout = "dummy";
+        echo View::make("Events/Tools/Bc")
+            ->shares("data", $data)
+            ->renderContents();
+    }
+
     public function getRubric($lang)
     {
         $data = [];
