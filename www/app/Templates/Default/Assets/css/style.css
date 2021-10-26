@@ -1195,11 +1195,13 @@ div.ui-datepicker {
 .tr_tools {
     margin-top: 20px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
 }
 
 .tr_tools button {
     flex: 1;
+    width: 90%;
 }
 
 .tr_tools button:not(:last-child) {
@@ -5237,6 +5239,11 @@ button.startEvnt, button.editEvnt {
 .ttools_panel.rubric_tool {
     width: 800px;
     left: calc(50% - 400px);
+}
+
+.bc_tool .bc_contents {
+    max-height: 550px;
+    overflow-y: auto;
 }
 
 .read_rubric_qualities {
