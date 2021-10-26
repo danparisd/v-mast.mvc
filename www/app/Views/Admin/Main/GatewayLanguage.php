@@ -209,6 +209,19 @@
                                     <?php endforeach; ?>
                                 </select>
                             </div>
+                            <div class="form-group toolsBc">
+                                <label for="toolsBc"><?php echo __("bc") ?></label>
+                                <select name="toolsBc" id="toolsBc" class="form-control" data-placeholder="">
+                                    <option value=""></option>
+                                    <?php foreach ($gwLangs as $lang): ?>
+                                        <option value="<?php echo $lang->langID ?>">
+                                            <?php echo "[".$lang->langID."] " . $lang->langName .
+                                                ($lang->langName != $lang->angName && $lang->angName != ""
+                                                    ? " ( ".$lang->angName." )" : ""); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
