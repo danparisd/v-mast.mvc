@@ -2288,6 +2288,8 @@ function resetProjectForm() {
     $("#toolsTq").val("en").trigger("chosen:updated");
     $(".toolsTw").removeClass("hidden");
     $("#toolsTw").val("en").trigger("chosen:updated");
+    $(".toolsBc").removeClass("hidden");
+    $("#toolsBc").val("en").trigger("chosen:updated");
 }
 
 function setProjectForm(data) {
@@ -2340,12 +2342,13 @@ function setProjectForm(data) {
             .trigger("chosen:updated");
     }
 
-    if(["tn","tq","tw"].indexOf(data.project.bookProject) > -1)
+    if(["tn","tq","tw", "bc"].indexOf(data.project.bookProject) > -1)
     {
         $("#sourceTools").val(data.project.resLangID).trigger("chosen:updated");
         $(".toolsTn").addClass("hidden");
         $(".toolsTq").addClass("hidden");
         $(".toolsTw").addClass("hidden");
+        $(".toolsBc").addClass("hidden");
     } else {
         $("#projectType")
             .val(data.project.bookProject)
@@ -2354,6 +2357,7 @@ function setProjectForm(data) {
         $("#toolsTn").val(data.project.tnLangID).trigger("chosen:updated");
         $("#toolsTq").val(data.project.tqLangID).trigger("chosen:updated");
         $("#toolsTw").val(data.project.twLangID).trigger("chosen:updated");
+        $("#toolsBc").val(data.project.bcLangID).trigger("chosen:updated");
     }
 }
 
