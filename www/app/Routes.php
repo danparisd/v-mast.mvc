@@ -244,6 +244,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("rpc/get_tq/{bookCode}/{chapter}/{lang}", "EventsController@getTq");
     Router::any("rpc/get_tw/{bookCode}/{chapter}/{lang}", "EventsController@getTw");
     Router::any("rpc/get_tn/{bookCode}/{chapter}/{lang}/{totalVerses}", "EventsController@getTn");
+    Router::any("rpc/get_bc/{bookCode}/{chapter}/{lang}", "EventsController@getBc");
     Router::any("rpc/get_rubric/{lang}", "EventsController@getRubric");
     Router::any("rpc/get_saildict/", "EventsController@getSailDict");
 });
