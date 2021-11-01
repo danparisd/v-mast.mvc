@@ -96,7 +96,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css'),
-    template_url('css/style.css?119'),
+    template_url('css/style.css?124'),
     template_url('css/jquery-ui.min.css'),
     template_url('css/jquery-ui.structure.min.css'),
     template_url('css/jquery-ui.theme.min.css'),
@@ -112,15 +112,15 @@ Assets::js([
     template_url('js/jquery.js'),
     template_url('js/jquery.actual.min.js'),
     template_url('js/unicornFormatter.js'),
-    template_url('js/main.js?112', 'Default'),
+    template_url('js/main.js?116', 'Default'),
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
-        || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?36') : ''),
+        || Session::get("isSuperAdmin") ?  template_url('js/facilitator.js?37') : ''),
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
-        || Session::get("isSuperAdmin") ?  template_url('js/admin.js?54') : ''),
+        || Session::get("isSuperAdmin") ?  template_url('js/admin.js?56') : ''),
     template_url('js/bootstrap.min.js'),
     template_url('js/autosize.min.js?3'),
     template_url('js/jquery-ui.min.js'),
@@ -179,17 +179,17 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                             <ul>
                                 <a href="/events/demo"><li><?php echo __("8steps_vmast") ?></li></a>
                                 <a href="/events/demo-scripture-input"><li><?php echo __("lang_input") ?></li></a>
-                                <a href="/events/demo-l2"><li><?php echo __("l2_l3_vmast", ["level" => 2]); ?></li></a>
+                                <a href="/events/demo-revision"><li><?php echo __("revision_vmast"); ?></li></a>
                                 <a href="/events/demo-l3"><li><?php echo __("l2_l3_vmast", ["level" => 3]); ?></li></a>
                                 <a href="/events/demo-tn"><li><?php echo __("tn") ?></li></a>
                                 <a href="/events/demo-tn-l3"><li><?php echo __("tn") . " " . __("l2_3_events", ["level" => 3]); ?></li></a>
                                 <a href="/events/demo-tq"><li><?php echo __("tq") ?></li></a>
                                 <a href="/events/demo-tw"><li><?php echo __("tw") ?></li></a>
                                 <a href="/events/demo-sun"><li><?php echo __("vsail") ?></li></a>
-                                <a href="/events/demo-sun-l2"><li><?php echo __("vsail_l2_l3", ["level" => 2]) ?></li></a>
                                 <a href="/events/demo-sun-l3"><li><?php echo __("vsail_l2_l3", ["level" => 3]) ?></li></a>
                                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
+                                <a href="/events/demo-obs"><li><?php echo __("obs") ?></li></a>
                             </ul>
                         </div>
                     </li>
@@ -216,7 +216,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                 $text_data = array(
                                     "name" => $notification->firstName . " " . mb_substr($notification->lastName, 0, 1).".",
                                     "step" => ($notification->step != "other" ? "(".__($notification->step .
-                                            (in_array($notification->bookProject, ["tq","tw"])
+                                            (in_array($notification->bookProject, ["tq","tw","obs"])
                                             && $notification->step == EventSteps::PEER_REVIEW
                                                 ? "_".$notification->bookProject : ($notification->sourceBible == "odb"
                                                     ? "_odb"
@@ -228,8 +228,11 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                             : $notification->currentChapter)),
                                     "language" => $notification->tLang,
                                     "project" => ($notification->sourceBible == "odb"
-                                        ?__($notification->sourceBible)
-                                        : __($notification->bookProject))
+                                        ? __($notification->sourceBible)
+                                        : __($notification->bookProject)),
+                                    "level" => (isset($notification->manageMode) && in_array($notification->manageMode, ["l2","l3"])
+                                        ? "(".__($notification->manageMode).")"
+                                        : "")
                                 );
 
                                 if($notification->bookProject == "tw")
@@ -239,14 +242,14 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                         );
                                 else
                                     $text = __('checker_apply', $text_data).(
-                                        in_array($notification->bookProject, ["tn", "tq"]) && $notification->manageMode != "l3"
+                                        in_array($notification->bookProject, ["tn","tq","obs"]) && $notification->manageMode != "l3"
                                             ? " (".($notification->step == "other" ? "#1" : "#2").")" : ""
                                         );
 
                                 if(!isset($data["isDemo"]))
                                 {
                                     $link = "/events/checker".(isset($notification->manageMode)
-                                        && in_array($notification->manageMode, ["sun","tn","tq","tw","rad"]) ? "-".$notification->manageMode : "")
+                                        && in_array($notification->manageMode, ["sun","tn","tq","tw","rad","obs"]) ? "-".$notification->manageMode : "")
                                         ."/".$notification->eventID."/"
                                         .$notification->memberID."/"
                                         .(!isset($notification->manageMode) && in_array($notification->bookProject, ["ulb","udb"]) ? $notification->currentChapter."/" : "")
@@ -262,7 +265,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                         $demoType = "demo-l2";
                                         $ltype = preg_replace("/_checker/", "", $type);
                                     }
-                                    elseif (isset($notification->manageMode) && in_array($notification->manageMode, ["tn","tq","tw","sun","sun-odb"]))
+                                    elseif (isset($notification->manageMode) && in_array($notification->manageMode, ["tn","tq","tw","sun","sun-odb","obs"]))
                                     {
                                         $demoType = "demo-" . $notification->manageMode;
                                         $ltype = preg_replace("/other_checker/", "pray_chk", $type);

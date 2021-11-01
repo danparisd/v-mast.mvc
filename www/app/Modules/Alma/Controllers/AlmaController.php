@@ -15,6 +15,8 @@ use App\Modules\Alma\Models\Synonym;
 use App\Modules\Alma\Models\Translation;
 use App\Modules\Alma\Models\Vote;
 use App\Modules\Alma\Models\Word;
+use App\Repositories\Event\IEventRepository;
+use App\Repositories\Resources\IResourcesRepository;
 use Input;
 use Support\Facades\DB;
 use Helpers\Session;
@@ -33,12 +35,20 @@ class AlmaController extends Controller
     private $eventsModel;
     private $apiModel;
 
-    public function __construct()
-    {
+    protected $resourcesRepo = null;
+    protected $eventRepo = null;
+
+    public function __construct(
+        IResourcesRepository $resourcesRepo,
+        IEventRepository $eventRepo
+    ) {
         parent::__construct();
         $this->translationModel = new TranslationsModel();
-        $this->eventsModel = new EventsModel();
+        $this->eventsModel = new EventsModel($eventRepo);
         $this->apiModel = new ApiModel();
+
+        $this->resourcesRepo = $resourcesRepo;
+        $this->eventRepo = $eventRepo;
     }
 
     public function index($bookCode = null)
@@ -396,16 +406,11 @@ class AlmaController extends Controller
 
     private function getBook($bookProject, $bookCode, $sourceLang, $bookNum)
     {
-        $cache_keyword = $bookCode."_".$sourceLang."_".$bookProject."_usfm";
         $bookText = __("no_source_error");
 
-		$usfm = $this->apiModel->getCachedSourceBookFromApi(
-            $bookProject, 
-            $bookCode, 
-            $sourceLang,
-            $bookNum);
+        $usfm = $this->resourcesRepo->getScripture($sourceLang, $bookProject, $bookCode, $bookNum);
 
-        if($usfm && !empty($usfm["chapters"]))
+        if(!empty($usfm))
         {
             $bookText = '<h2>'.$usfm["toc1"].'</h2>';
             foreach ($usfm["chapters"] as $chapter => $chunks) {

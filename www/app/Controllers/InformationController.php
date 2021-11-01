@@ -6,11 +6,12 @@
 namespace App\Controllers;
 
 use App\Domain\AnyL3Progress;
+use App\Domain\ObsProgress;
 use App\Domain\OdbSunProgress;
 use App\Domain\RadioProgress;
-use App\Domain\ScriptureL2Progress;
+use App\Domain\ScriptureRevisionProgress;
 use App\Domain\ScriptureProgress;
-use App\Domain\SunL2Progress;
+use App\Domain\SunRevisionProgress;
 use App\Domain\SunProgress;
 use App\Domain\TnProgress;
 use App\Domain\TqProgress;
@@ -20,6 +21,7 @@ use App\Models\ApiModel;
 use App\Models\SailDictionaryModel;
 use App\Repositories\Event\IEventRepository;
 use App\Repositories\Member\IMemberRepository;
+use App\Repositories\Resources\IResourcesRepository;
 use Helpers\Arrays;
 use Support\Facades\View;
 use Config\Config;
@@ -42,16 +44,19 @@ class InformationController extends Controller {
 
     protected $memberRepo = null;
     protected $eventRepo = null;
+    protected $resourcesRepo = null;
     private $_member;
 
     public function __construct(
         IMemberRepository $memberRepo,
-        IEventRepository $eventRepo
+        IEventRepository $eventRepo,
+        IResourcesRepository $resourcesRepo
     ) {
         parent::__construct();
 
         $this->memberRepo = $memberRepo;
         $this->eventRepo = $eventRepo;
+        $this->resourcesRepo = $resourcesRepo;
 
         if (Config::get("app.isMaintenance")
             && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips"))) {
@@ -90,7 +95,7 @@ class InformationController extends Controller {
 
             $this->_notifications = $this->_model->getNotifications();
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsOther());
-            $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsL2());
+            $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsRevision());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsL3());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsSun());
             $this->_notifications = Arrays::append($this->_notifications, $this->_model->getNotificationsRadio());
@@ -506,7 +511,7 @@ class InformationController extends Controller {
         }
     }
 
-    public function informationL2($eventID)
+    public function informationObs($eventID)
     {
         $isXhr = false;
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
@@ -521,7 +526,7 @@ class InformationController extends Controller {
         $data["isAdmin"] = false;
 
         if ($event) {
-            if (!in_array($event->project->bookProject, ["ulb", "udb"])) {
+            if ($event->project->bookProject != "obs") {
                 Url::redirect("events/");
             }
 
@@ -547,7 +552,103 @@ class InformationController extends Controller {
         }
 
         if (!isset($error)) {
-            $data = array_merge($data, ScriptureL2Progress::calculateEventProgress($event));
+            $data = array_merge($data, ObsProgress::calculateEventProgress($event));
+            $members = $data["members"];
+            $admins = array_keys($event->admins->getDictionary());
+
+            $empty = array_fill(0, sizeof($admins), "");
+            $adminsArr = array_combine($admins, $empty);
+
+            $members += $adminsArr;
+            $membersData = $this->memberRepo->all()->filter(function($m) use ($members) {
+                return array_key_exists($m->memberID, $members);
+            });
+
+            foreach ($membersData as $member) {
+                $members[$member->memberID] = [];
+                $members[$member->memberID]["userName"] = $member->userName;
+                $members[$member->memberID]["name"] = $member->firstName . " " . mb_substr($member->lastName, 0, 1) . ".";
+                $members[$member->memberID]["avatar"] = $member->profile->avatar;
+            }
+
+            foreach ($members as $key => $member) {
+                if (!is_numeric($key) && $key != "na") {
+                    $name = $members[$key];
+                    $members[$key] = [];
+                    $members[$key]["userName"] = $key;
+                    $members[$key]["name"] = $name;
+                    $members[$key]["avatar"] = "n1";
+                }
+            }
+
+            $members["na"] = __("not_available");
+            $members = array_filter($members);
+
+            $data["admins"] = $admins;
+            $data["members"] = $members;
+        }
+
+        $data["notifications"] = $this->_notifications;
+        $data["newNewsCount"] = $this->_newNewsCount;
+
+        if (!$isXhr) {
+            return View::make('Events/Obs/Information')
+                ->shares("title", __("event_info"))
+                ->shares("data", $data)
+                ->shares("event", $event)
+                ->shares("error", @$error);
+        } else {
+            $this->layout = "dummy";
+            $response["success"] = true;
+            $response["progress"] = $data["overall_progress"];
+            $response["admins"] = $data["admins"];
+            $response["members"] = $data["members"];
+            $response["html"] = View::make("Events/Obs/GetInfo")
+                ->shares("data", $data)
+                ->renderContents();
+
+            echo json_encode($response);
+        }
+    }
+
+    public function informationRevision($eventID)
+    {
+        $isXhr = false;
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $isXhr = true;
+            $response = ["success" => false];
+        }
+
+        $event = $this->eventRepo->get($eventID);
+
+        $data["menu"] = 1;
+        $data["isAdmin"] = false;
+
+        if ($event) {
+            if (!$this->canViewInfo($event)) {
+                if (!$isXhr)
+                    $error[] = __("empty_or_not_permitted_event_error");
+                else {
+                    $response["errorType"] = "empty_no_permission";
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+
+            $data["isAdmin"] = $this->isAdmin($event);
+        } else {
+            if (!$isXhr)
+                $error[] = __("empty_or_not_permitted_event_error");
+            else {
+                $response["errorType"] = "empty_no_permission";
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+        if (!isset($error)) {
+            $data = array_merge($data, ScriptureRevisionProgress::calculateEventProgress($event));
             $members = $data["members"];
 
             $admins = array_keys($event->admins->getDictionary());
@@ -589,7 +690,7 @@ class InformationController extends Controller {
         $data["newNewsCount"] = $this->_newNewsCount;
 
         if (!$isXhr) {
-            return View::make('Events/L2/Information')
+            return View::make('Events/Revision/Information')
                 ->shares("title", __("event_info"))
                 ->shares("data", $data)
                 ->shares("event", $event)
@@ -600,7 +701,7 @@ class InformationController extends Controller {
             $response["progress"] = $data["overall_progress"];
             $response["admins"] = $data["admins"];
             $response["members"] = $data["members"];
-            $response["html"] = View::make("Events/L2/GetInfo")
+            $response["html"] = View::make("Events/Revision/GetInfo")
                 ->shares("data", $data)
                 ->renderContents();
 
@@ -806,7 +907,7 @@ class InformationController extends Controller {
         }
     }
 
-    public function informationSunL2($eventID)
+    public function informationSunRevision($eventID)
     {
         $isXhr = false;
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
@@ -847,7 +948,7 @@ class InformationController extends Controller {
         }
 
         if (!isset($error)) {
-            $data = array_merge($data, SunL2Progress::calculateEventProgress($event));
+            $data = array_merge($data, SunRevisionProgress::calculateEventProgress($event));
             $members = $data["members"];
 
             $admins = array_keys($event->admins->getDictionary());
@@ -889,7 +990,7 @@ class InformationController extends Controller {
         $data["newNewsCount"] = $this->_newNewsCount;
 
         if (!$isXhr) {
-            return View::make('Events/L2Sun/Information')
+            return View::make('Events/RevisionSun/Information')
                 ->shares("title", __("event_info"))
                 ->shares("data", $data)
                 ->shares("event", $event)
@@ -900,7 +1001,7 @@ class InformationController extends Controller {
             $response["progress"] = $data["overall_progress"];
             $response["admins"] = $data["admins"];
             $response["members"] = $data["members"];
-            $response["html"] = View::make("Events/L2Sun/GetInfo")
+            $response["html"] = View::make("Events/RevisionSun/GetInfo")
                 ->shares("data", $data)
                 ->renderContents();
 
@@ -984,10 +1085,10 @@ class InformationController extends Controller {
             $data["admins"] = $admins;
             $data["members"] = $members;
 
-            $data["odb"] = $this->_apiModel->getOtherSource(
+            $data["odb"] = $this->resourcesRepo->getOtherResource(
+                $event->project->sourceLangID,
                 "odb",
-                $event->bookCode,
-                $event->project->sourceLangID
+                $event->bookCode
             );
         }
 
@@ -1090,10 +1191,10 @@ class InformationController extends Controller {
             $data["admins"] = $admins;
             $data["members"] = $members;
 
-            $data["rad"] = $this->_apiModel->getOtherSource(
+            $data["rad"] = $this->resourcesRepo->getOtherResource(
+                $event->project->sourceLangID,
                 "rad",
-                $event->bookCode,
-                $event->project->sourceLangID
+                $event->bookCode
             );
         }
 

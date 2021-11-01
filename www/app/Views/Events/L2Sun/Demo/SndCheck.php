@@ -16,8 +16,8 @@ use Helpers\Constants\EventCheckSteps;
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l2_l3", ["level" => 2]).")" ?></div>
-            <div><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::SND_CHECK . "_sun")?></div>
+            <div class="demo_title"><?php echo __("demo") . " (".__("vsail_revision").")" ?></div>
+            <div><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW . "_sun")?></div>
         </div>
     </div>
 
@@ -29,7 +29,10 @@ use Helpers\Constants\EventCheckSteps;
                 <div class="no_padding">
                     <div class="sun_mode">
                         <label>
-                            <input type="checkbox" checked data-toggle="toggle" data-on="SUN" data-off="BACKSUN">
+                            <input type="checkbox" autocomplete="off" checked
+                                   data-toggle="toggle"
+                                   data-on="SUN"
+                                   data-off="BACKSUN" />
                         </label>
                     </div>
 
@@ -478,7 +481,7 @@ use Helpers\Constants\EventCheckSteps;
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>:</span> <?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>:</span> <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
@@ -488,7 +491,7 @@ use Helpers\Constants\EventCheckSteps;
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/demo-sun-l2/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-sun-revision/information"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -510,7 +513,7 @@ use Helpers\Constants\EventCheckSteps;
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></h3>
+            <h3><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></h3>
             <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
@@ -520,7 +523,7 @@ use Helpers\Constants\EventCheckSteps;
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-            if(!hasChangesOnPage) window.location.href = '/events/demo-sun-l2/pray';
+            if(!hasChangesOnPage) window.location.href = '/events/demo-sun-revision/pray';
             return false;
         });
 

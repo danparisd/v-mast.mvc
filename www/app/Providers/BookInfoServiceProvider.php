@@ -4,8 +4,6 @@
 namespace App\Providers;
 
 
-use App\Repositories\Admin\IAdminRepository;
-use App\Repositories\Admin\AdminRepository;
 use App\Repositories\BookInfo\BookInfoRepository;
 use App\Repositories\BookInfo\IBookInfoRepository;
 use Support\ServiceProvider;

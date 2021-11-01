@@ -124,7 +124,7 @@ if(!isset($error)):
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <?php elseif (in_array($event->project->bookProject, ["tn", "tq"])): ?>
+                        <?php elseif (in_array($event->project->bookProject, ["tn", "tq", "obs"])): ?>
                         <div class="manage_chapters_buttons" data-chapter="<?php echo $chapter ?>"
                              data-member="<?php echo !empty($chapData) ? $chapData["memberID"] : "" ?>">
                             <?php
@@ -334,7 +334,7 @@ if(!isset($error)):
                             (<span><?php echo sizeof($chapterNumbers); ?></span>)
                             <div class="glyphicon glyphicon-remove delete_user" title="<?php echo __("remove_from_event") ?>"></div>
 
-                            <?php if(in_array($event->project->bookProject, ["tn","tq","rad"])): ?>
+                            <?php if(in_array($event->project->bookProject, ["tn","tq","rad","obs"])): ?>
                             <label class="is_checker_label">
                                 <input
                                     class="is_checker_input"
@@ -390,6 +390,17 @@ if(!isset($error)):
                                             </option>
                                         <?php endif; ?>
 
+                                        <?php if($mode == "obs" && $step == EventSteps::BLIND_DRAFT):
+                                            $ch_disabled = $member->pivot->currentChunk <= 0 ||
+                                                EventSteps::enum($member->pivot->step, $mode) >= EventSteps::enum(EventSteps::SELF_CHECK, $mode);
+                                            ?>
+                                            <option <?php echo ($ch_disabled ? "disabled" : "") ?>
+                                                    value="<?php echo EventSteps::BLIND_DRAFT."_prev" ?>">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                <?php echo __(EventSteps::BLIND_DRAFT."_previous").($member->pivot->currentChunk > 0 ? " ".$member->pivot->currentChunk : "") ?>
+                                            </option>
+                                        <?php endif; ?>
+
                                         <?php if($step == EventSteps::REARRANGE):
                                             $ch_disabled = ($member->pivot->currentChunk <= 0 && $member->pivot->step != EventSteps::SYMBOL_DRAFT) ||
                                                 ($member->pivot->step == EventSteps::SYMBOL_DRAFT && $member->pivot->currentChunk > 0) ||
@@ -434,6 +445,8 @@ if(!isset($error)):
                                                 $multiStep = 4;
                                             elseif($mode == "odbsun")
                                                 $multiStep = 3;
+                                            elseif($mode == "obs")
+                                                $multiStep = 2;
                                             elseif(in_array($mode, ["tq","tw","rad"]))
                                                 $multiStep = 0;
                                             else

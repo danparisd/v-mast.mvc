@@ -58,9 +58,9 @@ if(isset($data["error"])) return;
                                           title="<?php echo __("write_note_title", [""])?>"></span>
 
                                     <div class="comments">
-                                        <div class="my_comment">This is the note of the translator...</div>
+                                        <div class="my_comment">This is the note of the checker...</div>
                                         <div class="other_comments">
-                                            <span>Tanya C. - L1</span> This is the note of the checker...
+                                            <span>Tanya C. - L1</span> This is the note of the translator...
                                         </div>
                                     </div>
                                 </div>

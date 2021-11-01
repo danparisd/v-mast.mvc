@@ -152,7 +152,7 @@ $(function () {
                 $(".sourceTranslation").removeClass("hidden");
             }
         }
-        else if(["tn","tq","tw"].indexOf($(this).val()) > -1)
+        else if(["tn","tq","tw","obs"].indexOf($(this).val()) > -1)
         {
             $(".projectType").addClass("hidden");
             $(".sourceTranslation").removeClass("hidden");
@@ -510,44 +510,6 @@ $(function () {
             $("#eventAction").val("delete");
         else
             e.preventDefault();
-    });
-
-    $("button[name=updateAllCache]").click(function (e) {
-        var $this = $(this);
-        var sourceLangID = $this.data("sourcelangid");
-        var sourceBible = $this.data("sourcebible");
-
-        $.ajax({
-            url: "/admin/rpc/update_all_cache",
-            method: "post",
-            data: {
-                sourceLangID: sourceLangID,
-                sourceBible: sourceBible
-            },
-            dataType: "json",
-            beforeSend: function() {
-                $(".cacheLoader").show();
-                $this.prop("disabled", true);
-            }
-        })
-            .done(function(data) {
-                if(data.success)
-                {
-                    renderPopup(Language.cacheUpdated + ": " + data.booksUpdated + " " + Language.books);
-                }
-                else
-                    renderPopup(Language.commonError, function () {
-                        window.location.reload();
-                    }, function () {
-                        window.location.reload();
-                    });
-            })
-            .always(function() {
-                $(".cacheLoader").hide();
-                $this.prop("disabled", false);
-            });
-
-        e.preventDefault();
     });
 
     $("input[name=eventLevel]").change(function () {
@@ -1923,8 +1885,8 @@ $(function () {
     // Upload source
     $("button.src_upload").click(function (e) {
         var formData = new FormData();
-        formData.append("file", $('#src_upload')[0].files[0]);
-        formData.append("src", $("#src").val());
+        formData.append("file", $('.source_upload #src_upload')[0].files[0]);
+        formData.append("src", $(".source_upload #src").val());
 
         $.ajax({
             url: "/admin/rpc/upload_source",
@@ -1958,6 +1920,43 @@ $(function () {
 
         e.preventDefault();
         return false;
+    });
+
+    // Upload source
+    $(".src_update").click(function () {
+        var src = $(".source_update #src").val();
+
+        if(src.trim() !== "") {
+            $.ajax({
+                url: "/admin/rpc/update_source",
+                method: "post",
+                dataType: "json",
+                data: {
+                    src: src,
+                },
+                beforeSend: function() {
+                    $(".source_update img").show();
+                }
+            })
+                .done(function(data) {
+                    if(data.success)
+                    {
+                        renderPopup(data.message);
+                        $(".source_update #src").val("").trigger("chosen:updated");
+                    }
+                    else
+                    {
+                        if(data.error != undefined) {
+                            renderPopup(data.error);
+                        }
+                    }
+                })
+                .always(function() {
+                    $(".source_update img").hide();
+                });
+        } else {
+            renderPopup("Wrong parameters");
+        }
     });
 });
 
@@ -2168,24 +2167,34 @@ function setEventMenuLinks(event, level) {
                 $(".event_links_l2").hide();
                 $(".event_links_l3").hide();
 
-                if(level > 1)
-                {
-                    for(var i=2;i<=level;i++) {
-                        $(".event_links_l" + i).show();
-                        $(".event_links_l" + i + " .event_progress a")
+                switch (level) {
+                    case 2:
+                        $(".event_links_l2").show();
+                        $(".event_links_l2 .event_progress a")
                             .attr(
                                 "href",
-                                "/events/information" + (mode === "sun" ? "-sun" : "") + "-l" + i + "/" + event.eventID
+                                "/events/information" + (mode === "sun" ? "-sun" : "") + "-revision/" + event.eventID
                             );
-                        $(".event_links_l" + i + " .event_manage a")
-                            .attr("href", "/events/manage-l" + i + "/" + event.eventID);
-                    }
+                        $(".event_links_l2 .event_manage a")
+                            .attr("href", "/events/manage-revision/" + event.eventID);
+                        break;
+                    case 3:
+                        $(".event_links_l3").show();
+                        $(".event_links_l3 .event_progress a")
+                            .attr(
+                                "href",
+                                "/events/information" + (mode === "sun" ? "-sun" : "") + "-l3/" + event.eventID
+                            );
+                        $(".event_links_l3 .event_manage a")
+                            .attr("href", "/events/manage-l3/" + event.eventID);
+                        break;
                 }
             }
             break;
         case "tn":
         case "tq":
         case "tw":
+        case "obs":
             $(".event_links_l1").hide();
             $(".event_links_l2").show();
             $(".event_links_l2 .event_progress a")
@@ -2234,7 +2243,7 @@ function setEventMenu(event) {
         case EventStates.states.translated:
             if(["ulb","udb","sun"].indexOf(event.project.bookProject) > -1)
                 setEventMenuLinks(event, 1);
-            else if(["tn","tq","tw"].indexOf(event.project.bookProject) > -1)
+            else if(["tn","tq","tw","obs"].indexOf(event.project.bookProject) > -1)
                 setEventMenuLinks(event, 2);
             else
                 setEventMenuLinks(event, 3);

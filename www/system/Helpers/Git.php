@@ -325,13 +325,13 @@ class GitRepo {
 		if(count($_ENV) === 0) {
 			$env = NULL;
 			foreach($this->envopts as $k => $v) {
-				putenv(sprintf("%s=%s",$k,$v));
+                putenv(sprintf("%s=%s",$k,$v));
 			}
 		} else {
 			$env = array_merge($_ENV, $this->envopts);
 		}
 		$cwd = $this->repo_path;
-		$resource = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
+		$resource = proc_open($command, $descriptorspec, $pipes, $cwd);
 
 		$stdout = stream_get_contents($pipes[1]);
 		$stderr = stream_get_contents($pipes[2]);

@@ -29,12 +29,12 @@ if(!empty($data["event"]) && !isset($data["error"])):
             <span><?php echo __(EventCheckSteps::CONSUME)?></span>
         </li>
 
-        <li class="fst-check-step <?php echo $data["event"][0]->step == EventCheckSteps::FST_CHECK ? "active" : "" ?>">
-            <span><?php echo __(EventCheckSteps::FST_CHECK . "_sun")?></span>
+        <li class="fst-check-step <?php echo $data["event"][0]->step == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
+            <span><?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></span>
         </li>
 
-        <li class="snd-check-step <?php echo $data["event"][0]->step == EventCheckSteps::SND_CHECK ? "active" : "" ?>">
-            <span><?php echo __(EventCheckSteps::SND_CHECK . "_sun")?></span>
+        <li class="snd-check-step <?php echo $data["event"][0]->step == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
+            <span><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></span>
         </li>
     </ul>
 </div>

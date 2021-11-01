@@ -1,7 +1,7 @@
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
-            <div class="demo_title"><?php echo __("demo") . " (".__("vsail_l2_l3", ["level" => 2]).")" ?></div>
+            <div class="demo_title"><?php echo __("demo") . " (".__("vsail_revision").")" ?></div>
             <div><?php echo __("step_num", ["step_number" => 1]) . ": " . __("consume")?></div>
         </div>
     </div>
@@ -14,7 +14,10 @@
                 <div class="no_padding">
                     <div class="sun_mode">
                         <label>
-                            <input type="checkbox" autocomplete="off" checked data-toggle="toggle" data-on="SUN" data-off="BACKSUN">
+                            <input type="checkbox" autocomplete="off" checked
+                                   data-toggle="toggle"
+                                   data-on="SUN"
+                                   data-off="BACKSUN" />
                         </label>
                     </div>
 
@@ -325,7 +328,7 @@
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/demo-sun-l2/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-sun-revision/information"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -358,7 +361,7 @@
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-            window.location.href = '/events/demo-sun-l2/fst_check';
+            window.location.href = '/events/demo-sun-revision/fst_check';
             return false;
         });
 

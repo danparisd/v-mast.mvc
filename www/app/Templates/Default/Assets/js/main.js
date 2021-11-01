@@ -350,7 +350,7 @@ $(document).ready(function() {
             step == EventSteps.PEER_REVIEW || step == EventSteps.KEYWORD_CHECK ||
             step == EventSteps.CONTENT_REVIEW || step == EventSteps.MULTI_DRAFT ||
             step == EventSteps.SYMBOL_DRAFT || step == EventSteps.REARRANGE || step == EventSteps.THEO_CHECK || // For SUN
-            step == EventCheckSteps.FST_CHECK || step == EventCheckSteps.SND_CHECK || // For Level 2 Check
+            step == EventCheckSteps.FST_CHECK || step == EventCheckSteps.SND_CHECK || // For Revision
             step == EventCheckSteps.PEER_REVIEW_L2 ||
             step == EventCheckSteps.PEER_EDIT_L3)
         {
@@ -467,12 +467,12 @@ $(document).ready(function() {
     {
         var infoUpdateTimer = setInterval(function() {
             var tm = typeof tMode != "undefined"
-            && $.inArray(tMode, ["tn","tq","tw","sun","rad"]) > -1 ? "-" + tMode
+            && $.inArray(tMode, ["tn","tq","tw","sun","rad","obs"]) > -1 ? "-" + tMode
                 : "";
 
             if(typeof isOdb != "undefined") tm = "-odb" + tm;
 
-            var mm = typeof manageMode != "undefined" ? "-"+manageMode : "";
+            var mm = typeof manageMode != "undefined" ? (manageMode != "l2" ? "-"+manageMode : "-revision") : "";
 
             $.ajax({
                 url: "/events/information" + tm + mm + "/" + eventID,
@@ -1669,7 +1669,7 @@ $(document).ready(function() {
             $this.css("z-index", 102);
             $this.removeClass("open")
                 .addClass("closed");
-            $this.animate({right: -275}, 500, function() {
+            $this.animate({right: -375}, 500, function() {
                 $("#help_hide").removeClass("glyphicon-chevron-right")
                     .addClass("glyphicon-chevron-left");
             });
@@ -2841,6 +2841,13 @@ $(document).ready(function() {
             $(".cloud_otp_code_group").hide();
             $(".cloud_otp_code_group #cloud_otp_code").val("");
         }
+    });
+
+    $(".obs_img").hover(function () {
+        const src = $(this).data("img");
+        $('<img class="obs_img_floatable" src="'+src+'" />').appendTo($(this));
+    }, function () {
+        $(".obs_img_floatable").remove();
     });
 });
 

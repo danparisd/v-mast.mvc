@@ -163,7 +163,25 @@ class CloudModel extends Model
             $uniqid = uniqid();
             $repoPath = "/tmp/{$repoName}_{$uniqid}";
 
-            try {
+            $gitRepo = Git::clone_remote($repoPath, $repo["clone_url"]);
+            $gitRepo->remove_remote();
+            $gitRepo->add_remote("https://{$this->username}:{$this->token}@{$this->gitServer}/{$repo["full_name"]}.git");
+            $gitRepo->set_username($this->username);
+            $gitRepo->set_email($this->username); // Not mandatory
+
+            foreach ($projectFiles as $projectFile)
+            {
+                File::putWithDirs($repoPath . "/" . $projectFile->relPath(), $projectFile->content());
+            }
+
+            $gitRepo->add();
+            $gitRepo->commit("Updated");
+            $gitRepo->push();
+
+            $result["success"] = true;
+            $result["message"] = $repo;
+
+            /*try {
                 $gitRepo = Git::clone_remote($repoPath, $repo["clone_url"]);
                 $gitRepo->remove_remote();
                 $gitRepo->add_remote("https://{$this->username}:{$this->token}@{$this->gitServer}/{$repo["full_name"]}.git");
@@ -183,7 +201,7 @@ class CloudModel extends Model
                 $result["message"] = $repo;
             } catch (\Exception $e) {
                 $result["message"] = $e->getMessage();
-            }
+            }*/
 
             File::deleteDirectory($repoPath);
         }

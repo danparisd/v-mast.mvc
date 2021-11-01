@@ -145,6 +145,8 @@ class TwProgress
                                 break;
                         }
                     }
+                } else {
+                    $data["chapters"][$key]["kwc"]["state"] = StepsStates::WAITING;
                 }
             } else {
                 if ($key == $currentChapter) {

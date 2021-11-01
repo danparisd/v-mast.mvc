@@ -16,6 +16,7 @@ use App\Repositories\GatewayLanguage\IGatewayLanguageRepository;
 use App\Repositories\Language\ILanguageRepository;
 use App\Repositories\Member\IMemberRepository;
 use App\Repositories\Project\IProjectRepository;
+use App\Repositories\Resources\IResourcesRepository;
 use App\Repositories\Source\ISourceRepository;
 use Config\Config;
 use Database\ORM\Collection;
@@ -52,6 +53,7 @@ class AdminController extends Controller {
     protected $languageRepo = null;
     protected $sourceRepo = null;
     protected $bookInfoRepo = null;
+    protected $resourcesRepo = null;
 
     private $_member;
 
@@ -62,7 +64,8 @@ class AdminController extends Controller {
         IEventRepository $eventRepo,
         ILanguageRepository $languageRepo,
         ISourceRepository $sourceRepo,
-        IBookInfoRepository $bookInfoRepo
+        IBookInfoRepository $bookInfoRepo,
+        IResourcesRepository $resourcesRepo
     ) {
         parent::__construct();
 
@@ -73,6 +76,7 @@ class AdminController extends Controller {
         $this->languageRepo = $languageRepo;
         $this->sourceRepo = $sourceRepo;
         $this->bookInfoRepo = $bookInfoRepo;
+        $this->resourcesRepo = $resourcesRepo;
 
         if(Config::get("app.isMaintenance")
             && !in_array($_SERVER['REMOTE_ADDR'], Config::get("app.ips")))
@@ -193,6 +197,11 @@ class AdminController extends Controller {
                 $page = 'Admin/Main/ProjectODB';
                 $category = 'odb';
             }
+            elseif ($project->bookProject == "obs")
+            {
+                $page = 'Admin/Main/ProjectOBS';
+                $category = 'obs';
+            }
 
             $otDone = 0;
             $ntDone = 0;
@@ -207,6 +216,9 @@ class AdminController extends Controller {
 
             $twDone = 0;
             $data["TWprogress"] = 0;
+
+            $obsDone = 0;
+            $data["OBSprogress"] = 0;
 
             $events = $project->events;
 
@@ -255,6 +267,13 @@ class AdminController extends Controller {
                             $radDone++;
                         }
                     }
+                    else if($bookInfo->category == "obs") // OBS books
+                    {
+                        if(EventStates::enum($bookInfo->event->state) >= EventStates::enum(EventStates::TRANSLATED))
+                        {
+                            $obsDone++;
+                        }
+                    }
                 }
             }
 
@@ -273,6 +292,12 @@ class AdminController extends Controller {
                 $count = $this->bookInfoRepo->all()->where("category", "rad", false)->count();
                 if($count > 0)
                     $data["RADprogress"] = 100*$radDone/$count;
+            }
+            elseif ($project->bookProject == "obs")
+            {
+                $count = $this->bookInfoRepo->all()->where("category", "obs", false)->count();
+                if($count > 0)
+                    $data["OBSprogress"] = 100*$obsDone/$count;
             }
         }
 
@@ -325,7 +350,7 @@ class AdminController extends Controller {
                             }
                             break;
                         case "tn":
-                            $tn = $this->_apiModel->getTranslationNotes($bookCode, null, false, $path);
+                            $tn = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                             if(!empty($tn))
                             {
                                 $response = $this->importResourceToEvent($tn, $projectID, $eventID, $bookCode, $importLevel);
@@ -336,7 +361,7 @@ class AdminController extends Controller {
                             }
                             break;
                         case "tq":
-                            $tq = $this->_apiModel->getTranslationQuestions($bookCode, null, false, $path);
+                            $tq = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                             if(!empty($tq))
                             {
                                 $response = $this->importResourceToEvent($tq, $projectID, $eventID, $bookCode, $importLevel);
@@ -347,8 +372,9 @@ class AdminController extends Controller {
                             }
                             break;
                         case "tw":
-                            $cat = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
-                            $tw = $this->_apiModel->getTranslationWordsByCategory($cat, null, false, false, $path);
+                            $bookSlug = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
+                            $tw = $this->resourcesRepo->parseTw("", $bookSlug, false, $path);
+
                             $tw = array_chunk($tw, 5); // make groups of 5 words each
 
                             if(!empty($tw))
@@ -395,7 +421,7 @@ class AdminController extends Controller {
                         }
                         elseif ($bookProject == "tn")
                         {
-                            $tn = $this->_apiModel->getTranslationNotes($bookCode, null, false, $path);
+                            $tn = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                             if(!empty($tn))
                             {
                                 $response = $this->importResourceToEvent($tn, $projectID, $eventID, $bookCode, $importLevel);
@@ -407,7 +433,7 @@ class AdminController extends Controller {
                         }
                         elseif ($bookProject == "tq")
                         {
-                            $tq = $this->_apiModel->getTranslationQuestions($bookCode, null, false, $path);
+                            $tq = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                             if(!empty($tq))
                             {
                                 $response = $this->importResourceToEvent($tq, $projectID, $eventID, $bookCode, $importLevel);
@@ -419,8 +445,8 @@ class AdminController extends Controller {
                         }
                         elseif ($bookProject == "tw")
                         {
-                            $cat = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
-                            $tw = $this->_apiModel->getTranslationWordsByCategory($cat, null, false, false, $path);
+                            $bookSlug = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
+                            $tw = $this->resourcesRepo->parseTw("", $bookSlug, false, $path);
                             $tw = array_chunk($tw, 5); // make groups of 5 words each
 
                             if(!empty($tw))
@@ -455,8 +481,7 @@ class AdminController extends Controller {
                                 $response["error"] = __("not_implemented");
                                 break;
                             case "tn":
-                                $tn = $this->_apiModel->getTranslationNotes($bookCode, null, false, $path);
-
+                                $tn = $this->resourcesRepo->parseMdResource("", $bookCode, false, $path);
                                 if(!empty($tn))
                                 {
                                     $response = $this->importResourceToEvent($tn, $projectID, $eventID, $bookCode, $importLevel);
@@ -467,8 +492,7 @@ class AdminController extends Controller {
                                 }
                                 break;
                             case "tq":
-                                $tq = $this->_apiModel->getTranslationQuestions($bookCode, null, false, $path);
-
+                                $tq = $this->resourcesRepo->parseMdResource("", $bookProject, $bookCode, false, $path);
                                 if(!empty($tq))
                                 {
                                     $response = $this->importResourceToEvent($tq, $projectID, $eventID, $bookCode, $importLevel);
@@ -479,8 +503,8 @@ class AdminController extends Controller {
                                 }
                                 break;
                             case "tw":
-                                $cat = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
-                                $tw = $this->_apiModel->getTranslationWordsByCategory($cat, null, false, false, $path);
+                                $bookSlug = $bookCode == "wkt" ? "kt" : ($bookCode == "wns" ? "names" : "other");
+                                $tw = $this->resourcesRepo->parseTw("", $bookSlug, false, $path);
                                 $tw = array_chunk($tw, 5); // make groups of 5 words each
 
                                 if(!empty($tw))
@@ -965,7 +989,7 @@ class AdminController extends Controller {
 
         $_POST = Gump::xss_clean($_POST);
 
-        $projectMode = isset($_POST['projectMode']) && preg_match("/(bible|tn|tq|tw|odb|rad)/", $_POST['projectMode']) ? $_POST['projectMode'] : "bible";
+        $projectMode = isset($_POST['projectMode']) && preg_match("/(bible|tn|tq|tw|odb|rad|obs)/", $_POST['projectMode']) ? $_POST['projectMode'] : "bible";
         $subGwLangs = isset($_POST['subGwLangs']) && $_POST['subGwLangs'] != "" ? $_POST['subGwLangs'] : null;
         $targetLang = isset($_POST['targetLangs']) && $_POST['targetLangs'] != "" ? $_POST['targetLangs'] : null;
         $sourceTranslation = isset($_POST['sourceTranslation']) && $_POST['sourceTranslation'] != "" ? $_POST['sourceTranslation'] : null;
@@ -1008,7 +1032,7 @@ class AdminController extends Controller {
 
             if($projectType == null)
             {
-                if(!in_array($projectMode, ["tn","tq","tw","rad"]))
+                if(!in_array($projectMode, ["tn","tq","tw","rad","obs"]))
                     $error[] = __("choose_project_type");
 
                 if($projectMode == "rad")
@@ -1017,7 +1041,7 @@ class AdminController extends Controller {
                 }
             }
 
-            if(in_array($projectMode, ["tn","tq","tw"]) && $sourceTools == null)
+            if(in_array($projectMode, ["tn","tq","tw","obs"]) && $sourceTools == null)
             {
                 $error[] = __("choose_source_".$projectMode);
             }
@@ -1049,7 +1073,7 @@ class AdminController extends Controller {
                     return;
                 }
 
-                $projType = in_array($projectMode, ['tn','tq','tw']) ? $projectMode : $projectType;
+                $projType = in_array($projectMode, ['tn','tq','tw',"obs"]) ? $projectMode : $projectType;
 
                 $search = [
                     "gwLang" => $gwLangsPair[0],
@@ -1285,82 +1309,15 @@ class AdminController extends Controller {
         if(Cache::has($cache_keyword))
             Cache::forget($cache_keyword);
 
-        $source = $this->_apiModel->getCachedSourceBookFromApi(
+        $source = $this->resourcesRepo->getScripture(
+            $sourceLangID,
             $sourceBible,
             $bookCode,
-            $sourceLangID,
-            $sort);
+            $sort
+        );
 
         if($source)
             $response["success"] = true;
-
-        echo json_encode($response);
-    }
-
-    public function updateAllBooksCache()
-    {
-        $response = ["success" => false];
-
-        if(!$this->_member->isGlAdmin() && $this->_member->isProjectAdmin()) {
-            $error[] = __("not_enough_rights_error");
-            echo json_encode(array("error" => Error::display($error)));
-            return;
-        }
-
-        $_POST = Gump::xss_clean($_POST);
-
-        $sourceLangID = $_POST["sourceLangID"] ?? null;
-        $sourceBible = $_POST["sourceBible"] ?? null;
-
-        $booksUpdated = 0;
-
-        if($sourceLangID && $sourceBible)
-        {
-            $books = $this->bookInfoRepo->all();
-
-            $renDir = "../app/Templates/Default/Assets/source/".$sourceLangID."_".$sourceBible."_tmp";
-            $origDir = "../app/Templates/Default/Assets/source/".$sourceLangID."_".$sourceBible;
-
-            //File::deleteDirectory($renDir);
-            if(File::exists($origDir))
-                File::move($origDir, $renDir);
-
-            foreach ($books as $book)
-            {
-                $bookCode = $book->code;
-                $sort = $book->sort;
-
-                // Book source
-                $cache_keyword = $bookCode."_".$sourceLangID."_".$sourceBible."_usfm";
-
-                if(Cache::has($cache_keyword))
-                    Cache::forget($cache_keyword);
-
-                $source = $this->_apiModel->getCachedSourceBookFromApi(
-                    $sourceBible,
-                    $bookCode,
-                    $sourceLangID,
-                    $sort);
-
-                if($source)
-                {
-                    $response["success"] = true;
-                    $booksUpdated++;
-                }
-            }
-
-            if($booksUpdated > 0)
-            {
-                File::deleteDirectory($renDir);
-
-            }
-            else
-            {
-                File::move($renDir, $origDir);
-            }
-        }
-
-        $response["booksUpdated"] = $booksUpdated;
 
         echo json_encode($response);
     }
@@ -1554,31 +1511,39 @@ class AdminController extends Controller {
                     $postdata["bookCode"] = $bookCode;
 
                     if($bookInfo->category == "odb") {
-                        $odb = $this->_apiModel->getOtherSource("odb", $bookInfo->code, $project->sourceLangID);
+                        $odb = $this->resourcesRepo->getOtherResource($project->sourceLangID, "odb", $bookInfo->code);
                         if(empty($odb)) {
                             $error[] = __("no_source_error");
                             echo json_encode(array("error" => Error::display($error)));
                             return;
                         }
                     } elseif ($bookInfo->category == "rad") {
-                        $radio = $this->_apiModel->getOtherSource("rad", $bookInfo->code, $project->sourceLangID);
+                        $radio = $this->resourcesRepo->getOtherResource($project->sourceLangID, "rad", $bookInfo->code);
                         if(empty($radio)) {
+                            $error[] = __("no_source_error");
+                            echo json_encode(array("error" => Error::display($error)));
+                            return;
+                        }
+                    } elseif ($bookInfo->category == "obs") {
+                        $obs = $this->resourcesRepo->getObs($project->sourceLangID);
+                        if(!$obs || $obs->isEmpty()) {
                             $error[] = __("no_source_error");
                             echo json_encode(array("error" => Error::display($error)));
                             return;
                         }
                     } else {
                         // Book source
-                        $cache_keyword = $bookCode."_".$project->sourceLangID."_".$project->sourceBible."_usfm";
+                        $cache_keyword = $project->sourceLangID."_".$project->sourceBible."_".$bookCode;
 
                         if(!Cache::has($cache_keyword)) {
-                            $usfm = $this->_apiModel->getCachedSourceBookFromApi(
+                            $usfm = $this->resourcesRepo->getScripture(
+                                $project->sourceLangID,
                                 $project->sourceBible,
                                 $bookInfo->code,
-                                $project->sourceLangID,
-                                $bookInfo->sort);
+                                $bookInfo->sort
+                            );
 
-                            if(!$usfm || empty($usfm)) {
+                            if(empty($usfm)) {
                                 $error[] = __("no_source_error");
                                 echo json_encode(array("error" => Error::display($error)));
                                 return;
@@ -1771,55 +1736,6 @@ class AdminController extends Controller {
         }
     }
 
-
-    public function getSource()
-    {
-        $response = array();
-        $_POST = Gump::xss_clean($_POST);
-
-        $bookCode = isset($_POST["bookCode"]) && $_POST["bookCode"] != "" ? $_POST["bookCode"] : null;
-        $sourceLangID = isset($_POST["sourceLangID"]) && $_POST["sourceLangID"] != "" ? $_POST["sourceLangID"] : null;
-        $bookProject = isset($_POST["bookProject"]) && $_POST["bookProject"] != "" ? $_POST["bookProject"] : null;
-
-        if($bookCode && $sourceLangID && $bookProject)
-        {
-            $cache_keyword = $bookCode."_".$sourceLangID."_".$bookProject;
-
-            if(Cache::has($cache_keyword))
-            {
-                $source = Cache::get($cache_keyword);
-                $json = json_decode($source, true);
-            }
-            else
-            {
-                $source = $this->_apiModel->getSourceBookFromApi($bookCode, $sourceLangID, $bookProject);
-                $json = json_decode($source, true);
-
-                if(!empty($json))
-                    Cache::add($cache_keyword, $source, 60*24*7);
-            }
-
-            if(!empty($json))
-            {
-                $response["chaptersNum"] = sizeof($json["chapters"]);
-
-                $text = "";
-
-                foreach ($json["chapters"] as $chapter) {
-                    foreach ($chapter["frames"] as $frame) {
-                        $text .= $frame["text"];
-                    }
-                }
-
-                $text = preg_split("/<verse\D+(\d+)\D+>/", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
-                $response["versesNum"] = !empty($text) ? (sizeof($text)-1)/2 : 0;
-            }
-        }
-
-        echo json_encode($response);
-    }
-
-
     private function importScriptureToEvent($usfm, $projectID, $eventID, $bookCode, $level)
     {
         $response = ["success" => false];
@@ -1932,24 +1848,18 @@ class AdminController extends Controller {
                     $l2chID = 0;
                     if($level == 2) {
                         // Create new checker
-                        $sndCheckData = [];
-                        $peerCheckData = [];
+                        $checkData = [];
                         for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                         {
-                            if ($project->bookProject == "sun") {
-                                $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
-                            } else {
-                                $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
-                                $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
-                            }
+                            $checkData[$i] = ["memberID" => $member->memberID, "done" => 2];
                         }
 
                         $l2chData = array(
                             "step" => EventSteps::NONE,
                             "currentChapter" => 0,
-                            "sndCheck" => json_encode($sndCheckData),
-                            "peer1Check" => json_encode($peerCheckData),
-                            "peer2Check" => json_encode($peerCheckData)
+                            "peerCheck" => json_encode($checkData),
+                            "kwCheck" => json_encode($checkData),
+                            "crCheck" => json_encode($checkData)
                         );
                         $event->checkersL2()->attach($member, $l2chData);
                         $checkerL2 = $member->checkersL2->where("eventID", $eventID, false)->first();
@@ -1967,10 +1877,10 @@ class AdminController extends Controller {
                                     "verses" => $chunk
                                 ],
                                 EventMembers::L2_CHECKER => [
-                                    "verses" => $level == 2 ? $chunk : array()
+                                    "verses" => $level == 2 ? $chunk : []
                                 ],
                                 EventMembers::L3_CHECKER => [
-                                    "verses" => array()
+                                    "verses" => []
                                 ],
                             ];
 
@@ -2069,32 +1979,26 @@ class AdminController extends Controller {
 
                         if($event->state == EventStates::TRANSLATED && $level == 2)
                         {
-                            // Create new level 2 checker
-                            $sndCheckData = [];
-                            $peerCheckData = [];
+                            // Create new revision checker
+                            $checkData = [];
                             for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                             {
-                                if ($project->bookProject == "sun") {
-                                    $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
-                                } else {
-                                    $sndCheckData[$i] = ["memberID" => $member->memberID, "done" => 2];
-                                    $peerCheckData[$i] = ["memberID" => $member->memberID, "done" => 1];
-                                }
+                                $checkData[$i] = ["memberID" => $member->memberID, "done" => 2];
                             }
 
                             $l2chData = array(
                                 "step" => EventSteps::NONE,
                                 "currentChapter" => 0,
-                                "sndCheck" => json_encode($sndCheckData),
-                                "peer1Check" => json_encode($peerCheckData),
-                                "peer2Check" => json_encode($peerCheckData)
+                                "peerCheck" => json_encode($checkData),
+                                "kwCheck" => json_encode($checkData),
+                                "crCheck" => json_encode($checkData)
                             );
 
                             $event->checkersL2()->attach($member, $l2chData);
                             $checkerL2 = $member->checkersL2->where("eventID", $eventID, false)->first();
                             $l2chID = $checkerL2->l2chID;
 
-                            // Assign chapters to new level 2 checker
+                            // Assign chapters to new revision checker
                             foreach ($chapters as $chapter) {
                                 $this->_eventsModel->updateChapter([
                                     "l2memberID" => $member->memberID,
@@ -2284,20 +2188,22 @@ class AdminController extends Controller {
                             if($chapter > 0)
                             {
                                 // Get related Scripture to define total verses of the chapter
-                                $relatedScripture = $this->_apiModel->getBookText([
-                                    "sourceBible" => $project->sourceBible,
-                                    "bookCode" => $event->bookCode,
-                                    "sourceLangID" => $project->sourceLangID,
-                                    "sort" => $event->bookInfo->sort
-                                ], $chapter);
+                                $relatedScripture = $this->resourcesRepo->getScripture(
+                                    $project->sourceLangID,
+                                    $project->sourceBible,
+                                    $event->bookCode,
+                                    $event->bookInfo->sort,
+                                    $chapter
+                                );
 
                                 if(empty($relatedScripture))
-                                    $relatedScripture = $this->_apiModel->getBookText([
-                                        "sourceBible" => "ulb",
-                                        "bookCode" => $event->bookCode,
-                                        "sourceLangID" => "en",
-                                        "sort" => $event->bookInfo->sort
-                                    ], $chapter);
+                                    $relatedScripture = $this->resourcesRepo->getScripture(
+                                        "en",
+                                        "ulb",
+                                        $event->bookCode,
+                                        $event->bookInfo->sort,
+                                        $chapter
+                                    );
 
                                 if(empty($relatedScripture))
                                     $response["warning"] = true;
@@ -2460,20 +2366,22 @@ class AdminController extends Controller {
                         if($chapter > 0)
                         {
                             // Get related Scripture to define total verses of the chapter
-                            $relatedScripture = $this->_apiModel->getBookText([
-                                "sourceBible" => $project->sourceBible,
-                                "bookCode" => $event->bookCode,
-                                "sourceLangID" => $project->sourceLangID,
-                                "sort" => $event->bookInfo->sort
-                            ], $chapter);
+                            $relatedScripture = $this->resourcesRepo->getScripture(
+                                $project->sourceLangID,
+                                $project->sourceBible,
+                                $event->bookCode,
+                                $event->bookInfo->sort,
+                                $chapter
+                            );
 
                             if(empty($relatedScripture))
-                                $relatedScripture = $this->_apiModel->getBookText([
-                                    "sourceBible" => "ulb",
-                                    "bookCode" => $event->bookCode,
-                                    "sourceLangID" => "en",
-                                    "sort" => $event->bookInfo->sort
-                                ], $chapter);
+                                $relatedScripture = $this->resourcesRepo->getScripture(
+                                    "en",
+                                    "ulb",
+                                    $event->bookCode,
+                                    $event->bookInfo->sort,
+                                    $chapter
+                                );
 
                             if(empty($relatedScripture))
                                 $response["warning"] = true;
@@ -2942,7 +2850,7 @@ class AdminController extends Controller {
                     $mime = $sourceZip->getMimeType();
                     if($mime == "application/zip")
                     {
-                        $format = in_array($slug, ["tn","tq","tw"]) ? "md" : "usfm";
+                        $format = in_array($slug, ["tn","tq","tw","obs"]) ? "md" : "usfm";
 
                         $path = $this->_apiModel->processSourceZipFile($sourceZip, $format);
 
@@ -2961,6 +2869,63 @@ class AdminController extends Controller {
                     {
                         $result["error"] = __("error_zip_file_required");
                     }
+                }
+                else
+                {
+                    $result["error"] = __("not_enough_lang_rights_error");
+                }
+            }
+            else
+            {
+                $result["error"] = __("wrong_parameters");
+            }
+        }
+        else
+        {
+            $result["error"] = __("wrong_parameters");
+        }
+
+        echo json_encode($result);
+        exit;
+    }
+
+    public function updateSource() {
+        $result = ["success" => false];
+
+        if(!$this->_member->isGlAdmin())
+        {
+            $result["error"] = __("not_enough_rights_error");
+            echo json_encode($result);
+            exit;
+        }
+
+        $src = Input::get("src", "");
+
+        if(trim($src) != "")
+        {
+            $srcArr = explode("|", $src);
+            if(sizeof($srcArr) == 2)
+            {
+                $lang = $srcArr[0];
+                $slug = $srcArr[1];
+
+                $allowedLanguages = new Collection();
+                foreach ($this->_member->adminGatewayLanguages as $gl) {
+                    $allowedLanguages = $allowedLanguages->merge($gl->language->targetLanguages);
+                }
+                $allowedLanguage = $allowedLanguages->filter(function($language) use ($lang) {
+                    return $language->langID == $lang;
+                })->first();
+
+                if($allowedLanguage)
+                {
+                    $updated = $this->resourcesRepo->refreshResource($lang, $slug);
+                    if (!$updated) {
+                        $result["error"] = __("refresh_resource_error");
+                    } else {
+                        $result["message"] = "Updated!";
+                    }
+                    $result["success"] = $updated;
                 }
                 else
                 {

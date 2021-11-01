@@ -18,7 +18,7 @@ use Helpers\Constants\EventMembers;
 
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
-        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 2]) . ": " . __(EventCheckSteps::FST_CHECK . "_sun")?></div>
+        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 2]) . ": " . __(EventCheckSteps::SELF_CHECK . "_sun")?></div>
     </div>
 
     <div class="" style="position: relative">
@@ -33,7 +33,10 @@ use Helpers\Constants\EventMembers;
                     <div class="no_padding">
                         <div class="sun_mode">
                             <label>
-                                <input type="checkbox" checked data-toggle="toggle" data-on="SUN" data-off="BACKSUN">
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
+                                       data-on="SUN"
+                                       data-off="BACKSUN" />
                             </label>
                         </div>
 
@@ -152,7 +155,7 @@ use Helpers\Constants\EventMembers;
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/information-sun-l2/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
+                    <a href="/events/information-sun-revision/<?php echo $data["event"][0]->eventID ?>"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -184,7 +187,7 @@ use Helpers\Constants\EventMembers;
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __(EventCheckSteps::FST_CHECK . "_sun")?></h3>
+            <h3><?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></h3>
             <ul><?php echo __("fst-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>

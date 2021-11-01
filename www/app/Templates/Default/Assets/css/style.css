@@ -10,17 +10,15 @@
 
 @font-face {
     font-family: "SUN";
-    /*src: url("../fonts/SUN.ttf") format("truetype");*/
     src: url("../fonts/SUN.woff?2") format("woff");
 }
 
 @font-face {
     font-family: "BACKSUN";
-    /*src: url("../fonts/BackSUN.ttf") format('truetype');*/
     src: url("../fonts/BackSUN.woff?2") format("woff");
 }
 
-.sun_content {
+.sun_content, .font_sgn-US-symbunot {
     font-family: SUN, serif;
     font-size: 26px;
     font-weight: bold;
@@ -49,6 +47,10 @@
     font-family: BACKSUN, serif;
     font-size: 40px;
     line-height: 25px;
+}
+
+.font_backsun p {
+    margin-top: 20px;
 }
 
 .backsun_content {
@@ -82,10 +84,6 @@ html, body, .container {
     padding: 10px;
     border-radius: 10px;
 }
-
-/*.form-group {
-    position: relative;
-}*/
 
 .container {
     position: relative;
@@ -1207,7 +1205,7 @@ div.ui-datepicker {
 
 .content_help {
     position: fixed;
-    right: -275px;
+    right: -375px;
     bottom: 0;
     padding: 0 5px 5px 5px;
     border-radius: 5px 0 5px 5px;
@@ -1219,7 +1217,7 @@ div.ui-datepicker {
 
 .help_float {
     /*position: fixed;*/
-    width: 260px;
+    width: 360px;
 }
 
 #help_hide {
@@ -1553,22 +1551,6 @@ _::-webkit-full-page-media, _:future, :root #help_hide {
     background: url("/templates/default/assets/img/steps/first-check-active.png") no-repeat;
 }
 
-.snd-check {background-color: #4596cc;}
-.snd-check-step {
-    background: url("/templates/default/assets/img/steps/second-check-inactive.png") no-repeat;
-}
-.snd-check-step.active {
-    background: url("/templates/default/assets/img/steps/second-check-active.png") no-repeat;
-}
-
-.keyword-check-l2 {background-color: #4596cc;}
-.keyword-check-l2-step {
-    background: url("/templates/default/assets/img/steps/keyword-check-inactive.png") no-repeat;
-}
-.keyword-check-l2-step.active {
-    background: url("/templates/default/assets/img/steps/keyword-check-active.png") no-repeat;
-}
-
 .peer-review-l2, .peer-review-l3 {background-color: #4596cc;}
 .peer-review-l2-step, .peer-review-l3-step {
     background: url("/templates/default/assets/img/steps/peer-edit-inactive.png") no-repeat;
@@ -1803,6 +1785,11 @@ _::-webkit-full-page-media, _:future, :root #help_hide {
 .chunk_block {
     position: relative;
     margin: 20px 0;
+}
+
+.chunk_block_divider {
+    border-bottom: 1px solid red;
+    padding: 20px 0;
 }
 
 .chunk_divider {
@@ -2048,8 +2035,8 @@ mark {
 .textarea_editor {
     width: 503px;
     min-height: 100px;
-    /*font-family: SUN, Serif;*/
     font-size: 20px;
+    resize: none;
 }
 
 .other_comments_list {
@@ -2057,7 +2044,6 @@ mark {
     text-align: left;
     max-height: 300px;
     overflow-y: auto;
-    /*font-family: SUN, Serif;*/
     font-size: 20px;
 }
 
@@ -2210,10 +2196,6 @@ span.mdi.mdi-lead-pencil {
 
 .commentAltText {
     display: none;
-}
-
-.textarea_editor {
-    resize: none;
 }
 
 .commentEditorLoader {
@@ -5456,6 +5438,12 @@ button.add_verse_ta {
     padding: 20px;
 }
 
+.tools_middle {
+    flex: 1;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+}
+
 .tools_right {
     flex: 1;
     border-left: 1px solid #ccc;
@@ -5579,5 +5567,42 @@ button.add_verse_ta {
 
 .sun_mode {
     margin: 20px 0 30px 0;
+}
+
+.obs_chunk {
+    margin: 30px 0;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.obs_chunk.no_margin {
+    margin: 0;
+}
+
+h1.obs_chunk {
+    font-size: 30px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+}
+
+.obs_title {
+    margin: 0 10px 20px 0;
+}
+
+.obs_img {
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+.obs_img_floatable {
+    position: absolute;
+    z-index: 2;
+}
+
+.chunk_checker {
+    display: none;
 }
 

@@ -41,7 +41,10 @@ $parsedown = new Parsedown();
                     <div class="no_padding">
                         <div class="sun_mode">
                             <label>
-                                <input type="checkbox" autocomplete="off" checked data-toggle="toggle" data-on="SUN" data-off="BACKSUN">
+                                <input type="checkbox" autocomplete="off" checked
+                                       data-toggle="toggle"
+                                       data-on="SUN"
+                                       data-off="BACKSUN" />
                             </label>
                         </div>
 
