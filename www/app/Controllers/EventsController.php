@@ -3163,7 +3163,6 @@ class EventsController extends Controller {
 
                 switch ($event->step) {
                     case EventSteps::PRAY:
-
                         if ($event->currentChapter == 0) {
                             $nextChapter = $this->_model->getNextChapter($event->eventID, $event->myMemberID);
                             if (!empty($nextChapter)) {
@@ -3192,7 +3191,7 @@ class EventsController extends Controller {
                                 );
 
                                 $postdata = [
-                                    "step" => EventSteps::BLIND_DRAFT,
+                                    "step" => EventSteps::CONSUME,
                                     "currentChapter" => $event->currentChapter,
                                     "currentChunk" => 0
                                 ];
@@ -3204,10 +3203,38 @@ class EventsController extends Controller {
 
                         // Check if translator just started translating of this book
                         $event->justStarted = $event->otherCheck == "";
-                        $data["next_step"] = EventSteps::BLIND_DRAFT;
+                        $data["next_step"] = EventSteps::CONSUME;
 
                         return View::make('Events/Obs/Translator')
                             ->nest('page', 'Events/Obs/Pray')
+                            ->shares("title", $title)
+                            ->shares("data", $data)
+                            ->shares("error", @$error);
+
+                    case EventSteps::CONSUME:
+                        // Get obs
+                        $sourceTextObs = $this->resourcesRepo->getObs($event->resLangID, $event->currentChapter);
+
+                        if (!$sourceTextObs) {
+                            $this->_model->updateTranslator(["step" => EventSteps::NONE], ["trID" => $event->trID]);
+                            Url::redirect('events/translator-obs/' . $event->eventID);
+                        }
+
+                        $data["obs"] = $sourceTextObs->chunks;
+
+                        if (isset($_POST) && !empty($_POST)) {
+                            if (isset($_POST["confirm_step"])) {
+                                $postdata = ["step" => EventSteps::BLIND_DRAFT];
+                                $this->_model->updateTranslator($postdata, ["trID" => $event->trID]);
+
+                                Url::redirect('events/translator-obs/' . $event->eventID);
+                            }
+                        }
+
+                        $data["next_step"] = EventSteps::BLIND_DRAFT;
+
+                        return View::make('Events/Obs/Translator')
+                            ->nest('page', 'Events/Obs/Consume')
                             ->shares("title", $title)
                             ->shares("data", $data)
                             ->shares("error", @$error);

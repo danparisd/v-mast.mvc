@@ -13,6 +13,10 @@ $chk = $data["isCheckerPage"] ? "_chk" : "";
         </li>
 
         <?php if(!$data["isCheckerPage"]): ?>
+        <li class="consume-step <?php echo $data["step"] == EventSteps::CONSUME ? "active" : "" ?>">
+            <a href="/events/demo-obs/consume"><span><?php echo __(EventSteps::CONSUME)?></span></a>
+        </li>
+
         <li class="blind-draft-step <?php echo $data["step"] == EventSteps::BLIND_DRAFT ? "active" : "" ?>">
             <a href="/events/demo-obs/blind_draft"><span><?php echo __(EventSteps::BLIND_DRAFT)?></span></a>
         </li>
