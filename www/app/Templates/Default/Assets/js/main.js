@@ -2437,7 +2437,7 @@ $(document).ready(function() {
         var totalVerses = $("input#totalVerses").val();
 
         if (container.length <= 0) {
-            var query_params = (["tq","tn","tw"].indexOf(tool) > -1
+            var query_params = (["tq","tn","tw","bc"].indexOf(tool) > -1
                 ? bookCode + "/" + chapter + "/" + lang
                 : (tool == "rubric" ? targetLang : ""))
                 + (tool == "tn" ? "/" + totalVerses : "");
@@ -2530,6 +2530,9 @@ $(document).ready(function() {
                 break;
             case "tw":
                 $(".ttools_panel.tw_tool").hide();
+                break;
+            case "bc":
+                $(".ttools_panel.bc_tool").hide();
                 break;
             case "rubric":
                 $(".ttools_panel.rubric_tool").hide();
