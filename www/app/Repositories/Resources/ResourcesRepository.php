@@ -564,7 +564,7 @@ class ResourcesRepository implements IResourcesRepository {
             $folderPath = $bookFolderPath;
         }
 
-        if (!$folderPath) return $book;
+        if (!$bookFolderPath) return $book;
 
         $files = File::allFiles($folderPath);
         foreach ($files as $file)
