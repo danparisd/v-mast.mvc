@@ -251,21 +251,11 @@
         </div>
 
         <div class="tr_tools">
-            <div style="width: 50%; display: flex" >
-                <div>
-                    <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
-                    <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
-                </div>
-
-                <div>
-                    <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
-                    <button class="btn btn-primary ttools" data-tool="bc"><?php echo __("show_bible_commentaries") ?></button>
-                </div>
-            </div>
-
-            <div style="width: 50%; margin-block: auto">
-                <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
-            </div>
+            <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
+            <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
+            <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
+            <button class="btn btn-primary ttools" data-tool="bc"><?php echo __("show_bible_commentaries") ?></button>
+            <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
         </div>
 
         <div class="checker_view">
