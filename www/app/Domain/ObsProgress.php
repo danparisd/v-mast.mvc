@@ -55,6 +55,7 @@ class ObsProgress
             if (empty($chapter)) continue;
 
             $currentStep = EventSteps::PRAY;
+            $consumeState = StepsStates::NOT_STARTED;
             $blindDraftState = StepsStates::NOT_STARTED;
 
             $members[$chapter["memberID"]] = "";
@@ -65,9 +66,9 @@ class ObsProgress
             $peerCheck = (array)json_decode($memberSteps[$chapter["memberID"]]["peerCheck"], true);
 
             // Set default values
+            $data["chapters"][$key]["consume"]["state"] = StepsStates::NOT_STARTED;
             $data["chapters"][$key]["blindDraft"]["state"] = StepsStates::NOT_STARTED;
             $data["chapters"][$key]["selfEdit"]["state"] = StepsStates::NOT_STARTED;
-
             $data["chapters"][$key]["kwc"]["state"] = StepsStates::NOT_STARTED;
             $data["chapters"][$key]["peerChk"]["state"] = StepsStates::NOT_STARTED;
             $data["chapters"][$key]["peerChk"]["checkerID"] = 'na';
@@ -78,13 +79,22 @@ class ObsProgress
                 if ($currentChapter == $key) {
                     $currentStep = $memberSteps[$chapter["memberID"]]["step"];
 
-                    if ($currentStep == EventSteps::BLIND_DRAFT) {
+                    if ($currentStep == EventSteps::CONSUME) {
+                        $consumeState = StepsStates::IN_PROGRESS;
+                    } elseif ($currentStep == EventSteps::BLIND_DRAFT) {
+                        $consumeState = StepsStates::FINISHED;
                         $blindDraftState = StepsStates::IN_PROGRESS;
                     }
                 }
 
                 $data["chapters"][$key]["step"] = $currentStep;
+                $data["chapters"][$key]["consume"]["state"] = $consumeState;
                 $data["chapters"][$key]["blindDraft"]["state"] = $blindDraftState;
+
+                if ($data["chapters"][$key]["consume"]["state"] == StepsStates::FINISHED)
+                    $data["chapters"][$key]["progress"] += 20;
+
+                $overallProgress += $data["chapters"][$key]["progress"];
 
                 $data["chapters"][$key]["chunksData"] = [];
                 continue;
@@ -92,8 +102,10 @@ class ObsProgress
 
             $currentStep = $memberSteps[$chapter["memberID"]]["step"];
 
-            $data["chapters"][$key]["progress"] += sizeof($chapter["chunksData"]) * 25 / sizeof($chapter["chunks"]);
+            $data["chapters"][$key]["progress"] += sizeof($chapter["chunksData"]) * 20 / sizeof($chapter["chunks"]);
             $data["chapters"][$key]["step"] = $currentChapter == $key ? $currentStep : EventSteps::FINISHED;
+
+            $data["chapters"][$key]["consume"]["state"] = StepsStates::FINISHED;
 
             if ($currentChapter == $key) {
                 if ($currentStep == EventSteps::BLIND_DRAFT) {
@@ -154,14 +166,16 @@ class ObsProgress
             }
 
             // Progress checks
+            if ($data["chapters"][$key]["consume"]["state"] == StepsStates::FINISHED)
+                $data["chapters"][$key]["progress"] += 20;
             if ($data["chapters"][$key]["selfEdit"]["state"] == StepsStates::FINISHED)
-                $data["chapters"][$key]["progress"] += 25;
+                $data["chapters"][$key]["progress"] += 20;
             if ($data["chapters"][$key]["kwc"]["state"] == StepsStates::FINISHED)
-                $data["chapters"][$key]["progress"] += 25;
+                $data["chapters"][$key]["progress"] += 20;
             if ($data["chapters"][$key]["peerChk"]["state"] == StepsStates::CHECKED)
-                $data["chapters"][$key]["progress"] += 12;
+                $data["chapters"][$key]["progress"] += 10;
             if ($data["chapters"][$key]["peerChk"]["state"] == StepsStates::FINISHED)
-                $data["chapters"][$key]["progress"] += 25;
+                $data["chapters"][$key]["progress"] += 20;
 
             $overallProgress += $data["chapters"][$key]["progress"];
         }

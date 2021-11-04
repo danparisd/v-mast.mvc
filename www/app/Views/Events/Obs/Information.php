@@ -86,6 +86,13 @@ if(!isset($error)):
                                 <div class="clear"></div>
                             </div>
                             <div class="section_steps">
+                                <!-- Consume Step -->
+                                <div class="section_step <?php echo $chapter["consume"]["state"] ?>">
+                                    <div class="step_status"><?php echo __("step_status_" . $chapter["consume"]["state"]) ?></div>
+                                    <div class="step_light"></div>
+                                    <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventSteps::CONSUME.".png") ?>"></div>
+                                    <div class="step_name">1. <?php echo __(EventSteps::CONSUME); ?></div>
+                                </div>
                                 <!-- Blind Draft Step -->
                                 <div class="section_step <?php echo $chapter["blindDraft"]["state"] ?>">
                                     <div class="step_status"><?php echo __("step_status_" . $chapter["blindDraft"]["state"]) ?></div>

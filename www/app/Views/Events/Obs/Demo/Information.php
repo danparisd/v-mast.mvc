@@ -42,7 +42,7 @@ use Helpers\Constants\StepsStates;
                     <div class="chapter_number section_title"><?php echo __("chapter_number", ["chapter" => 4]) ?></div>
                     <div class="section_translator_progress_bar">
                         <div class="progress ">
-                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 75%">75%</div>
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 80%">80%</div>
                         </div>
                         <div class=" finished_icon"></div>
                         <div class="clear"></div>
@@ -62,6 +62,13 @@ use Helpers\Constants\StepsStates;
                         <div class="clear"></div>
                     </div>
                     <div class="section_steps">
+                        <!-- Consume Step -->
+                        <div class="section_step finished">
+                            <div class="step_status"><?php echo __("step_status_" . StepsStates::FINISHED) ?></div>
+                            <div class="step_light"></div>
+                            <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventSteps::CONSUME.".png") ?>"></div>
+                            <div class="step_name">1. <?php echo __(EventSteps::CONSUME); ?></div>
+                        </div>
                         <!-- Blind Draft Step -->
                         <div class="section_step finished">
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
@@ -146,7 +153,7 @@ use Helpers\Constants\StepsStates;
                     <div class="chapter_number section_title"><?php echo __("chapter_number", ["chapter" => 6]) ?></div>
                     <div class="section_translator_progress_bar">
                         <div class="progress ">
-                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 25%">25%</div>
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="min-width: 0em; width: 40%">40%</div>
                         </div>
                         <div class=" finished_icon"></div>
                         <div class="clear"></div>
@@ -162,6 +169,13 @@ use Helpers\Constants\StepsStates;
                         <div class="clear"></div>
                     </div>
                     <div class="section_steps">
+                        <!-- Consume Step -->
+                        <div class="section_step finished">
+                            <div class="step_status"><?php echo __("step_status_" . StepsStates::FINISHED) ?></div>
+                            <div class="step_light"></div>
+                            <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventSteps::CONSUME.".png") ?>"></div>
+                            <div class="step_name">1. <?php echo __(EventSteps::CONSUME); ?></div>
+                        </div>
                         <!-- Blind Draft Step -->
                         <div class="section_step finished">
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
@@ -253,6 +267,13 @@ use Helpers\Constants\StepsStates;
                         <div class="clear"></div>
                     </div>
                     <div class="section_steps">
+                        <!-- Consume Step -->
+                        <div class="section_step finished">
+                            <div class="step_status"><?php echo __("step_status_" . StepsStates::FINISHED) ?></div>
+                            <div class="step_light"></div>
+                            <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventSteps::CONSUME.".png") ?>"></div>
+                            <div class="step_name">1. <?php echo __(EventSteps::CONSUME); ?></div>
+                        </div>
                         <!-- Blind Draft Step -->
                         <div class="section_step finished">
                             <div class="step_status"><?php echo __("step_status_".StepsStates::FINISHED) ?></div>
