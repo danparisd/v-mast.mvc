@@ -1289,6 +1289,12 @@ class DemoController extends Controller {
             case "pray":
                 $view->nest("page", "Events/Obs/Demo/Pray");
                 $data["step"] = EventSteps::PRAY;
+                $data["next_step"] = EventSteps::CONSUME;
+                break;
+
+            case "consume":
+                $view->nest("page", "Events/Obs/Demo/Consume");
+                $data["step"] = EventSteps::CONSUME;
                 $data["next_step"] = EventSteps::BLIND_DRAFT;
                 break;
 

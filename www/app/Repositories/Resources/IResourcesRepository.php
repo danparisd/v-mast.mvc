@@ -14,6 +14,8 @@ interface IResourcesRepository
 
     public function getTw($lang, $category, $eventID = null, $chapter = null, $toHtml = false);
 
+    public function getBc($land, $bookSlug, $chapter = null, $toHtml = false);
+
     public function getQaGuide($lang);
 
     public function getOtherResource($lang, $resource, $bookSlug);

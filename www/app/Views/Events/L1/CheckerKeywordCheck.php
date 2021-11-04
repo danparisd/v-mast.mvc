@@ -150,6 +150,7 @@ if(empty($error) && empty($data["success"])):
         <div class="tr_tools">
             <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
             <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
+            <button class="btn btn-primary ttools" data-tool="bc"><?php echo __("show_bible_commentaries") ?></button>    
             <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
         </div>
     </div>
@@ -161,6 +162,7 @@ if(empty($error) && empty($data["success"])):
 <input type="hidden" id="tn_lang" value="<?php echo $data["event"][0]->tnLangID ?>">
 <input type="hidden" id="tq_lang" value="<?php echo $data["event"][0]->tqLangID ?>">
 <input type="hidden" id="tw_lang" value="<?php echo $data["event"][0]->twLangID ?>">
+<input type="hidden" id="bc_lang" value="<?php echo $data["event"][0]->bcLangID ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["event"][0]->targetLang ?>">
 

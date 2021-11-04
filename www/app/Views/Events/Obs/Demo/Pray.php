@@ -66,7 +66,7 @@ use Helpers\Constants\EventSteps;
         
         $("#next_step").click(function (e) {
             e.preventDefault();
-            window.location.href = '/events/demo-obs/blind_draft';
+            window.location.href = '/events/demo-obs/consume';
             return false;
         });
     });
