@@ -95,19 +95,19 @@ class ProjectContributors
 
     private function setCheckersL2($checkers) {
         foreach ($checkers as $checker) {
-            $sndCheck = (array)json_decode($checker->pivot->sndCheck);
-            $peer1Check = (array)json_decode($checker->pivot->peer1Check);
-            $peer2Check = (array)json_decode($checker->pivot->peer2Check);
+            $peerCheck = (array)json_decode($checker->pivot->peerCheck);
+            $kwCheck = (array)json_decode($checker->pivot->kwCheck);
+            $crCheck = (array)json_decode($checker->pivot->crCheck);
 
             $this->contributorsIDs = Arrays::append($this->contributorsIDs, array_values(array_map(function ($elm) {
                 return $elm->memberID;
-            }, $sndCheck)));
+            }, $peerCheck)));
             $this->contributorsIDs = Arrays::append($this->contributorsIDs, array_values(array_map(function ($elm) {
                 return $elm->memberID;
-            }, $peer1Check)));
+            }, $kwCheck)));
             $this->contributorsIDs = Arrays::append($this->contributorsIDs, array_values(array_map(function ($elm) {
                 return $elm->memberID;
-            }, $peer2Check)));
+            }, $crCheck)));
         }
     }
 

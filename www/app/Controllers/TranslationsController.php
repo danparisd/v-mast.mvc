@@ -3,12 +3,14 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Domain\EventContributors;
+use App\Domain\ProjectContributors;
 use App\Models\ApiModel;
 use App\Models\CloudModel;
 use App\Models\TranslationsModel;
 use App\Models\EventsModel;
 use App\Repositories\Event\IEventRepository;
 use App\Repositories\Member\IMemberRepository;
+use App\Repositories\Project\IProjectRepository;
 use Helpers\Constants\EventMembers;
 use Helpers\Constants\EventStates;
 use Helpers\Constants\OdbSections;
@@ -31,15 +33,18 @@ class TranslationsController extends Controller
     private $_eventModel;
     private $_apiModel;
 
-    private $eventsRepo = null;
-    private $memberRepo = null;
+    private $eventsRepo;
+    private $projectsRepo;
+    private $memberRepo;
 
     public function __construct(
+        IProjectRepository $projectsRepo,
         IEventRepository $eventsRepo,
         IMemberRepository $memberRepo
     ) {
         parent::__construct();
 
+        $this->projectsRepo = $projectsRepo;
         $this->eventsRepo = $eventsRepo;
         $this->memberRepo = $memberRepo;
 
@@ -373,14 +378,11 @@ class TranslationsController extends Controller
     {
         if($lang != null && $bookProject != null && $sourceBible != null && $bookCode != null)
         {
-            // If bookcode is "dl" then include all the books in archive
-            $bookCode = $bookCode != "dl" ? $bookCode : null;
-
             $books = $this->_model->getTranslation($lang, $bookProject, $sourceBible, $bookCode);
 
             if(!empty($books) && isset($books[0]))
             {
-                $projectFiles = $this->getUsfmProjectFiles($books, $bookCode != null);
+                $projectFiles = $this->getUsfmProjectFiles($books);
                 $filename = $books[0]->targetLang . "_" . $bookProject . ($bookCode ? "_".$bookCode : "") . ".zip";
                 $this->_model->generateZip($filename, $projectFiles, true);
             }
@@ -420,14 +422,11 @@ class TranslationsController extends Controller
     {
         if($lang != null && $bookProject != null && $sourceBible != null && $bookCode != null)
         {
-            // If bookcode is "dl" then include all the books in archive
-            $bookCode = $bookCode != "dl" ? $bookCode : null;
-
             $books = $this->_model->getTranslation($lang, $bookProject, $sourceBible, $bookCode);
 
             if(!empty($books) && isset($books[0]))
             {
-                $projectFiles = $this->getJsonProjectFiles($books, $bookCode == null);
+                $projectFiles = $this->getJsonProjectFiles($books);
                 $filename = $books[0]->targetLang . "_" . $bookProject . ($bookCode ? "_".$bookCode : "") . ".zip";
                 $this->_model->generateZip($filename, $projectFiles, true);
             }
@@ -442,15 +441,12 @@ class TranslationsController extends Controller
     {
         if($lang != null && $bookProject != null && $sourceBible != null && $bookCode != null)
         {
-            // If bookcode is "dl" then include all the books in archive
-            $bookCode = $bookCode != "dl" ? $bookCode : null;
-
             $books = $this->_model->getTranslation($lang, $bookProject, $sourceBible, $bookCode);
 
             if(!empty($books) && isset($books[0]))
             {
-                $projectFiles = $this->getMdProjectFiles($books, $bookCode == null);
-                $filename = $books[0]->targetLang."_" . $bookProject . ($bookCode != null ? "_".$books[0]->bookCode : "") . ".zip";
+                $projectFiles = $this->getMdProjectFiles($books);
+                $filename = $books[0]->targetLang."_" . $bookProject . "_".$books[0]->bookCode . ".zip";
                 $this->_model->generateZip($filename, $projectFiles, true);
             }
         }
@@ -462,15 +458,12 @@ class TranslationsController extends Controller
     {
         if($lang != null && $sourceBible != null && $bookCode != null)
         {
-            // If bookcode is "dl" then include all the books in archive
-            $bookCode = $bookCode != "dl" ? $bookCode : null;
-
             $books = $this->_model->getTranslation($lang, "tw", $sourceBible, $bookCode);
 
             if(!empty($books) && isset($books[0]))
             {
                 $projectFiles = $this->getMdTwProjectFiles($books);
-                $filename = $lang . "_tw" .($bookCode != null ? "_".$books[0]->bookName : ""). ".zip";
+                $filename = $lang . "_tw_" . $books[0]->bookName. ".zip";
                 $this->_model->generateZip($filename, $projectFiles, true);
             }
         }
@@ -529,7 +522,7 @@ class TranslationsController extends Controller
                     $books = $this->_model->getTranslation($lang, $bookProject, $sourceBible, $bookCode);
                     if(!empty($books) && isset($books[0]))
                     {
-                        $projectFiles = $this->getMdProjectFiles($books, false, true);
+                        $projectFiles = $this->getMdProjectFiles($books, true);
                     }
                 }
             }
@@ -569,7 +562,7 @@ class TranslationsController extends Controller
     }
 
 
-    private function getUsfmProjectFiles($books, $all = false)
+    private function getUsfmProjectFiles($books)
     {
         $projectFiles = [];
 
@@ -599,29 +592,19 @@ class TranslationsController extends Controller
         $manifest = $this->_model->generateManifest($books[0]);
         $manifest->setCheckingLevel((string)$chk_lvl);
 
-        // Set contributor list from entire project contributors
-        if($all)
+        $event = $this->eventsRepo->get($books[0]->eventID);
+        $eventContributors = new EventContributors(
+            $event,
+            $manifest->getCheckingLevel(),
+            $books[0]->bookProject,
+            false
+        );
+        foreach ($eventContributors->get() as $cat => $list)
         {
-            $manifest->setContributor(array_map(function($contributor) {
-                return $contributor["fname"] . (!empty($contributor["lname"]) ? " ".$contributor["lname"] : "");
-            }, $this->_eventModel->getProjectContributors($books[0]->projectID, false, false)));
-        }
-        else
-        { // Only for specific book
-            $event = $this->eventsRepo->get($books[0]->eventID);
-            $eventContributors = new EventContributors(
-                $event,
-                $manifest->getCheckingLevel(),
-                $books[0]->bookProject,
-                false
-            );
-            foreach ($eventContributors->get() as $cat => $list)
+            if($cat == "admins") continue;
+            foreach ($list as $contributor)
             {
-                if($cat == "admins") continue;
-                foreach ($list as $contributor)
-                {
-                    $manifest->addContributor($contributor["fname"] . " " . $contributor["lname"]);
-                }
+                $manifest->addContributor($contributor["fname"] . " " . $contributor["lname"]);
             }
         }
 
@@ -849,7 +832,7 @@ class TranslationsController extends Controller
     }
 
 
-    private function getJsonProjectFiles($books, $all = false)
+    private function getJsonProjectFiles($books)
     {
         $projectFiles = [];
 
@@ -876,14 +859,6 @@ class TranslationsController extends Controller
 
         $manifest = $this->_model->generateManifest($books[0]);
 
-        // Set contributor list from entire project contributors
-        if($all)
-        {
-            $manifest->setContributor(array_map(function($contributor) {
-                return $contributor["fname"] . (!empty($contributor["lname"]) ? " ".$contributor["lname"] : "");
-            }, $this->_eventModel->getProjectContributors($books[0]->projectID, false, false)));
-        }
-
         $json_books = [];
         $lastChapter = 0;
         $lastCode = null;
@@ -900,23 +875,19 @@ class TranslationsController extends Controller
             {
                 $json_books[$code] = ["root" => []];
 
-                // Set contributor list from book contributors
-                if(!$all)
+                $event = $this->eventsRepo->get($chunk->eventID);
+                $eventContributors = new EventContributors(
+                    $event,
+                    $chk_lvl,
+                    $chunk->bookProject,
+                    false
+                );
+                foreach ($eventContributors->get() as $cat => $list)
                 {
-                    $event = $this->eventsRepo->get($chunk->eventID);
-                    $eventContributors = new EventContributors(
-                        $event,
-                        $chk_lvl,
-                        $chunk->bookProject,
-                        false
-                    );
-                    foreach ($eventContributors->get() as $cat => $list)
+                    if($cat == "admins") continue;
+                    foreach ($list as $contributor)
                     {
-                        if($cat == "admins") continue;
-                        foreach ($list as $contributor)
-                        {
-                            $manifest->addContributor($contributor["fname"] . " " . $contributor["lname"]);
-                        }
+                        $manifest->addContributor($contributor["fname"] . " " . $contributor["lname"]);
                     }
                 }
             }
@@ -1007,7 +978,7 @@ class TranslationsController extends Controller
     }
 
 
-    private function getMdProjectFiles($books, $all = false, $upload = false)
+    private function getMdProjectFiles($books, $upload = false)
     {
         $projectFiles = [];
         $lastChapter = -1;
@@ -1035,14 +1006,6 @@ class TranslationsController extends Controller
         $manifest = $this->_model->generateManifest($books[0]);
         $manifest->setCheckingLevel((string)$chk_lvl);
 
-        // Set contributor list from entire project contributors
-        if($all)
-        {
-            $manifest->setContributor(array_map(function($contributor) {
-                return $contributor["fname"] . (!empty($contributor["lname"]) ? " ".$contributor["lname"] : "");
-            }, $this->_eventModel->getProjectContributors($books[0]->projectID, false, false)));
-        }
-
         $root = !$upload ? $books[0]->targetLang."_".$books[0]->bookProject . "/" : "";
 
         foreach ($books as $chunk) {
@@ -1061,7 +1024,7 @@ class TranslationsController extends Controller
             }
 
             $chunks = (array)json_decode($chapter["chunks"], true);
-            $currChunk = isset($chunks[$chunk->chunk]) ? $chunks[$chunk->chunk] : 1;
+            $currChunk = $chunks[$chunk->chunk] ?? 1;
 
             $bookPath = $chunk->bookCode;
             $format = $chunk->bookCode == "psa" ? "%03d" : "%02d";
@@ -1086,23 +1049,19 @@ class TranslationsController extends Controller
 
             if(!$manifest->getProject($chunk->bookCode))
             {
-                // Set contributor list from book contributors
-                if(!$all)
+                $event = $this->eventsRepo->get($chunk->eventID);
+                $eventContributors = new EventContributors(
+                    $event,
+                    $manifest->getCheckingLevel(),
+                    $chunk->bookProject,
+                    false
+                );
+                foreach ($eventContributors->get() as $cat => $list)
                 {
-                    $event = $this->eventsRepo->get($chunk->eventID);
-                    $eventContributors = new EventContributors(
-                        $event,
-                        $manifest->getCheckingLevel(),
-                        $chunk->bookProject,
-                        false
-                    );
-                    foreach ($eventContributors->get() as $cat => $list)
+                    if($cat == "admins") continue;
+                    foreach ($list as $contributor)
                     {
-                        if($cat == "admins") continue;
-                        foreach ($list as $contributor)
-                        {
-                            $manifest->addContributor($contributor["fname"] . " " . $contributor["lname"]);
-                        }
+                        $manifest->addContributor($contributor["fname"] . " " . $contributor["lname"]);
                     }
                 }
 
@@ -1151,9 +1110,16 @@ class TranslationsController extends Controller
         $manifest->setCheckingLevel((string)$chk_lvl);
 
         // Set contributor list from entire project contributors
-        $manifest->setContributor(array_map(function($contributor) {
-            return $contributor["fname"] . (!empty($contributor["lname"]) ? " ".$contributor["lname"] : "");
-        }, $this->_eventModel->getProjectContributors($books[0]->projectID, false, false)));
+        $project = $this->projectsRepo->get($books[0]->projectID);
+        $projectContributors = new ProjectContributors(
+            $project,
+            false,
+            false
+        );
+        foreach ($projectContributors->get() as $contributor)
+        {
+            $manifest->addContributor($contributor["fname"] . " " . $contributor["lname"]);
+        }
 
         $manifest->addProject(new Project(
             __($books[0]->bookProject),
@@ -1170,7 +1136,7 @@ class TranslationsController extends Controller
             $verses = json_decode($chunk->translatedVerses);
             $words = (array) json_decode($chunk->words, true);
 
-            $currWord = isset($words[$chunk->chunk]) ? $words[$chunk->chunk] : null;
+            $currWord = $words[$chunk->chunk] ?? null;
 
             if(!$currWord) continue;
 
@@ -1220,9 +1186,17 @@ class TranslationsController extends Controller
         $manifest = $this->_model->generateManifest($books[0]);
         $manifest->setCheckingLevel((string)$chk_lvl);
 
-        $manifest->setContributor(array_map(function($contributor) {
-            return $contributor["fname"] . (!empty($contributor["lname"]) ? " ".$contributor["lname"] : "");
-        }, $this->_eventModel->getProjectContributors($books[0]->projectID, false, false)));
+        // Set contributor list from entire project contributors
+        $project = $this->projectsRepo->get($books[0]->projectID);
+        $projectContributors = new ProjectContributors(
+            $project,
+            false,
+            false
+        );
+        foreach ($projectContributors->get() as $contributor)
+        {
+            $manifest->addContributor($contributor["fname"] . " " . $contributor["lname"]);
+        }
 
         $root = !$upload ? $books[0]->targetLang."_obs/" : "";
 

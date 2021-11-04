@@ -182,30 +182,30 @@ class EventContributors
     }
 
     private function setContributorsL2() {
-        if (in_array($this->mode, ["udb", "ulb","sun"])) {
+        if (in_array($this->mode, ["udb","ulb","sun"])) {
             foreach ($this->event->checkersL2 as $checker) {
-                $sndCheck = (array)json_decode($checker->pivot->sndCheck);
-                $peer1Check = (array)json_decode($checker->pivot->peer1Check);
-                $peer2Check = (array)json_decode($checker->pivot->peer2Check);
+                $peerCheck = (array)json_decode($checker->pivot->peerCheck);
+                $kwCheck = (array)json_decode($checker->pivot->kwCheck);
+                $crCheck = (array)json_decode($checker->pivot->crCheck);
 
-                $sndMems = [];
-                foreach ($sndCheck as $item) {
-                    $sndMems[] = $item->memberID;
+                $peerMems = [];
+                foreach ($peerCheck as $item) {
+                    $peerMems[] = $item->memberID;
                 }
 
-                $p1Mems = [];
-                foreach ($peer1Check as $item) {
-                    $p1Mems[] = $item->memberID;
+                $kwMems = [];
+                foreach ($kwCheck as $item) {
+                    $kwMems[] = $item->memberID;
                 }
 
-                $p2Mems = [];
-                foreach ($peer2Check as $item) {
-                    $p2Mems[] = $item->memberID;
+                $crMems = [];
+                foreach ($crCheck as $item) {
+                    $crMems[] = $item->memberID;
                 }
 
-                $this->checkersArr = Arrays::append($this->checkersArr, $sndMems);
-                $this->checkersArr = Arrays::append($this->checkersArr, $p1Mems);
-                $this->checkersArr = Arrays::append($this->checkersArr, $p2Mems);
+                $this->checkersArr = Arrays::append($this->checkersArr, $peerMems);
+                $this->checkersArr = Arrays::append($this->checkersArr, $kwMems);
+                $this->checkersArr = Arrays::append($this->checkersArr, $crMems);
             }
 
             $data["chapters"] = [];
