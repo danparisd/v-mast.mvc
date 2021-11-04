@@ -472,19 +472,19 @@ class MembersController extends Controller
                 // Second checker
                 $checking = $this->_eventModel->getMemberEventsForRevisionChecker(null, $checking_activity->eventID);
                 foreach ($checking as $check) {
-                    $sndCheck = (array)json_decode($check->sndCheck, true);
-                    $peer1Check = (array)json_decode($check->peer1Check, true);
-                    $peer2Check = (array)json_decode($check->peer2Check, true);
+                    $peerCheck = (array)json_decode($check->peerCheck, true);
+                    $kwCheck = (array)json_decode($check->kwCheck, true);
+                    $crCheck = (array)json_decode($check->crCheck, true);
 
-                    foreach ($sndCheck as $chapter => $member_data)
+                    foreach ($peerCheck as $chapter => $member_data)
                         if ($memberID == $member_data["memberID"])
                             $chaps[] = $chapter;
 
-                    foreach ($peer1Check as $chapter => $member_data)
+                    foreach ($kwCheck as $chapter => $member_data)
                         if ($memberID == $member_data["memberID"])
                             $chaps[] = $chapter;
 
-                    foreach ($peer2Check as $chapter => $member_data)
+                    foreach ($crCheck as $chapter => $member_data)
                         if ($memberID == $member_data["memberID"])
                             $chaps[] = $chapter;
                 }
