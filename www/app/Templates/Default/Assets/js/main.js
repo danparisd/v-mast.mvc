@@ -2536,7 +2536,7 @@ $(document).ready(function() {
                 $(".container_block").append(data);
 
                 container = $(".ttools_panel.bc_article_tool");
-                container.data("url", url);
+                container.attr("data-url", url);
 
                 if (container.length <= 0) {
                     renderPopup(Language.resource_not_found);
@@ -2550,7 +2550,6 @@ $(document).ready(function() {
 
         return;
     });
-
 
     $("body").on("click", ".ttools_panel .panel-close", function () {
         var tool = $(this).data("tool");
@@ -2569,7 +2568,7 @@ $(document).ready(function() {
                 $(".ttools_panel.bc_tool").hide();
                 break;
             case "bc_article":
-                $(".ttools_panel.bc_article_tool").remove();
+                $(this).parents(".ttools_panel.bc_article_tool").remove();
                 break;
             case "rubric":
                 $(".ttools_panel.rubric_tool").hide();
