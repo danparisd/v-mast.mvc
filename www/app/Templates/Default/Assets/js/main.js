@@ -2526,34 +2526,31 @@ $(document).ready(function() {
 
         url = url.replace("\.\.\/articles/", "");
 
-        $.get(`/events/rpc/get_bc_article/${ lang }/${ url }`, function (data) {
+        var container = $(".ttools_panel.bc_article_tool");
+        var opened = $(".ttools_panel.bc_article_tool[data-url='"+url+"']").length > 0;
 
-            var container = $(".ttools_panel.bc_article_tool");
+        if (!opened)
+        {
+            $.get(`/events/rpc/get_bc_article/${ lang }/${ url }`, function (data) {
 
-            // if ($(".container_block").indexOf(data) >= 0) {
+                $(".container_block").append(data);
 
-            //     $(".container_block").append(data);
-            // }
+                container = $(".ttools_panel.bc_article_tool");
+                container.data("url", url);
 
-            $(".container_block").append(data);
+                if (container.length <= 0) {
+                    renderPopup(Language.resource_not_found);
+                    return;
+                }
 
-            // console.log($(".container_block").contents());
+                $(".ttools_panel").draggable({ snap: 'inner', handle: '.panel-title' });
+                container.css("top", $(window).scrollTop() + 50).show();
+            })
+        }
 
-            // console.log($(".container_block"));
-
-            console.log(container);
-
-            if (container.length <= 0) {
-                renderPopup(Language.resource_not_found);
-                return;
-            }
-
-            $(".ttools_panel").draggable({ snap: 'inner', handle: '.panel-title' });
-            container.css("top", $(window).scrollTop() + 50).show();
-        })
-        
         return;
     });
+
 
     $("body").on("click", ".ttools_panel .panel-close", function () {
         var tool = $(this).data("tool");
@@ -2572,7 +2569,7 @@ $(document).ready(function() {
                 $(".ttools_panel.bc_tool").hide();
                 break;
             case "bc_article":
-                $(".ttools_panel.bc_article_tool").hide();
+                $(".ttools_panel.bc_article_tool").remove();
                 break;
             case "rubric":
                 $(".ttools_panel.rubric_tool").hide();
