@@ -297,7 +297,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
 Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function() {
     Router::any("demo/{page?}", "DemoController@demo");
     Router::any("demo-scripture-input/{page?}", "DemoController@demoLangInput");
-    Router::any("demo-revision/{page?}", "DemoController@demoRevision");
+    Router::any("demo-revision/{page?}/{mode?}", "DemoController@demoRevision");
     Router::any("demo-l3/{page?}", "DemoController@demoL3");
     Router::any("demo-tn-l3/{page?}", "DemoController@demoL3Notes");
     Router::any("demo-tn/{page?}", "DemoController@demoTn");
