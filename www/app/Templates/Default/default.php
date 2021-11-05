@@ -335,7 +335,6 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                 </li>
             <?php endif?>
         </ul>
-
     </div>
 
     <div class="container_block <?php echo !isset($data["isMain"]) ? "isloggedin" : "" ?>">

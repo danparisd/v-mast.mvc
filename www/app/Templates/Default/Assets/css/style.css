@@ -5229,7 +5229,7 @@ button.startEvnt, button.editEvnt {
     left: calc(50% - 400px);
 }
 
-.bc_tool .bc_contents {
+.bc_tool .bc_contents, .bc_article_tool .bc_article_contents {
     max-height: 550px;
     overflow-y: auto;
 }

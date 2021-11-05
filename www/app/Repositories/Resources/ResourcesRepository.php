@@ -143,6 +143,11 @@ class ResourcesRepository implements IResourcesRepository {
         return $book;
     }
 
+    public function getBcArticle($lang, $article, $toHtml = false) 
+    {
+        return $this->parseBcArticle($lang, $article, $toHtml);
+    }
+
     public function getTw($lang, $category, $eventID = null, $chapter = null, $toHtml = false) {
         $resource_cache_key = $lang . "_tw_" . $category . ($toHtml ? "_html" : "");
 
@@ -591,6 +596,9 @@ class ResourcesRepository implements IResourcesRepository {
                 $parsedown = new Parsedown();
                 $content = $parsedown->text($content);
                 $content = preg_replace("//", "", $content);
+                
+                // Find BC articles html tags and assign class
+                $content = preg_replace("/<a /", "<a class=\"bc-article\" ", $content);
             }
 
             $book[$chapter] = $content;
@@ -599,6 +607,30 @@ class ResourcesRepository implements IResourcesRepository {
         ksort($book);
 
         return $book;
+    }
+
+    private function parseBcArticle($lang, $article, $toHtml = false)
+    {
+        $folderPath = $this->downloadResource($lang, "bc", $this->bcUrl);
+
+        if (!$folderPath) return $book;
+
+        $dirs = File::directories($folderPath);
+
+        $articlePath = $folderPath . "/articles/" . $article;
+
+        $content = File::get($articlePath);
+
+        if ($toHtml) {
+            $parsedown = new Parsedown();
+            $content = $parsedown->text($content);
+            $content = preg_replace("//", "", $content);
+
+            // Find BC articles html tags and assign class
+            $content = preg_replace("/<a /", "<a class=\"bc-article\" ", $content);
+        }
+
+        return $content;
     }
 
     public function parseTw($lang, $bookSlug, $toHtml = true, $folderPath = null)
