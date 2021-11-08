@@ -668,7 +668,7 @@ use Helpers\Constants\EventCheckSteps;
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-            if(!hasChangesOnPage) window.location.href = '/events/demo-revision/peer_review';
+            if(!hasChangesOnPage) window.location.href = '/events/demo-revision/peer_review/sun';
             return false;
         });
 
