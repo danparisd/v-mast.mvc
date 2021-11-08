@@ -1,8 +1,12 @@
+<?php
+use Helpers\Constants\EventCheckSteps;
+?>
+
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
             <div class="demo_title"><?php echo __("demo") . " (".__("revision_events").")" ?></div>
-            <div><?php echo __("step_num", ["step_number" => 1]) . ": " . __("consume")?></div>
+            <div><?php echo __("step_num", ["step_number" => 1]) . ": " . __(EventCheckSteps::CONSUME)?></div>
         </div>
     </div>
 
@@ -111,7 +115,7 @@
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 1])?>:</span> <?php echo __("consume")?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 1])?>:</span> <?php echo __(EventCheckSteps::CONSUME)?></div>
             <div class="help_descr_steps">
                 <ul><?php echo __("consume_l2_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>

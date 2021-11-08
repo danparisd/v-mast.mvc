@@ -33,7 +33,7 @@ use Helpers\Constants\EventCheckSteps;
     <div class="row main_content_header">
         <div class="main_content_title">
             <div class="demo_title"><?php echo __("demo") . " (".__("revision_events").")" ?></div>
-            <div><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW)?></div>
+            <div><?php echo __("step_num", ["step_number" => 5]) . ": " . __(EventCheckSteps::CONTENT_REVIEW)?></div>
         </div>
     </div>
 
@@ -106,7 +106,7 @@ use Helpers\Constants\EventCheckSteps;
                                 <p class="verse_text kwverse_2_1_4" data-verse="4" style="height: 80px;"><strong class="ltr">
                                         <sup>4</sup>
                                     </strong>
-                                    No soldier serves while entangled in the affairs of this life, so that he may <b data="0">please his superior officer</b>.</p>
+                                    No soldier serves while entangled in the affairs of this life, so that he may please his superior officer.</p>
                                 <p class="verse_text kwverse_2_1_5" data-verse="5" style="height: 80px;">
                                     <strong class="ltr">
                                         <sup>5</sup>
@@ -150,7 +150,7 @@ use Helpers\Constants\EventCheckSteps;
                                 <p class="verse_text kwverse_2_2_6" data-verse="6" style="height: 80px;"><strong class="ltr">
                                         <sup>6</sup>
                                     </strong>
-                                    It is necessary that the hard-working farmer <b data="0">receive his share</b> of the crops first.</p>
+                                    It is necessary that the hard-working farmer receive his share of the crops first.</p>
                                 <p class="verse_text kwverse_2_2_7" data-verse="7" style="height: 80px;">
                                     <strong class="ltr">
                                         <sup>7</sup>
@@ -187,11 +187,11 @@ use Helpers\Constants\EventCheckSteps;
                                 <p class="verse_text kwverse_2_3_8" data-verse="8" style="height: 80px;"><strong class="ltr">
                                         <sup>8</sup>
                                     </strong>
-                                    Remember Jesus Christ, a descendant of David, who was raised from the dead. This is according to my gospel <b data="0">message</b>,</p>
+                                    Remember Jesus Christ, a descendant of David, who was raised from the dead. This is according to my gospel message,</p>
                                 <p class="verse_text kwverse_2_3_9" data-verse="9" style="height: 80px;"><strong class="ltr">
                                         <sup>9</sup>
                                     </strong>
-                                    for which I am suffering to the point of being bound with chains as a <b data="0">criminal</b>. But the word of God is not bound.</p>
+                                    for which I am suffering to the point of being bound with chains as a criminal. But the word of God is not bound.</p>
                             </div>
                             <div class="flex_middle editor_area font_sgn-US-symbunot" dir="ltr">
                                 <div class="vnote">
@@ -223,7 +223,7 @@ use Helpers\Constants\EventCheckSteps;
                                 <p class="verse_text kwverse_2_4_10" data-verse="10" style="height: 80px;"><strong class="ltr">
                                         <sup>10</sup>
                                     </strong>
-                                    Therefore I endure all things for those who are <b data="0">chosen</b>, so that they also may obtain the salvation that is in Christ Jesus, with eternal glory.</p>
+                                    Therefore I endure all things for those who are chosen, so that they also may obtain the salvation that is in Christ Jesus, with eternal glory.</p>
                             </div>
                             <div class="flex_middle editor_area font_sgn-US-symbunot" dir="ltr">
                                 <div class="vnote">
@@ -298,7 +298,7 @@ use Helpers\Constants\EventCheckSteps;
                                 <p class="verse_text kwverse_2_6_14" data-verse="14" style="height: 80px;"><strong class="ltr">
                                         <sup>14</sup>
                                     </strong>
-                                    Keep reminding them of these things. Command them before God not to quarrel about words; <b data="0">it</b> is of no value and only <b data="0">ruins those</b> who listen.  <span data-toggle="tooltip" data-placement="auto auto" title="" class="booknote mdi mdi-bookmark" data-original-title="Some important and ancient Greek copies read,  Warn them before the Lord  . "></span></p>
+                                    Keep reminding them of these things. Command them before God not to quarrel about words; it is of no value and only ruins those who listen.  <span data-toggle="tooltip" data-placement="auto auto" title="" class="booknote mdi mdi-bookmark" data-original-title="Some important and ancient Greek copies read,  Warn them before the Lord  . "></span></p>
                             </div>
                             <div class="flex_middle editor_area font_sgn-US-symbunot" dir="ltr">
                                 <div class="vnote">
@@ -598,7 +598,7 @@ use Helpers\Constants\EventCheckSteps;
                     </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </form>
-                <div class="step_right alt"><?php echo __("step_num", ["step_number" => 3])?></div>
+                <div class="step_right alt"><?php echo __("step_num", ["step_number" => 5])?></div>
             </div>
         </div>
     </div>
@@ -609,9 +609,9 @@ use Helpers\Constants\EventCheckSteps;
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>: </span><?php echo __(EventCheckSteps::PEER_REVIEW) ?> </div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 5])?>: </span><?php echo __(EventCheckSteps::CONTENT_REVIEW) ?> </div>
             <div class="help_descr_steps">
-                <ul><?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("content-review-l2_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -638,7 +638,7 @@ use Helpers\Constants\EventCheckSteps;
         </div>
 
         <div class="checker_view">
-            <a href="/events/demo-revision/peer_review_checker/sun"><?php echo __("checker_other_view", [2]) ?></a>
+            <a href="/events/demo-revision/content_review_checker/sun"><?php echo __("checker_other_view", [2]) ?></a>
         </div>
     </div>
 </div>
@@ -647,13 +647,13 @@ use Helpers\Constants\EventCheckSteps;
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" height="100px" width="100px">
-            <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" height="280px" width="280px">
+            <img src="<?php echo template_url("img/steps/icons/content-review.png") ?>" height="100px" width="100px">
+            <img src="<?php echo template_url("img/steps/big/content-review.png") ?>" height="280px" width="280px">
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __("peer-review")?></h3>
-            <ul><?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventCheckSteps::CONTENT_REVIEW)?></h3>
+            <ul><?php echo __("content-review-l2_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -672,6 +672,7 @@ use Helpers\Constants\EventCheckSteps;
 <script>
     isChecker = true;
     isLevel2 = true;
+
     $(document).ready(function () {
         setTimeout(function() {
             equal_verses_height();
@@ -699,17 +700,6 @@ use Helpers\Constants\EventCheckSteps;
             highlight: /\\f\s[+-]\s(.*?)\\f\*/gi
         });
 
-        $("#next_step").click(function (e) {
-            e.preventDefault();
-            if(!hasChangesOnPage) window.location.href = '/events/demo-revision/keyword_check/sun';
-            return false;
-        });
-
-        $(".ttools_panel .word_def").each(function() {
-            let html = convertRcLinks($(this).html());
-            $(this).html(html);
-        });
-
         $(".sun_mode input").change(function () {
             var active = $(this).prop('checked');
 
@@ -726,6 +716,17 @@ use Helpers\Constants\EventCheckSteps;
                 autosize.update($(".vnote textarea"));
             }, 500);
             equal_verses_height();
+        });
+
+        $("#next_step").click(function (e) {
+            e.preventDefault();
+            if(!hasChangesOnPage) window.location.href = '/events/demo-revision/pray/sun';
+            return false;
+        });
+
+        $(".ttools_panel .word_def").each(function() {
+            let html = convertRcLinks($(this).html());
+            $(this).html(html);
         });
     });
 </script>

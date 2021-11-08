@@ -13,31 +13,15 @@ use Helpers\Constants\EventCheckSteps;
     <img src="<?php echo template_url("img/loader.gif") ?>" class="commentEditorLoader">
 </div>
 
-<div class="footnote_editor panel panel-default">
-    <div class="panel-heading">
-        <h1 class="panel-title"><?php echo __("write_footnote_title")?></h1>
-        <span class="footnote-editor-close btn btn-success"><?php echo __("save") ?></span>
-        <span class="xbtnf glyphicon glyphicon-remove"></span>
-    </div>
-    <div class="footnote_window">
-        <div class="fn_preview"></div>
-        <div class="fn_buttons" dir="ltr">
-            <button class="btn btn-default" data-fn="ft" title="footnote text">ft</button>
-            <button class="btn btn-default" data-fn="fqa" title="footnote alternate translation">fqa</button>
-        </div>
-        <div class="fn_builder"></div>
-    </div>
-</div>
-
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
         <div class="main_content_title">
             <div class="demo_title"><?php echo __("demo") . " (".__("revision_events").")" ?></div>
-            <div><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW)?></div>
+            <div><?php echo __("step_num", ["step_number" => 4]) . ": " . __(EventCheckSteps::KEYWORD_CHECK)?></div>
         </div>
     </div>
 
-    <div class="">
+    <div class="row">
         <div class="main_content">
             <div class="main_content_text">
                 <h4>Symbolic Universal Notation - <?php echo __("ulb") ?> - <?php echo __("new_test") ?> - <span class="book_name">2 Timothy 2:1-26</span></h4>
@@ -596,9 +580,8 @@ use Helpers\Constants\EventCheckSteps;
                     <button id="next_step" class="btn btn-primary" disabled="disabled">
                         <?php echo __($data["next_step"])?>
                     </button>
-                    <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </form>
-                <div class="step_right alt"><?php echo __("step_num", ["step_number" => 3])?></div>
+                <div class="step_right alt"><?php echo __("step_num", ["step_number" => 4])?></div>
             </div>
         </div>
     </div>
@@ -609,21 +592,15 @@ use Helpers\Constants\EventCheckSteps;
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>: </span><?php echo __(EventCheckSteps::PEER_REVIEW) ?> </div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 4])?>:</span> <?php echo __(EventCheckSteps::KEYWORD_CHECK)?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("keyword-check-l2_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
 
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
-                <div class="participant_name">
-                    <span><?php echo __("your_checker") ?>:</span>
-                    <span class="checker_name_span">
-                                Dan S.
-                            </span>
-                </div>
                 <div class="additional_info">
                     <a href="/events/demo-revision/information/sun"><?php echo __("event_info") ?></a>
                 </div>
@@ -631,14 +608,12 @@ use Helpers\Constants\EventCheckSteps;
         </div>
 
         <div class="tr_tools">
-            <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tq"><?php echo __("show_questions") ?></button>
             <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
             <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
         </div>
 
         <div class="checker_view">
-            <a href="/events/demo-revision/peer_review_checker/sun"><?php echo __("checker_other_view", [2]) ?></a>
+            <a href="/events/demo-revision/keyword_check_checker/sun"><?php echo __("checker_other_view", [2]) ?></a>
         </div>
     </div>
 </div>
@@ -647,13 +622,13 @@ use Helpers\Constants\EventCheckSteps;
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/peer-review.png") ?>" height="100px" width="100px">
-            <img src="<?php echo template_url("img/steps/big/peer-review.png") ?>" height="280px" width="280px">
+            <img src="<?php echo template_url("img/steps/icons/keyword-check.png") ?>" height="100px" width="100px">
+            <img src="<?php echo template_url("img/steps/big/keyword-check.png") ?>" height="280px" width="280px">
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __("peer-review")?></h3>
-            <ul><?php echo __("peer-review-l2_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></h3>
+            <ul><?php echo __("keyword-check-l2_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -661,25 +636,25 @@ use Helpers\Constants\EventCheckSteps;
 <!-- Data for tools -->
 <input type="hidden" id="bookCode" value="<?php echo $data["bookCode"] ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["chapter"] ?>">
-<input type="hidden" id="tn_lang" value="<?php echo $data["tn_lang"] ?>">
-<input type="hidden" id="tq_lang" value="<?php echo $data["tq_lang"] ?>">
 <input type="hidden" id="tw_lang" value="<?php echo $data["tw_lang"] ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["targetLang"] ?>">
 
-<script type="text/javascript" src="<?php echo template_url("js/diff_match_patch.js?2")?>"></script>
-<script type="text/javascript" src="<?php echo template_url("js/diff.js?7")?>"></script>
 <script>
     isChecker = true;
     isLevel2 = true;
+    disableHighlight = true;
+
     $(document).ready(function () {
+        $("#next_step").click(function (e) {
+            e.preventDefault();
+            window.location.href = '/events/demo-revision/content_review/sun';
+            return false;
+        });
+
         setTimeout(function() {
             equal_verses_height();
-        }, 3000);
-
-        $(".peer_verse_ta").blur(function() {
-            equal_verses_height();
-        });
+        }, 100);
 
         function equal_verses_height() {
             $(".verse_text").each(function() {
@@ -694,21 +669,6 @@ use Helpers\Constants\EventCheckSteps;
                 }
             });
         }
-
-        $(".peer_verse_ta").highlightWithinTextarea({
-            highlight: /\\f\s[+-]\s(.*?)\\f\*/gi
-        });
-
-        $("#next_step").click(function (e) {
-            e.preventDefault();
-            if(!hasChangesOnPage) window.location.href = '/events/demo-revision/keyword_check/sun';
-            return false;
-        });
-
-        $(".ttools_panel .word_def").each(function() {
-            let html = convertRcLinks($(this).html());
-            $(this).html(html);
-        });
 
         $(".sun_mode input").change(function () {
             var active = $(this).prop('checked');

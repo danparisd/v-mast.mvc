@@ -5664,3 +5664,7 @@ h1.obs_chunk {
     font-weight: bold;
 }
 
+.alt-mode a {
+    color: white;
+}
+
