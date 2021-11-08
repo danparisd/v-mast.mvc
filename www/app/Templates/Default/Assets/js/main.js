@@ -2882,11 +2882,20 @@ $(document).ready(function() {
         }
     });
 
-    $(".obs_img").hover(function () {
+    $(".obs_img").click(function() {
         const src = $(this).data("img");
-        $('<img class="obs_img_floatable" src="'+src+'" />').appendTo($(this));
-    }, function () {
-        $(".obs_img_floatable").remove();
+        const box = $('<div class="obs_img_box">' +
+            '<span class="mdi mdi-close obs_img_close"></span>' +
+            '<img class="obs_img_floatable" src="'+src+'" />' +
+            '</div>');
+        box.css("top", $(this).offset().top);
+
+        box.appendTo($("body"));
+        $(".obs_img_box").draggable();
+    });
+
+    $("body").on("click", ".obs_img_close", function() {
+        $(this).parent(".obs_img_box").remove();
     });
 });
 

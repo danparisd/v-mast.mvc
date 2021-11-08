@@ -246,31 +246,8 @@ class ResourcesRepository implements IResourcesRepository {
      * @param string $resource
      */
     private function forgetResource($lang, $resource) {
-        $bookInfo = new BookInfo();
-        $books = $bookInfo->all();
-
-        switch ($resource) {
-            case "ulb":
-            case "udb":
-            case "tq":
-            case "tn":
-                $category = "bible";
-                break;
-            default:
-                $category = $resource;
-        }
-
-        // Forget cache of all the resource books
-        $books->filter(function($book) use ($category) {
-            return $book->category == $category;
-        })->each(function($book) use ($lang, $resource) {
-            $cacheKey = $lang . "_" . $resource . "_" . $book->code;
-            Cache::forget($cacheKey);
-            $cacheKey = $lang . "_" . $resource . "_" . $book->name;
-            Cache::forget($cacheKey);
-            $cacheKey = $lang . "_" . $resource . "_" . $book->name . "_html";
-            Cache::forget($cacheKey);
-        });
+        $cacheKey = $lang . "_" . $resource;
+        Cache::forget($cacheKey);
 
         $folderPath = $this->rootPath . $lang . "_" . $resource;
         File::deleteDirectory($folderPath);

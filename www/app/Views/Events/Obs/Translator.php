@@ -32,13 +32,17 @@ if(!empty($data["event"]) && !isset($data["error"]) && $data["event"][0]->step !
         </li>
             
         <?php if(!$data["isCheckerPage"]): ?>
+        <li class="consume-step <?php echo $data["event"][0]->step == EventSteps::CONSUME ? "active" : "" ?>">
+            <span><?php echo __(EventSteps::CONSUME)?></span>
+        </li>
+
         <li class="blind-draft-step <?php echo $data["event"][0]->step == EventSteps::BLIND_DRAFT ? "active" : "" ?>">
             <span><?php echo __(EventSteps::BLIND_DRAFT)?></span>
         </li>
 
-            <li class="self-check-step <?php echo $data["event"][0]->step == EventSteps::SELF_CHECK ? "active" : "" ?>">
-                <span><?php echo __(EventSteps::SELF_CHECK)?></span>
-            </li>
+        <li class="self-check-step <?php echo $data["event"][0]->step == EventSteps::SELF_CHECK ? "active" : "" ?>">
+            <span><?php echo __(EventSteps::SELF_CHECK)?></span>
+        </li>
         <?php endif; ?>
                         
         <?php if($data["isCheckerPage"]): ?>
