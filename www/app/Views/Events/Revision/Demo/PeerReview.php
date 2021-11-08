@@ -1,8 +1,10 @@
+<?php
+use Helpers\Constants\EventCheckSteps;
+?>
+
 <div class="comment_div panel panel-default">
     <div class="panel-heading">
-        <h1 class="panel-title"><?php use Helpers\Constants\EventCheckSteps;
-
-            echo __("write_note_title")?></h1>
+        <h1 class="panel-title"><?php echo __("write_note_title")?></h1>
         <span class="editor-close btn btn-success"><?php echo __("save") ?></span>
         <span class="xbtn glyphicon glyphicon-remove"></span>
     </div>
@@ -433,13 +435,13 @@
 </div>
 
 <!-- Data for tools -->
-<input type="hidden" id="bookCode" value="2ti">
-<input type="hidden" id="chapter" value="2">
-<input type="hidden" id="tn_lang" value="en">
-<input type="hidden" id="tq_lang" value="en">
-<input type="hidden" id="tw_lang" value="en">
-<input type="hidden" id="totalVerses" value="26">
-<input type="hidden" id="targetLang" value="en">
+<input type="hidden" id="bookCode" value="<?php echo $data["bookCode"] ?>">
+<input type="hidden" id="chapter" value="<?php echo $data["chapter"] ?>">
+<input type="hidden" id="tn_lang" value="<?php echo $data["tn_lang"] ?>">
+<input type="hidden" id="tq_lang" value="<?php echo $data["tq_lang"] ?>">
+<input type="hidden" id="tw_lang" value="<?php echo $data["tw_lang"] ?>">
+<input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
+<input type="hidden" id="targetLang" value="<?php echo $data["targetLang"] ?>">
 
 <script type="text/javascript" src="<?php echo template_url("js/diff_match_patch.js?2")?>"></script>
 <script type="text/javascript" src="<?php echo template_url("js/diff.js?7")?>"></script>

@@ -50,7 +50,7 @@
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/demo-revision/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-revision/information/<?php echo $data["mode"] ?? "" ?>"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
@@ -59,10 +59,9 @@
 
 <script>
     $(document).ready(function () {
-        
         $("#next_step").click(function (e) {
             e.preventDefault();
-            window.location.href = '/events/demo-revision/consume';
+            window.location.href = '/events/demo-revision/consume/<?php echo $data["mode"] ?? "" ?>';
             return false;
         });
     });

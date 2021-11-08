@@ -7,29 +7,37 @@ use Helpers\Constants\EventCheckSteps;
 
     <ul class="steps_list">
         <li class="pray-step <?php echo $data["step"] == EventCheckSteps::PRAY ? "active" : "" ?>">
-            <a href="/events/demo-revision/pray"><span><?php echo __(EventCheckSteps::PRAY)?></span></a>
+            <a href="/events/demo-revision/pray/<?php echo $data["mode"] ?? "" ?>"><span><?php echo __(EventCheckSteps::PRAY)?></span></a>
         </li>
 
         <li class="consume-step <?php echo $data["step"] == EventCheckSteps::CONSUME ? "active" : "" ?>">
-            <a href="/events/demo-revision/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
+            <a href="/events/demo-revision/consume/<?php echo $data["mode"] ?? "" ?>"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
         </li>
 
         <li class="self-check-step <?php echo $data["step"] == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-revision/self_check"><span><?php echo __(EventCheckSteps::SELF_CHECK)?></span></a>
+            <a href="/events/demo-revision/self_check/<?php echo $data["mode"] ?? "" ?>"><span><?php echo __(EventCheckSteps::SELF_CHECK)?></span></a>
         </li>
 
         <li class="peer-review-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
-            <a href="/events/demo-revision/peer_review"><span><?php echo __(EventCheckSteps::PEER_REVIEW)?></span></a>
+            <a href="/events/demo-revision/peer_review/<?php echo $data["mode"] ?? "" ?>"><span><?php echo __(EventCheckSteps::PEER_REVIEW)?></span></a>
         </li>
 
         <li class="keyword-check-step <?php echo $data["step"] == EventCheckSteps::KEYWORD_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-revision/keyword_check"><span><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></span></a>
+            <a href="/events/demo-revision/keyword_check/<?php echo $data["mode"] ?? "" ?>"><span><?php echo __(EventCheckSteps::KEYWORD_CHECK)?></span></a>
         </li>
 
         <li class="content-review-step <?php echo $data["step"] == EventCheckSteps::CONTENT_REVIEW ? "active" : "" ?>">
-            <a href="/events/demo-revision/content_review"><span><?php echo __(EventCheckSteps::CONTENT_REVIEW)?></span></a>
+            <a href="/events/demo-revision/content_review/<?php echo $data["mode"] ?? "" ?>"><span><?php echo __(EventCheckSteps::CONTENT_REVIEW)?></span></a>
         </li>
     </ul>
+
+    <div class="alt-mode">
+        <?php if ($data["mode"] == "sun"): ?>
+            <a href="/events/demo-revision/pray">Switch to NORMAL MODE</a>
+        <?php else: ?>
+            <a href="/events/demo-revision/pray/sun">Switch to SUN MODE</a>
+        <?php endif; ?>
+    </div>
 </div>
 
 <?php

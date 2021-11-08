@@ -109,7 +109,6 @@ use Helpers\Constants\EventMembers;
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/consume.png") ?>" width="100px" height="100px">
             <img src="<?php echo template_url("img/steps/big/consume.png") ?>" width="280px" height="280px">
-
         </div>
 
         <div class="tutorial_content">

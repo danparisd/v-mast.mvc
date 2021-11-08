@@ -561,7 +561,7 @@ class DemoController extends Controller {
             ->shares("data", $data);
     }
 
-    public function demoRevision($page = null)
+    public function demoRevision($page = null, $mode = null)
     {
         if (!isset($page))
             Url::redirect("events/demo-revision/pray");
@@ -599,6 +599,15 @@ class DemoController extends Controller {
         $data["menu"] = 5;
         $data["isCheckerPage"] = true;
         $data["next_step"] = EventCheckSteps::PRAY;
+        $data["mode"] = $mode;
+
+        $data["bookCode"] = "2ti";
+        $data["chapter"] = 2;
+        $data["tn_lang"] = "en";
+        $data["tq_lang"] = "en";
+        $data["tw_lang"] = "en";
+        $data["totalVerses"] = 26;
+        $data["targetLang"] = "en-x-demo1";
 
         $view = View::make("Events/Revision/Demo/DemoHeader");
         $data["step"] = "";
@@ -611,51 +620,83 @@ class DemoController extends Controller {
                 break;
 
             case "consume":
-                $view->nest("page", "Events/Revision/Demo/Consume");
+                if ($mode == "sun") {
+                    $view->nest("page", "Events/Revision/Demo/ConsumeSun");
+                } else {
+                    $view->nest("page", "Events/Revision/Demo/Consume");
+                }
                 $data["step"] = EventCheckSteps::CONSUME;
                 $data["next_step"] = EventCheckSteps::SELF_CHECK;
                 break;
 
             case "self_check":
-                $view->nest("page", "Events/Revision/Demo/SelfCheck");
+                if ($mode == "sun") {
+                    $view->nest("page", "Events/Revision/Demo/SelfCheckSun");
+                } else {
+                    $view->nest("page", "Events/Revision/Demo/SelfCheck");
+                }
                 $data["step"] = EventCheckSteps::SELF_CHECK;
                 $data["next_step"] = EventCheckSteps::PEER_REVIEW;
                 break;
 
             case "peer_review":
-                $view->nest("page", "Events/Revision/Demo/PeerReview");
+                if ($mode == "sun") {
+                    $view->nest("page", "Events/Revision/Demo/PeerReviewSun");
+                } else {
+                    $view->nest("page", "Events/Revision/Demo/PeerReview");
+                }
                 $data["step"] = EventCheckSteps::PEER_REVIEW;
                 $data["next_step"] = EventCheckSteps::KEYWORD_CHECK;
                 break;
 
             case "peer_review_checker":
-                $view->nest("page", "Events/Revision/Demo/PeerReviewChecker");
+                if ($mode == "sun") {
+                    $view->nest("page", "Events/Revision/Demo/PeerReviewCheckerSun");
+                } else {
+                    $view->nest("page", "Events/Revision/Demo/PeerReviewChecker");
+                }
                 $data["step"] = EventCheckSteps::PEER_REVIEW;
                 $data["next_step"] = "continue_alt";
                 unset($data["isCheckerPage"]);
                 break;
 
             case "keyword_check":
-                $view->nest("page", "Events/Revision/Demo/KeywordCheck");
+                if ($mode == "sun") {
+                    $view->nest("page", "Events/Revision/Demo/KeywordCheckSun");
+                } else {
+                    $view->nest("page", "Events/Revision/Demo/KeywordCheck");
+                }
                 $data["step"] = EventCheckSteps::KEYWORD_CHECK;
                 $data["next_step"] = EventCheckSteps::CONTENT_REVIEW;
                 break;
 
             case "keyword_check_checker":
-                $view->nest("page", "Events/Revision/Demo/KeywordCheckChecker");
+                if ($mode == "sun") {
+                    $view->nest("page", "Events/Revision/Demo/KeywordCheckCheckerSun");
+                } else {
+                    $view->nest("page", "Events/Revision/Demo/KeywordCheckChecker");
+                }
                 $data["step"] = EventCheckSteps::KEYWORD_CHECK;
                 $data["next_step"] = "continue_alt";
                 unset($data["isCheckerPage"]);
                 break;
 
             case "content_review":
-                $view->nest("page", "Events/Revision/Demo/ContentReview");
+                if ($mode == "sun") {
+                    $view->nest("page", "Events/Revision/Demo/ContentReviewSun");
+                } else {
+                    $view->nest("page", "Events/Revision/Demo/ContentReview");
+                }
                 $data["step"] = EventCheckSteps::CONTENT_REVIEW;
                 $data["next_step"] = "continue_alt";
                 break;
 
             case "content_review_checker":
-                $view->nest("page", "Events/Revision/Demo/ContentReviewChecker");
+                if ($mode == "sun") {
+                    $view->nest("page", "Events/Revision/Demo/ContentReviewCheckerSun");
+                } else {
+                    $view->nest("page", "Events/Revision/Demo/ContentReviewChecker");
+                }
                 $data["step"] = EventCheckSteps::CONTENT_REVIEW;
                 $data["next_step"] = "continue_alt";
                 unset($data["isCheckerPage"]);

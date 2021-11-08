@@ -244,18 +244,6 @@ use Helpers\Constants\EventCheckSteps;
 
 <script>
     (function() {
-        $(".my_tab").click(function () {
-            var inter = setInterval(function() {
-                if($("#target_scripture_content").is(":visible"))
-                {
-                    if(typeof autosize == "function")
-                        autosize.update($('textarea'));
-                    clearInterval(inter);
-                }
-            }, 10);
-            return false;
-        });
-
         setTimeout(function() {
             equal_verses_height();
         }, 500);
@@ -286,11 +274,11 @@ use Helpers\Constants\EventCheckSteps;
             var active = $(this).prop('checked');
 
             if (active) {
-                $(".flex_left, .flex_middle").removeClass("font_backsun");
-                $(".flex_left, .flex_middle").addClass("font_sgn-US-symbunot");
+                $(".flex_middle").removeClass("font_backsun");
+                $(".flex_middle").addClass("font_sgn-US-symbunot");
             } else {
-                $(".flex_left, .flex_middle").removeClass("font_sgn-US-symbunot");
-                $(".flex_left, .flex_middle").addClass("font_backsun");
+                $(".flex_middle").removeClass("font_sgn-US-symbunot");
+                $(".flex_middle").addClass("font_backsun");
             }
 
             $(".verse_text").css("height", "initial");
