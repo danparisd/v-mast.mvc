@@ -9668,6 +9668,22 @@ class EventsController extends Controller {
             ->renderContents();
     }
 
+    public function getBcArticle($lang, $article) 
+    {
+        $data = [];
+
+        $data["article"] = $this->resourcesRepo->getBcArticle(
+            $lang,
+            $article,
+            true
+        );
+
+        $this->layout = "dummy";
+        echo View::make("Events/Tools/BcArticle")
+            ->shares("data", $data)
+            ->renderContents();
+    }
+
     public function getRubric($lang)
     {
         $data = [];
