@@ -29,11 +29,11 @@ if(!empty($data["event"]) && !isset($data["error"])):
             <span><?php echo __(EventCheckSteps::CONSUME)?></span>
         </li>
 
-        <li class="fst-check-step <?php echo $data["event"][0]->step == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
+        <li class="self-check-step <?php echo $data["event"][0]->step == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
             <span><?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></span>
         </li>
 
-        <li class="snd-check-step <?php echo $data["event"][0]->step == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
+        <li class="keyword-check-step <?php echo $data["event"][0]->step == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
             <span><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></span>
         </li>
     </ul>
@@ -44,7 +44,7 @@ if(!empty($data["event"]) && !isset($data["error"])):
     var eventID = <?php echo $data["event"][0]->eventID; ?>;
     var projectID = <?php echo $data["event"][0]->projectID; ?>;
     var myChapter = <?php echo $data["event"][0]->currentChapter; ?>;
-    var chkMemberID = <?php echo isset($data["event"][0]->checkerID) ? $data["event"][0]->checkerID : 0; ?>;
+    var chkMemberID = <?php echo $data["event"][0]->checkerID ?? 0; ?>;
     var isChecker = false;
     var aT = '<?php echo Session::get('authToken'); ?>';
     var step = '<?php echo $data["event"][0]->step; ?>';
@@ -164,4 +164,4 @@ if(!empty($data["event"]) && !isset($data["error"])):
 
 <?php endif; ?>
 
-<?php echo isset($page) ? $page : "" ?>
+<?php echo $page ?? "" ?>

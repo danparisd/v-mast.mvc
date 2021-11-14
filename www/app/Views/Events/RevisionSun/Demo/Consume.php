@@ -361,7 +361,7 @@
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-            window.location.href = '/events/demo-sun-revision/fst_check';
+            window.location.href = '/events/demo-sun-revision/peer_check';
             return false;
         });
 
@@ -403,7 +403,7 @@
 
 <input type="hidden" id="bookCode" value="<?php echo $data["bookCode"] ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["currentChapter"] ?>">
-<input type="hidden" id="tn_lang" value="<?php echo $data["tnLangID"] ?>">
-<input type="hidden" id="tw_lang" value="<?php echo $data["twLangID"] ?>">
+<input type="hidden" id="tn_lang" value="<?php echo $data["tn_lang"] ?>">
+<input type="hidden" id="tw_lang" value="<?php echo $data["tw_lang"] ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["targetLang"] ?>">

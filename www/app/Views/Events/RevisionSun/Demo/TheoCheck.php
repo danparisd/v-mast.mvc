@@ -483,7 +483,7 @@ use Helpers\Constants\EventCheckSteps;
         <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>:</span> <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("theo-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -508,13 +508,13 @@ use Helpers\Constants\EventCheckSteps;
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/snd-check.png") ?>" height="100px" width="100px">
-            <img src="<?php echo template_url("img/steps/big/consume.png") ?>" height="280px" width="280px">
+            <img src="<?php echo template_url("img/steps/icons/theo-check-gray.png") ?>" height="100px" width="100px">
+            <img src="<?php echo template_url("img/steps/big/keyword-check.png") ?>" height="280px" width="280px">
         </div>
 
         <div class="tutorial_content">
             <h3><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></h3>
-            <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+            <ul><?php echo __("theo-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -574,7 +574,7 @@ use Helpers\Constants\EventCheckSteps;
 
 <input type="hidden" id="bookCode" value="<?php echo $data["bookCode"] ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["currentChapter"] ?>">
-<input type="hidden" id="tn_lang" value="<?php echo $data["tnLangID"] ?>">
-<input type="hidden" id="tw_lang" value="<?php echo $data["twLangID"] ?>">
+<input type="hidden" id="tn_lang" value="<?php echo $data["tn_lang"] ?>">
+<input type="hidden" id="tw_lang" value="<?php echo $data["tw_lang"] ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["targetLang"] ?>">

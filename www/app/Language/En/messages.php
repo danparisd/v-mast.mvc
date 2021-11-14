@@ -423,6 +423,7 @@ return array (
     "level3" => "Level 3",
     "l2_l3_vmast" => "MAST L{level} Check",
     "revision_vmast" => "MAST Revision Check",
+    "revision_sun" => "SUN Revision Check",
     "common" => "Common",
     "vmast_events" => "V-MAST Activities",
     "create_event" => "Create book",
@@ -512,7 +513,7 @@ return array (
     "other_checker" => "First Checker",
     "other_peer_checker" => "Peer Checker",
     "l2_snd_checker" => "2nd Checker",
-    "l2_sun_snd_checker" => "Theological Checker",
+    "l2_sun_peer_checker" => "Theological Checker",
     "l2_p1_checker" => "1st Peer Checker",
     "l2_p2_checker" => "2nd Peer checker",
     "l3_p_checker" => "Peer checker",
@@ -1262,6 +1263,7 @@ return array (
                                 </ol>
                             </li>",
 
+    "self-check_sun" => "Peer Check",
     "self-edit_sun_desc" => "<li><b>PURPOSE:</b> do a literal backtranslation of your SUN Scripture.</li>
                                 <li>Edit text if any errors or inconsistencies are found.</li>",
 
@@ -1635,7 +1637,7 @@ return array (
                             a note on the chunk noting the disagreement. It will be resolved in the next step.</li>
                         <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
-    "peer-review_sun" => "Peer Review",
+    "peer-review_sun" => "Theological Check",
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
     "peer-review_obs" => "Pastor Review",

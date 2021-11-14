@@ -42,10 +42,10 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         <img width="50" src="<?php echo template_url("img/avatars/".$data["members"][$chapter["l2memberID"]]["avatar"].".png") ?>">
                         <span><b><?php echo $data["members"][$chapter["l2memberID"]]["name"] ?></b></span>
                     </div>
-                    <?php if(isset($chapter["sndChk"]["checkerID"]) && $chapter["sndChk"]["checkerID"] != "na"): ?>
+                    <?php if(isset($chapter["peer"]["checkerID"]) && $chapter["peer"]["checkerID"] != "na"): ?>
                         <div class="section_translator_name tnleft" style="margin-left: 170px">
-                            <img width="50" src="<?php echo template_url("img/avatars/".$data["members"][$chapter["sndChk"]["checkerID"]]["avatar"].".png") ?>">
-                            <span><b><?php echo $data["members"][$chapter["sndChk"]["checkerID"]]["name"] ?></b></span>
+                            <img width="50" src="<?php echo template_url("img/avatars/".$data["members"][$chapter["peer"]["checkerID"]]["avatar"].".png") ?>">
+                            <span><b><?php echo $data["members"][$chapter["peer"]["checkerID"]]["name"] ?></b></span>
                         </div>
                     <?php endif; ?>
                     <div class="clear"></div>
@@ -59,8 +59,8 @@ foreach ($data["chapters"] as $key => $chapter):?>
                         <div class="step_name">1. <?php echo __(EventCheckSteps::CONSUME); ?></div>
                     </div>
                     <!-- Peer Check Step -->
-                    <div class="section_step <?php echo $chapter["fstChk"]["state"] ?>">
-                        <div class="step_status"><?php echo __("step_status_" . $chapter["fstChk"]["state"]) ?></div>
+                    <div class="section_step <?php echo $chapter["selfEdit"]["state"] ?>">
+                        <div class="step_status"><?php echo __("step_status_" . $chapter["selfEdit"]["state"]) ?></div>
                         <div class="step_light"></div>
                         <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventCheckSteps::SELF_CHECK.".png") ?>"></div>
                         <div class="step_name">2. <?php echo __(EventCheckSteps::SELF_CHECK . "_sun"); ?></div>
@@ -70,12 +70,12 @@ foreach ($data["chapters"] as $key => $chapter):?>
                     </div>
 
                     <!-- Theological Check Step -->
-                    <div class="section_step chk <?php echo $chapter["sndChk"]["state"] ?>">
-                        <div class="step_status"><?php echo __("step_status_" . $chapter["sndChk"]["state"]) ?></div>
+                    <div class="section_step chk <?php echo $chapter["peer"]["state"] ?>">
+                        <div class="step_status"><?php echo __("step_status_" . $chapter["peer"]["state"]) ?></div>
                         <div class="step_light"></div>
                         <div class="step_icon"><img width="40" src="<?php echo template_url("img/steps/icons/".EventCheckSteps::PEER_REVIEW.".png") ?>"></div>
                         <div class="step_name">3. <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun"); ?></div>
-                        <?php if($chapter["sndChk"]["state"] == StepsStates::WAITING): ?>
+                        <?php if($chapter["peer"]["state"] == StepsStates::WAITING): ?>
                             <img class="img_waiting" src="<?php echo template_url("img/waiting.png") ?>">
                         <?php endif; ?>
                     </div>

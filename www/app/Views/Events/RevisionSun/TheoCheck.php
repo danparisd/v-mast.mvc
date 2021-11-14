@@ -1,9 +1,8 @@
 <?php
-use \Helpers\Constants\EventCheckSteps;
+use Helpers\Constants\EventCheckSteps;
+use Helpers\Constants\EventMembers;
 
 if(isset($data["error"])) return;
-
-use Helpers\Constants\EventMembers;
 ?>
 <div class="comment_div panel panel-default font_sun">
     <div class="panel-heading">
@@ -18,7 +17,7 @@ use Helpers\Constants\EventMembers;
 
 <div id="translator_contents" class="row panel-body">
     <div class="row main_content_header">
-        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 2]) . ": " . __(EventCheckSteps::SELF_CHECK . "_sun")?></div>
+        <div class="main_content_title"><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW . "_sun")?></div>
     </div>
 
     <div class="" style="position: relative">
@@ -27,8 +26,8 @@ use Helpers\Constants\EventMembers;
                 <div class="main_content_text" dir="<?php echo $data["event"][0]->sLangDir ?>">
                     <h4><?php echo $data["event"][0]->tLang." - "
                             .__($data["event"][0]->bookProject)." - "
-                        .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
-                        ."<span class='book_name'>".$data["event"][0]->name." ".$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
+                            .($data["event"][0]->sort <= 39 ? __("old_test") : __("new_test"))." - "
+                            ."<span class='book_name'>".$data["event"][0]->name." ".$data["currentChapter"].":1-".$data["totalVerses"]."</span>"?></h4>
 
                     <div class="no_padding">
                         <div class="sun_mode">
@@ -72,10 +71,7 @@ use Helpers\Constants\EventMembers;
                                     </div>
                                     <div class="flex_middle editor_area sun_content">
                                         <?php
-                                        if(!empty($data["translation"][$key][EventMembers::L2_CHECKER]["verses"]))
-                                            $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
-                                        else
-                                            $verses = $data["translation"][$key][EventMembers::TRANSLATOR]["verses"];
+                                        $verses = $data["translation"][$key][EventMembers::L2_CHECKER]["verses"];
                                         ?>
                                         <div class="vnote">
                                             <?php foreach($verses as $verse => $text): ?>
@@ -99,7 +95,7 @@ use Helpers\Constants\EventMembers;
                                             <div class="comments">
                                                 <?php if(array_key_exists($data["currentChapter"], $data["comments"]) && array_key_exists($key, $data["comments"][$data["currentChapter"]])): ?>
                                                     <?php foreach($data["comments"][$data["currentChapter"]][$key] as $comment): ?>
-                                                        <?php if($comment->memberID == $data["event"][0]->memberID
+                                                        <?php if($comment->memberID == $data["event"][0]->checkerID
                                                             && $comment->level == 2): ?>
                                                             <div class="my_comment"><?php echo $comment->text; ?></div>
                                                         <?php else: ?>
@@ -128,14 +124,16 @@ use Helpers\Constants\EventMembers;
                         <label><input name="confirm_step" id="confirm_step" type="checkbox" value="1" /> <?php echo __("confirm_yes")?></label>
                     </div>
 
-                    <input type="hidden" name="level" value="l2">
+                    <input type="hidden" name="level" value="l2Continue">
+                    <input type="hidden" name="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
+                    <input type="hidden" name="memberID" value="<?php echo $data["event"][0]->memberID ?>">
                     <button id="next_step" type="submit" name="submit" class="btn btn-primary" disabled>
                         <?php echo __($data["next_step"])?>
                     </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </div>
             </form>
-            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 2])?></div>
+            <div class="step_right alt"><?php echo __("step_num", ["step_number" => 3])?></div>
         </div>
     </div>
 </div>
@@ -145,9 +143,9 @@ use Helpers\Constants\EventMembers;
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 2])?>: </span><?php echo __("fst-check")?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>: </span><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("fst-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("theo-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -172,7 +170,6 @@ use Helpers\Constants\EventMembers;
 <input type="hidden" id="bookCode" value="<?php echo $data["event"][0]->bookCode ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
 <input type="hidden" id="tn_lang" value="<?php echo $data["event"][0]->tnLangID ?>">
-<input type="hidden" id="tq_lang" value="<?php echo $data["event"][0]->tqLangID ?>">
 <input type="hidden" id="tw_lang" value="<?php echo $data["event"][0]->twLangID ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["event"][0]->targetLang ?>">
@@ -181,14 +178,13 @@ use Helpers\Constants\EventMembers;
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/fst-check.png") ?>" width="100px" height="100px">
-            <img src="<?php echo template_url("img/steps/big/consume.png") ?>" width="280px" height="280px">
-            
+            <img src="<?php echo template_url("img/steps/icons/theo-check-gray.png") ?>" width="100px" height="100px">
+            <img src="<?php echo template_url("img/steps/big/keyword-check.png") ?>" width="280px" height="280px">
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></h3>
-            <ul><?php echo __("fst-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></h3>
+            <ul><?php echo __("theo-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>

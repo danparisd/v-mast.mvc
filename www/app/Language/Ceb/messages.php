@@ -418,6 +418,8 @@ return array (
     "level2" => "Level 2",
     "level3" => "Level 3",
     "l2_l3_vmast" => "MAST L{level} Pagsusi",
+    "revision_vmast" => "MAST Revision Check",
+    "revision_sun" => "SUN Revision Check",
     "common" => "Common",
     "vmast_events" => "Mga Kalihokan sa V-MAST",
     "create_event" => "Create book",
@@ -502,7 +504,7 @@ return array (
     "other_checker" => "First Checker",
     "other_peer_checker" => "Peer Checker",
     "l2_snd_checker" => "2nd Checker",
-    "l2_sun_snd_checker" => "Theological Checker",
+    "l2_sun_peer_checker" => "Theological Checker",
     "l2_p1_checker" => "1st Peer Checker",
     "l2_p2_checker" => "2nd Peer Checker",
     "l3_p_checker" => "Peer Checker",
@@ -796,6 +798,7 @@ return array (
     "symbol-draft_previous" => "Symbol Draft - Previous chunk",
     "symbol-draft_desc" => "<li><b>PURPOSE:</b> assign symbols for words.</li><li>Switch keyboard from English to SUN font by clicking the keyboard icon on the bottom right side of your screen and selecting SUN font.</li><li>When a word does not have a symbol, ask the following questions: <ol><li>Can the word be attached to existing symbol?</li><li>Can an extension be made instead of a new character?</li><li>If the answers to the above questions are negative, contact the SAIL Director to create a new symbol that follows the 3 golden rules of SUN (Simple, Intuitive, Universal), then type the word and continue the translation into symbols.  The word will be changed to a symbol in step 7.</li><li>Proper nouns are created using the meaning of the name or something significant about the person or place.</li></ol></li>",
 
+    "self-check_sun" => "Peer Check",
     "self-edit_sun_desc" => "<li><b>PURPOSE:</b> do a literal backtranslation of your SUN Scripture.</li><li>Edit text if any errors or inconsistencies are found.</li>",
 
     "theo-check" => "Theological Check",
@@ -1160,7 +1163,7 @@ return array (
                         <li>When all changes and notes have been made click, \"Yes I did\" and \"{step}.\" 
                             Do not simply close the page by clicking the \"x\" or the translator will not be able to continue to the next step.</li>",
 
-    "peer-review_sun" => "Peer Review",
+    "peer-review_sun" => "Theological Check",
     "peer-review_tq" => "Pastor Review",
     "peer-review_tw" => "Pastor Review",
     "peer-review_obs" => "Pastor Review",

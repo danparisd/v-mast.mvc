@@ -1851,15 +1851,16 @@ class AdminController extends Controller {
                         $checkData = [];
                         for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                         {
-                            $checkData[$i] = ["memberID" => $member->memberID, "done" => 2];
+                            $done = $project->bookProject != "sun" ? 2 : 1;
+                            $checkData[$i] = ["memberID" => $member->memberID, "done" => $done];
                         }
 
                         $l2chData = array(
                             "step" => EventSteps::NONE,
                             "currentChapter" => 0,
                             "peerCheck" => json_encode($checkData),
-                            "kwCheck" => json_encode($checkData),
-                            "crCheck" => json_encode($checkData)
+                            "kwCheck" => $project->bookProject != "sun" ? json_encode($checkData) : "",
+                            "crCheck" => $project->bookProject != "sun" ? json_encode($checkData) : ""
                         );
                         $event->checkersL2()->attach($member, $l2chData);
                         $checkerL2 = $member->checkersL2->where("eventID", $eventID, false)->first();
@@ -1983,15 +1984,16 @@ class AdminController extends Controller {
                             $checkData = [];
                             for($i=1; $i<=$event->bookInfo->chaptersNum; $i++)
                             {
-                                $checkData[$i] = ["memberID" => $member->memberID, "done" => 2];
+                                $done = $project->bookProject != "sun" ? 2 : 1;
+                                $checkData[$i] = ["memberID" => $member->memberID, "done" => $done];
                             }
 
                             $l2chData = array(
                                 "step" => EventSteps::NONE,
                                 "currentChapter" => 0,
                                 "peerCheck" => json_encode($checkData),
-                                "kwCheck" => json_encode($checkData),
-                                "crCheck" => json_encode($checkData)
+                                "kwCheck" => $project->bookProject != "sun" ? json_encode($checkData) : "",
+                                "crCheck" => $project->bookProject != "sun" ? json_encode($checkData) : ""
                             );
 
                             $event->checkersL2()->attach($member, $l2chData);

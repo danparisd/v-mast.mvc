@@ -64,7 +64,7 @@ use Helpers\Constants\EventMembers;
                                         $verses = $data["translation"][$key][EventMembers::TRANSLATOR]["verses"];
                                     ?>
                                     <?php foreach($verses as $verse => $text): ?>
-                                        <div class="verse_block flex_chunk" data-verse="<?php echo $verse ?>">
+                                        <div class="verse_block sun flex_chunk" data-verse="<?php echo $verse ?>">
                                             <?php echo $text; ?>
                                         </div>
                                     <?php endforeach; ?>
@@ -125,7 +125,6 @@ use Helpers\Constants\EventMembers;
 <input type="hidden" id="bookCode" value="<?php echo $data["event"][0]->bookCode ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
 <input type="hidden" id="tn_lang" value="<?php echo $data["event"][0]->tnLangID ?>">
-<input type="hidden" id="tq_lang" value="<?php echo $data["event"][0]->tqLangID ?>">
 <input type="hidden" id="tw_lang" value="<?php echo $data["event"][0]->twLangID ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["event"][0]->targetLang ?>">
@@ -169,15 +168,15 @@ use Helpers\Constants\EventMembers;
             const active = $(this).prop('checked');
 
             if (active) {
-                $(".flex_middle").removeClass("backsun_content");
+                $(".flex_middle").removeClass("font_backsun");
                 $(".flex_middle").addClass("sun_content");
             } else {
                 $(".flex_middle").removeClass("sun_content");
-                $(".flex_middle").addClass("backsun_content");
+                $(".flex_middle").addClass("font_backsun");
             }
 
-            $(".verse_text").removeAttr("style");
-            $(".verse_block").removeAttr("style");
+            $(".verse_text").css("height", "initial");
+            $(".verse_block").css("height", "initial");
             equal_verses_height();
         });
     });
