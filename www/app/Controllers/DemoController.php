@@ -1016,7 +1016,7 @@ class DemoController extends Controller {
             case "peer_check":
                 $view->nest("page", "Events/RevisionSun/Demo/PeerCheck");
                 $data["step"] = EventCheckSteps::SELF_CHECK;
-                $data["next_step"] = EventCheckSteps::PEER_REVIEW . "_sun";
+                $data["next_step"] = "continue_alt";
                 break;
 
             case "theo_check":

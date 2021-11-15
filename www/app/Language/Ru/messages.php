@@ -822,6 +822,14 @@ return array (
                 <li>This step should take about 10 minutes.</li>
                 <li>Click \"Yes I did\" and \"{step}\" to move to the next step.</li>",
 
+    "consume_sun_l2_desc" => "<li><b>PURPOSE:</b> to understand the context of the whole chapter.</li>
+                <li>Read the assigned text in its entirety. Carefully read and consider what is being said to 
+                    understand the full content of the passage.</li>
+                <li>Pause, reflect, and re-read as necessary.</li>
+                <li>If you see the paper icon (<span class='mdi mdi-bookmark'></span>), hover over it with your mouse.  It is a translator’s note for that verse.</li>
+                <li>This step should take about 10 minutes.</li>
+                <li>Click \"Yes I did\" and \"{step}\" to move to the next step.</li>",
+
     "self-check_l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
                             language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
                             used when referring to God the Father and Jesus Christ.</b></li>
@@ -860,7 +868,18 @@ return array (
                             </ol>
                         </li>
                         <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
-    "self-check_l2_sun_desc" => "Temporary unavailable",
+
+    "theo-check_sun_l2_desc" => "<li><b>PURPOSE:</b> to check the SUN translation for accuracy and consistency.</li>
+                    <li>While checking, make sure that common phrases are being translated accurately and in the same way, using the same symbols.</li>
+                    <li>Look for punctuation, flow/naturalness errors.</li>
+                    <li>Look for missing portions of text or missing or added facts.</li>
+                    <li>Keep in mind the difference between accuracy and preference.</li>
+                    <li>Both SUN symbols and backSUN translation can be viewed by clicking the blue switch under the step near the top left.</li>
+                    <li>Click the pencil icon and view notes for each chunk to see what concerns were brought up during 
+                        the original translation process and in the peer check step.</li>
+                    <li>The SUN dictionary, translation notes (tN) and words (tW) are available in the help tab. 
+                        Frequently asked questions (FAQ) are available in the dropdown menu under your username in the top right-hand corner. </li>
+                    <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
 
     "peer-review-l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
                         language and <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" are 
@@ -951,7 +970,20 @@ return array (
                         </ol>
                     </li>
                     <li>When all changes and notes have been made, click \"Yes, I did\" and \"{step}\".</li>",
-    "peer-review-l2_sun_desc" => "Temporary unavailable",
+
+    "peer-review-l2_sun_desc" => "<li><b>PURPOSE:</b> to check the SUN translation for accuracy and consistency.</li>
+                <li>While checking, make sure that common phrases are being translated the same way.</li>
+                <li>Look that the correct symbol is being used.</li>
+                <li>Look that all the SUN Grammar Rules are being followed.</li>
+                <li>Look for punctuation, flow/naturalness errors.</li>
+                <li>Look for missing portions of text or missing or added facts.</li>
+                <li>Keep in mind the difference between accuracy and preference.</li>
+                <li>Both SUN symbols and backSUN translation can be viewed by clicking the blue switch under the step near the top left.</li>
+                <li>Click the pencil icon and view notes for each chunk to see what concerns were brought up during the original translation process.</li>
+                <li>You can also leave your own notes in this section for the theological checker that follows you.</li>
+                <li>The SUN dictionary, translation notes (tN) and words (tW) are available in the help tab. 
+                    Frequently asked questions (FAQ) are available in the dropdown menu under your username in the top right-hand corner.</li>
+                <li>When all changes and notes have been made, click \"Yes I did\" and \"{step}\"</li>",
 
     "keyword-check-l2_desc" => "<li><b>PURPOSE:</b> to ensure significant words are present in the translated text and accurately 
                                 expressed, as well as <b>ensuring accurate and literal common language terms for \"Father\" and \"Son\" 
