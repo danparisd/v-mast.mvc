@@ -96,7 +96,7 @@ echo isset($meta) ? $meta : ''; // Place to pass data / plugable hook zone
 
 Assets::css([
     template_url('css/bootstrap.min.css'),
-    template_url('css/style.css?125'),
+    template_url('css/style.css?127'),
     template_url('css/jquery-ui.min.css'),
     template_url('css/jquery-ui.structure.min.css'),
     template_url('css/jquery-ui.theme.min.css'),
@@ -112,7 +112,7 @@ Assets::js([
     template_url('js/jquery.js'),
     template_url('js/jquery.actual.min.js'),
     template_url('js/unicornFormatter.js'),
-    template_url('js/main.js?117', 'Default'),
+    template_url('js/main.js?118', 'Default'),
     (Session::get("isBookAdmin")
         || Session::get("isProjectAdmin")
         || Session::get("isGlAdmin")
@@ -186,6 +186,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                 <a href="/events/demo-tq"><li><?php echo __("tq") ?></li></a>
                                 <a href="/events/demo-tw"><li><?php echo __("tw") ?></li></a>
                                 <a href="/events/demo-sun"><li><?php echo __("vsail") ?></li></a>
+                                <a href="/events/demo-sun-revision"><li><?php echo __("revision_sun") ?></li></a>
                                 <a href="/events/demo-sun-l3"><li><?php echo __("vsail_l2_l3", ["level" => 3]) ?></li></a>
                                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
@@ -262,8 +263,9 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                     $ltype = $type;
                                     if(isset($notification->manageMode) && $notification->manageMode == "l2")
                                     {
-                                        $demoType = "demo-l2";
+                                        $demoType = "demo".($notification->bookProject == "sun" ? "-sun" : "")."-revision";
                                         $ltype = preg_replace("/_checker/", "", $type);
+                                        $ltype = $notification->bookProject == "sun" ? "theo_check" : $ltype;
                                     }
                                     elseif (isset($notification->manageMode) && in_array($notification->manageMode, ["tn","tq","tw","sun","sun-odb","obs"]))
                                     {
@@ -272,7 +274,7 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                                     }
                                     elseif(isset($notification->manageMode) && $notification->manageMode == "rad")
                                     {
-                                        $demoType = "demo-" . $notification->manageMode;
+                                        $demoType = "demo-rad";
                                         $ltype = "peer_review";
                                     }
                                 }
@@ -335,7 +337,6 @@ echo isset($js) ? $js : ''; // Place to pass data / plugable hook zone
                 </li>
             <?php endif?>
         </ul>
-
     </div>
 
     <div class="container_block <?php echo !isset($data["isMain"]) ? "isloggedin" : "" ?>">

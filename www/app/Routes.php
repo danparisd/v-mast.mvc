@@ -215,6 +215,10 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
             "chapter" => "[0-9]+",
             "step" => "[2a-z\-]+"
         ]);
+    Router::any("checker-sun-revision/{eventID}", "EventsController@checkerSunRevision")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("checker-sun-revision/{eventID}/{memberID}/{chapter}", "EventsController@checkerSunRevisionContinue")
+        ->where(["eventID" => "[0-9]+", "chapter" => "[0-9]+"]);
     Router::any("checker-rad/{eventID}/{memberID}/{step}/{chapter}/apply", "EventsController@applyCheckerRadio")
         ->where([
             "eventID" => "[0-9]+",
@@ -239,6 +243,7 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("rpc/get_tw/{bookCode}/{chapter}/{lang}", "EventsController@getTw");
     Router::any("rpc/get_tn/{bookCode}/{chapter}/{lang}/{totalVerses}", "EventsController@getTn");
     Router::any("rpc/get_bc/{bookCode}/{chapter}/{lang}", "EventsController@getBc");
+    Router::any("rpc/get_bc_article/{lang}/{article}", "EventsController@getBcArticle");
     Router::any("rpc/get_rubric/{lang}", "EventsController@getRubric");
     Router::any("rpc/get_saildict/", "EventsController@getSailDict");
 });
@@ -262,6 +267,8 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
     Router::any("information-l3/{eventID}", "InformationController@informationL3")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("information-sun/{eventID}", "InformationController@informationSun")
+        ->where(["eventID" => "[0-9]+"]);
+    Router::any("information-sun-revision/{eventID}", "InformationController@informationSunRevision")
         ->where(["eventID" => "[0-9]+"]);
     Router::any("information-odb-sun/{eventID}", "InformationController@informationOdbSun")
         ->where(["eventID" => "[0-9]+"]);
@@ -297,13 +304,14 @@ Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function(
 Route::group(["prefix" => "events", "namespace" => "App\Controllers"], function() {
     Router::any("demo/{page?}", "DemoController@demo");
     Router::any("demo-scripture-input/{page?}", "DemoController@demoLangInput");
-    Router::any("demo-revision/{page?}", "DemoController@demoRevision");
+    Router::any("demo-revision/{page?}/{mode?}", "DemoController@demoRevision");
     Router::any("demo-l3/{page?}", "DemoController@demoL3");
     Router::any("demo-tn-l3/{page?}", "DemoController@demoL3Notes");
     Router::any("demo-tn/{page?}", "DemoController@demoTn");
     Router::any("demo-tq/{page?}", "DemoController@demoTq");
     Router::any("demo-tw/{page?}", "DemoController@demoTw");
     Router::any("demo-sun/{page?}", "DemoController@demoSun");
+    Router::any("demo-sun-revision/{page?}", "DemoController@demoSunRevision");
     Router::any("demo-sun-l3/{page?}", "DemoController@demoSunL3");
     Router::any("demo-sun-odb/{page?}", "DemoController@demoSunOdb");
     Router::any("demo-rad/{page?}", "DemoController@demoRadio");

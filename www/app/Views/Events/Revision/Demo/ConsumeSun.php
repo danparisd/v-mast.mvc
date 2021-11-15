@@ -13,7 +13,7 @@ use Helpers\Constants\EventCheckSteps;
     <div class="">
         <div class="main_content">
             <div class="main_content_text">
-                <h4>Papuan Malay - <?php echo __("ulb") ?> - <?php echo __("new_test") ?> - <span class="book_name">2 Timothy 2:1-26</span></h4>
+                <h4>Symbolic Universal Notation - <?php echo __("ulb") ?> - <?php echo __("new_test") ?> - <span class="book_name">2 Timothy 2:1-26</span></h4>
 
                 <ul class="nav nav-tabs">
                     <li role="presentation" id="target_scripture" class="my_tab">
@@ -25,32 +25,42 @@ use Helpers\Constants\EventCheckSteps;
                 </ul>
 
                 <div id="target_scripture_content" class="my_content shown">
-                    <p><strong><sup>1</sup></strong> Jadi begitu, anakku kuat sudah dengan anugerah di dalam Kristus Yesus.</p>
-                    <p><strong><sup>2</sup></strong> Dan banyak hal yang ko dengar dari sa deng saksi yang banyak itu, beri percaya itu sama orang-orang yang setia, supaya dong dapat mengajar dong yang lain juga.</p>
-                    <p><strong><sup>3</sup></strong> Mari, tong sama sa dalam penderitaan jadi prajurit Kristus Yesus yang baik.</p>
-                    <p><strong><sup>4</sup></strong> Trada satu orang tentara yang kerja sambil sibuk dengan de pu urusan hidup supaya de bisa buat de pu komandan senang.</p>
-                    <p><strong><sup>5</sup></strong> Begitu juga dengan atlit , tra akan terima mahkota kalo tra ikut aturan dalam lomba.</p>
-                    <p><strong><sup>6</sup></strong> Petani dong yang kerja keras akan terima hasil yang pertama,</p>
-                    <p><strong><sup>7</sup></strong> Ingat apa yang sa bilang, karena Tuhan akan kasi ko pengertian untuk mengerti semua ini,</p>
-                    <p><strong><sup>8</sup></strong> Ingat: Yesus Kristus, keturunan Daud, su bangkit dari kematian. ini su sesuai dengan pesan Injil yang sa percaya.</p>
-                    <p><strong><sup>9</sup></strong> Sampe pada titik penderitaan karna diikat rantai seperti kriminal. tapi firman Allah tra diikat deng rantai.</p>
-                    <p><strong><sup>10</sup></strong> Jadi sa bertahan untuk orang-orang yang Tuhan pilih, supaya dong dapat keselamatan yang kekal dalam Kristus Yesus, deng kemuliaan yang abadi..</p>
-                    <p><strong><sup>11</sup></strong> Apa yang sa bilang ini, bisa dipercaya: kalo tong mau mati untuk Dia, torang juga akan hidup bersama deng Dia.</p>
-                    <p><strong><sup>12</sup></strong> Apalagi kalo tong bertahan , tong juga akan ditinggikan deng Dia. Klo tong menyangkal Dia, Dia juga akan menyangkal ketong,</p>
-                    <p><strong><sup>13</sup></strong> Klo tong tra setia, De tetap setia karena De tra bisa menyangkal diri.</p>
-                    <p><strong><sup>14</sup></strong> Selalu kasi ingat dong di hadapan Allah, supaya dong jangan berdebat tentang Firman karena itu akan bikin kacau orang yang dengar,</p>
-                    <p><strong><sup>15</sup></strong> Lakukan yang paling baik itu adalah persembahan yang Tuhan terima, jadi pekerja trada alasan untuk dapat kasi malu, yang ajar kebeneran Firman dengan pas.</p>
-                    <p><strong><sup>16</sup></strong> Hindari omong kosong dan tra bersih yang nanti jadi tra baik.</p>
-                    <p><strong><sup>17</sup></strong> Perkataan dong akan menyebar seperti kangker. Diantara dong itu ada Himeneus dan Filetus.</p>
-                    <p><strong><sup>18</sup></strong> Dong adalah orang-orang yang sudah tidak benar. dong katakan kebangkitan sudah terjadi, dong putar balik iman dari berapa orang tu.</p>
-                    <p><strong><sup>19</sup></strong> Biar begitu, Allah pu fondasi kuat tetap berdiri. ada piagam dengan tulisan yang bilang" Tuhan kenal dong Dia pu milik." . dan orang yang percaya Tuhan harus kasi tinggal yang tra benar.</p>
-                    <p><strong><sup>20</sup></strong> Dalam rumah kaya bukan saja ada emas dan perak tapi juga ada kotak-kotak kayu sama tanah liat. barang itu di pake untuk hal-hal yang terhormat, dan ada juga untuk hal-hal tra terhormat.</p>
-                    <p><strong><sup>21</sup></strong> Jika satu orang kasi bersih de pu diri dari yang tra terhormat, de itu bejana yang terhormat. de dipilih , dipake untuk tuannya, dan de disiapkan untuk semua perbuatan yang baik.</p>
-                    <p><strong><sup>22</sup></strong> Jauhi sudah dari nafsu anak-anak muda, kejar itu kebenaran, iman, kasih, dan damai, sama-sama deng dong yang panggil Tuhan dengan hati yang bersih.</p>
-                    <p><strong><sup>23</sup></strong> Tapi tolak sudah pertanyaan-pertanyaan bodok. Kam tahu itu semua nanti jadi sebab baku tengkar.</p>
-                    <p><strong><sup>24</sup></strong> Orang yang melayani Tuhan tra boleh bertengkar tapi harus lemah lembut pada semua dong, Dong harus pintar mengajar, sabar</p>
-                    <p><strong><sup>25</sup></strong> de kasi ajaran deng lemah lembut sama dong yang melawan dia. mungkin Allah kasi kesempatan untuk dong bertobat pada pengetahuan akan kebenaran.</p>
-                    <p><strong><sup>26</sup></strong> mungkin dong sadar kembali dan kasi tinggal jerat iblis setelah selama ini dong ditawan untuk ikut perintahnya.</p>
+                    <div class="sun_mode">
+                        <label>
+                            <input type="checkbox" autocomplete="off" checked
+                                   data-toggle="toggle"
+                                   data-width="100"
+                                   data-on="SUN"
+                                   data-off="BACKSUN" />
+                        </label>
+                    </div>
+
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>1</sup></strong>           </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>2</sup></strong>                       </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>3</sup></strong>             </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>4</sup></strong>                </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>5</sup></strong>              </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>6</sup></strong>             </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>7</sup></strong>           </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>8</sup></strong>    ,            </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>9</sup></strong>                   </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>10</sup></strong>                       </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>11</sup></strong>    "            </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>12</sup></strong>    ,          ,     </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>13</sup></strong>     ,          "</p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>14</sup></strong>                          </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>15</sup></strong>                      </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>16</sup></strong>     ,           </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>17</sup></strong>             </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>18</sup></strong>                </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>19</sup></strong>        , "      " "         "</p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>20</sup></strong>                           </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>21</sup></strong>                        </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>22</sup></strong>         ,  ,                 </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>23</sup></strong>             </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>24</sup></strong>                   </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>25</sup></strong>                    </p>
+                    <p class="target_content font_sgn-US-symbunot"><strong><sup>26</sup></strong>              </p>
                 </div>
 
                 <div id="source_scripture_content" class="my_content ">
@@ -115,19 +125,16 @@ use Helpers\Constants\EventCheckSteps;
         <div class="event_info is_checker_page_help">
             <div class="participant_info">
                 <div class="additional_info">
-                    <a href="/events/demo-revision/information"><?php echo __("event_info") ?></a>
+                    <a href="/events/demo-revision/information/sun"><?php echo __("event_info") ?></a>
                 </div>
             </div>
         </div>
 
         <div class="tr_tools">
-            <button class="btn btn-warning ttools" data-tool="rubric"><?php echo __("show_rubric") ?></button>
+            <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
         </div>
     </div>
 </div>
-
-<!-- Data for tools -->
-<input type="hidden" id="targetLang" value="<?php echo $data["targetLang"] ?>">
 
 <div class="tutorial_container">
     <div class="tutorial_popup">
@@ -148,8 +155,20 @@ use Helpers\Constants\EventCheckSteps;
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-            window.location.href = '/events/demo-revision/self_check';
+            window.location.href = '/events/demo-revision/self_check/sun';
             return false;
+        });
+
+        $(".sun_mode input").change(function () {
+            var active = $(this).prop('checked');
+
+            if (active) {
+                $(".target_content").removeClass("font_backsun");
+                $(".target_content").addClass("font_sgn-US-symbunot");
+            } else {
+                $(".target_content").removeClass("font_sgn-US-symbunot");
+                $(".target_content").addClass("font_backsun");
+            }
         });
     });
 </script>

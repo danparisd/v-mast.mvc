@@ -30,6 +30,13 @@ class EventCheckSteps
         "content-review" => 6
         ];
 
+    private static $enumSun = [
+        "none" => 0,
+        "pray" => 1,
+        "consume" => 2,
+        "self-check" => 3
+    ];
+
     private static $enumL3 = [
         "none" => 0,
         "pray" => 1,
@@ -41,6 +48,9 @@ class EventCheckSteps
     {
         switch($mode)
         {
+            case "l2_sun":
+                return self::$enumSun[$step];
+
             case "l3":
                 return self::$enumL3[$step];
 
@@ -53,6 +63,9 @@ class EventCheckSteps
     {
         switch($mode)
         {
+            case "l2_sun":
+                return self::$enumSun;
+
             case "l3":
                 return self::$enumL3;
 

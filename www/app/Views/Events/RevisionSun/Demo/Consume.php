@@ -320,7 +320,7 @@
         <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 1])?>:</span> <?php echo __("consume")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("consume_l2_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("consume_sun_l2_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -335,8 +335,6 @@
 
         <div class="tr_tools">
             <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
         </div>
     </div>
 </div>
@@ -347,12 +345,11 @@
         <div class="tutorial_pic">
             <img src="<?php echo template_url("img/steps/icons/consume.png") ?>" height="100px" width="100px">
             <img src="<?php echo template_url("img/steps/big/consume.png") ?>" height="280px" width="280px">
-
         </div>
 
         <div class="tutorial_content">
             <h3><?php echo __("consume")?></h3>
-            <ul><?php echo __("consume_l2_desc", ["step" => __($data["next_step"])])?></ul>
+            <ul><?php echo __("consume_sun_l2_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -361,7 +358,7 @@
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-            window.location.href = '/events/demo-sun-revision/fst_check';
+            window.location.href = '/events/demo-sun-revision/peer_check';
             return false;
         });
 
@@ -403,7 +400,5 @@
 
 <input type="hidden" id="bookCode" value="<?php echo $data["bookCode"] ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["currentChapter"] ?>">
-<input type="hidden" id="tn_lang" value="<?php echo $data["tnLangID"] ?>">
-<input type="hidden" id="tw_lang" value="<?php echo $data["twLangID"] ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["targetLang"] ?>">

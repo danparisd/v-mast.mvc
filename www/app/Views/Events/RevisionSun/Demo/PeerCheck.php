@@ -17,7 +17,7 @@ use Helpers\Constants\EventCheckSteps;
     <div class="row main_content_header">
         <div class="main_content_title">
             <div class="demo_title"><?php echo __("demo") . " (".__("vsail_revision").")" ?></div>
-            <div><?php echo __("step_num", ["step_number" => 3]) . ": " . __(EventCheckSteps::PEER_REVIEW . "_sun")?></div>
+            <div><?php echo __("step_num", ["step_number" => 2]) . ": " . __(EventCheckSteps::SELF_CHECK . "_sun")?></div>
         </div>
     </div>
 
@@ -61,14 +61,13 @@ use Helpers\Constants\EventCheckSteps;
                                 </div>
                             </div>
                             <div class="flex_right">
-                                <div class="comments_number tncomml3_alt  hasComment">2</div>
+                                <div class="comments_number tncomml3_alt  hasComment">1</div>
                                 <span class="editComment mdi mdi-lead-pencil"
                                       data="0:0"
                                       title="<?php echo __("write_note_title", [""])?>"></span>
 
                                 <div class="comments">
-                                    <div class="my_comment">A note from current theological checker</div>
-                                    <div class="other_comments"><span>Henry M. - L2: </span>A note from level 2 peer checker</div>
+                                    <div class="my_comment">A note from current peer checker</div>
                                 </div>
                             </div>
                         </div>
@@ -208,17 +207,17 @@ use Helpers\Constants\EventCheckSteps;
                                     <strong class="ltr">
                                         <sup>11</sup>
                                     </strong>
-                                    This is a trustworthy saying:   "If we have died with him, we will also live with him.</p>
+                                    This is a trustworthy saying:   "If we have died with him, we will also live with him.                                             </p>
                                 <p class="verse_text" data-verse="12" style="height: 80px;">
                                     <strong class="ltr">
                                         <sup>12</sup>
                                     </strong>
-                                    If we endure, we will also reign with him.  If we deny him, he also will deny us.</p>
+                                    If we endure, we will also reign with him.  If we deny him, he also will deny us.                                             </p>
                                 <p class="verse_text" data-verse="13" style="height: 80px;">
                                     <strong class="ltr">
                                         <sup>13</sup>
                                     </strong>
-                                    if we are unfaithful, he remains faithful,  for he cannot deny himself."</p>
+                                    if we are unfaithful, he remains faithful,  for he cannot deny himself."                                             </p>
                             </div>
                             <div class="flex_middle editor_area sun_content">
                                 <div class="vnote">
@@ -253,7 +252,7 @@ use Helpers\Constants\EventCheckSteps;
                                     <strong class="ltr">
                                         <sup>14</sup>
                                     </strong>
-                                    Keep reminding them of these things. Warn them before God against quarreling about words; it is of no value, and only ruins those who listen.  <span data-toggle="tooltip" data-placement="auto auto" title="" class="booknote mdi mdi-bookmark" data-original-title="Some versions read,  Warn them before the Lord  . "></span></p>
+                                    Keep reminding them of these things. Warn them before God against quarreling about words; it is of no value, and only ruins those who listen.  <span data-toggle="tooltip" data-placement="auto auto" title="" class="booknote mdi mdi-bookmark" data-original-title="Some versions read,  Warn them before the Lord  . "></span>                                             </p>
                                 <p class="verse_text" data-verse="15" style="height: 80px;">
                                     <strong class="ltr">
                                         <sup>15</sup>
@@ -470,7 +469,7 @@ use Helpers\Constants\EventCheckSteps;
                     </button>
                     <img src="<?php echo template_url("img/saving.gif") ?>" class="unsaved_alert">
                 </form>
-                <div class="step_right"><?php echo __("step_num", ["step_number" => 3])?></div>
+                <div class="step_right"><?php echo __("step_num", ["step_number" => 2])?></div>
             </div>
         </div>
     </div>
@@ -481,9 +480,9 @@ use Helpers\Constants\EventCheckSteps;
 
     <div class="help_float">
         <div class="help_info_steps is_checker_page_help">
-            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 3])?>:</span> <?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></div>
+            <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 2])?>:</span> <?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("peer-review-l2_sun_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -508,13 +507,13 @@ use Helpers\Constants\EventCheckSteps;
     <div class="tutorial_popup">
         <div class="tutorial-close glyphicon glyphicon-remove"></div>
         <div class="tutorial_pic">
-            <img src="<?php echo template_url("img/steps/icons/snd-check.png") ?>" height="100px" width="100px">
-            <img src="<?php echo template_url("img/steps/big/consume.png") ?>" height="280px" width="280px">
+            <img src="<?php echo template_url("img/steps/icons/self-check.png") ?>" height="100px" width="100px">
+            <img src="<?php echo template_url("img/steps/big/self-check.png") ?>" height="280px" width="280px">
         </div>
 
         <div class="tutorial_content">
-            <h3><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></h3>
-            <ul><?php echo __("snd-check_sun_desc", ["step" => __($data["next_step"])])?></ul>
+            <h3><?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></h3>
+            <ul><?php echo __("peer-review-l2_sun_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -523,7 +522,7 @@ use Helpers\Constants\EventCheckSteps;
     $(document).ready(function () {
         $("#next_step").click(function (e) {
             e.preventDefault();
-            if(!hasChangesOnPage) window.location.href = '/events/demo-sun-revision/pray';
+            if(!hasChangesOnPage) window.location.href = '/events/demo-sun-revision/theo_check';
             return false;
         });
 
@@ -574,7 +573,7 @@ use Helpers\Constants\EventCheckSteps;
 
 <input type="hidden" id="bookCode" value="<?php echo $data["bookCode"] ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["currentChapter"] ?>">
-<input type="hidden" id="tn_lang" value="<?php echo $data["tnLangID"] ?>">
-<input type="hidden" id="tw_lang" value="<?php echo $data["twLangID"] ?>">
+<input type="hidden" id="tn_lang" value="<?php echo $data["tn_lang"] ?>">
+<input type="hidden" id="tw_lang" value="<?php echo $data["tw_lang"] ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["targetLang"] ?>">

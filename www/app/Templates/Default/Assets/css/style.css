@@ -1559,14 +1559,6 @@ div.ui-datepicker {
     background: url("/templates/default/assets/img/steps/final-review-active.png") no-repeat;
 }
 
-.fst-check {background-color: #4596cc;}
-.fst-check-step {
-    background: url("/templates/default/assets/img/steps/first-check-inactive.png") no-repeat;
-}
-.fst-check-step.active {
-    background: url("/templates/default/assets/img/steps/first-check-active.png") no-repeat;
-}
-
 .peer-review-l2, .peer-review-l3 {background-color: #4596cc;}
 .peer-review-l2-step, .peer-review-l3-step {
     background: url("/templates/default/assets/img/steps/peer-edit-inactive.png") no-repeat;
@@ -4669,6 +4661,10 @@ button.startEvnt, button.editEvnt {
     position: relative;
 }
 
+.verse_block.sun {
+    margin: 0 0 10px;
+}
+
 .sun_verse_block {
     margin-bottom: 10px;
     border-bottom: 1px solid #ccc;
@@ -5229,7 +5225,7 @@ button.startEvnt, button.editEvnt {
     left: calc(50% - 400px);
 }
 
-.bc_tool .bc_contents {
+.bc_tool .bc_contents, .bc_article_tool .bc_article_contents {
     max-height: 550px;
     overflow-y: auto;
 }
@@ -5653,5 +5649,18 @@ h1.obs_chunk {
 
 .chunk_checker {
     display: none;
+}
+
+.alt-mode {
+    position: absolute;
+    bottom: 50px;
+    text-align: center;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.alt-mode a {
+    color: white;
 }
 
