@@ -1464,7 +1464,7 @@ class ManageController extends Controller {
             return;
         }
 
-        if ($userType == EventMembers::L2_CHECKER || $userType == EventMembers::L3_CHECKER) {
+        /*if ($userType == EventMembers::L2_CHECKER || $userType == EventMembers::L3_CHECKER) {
             $education = (array)json_decode($appliedMember->profile->education);
             if (empty($education)) {
                 $data["errors"][] = __("education_public");
@@ -1509,7 +1509,7 @@ class ManageController extends Controller {
                     }
                 }
             }
-        }
+        }*/
 
         if (empty($data["errors"])) {
             $event = $this->eventRepo->get($eventID);
