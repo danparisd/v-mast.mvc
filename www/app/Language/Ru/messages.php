@@ -826,8 +826,6 @@ return array (
                 <li>Read the assigned text in its entirety. Carefully read and consider what is being said to 
                     understand the full content of the passage.</li>
                 <li>Pause, reflect, and re-read as necessary.</li>
-                <li>If you see the paper icon (<span class='mdi mdi-bookmark'></span>), hover over it with your mouse.  It is a translator’s note for that verse.</li>
-                <li>This step should take about 10 minutes.</li>
                 <li>Click \"Yes I did\" and \"{step}\" to move to the next step.</li>",
 
     "self-check_l2_desc" => "<li><b>PURPOSE:</b> to check the target text for accuracy while maintaining the naturalness of the 
