@@ -64,7 +64,7 @@ use Helpers\Constants\EventMembers;
                                         $verses = $data["translation"][$key][EventMembers::TRANSLATOR]["verses"];
                                     ?>
                                     <?php foreach($verses as $verse => $text): ?>
-                                        <div class="verse_block flex_chunk" data-verse="<?php echo $verse ?>">
+                                        <div class="verse_block sun flex_chunk" data-verse="<?php echo $verse ?>">
                                             <?php echo $text; ?>
                                         </div>
                                     <?php endforeach; ?>
@@ -100,7 +100,7 @@ use Helpers\Constants\EventMembers;
         <div class="help_info_steps is_checker_page_help">
             <div class="help_name_steps"><span><?php echo __("step_num", ["step_number" => 1])?>: </span><?php echo __("consume")?></div>
             <div class="help_descr_steps">
-                <ul><?php echo __("consume_l2_desc", ["step" => __($data["next_step"])])?></ul>
+                <ul><?php echo __("consume_sun_l2_desc", ["step" => __($data["next_step"])])?></ul>
                 <div class="show_tutorial_popup"> >>> <?php echo __("show_more")?></div>
             </div>
         </div>
@@ -115,8 +115,6 @@ use Helpers\Constants\EventMembers;
 
         <div class="tr_tools">
             <button class="btn btn-warning ttools" data-tool="saildict"><?php echo __("show_dictionary") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tn"><?php echo __("show_notes") ?></button>
-            <button class="btn btn-primary ttools" data-tool="tw"><?php echo __("show_keywords") ?></button>
         </div>
     </div>
 </div>
@@ -124,9 +122,6 @@ use Helpers\Constants\EventMembers;
 <!-- Data for tools -->
 <input type="hidden" id="bookCode" value="<?php echo $data["event"][0]->bookCode ?>">
 <input type="hidden" id="chapter" value="<?php echo $data["event"][0]->currentChapter ?>">
-<input type="hidden" id="tn_lang" value="<?php echo $data["event"][0]->tnLangID ?>">
-<input type="hidden" id="tq_lang" value="<?php echo $data["event"][0]->tqLangID ?>">
-<input type="hidden" id="tw_lang" value="<?php echo $data["event"][0]->twLangID ?>">
 <input type="hidden" id="totalVerses" value="<?php echo $data["totalVerses"] ?>">
 <input type="hidden" id="targetLang" value="<?php echo $data["event"][0]->targetLang ?>">
 
@@ -140,7 +135,7 @@ use Helpers\Constants\EventMembers;
 
         <div class="tutorial_content">
             <h3><?php echo __("consume")?></h3>
-            <ul><?php echo __("consume_l2_desc", ["step" => __($data["next_step"])])?></ul>
+            <ul><?php echo __("consume_sun_l2_desc", ["step" => __($data["next_step"])])?></ul>
         </div>
     </div>
 </div>
@@ -169,15 +164,15 @@ use Helpers\Constants\EventMembers;
             const active = $(this).prop('checked');
 
             if (active) {
-                $(".flex_middle").removeClass("backsun_content");
+                $(".flex_middle").removeClass("font_backsun");
                 $(".flex_middle").addClass("sun_content");
             } else {
                 $(".flex_middle").removeClass("sun_content");
-                $(".flex_middle").addClass("backsun_content");
+                $(".flex_middle").addClass("font_backsun");
             }
 
-            $(".verse_text").removeAttr("style");
-            $(".verse_block").removeAttr("style");
+            $(".verse_text").css("height", "initial");
+            $(".verse_block").css("height", "initial");
             equal_verses_height();
         });
     });

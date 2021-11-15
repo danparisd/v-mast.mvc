@@ -1559,14 +1559,6 @@ div.ui-datepicker {
     background: url("/templates/default/assets/img/steps/final-review-active.png") no-repeat;
 }
 
-.fst-check {background-color: #4596cc;}
-.fst-check-step {
-    background: url("/templates/default/assets/img/steps/first-check-inactive.png") no-repeat;
-}
-.fst-check-step.active {
-    background: url("/templates/default/assets/img/steps/first-check-active.png") no-repeat;
-}
-
 .peer-review-l2, .peer-review-l3 {background-color: #4596cc;}
 .peer-review-l2-step, .peer-review-l3-step {
     background: url("/templates/default/assets/img/steps/peer-edit-inactive.png") no-repeat;
@@ -4667,6 +4659,10 @@ button.startEvnt, button.editEvnt {
 
 .verse_block {
     position: relative;
+}
+
+.verse_block.sun {
+    margin: 0 0 10px;
 }
 
 .sun_verse_block {

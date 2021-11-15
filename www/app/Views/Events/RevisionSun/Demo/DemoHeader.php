@@ -14,12 +14,12 @@ use Helpers\Constants\EventCheckSteps;
             <a href="/events/demo-sun-revision/consume"><span><?php echo __(EventCheckSteps::CONSUME)?></span></a>
         </li>
 
-        <li class="fst-check-step <?php echo $data["step"] == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
-            <a href="/events/demo-sun-revision/fst_check"><span><?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></span></a>
+        <li class="self-check-step <?php echo $data["step"] == EventCheckSteps::SELF_CHECK ? "active" : "" ?>">
+            <a href="/events/demo-sun-revision/peer_check"><span><?php echo __(EventCheckSteps::SELF_CHECK . "_sun")?></span></a>
         </li>
 
-        <li class="snd-check-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
-            <a href="/events/demo-sun-revision/snd_check"><span><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></span></a>
+        <li class="keyword-check-step <?php echo $data["step"] == EventCheckSteps::PEER_REVIEW ? "active" : "" ?>">
+            <a href="/events/demo-sun-revision/theo_check"><span><?php echo __(EventCheckSteps::PEER_REVIEW . "_sun")?></span></a>
         </li>
     </ul>
 </div>

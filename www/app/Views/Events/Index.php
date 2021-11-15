@@ -21,6 +21,7 @@ use Helpers\Session;
                 <a href="/events/demo-tq"><li><?php echo __("tq") ?></li></a>
                 <a href="/events/demo-tw"><li><?php echo __("tw") ?></li></a>
                 <a href="/events/demo-sun"><li><?php echo __("vsail") ?></li></a>
+                <a href="/events/demo-sun-revision"><li><?php echo __("revision_sun") ?></li></a>
                 <a href="/events/demo-sun-l3"><li><?php echo __("vsail_l2_l3", ["level" => 3]) ?></li></a>
                 <a href="/events/demo-sun-odb"><li><?php echo __("odb") . " (".__("vsail").")" ?></li></a>
                 <a href="/events/demo-rad"><li><?php echo __("rad") ?></li></a>
@@ -75,7 +76,7 @@ use Helpers\Session;
                     $currentMembers = $event->checkersL2->count();
                     $members = __("checkers");
                     $manageLink = "/events/manage-revision/".$event->eventID;
-                    $progressLink = "/events/information-revision/".$event->eventID;
+                    $progressLink = "/events/information".($mode == "sun" ? "-sun" : "")."-revision/".$event->eventID;
                     break;
 
                 case EventStates::L3_RECRUIT:
@@ -195,7 +196,7 @@ use Helpers\Session;
                     $currentMembers = $event->checkersL2->count();
                     $members = __("checkers");
                     $manageLink = "/events/manage-revision/".$event->eventID;
-                    $progressLink = "/events/information-revision/".$event->eventID;
+                    $progressLink = "/events/information".($mode == "sun" ? "-sun" : "")."-revision/".$event->eventID;
                     break;
 
                 case EventStates::L3_RECRUIT:
@@ -274,9 +275,7 @@ use Helpers\Session;
                         <div><?php echo $event->project->targetLanguage->langName . ", "
                                 . ($event->bookInfo->sort < 41 ? __("old_test") : __("new_test"))?></div>
                     </div>
-                    <div class="event_facilitator">
-
-                    </div>
+                    <div class="event_facilitator"></div>
                 </div>
                 <div class="event_current_pos">
                     <div class="event_current_title"><?php echo __("state") ?></div>
@@ -540,6 +539,7 @@ use Helpers\Session;
             ? "/" . $event->currentChapter : "";
 
         $link = "/events/checker"
+            .($mode == "sun" ? "-sun" : "")
             ."-revision/"
             . $event->eventID
             .$memberLink

@@ -788,7 +788,6 @@ class EventsModel extends Model
      * @param null $eventID
      * @param null $chapter
      * @param bool $includeCheckers
-     * @param bool $includeFinished
      * @param bool $includeNone
      * @return array
      */
@@ -824,7 +823,7 @@ class EventsModel extends Model
             ($eventID ? "AND chks.eventID = :eventID " : " ") .
             "ORDER BY tLang, book_info.sort";
 
-        $prepare = array();
+        $prepare = [];
         if (!is_null($memberID))
             $prepare[":memberID"] = $memberID;
 
@@ -863,7 +862,9 @@ class EventsModel extends Model
             $crCheck = (array)json_decode($event->crCheck, true);
 
             foreach ($peerCheck as $chap => $data) {
-                if ($data["done"] < 2 && $includeCheckers && (!isset($chapter) || $chapter == $chap)) {
+                $done = $event->bookProject != "sun" ? 2 : 1;
+
+                if ($data["done"] < $done && $includeCheckers && (!isset($chapter) || $chapter == $chap)) {
                     $ev = $this->modifiedCheckerEvent($event, $chap, $data, EventCheckSteps::PEER_REVIEW, "l2");
                     $filtered[] = $ev;
                 }
@@ -956,6 +957,7 @@ class EventsModel extends Model
                 $ev->currentChapter = $chap;
                 $ev->checkerID = $data["memberID"];
                 $ev->chunks = $chunks;
+                $ev->checkDone = false;
                 $filtered[] = $ev;
             }
 

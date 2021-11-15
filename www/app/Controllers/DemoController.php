@@ -964,6 +964,77 @@ class DemoController extends Controller {
             ->shares("data", $data);
     }
 
+    public function demoSunRevision($page = null)
+    {
+        if (!isset($page))
+            Url::redirect("events/demo-sun-revision/pray");
+
+        $notifObj = new stdClass();
+        $notifObj->step = EventCheckSteps::PEER_REVIEW;
+        $notifObj->currentChapter = 2;
+        $notifObj->firstName = "Mark";
+        $notifObj->lastName = "Patton";
+        $notifObj->bookCode = "2ti";
+        $notifObj->bookProject = "sun";
+        $notifObj->tLang = "English";
+        $notifObj->bookName = "2 Timothy";
+        $notifObj->manageMode = "l2";
+        $notifObj->sourceBible = "ulb";
+
+        $notifications[] = $notifObj;
+
+        $data["notifications"] = $notifications;
+        $data["isDemo"] = true;
+        $data["menu"] = 5;
+        $data["isCheckerPage"] = true;
+        $data["next_step"] = EventCheckSteps::PRAY;
+
+        $data["bookCode"] = "2ti";
+        $data["currentChapter"] = 2;
+        $data["tn_lang"] = "en";
+        $data["tq_lang"] = "en";
+        $data["tw_lang"] = "en";
+        $data["totalVerses"] = 26;
+        $data["targetLang"] = "en-x-demo1";
+
+        $view = View::make("Events/RevisionSun/Demo/DemoHeader");
+        $data["step"] = "";
+
+        switch ($page) {
+            case "pray":
+                $view->nest("page", "Events/RevisionSun/Demo/Pray");
+                $data["step"] = EventCheckSteps::PRAY;
+                $data["next_step"] = EventCheckSteps::CONSUME;
+                break;
+
+            case "consume":
+                $view->nest("page", "Events/RevisionSun/Demo/Consume");
+                $data["step"] = EventCheckSteps::CONSUME;
+                $data["next_step"] = EventCheckSteps::SELF_CHECK;
+                break;
+
+            case "peer_check":
+                $view->nest("page", "Events/RevisionSun/Demo/PeerCheck");
+                $data["step"] = EventCheckSteps::SELF_CHECK;
+                $data["next_step"] = "continue_alt";
+                break;
+
+            case "theo_check":
+                $view->nest("page", "Events/RevisionSun/Demo/TheoCheck");
+                $data["step"] = EventCheckSteps::PEER_REVIEW;
+                $data["next_step"] = "continue_alt";
+                break;
+
+            case "information":
+                return View::make("Events/RevisionSun/Demo/Information")
+                    ->shares("title", __("event_info"));
+        }
+
+        return $view
+            ->shares("title", __("demo"))
+            ->shares("data", $data);
+    }
+
     public function demoSunL3($page = null)
     {
         if (!isset($page))

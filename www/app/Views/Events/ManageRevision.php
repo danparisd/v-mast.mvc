@@ -107,7 +107,9 @@ if(!isset($error)):
                                             data-name="<?php echo $peerName ?>"
                                             data-level="<?php echo $chapData["peerCheck"][$chapter]["done"] ?>"
                                             <?php echo $kw ? "disabled" : "" ?>>
-                                        <?php echo __("bible_peer_checker"); ?>
+                                        <?php echo $event->project->bookProject == "sun"
+                                            ? __("l2_sun_peer_checker")
+                                            : __("bible_peer_checker"); ?>
                                     </button>
                                     <?php if($kw): ?>
                                         <button class="btn btn-danger remove_checker_alt" id="kw_checker"
@@ -168,7 +170,7 @@ if(!isset($error)):
                         <div class="step_selector_block row">
                             <div class="col-sm-6">
                                 <?php
-                                $mode = "l2";
+                                $mode = "l2" . ($event->project->bookProject == "sun" ? "_sun" : "");
                                 $s_disabled = EventCheckSteps::enum($member->pivot->step, $mode) < 2;
                                 ?>
                                 <label><?php echo __("current_step") ?>:</label>
@@ -183,7 +185,7 @@ if(!isset($error)):
                                         if($step == EventCheckSteps::NONE) continue;
 
                                         $add = "";
-                                        if ($step == EventCheckSteps::SELF_CHECK && $event->project->bookProject == "sun") {
+                                        if (in_array($step, [EventCheckSteps::SELF_CHECK, EventCheckSteps::PEER_REVIEW]) && $event->project->bookProject == "sun") {
                                             $add = "_sun";
                                         }
 
